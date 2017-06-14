@@ -33,34 +33,34 @@ from pydicom.tag import Tag
 # Functions for Single Dicom files
 #########################################################################
 
-def add_tag(dicom,name,value):
+def add_tag(dicom,field,value):
     '''add tag will add a tag only if it's in the (active) DicomDictionary
     :param dicom: the pydicom.dataset Dataset (pydicom.read_file)
-    :param name: the name of the field to add
+    :param field: the name of the field to add
     :param value: the value to set, if name is a valid tag
     '''
     dicom_file = os.path.basename(dicom.filename)
-    tag = get_tag(name)
+    tag = get_tag(field)
 
-    if name in tag:
-        dicom.add_new(tag['tag'], tag['VR'], value) 
+    if field in tag:
+        dicom.add_new(tag[field]['tag'], tag[field]['VR'], value) 
  
         # dicom.data_element("PatientIdentityRemoved")
         # (0012, 0062) Patient Identity Removed            CS: 'Yes'
 
-        bot.debug("ADDITION %s to %s." %(dicom.data_element(name),dicom_file))
+        bot.debug("ADDITION %s to %s." %(dicom.data_element(field),dicom_file))
     else:
-        bot.error("%s is not a valid field to add. Skipping." %(name))
+        bot.error("%s is not a valid field to add. Skipping." %(field))
 
     return dicom
 
 
-def get_tag(name):
-    '''get_tag will return a dictionary with tag indexed by name. For each entry,
+def get_tag(field):
+    '''get_tag will return a dictionary with tag indexed by field. For each entry,
     a dictionary lookup is included with VR,  
     :name: the keyword to get tag for, eg "PatientIdentityRemoved"
     '''
-    found = [{key:value} for key,value in DicomDictionary.items() if value[4] == name]
+    found = [{key:value} for key,value in DicomDictionary.items() if value[4] == field]
     tags = dict()
     if len(found) > 0:
 
@@ -75,34 +75,34 @@ def get_tag(name):
                     "keyword":keyword,
                     "name":longName }
 
-        tags[name] = manifest 
+        tags[field] = manifest 
     return tags
 
 
-def update_tag(dicom,name,value):
+def update_tag(dicom,field,value):
     '''update tag will update a value in the header, if it exists
     if not, nothing is added. If the user wants to add a value
     (that might not exist) the function add_tag should be used
     '''
-    if name in dicom:
-        tag = dicom.data_element(name).tag
+    if field in dicom:
+        tag = dicom.data_element(field).tag
         dicom[tag] = value
     return dicom
 
 
-def blank_tag(dicom,name):
+def blank_tag(dicom,field):
     '''blank tag calls update_tag with value set to an
     empty string.
     '''
-    return update_tag(dicom,name,"")
+    return update_tag(dicom,field,"")
 
 
-def remove_tag(dicom,name):
+def remove_tag(dicom,field):
     '''remove tag will remove a tag if it is present in the dataset
     :param dicom: the pydicom.dataset Dataset (pydicom.read_file)
-    :param name: the name of the field to remove
+    :param field: the name of the field to remove
     '''
-    if name in dicom:
-        tag = dicom.data_element(name).tag
+    if field in dicom:
+        tag = dicom.data_element(field).tag
         del dicom[tag]
     return dicom

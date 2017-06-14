@@ -30,8 +30,10 @@ from pydicom import read_file
 from pydicom._dicom_dict import DicomDictionary
 from pydicom.tag import Tag
 from deid.utils import recursive_find
+from .tags import *
 from .validate import validate_dicoms
 import os
+import re
 import sys
 
 #########################################################################
@@ -90,62 +92,98 @@ def perform_addition(config,dicom):
 
     for addition in additions:
 
-        name = addition['name']
+        field = addition['field']
         value = addition['value']
-        dicom = add_tag(dicom,name,value) 
+        dicom = add_tag(dicom,field,value) 
 
     return dicom
 
 
-def perform_action(dicom,response,params):
+
+def perform_action(dicom,item,action):
     '''perform action takes  
     :param dicom: a loaded dicom file (pydicom read_file)
-    and a dictionary of params.
-    :param response: the api response, with "id", "id_source" "items"
-    at the top level
-    :param params:
-        "name" (eg, PatientID) the header field to process
-        "action" (eg, coded) what to do with the field
+    :param item: a dictionary with keys as fields, values as values
+    :param action: the action from the parsed deid to take
+        "dield" (eg, PatientID) the header field to process
+        "action" (eg, REPLACE) what to do with the field
         "value": if needed, the field from the response to replace with
     '''
-    header = entity_action.get('name')   # e.g: PatientID
-    action = entity_action.get('action') # "coded"
-    value = entity_action.get('value')   # "suid"
+    field = action.get('field')   # e.g: PatientID
+    value = action.get('value')   # "suid" or "var:field"
+    action = action.get('action') # "REPLACE"
+
+    dicom_file = os.path.basename(dicom.filename)
     done = False
 
     if action not in valid_actions:
         bot.warning('%s in not a valid choice [%s]. Defaulting to blanked.' %(action,
                                                                               ".".join(valid_actions)))
-        action = "blanked"
+        action = "BLANK"
 
-    if header in dicom:
+    if field in dicom and action != "ADD":
 
         # Blank the value
-        if action == "blanked":
-            dicom = blank_tag(dicom,name=header)
+        if action == "BLANK":
+            dicom = blank_tag(dicom,field)
             done = True
  
         # Code the value with something in the response
-        elif entity_action == "coded":
-            if value in response:
-                dicom = update_tag(dicom,
-                                   name=header,
-                                   value=response[value])
-                done = True
+        elif action == "REPLACE":
+            if field in item:
+      
+                value = parse_value(item,value)
+                if value is not None:
 
-        # Remove the field entirely
-        elif entity_action == "removed":
-            dicom = remove_tag(dicom,name=header)
-            done = True
+                    # If we make it here, do the replacement
+                    dicom = update_tag(dicom,
+                                       field=field,
+                                       value=value)
+
 
         # Do nothing. Keep the original
-        elif entity_action == "original":
+        elif action == "KEEP":
+            done = True
+
+        # Remove the field entirely
+        elif action == "REMOVE":
+            dicom = remove_tag(dicom,field)
             done = True
 
         if not done:            
-            dicom = blank_tag(dicom,name=header)
+            bot.warning("%s %s %s not done for %s" %(action,field,value,
+                                                     dicom_file))
+
+
+
+    elif action == "ADD":
+        value = parse_value(item,value)
+        if value is not None:
+            dicom = add_tag(dicom,field,value) 
 
     return dicom
+
+
+# Values
+
+def parse_value(item,value):
+    '''parse_value will parse the value field of an action,
+    either returning the string, or a variable looked up
+    in the case of var:FieldName
+    '''
+    # Does the user want a custom value?
+    if re.search('[:]',value):
+        value_type,value_option = value.split(':') 
+        if value_type.lower() == "var": 
+            # If selected variable not provided, skip
+            if value_option not in item:
+                return None
+            return item[value_option]
+
+        bot.warning('%s is not a valid value type, skipping.' %(value_type))
+        return None
+
+    return value
 
 
 # Timestamps

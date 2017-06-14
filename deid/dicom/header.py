@@ -34,6 +34,7 @@ from deid.identifiers.utils import (
     create_lookup
 )
 
+from deid.config import load_deid
 
 from pydicom import read_file
 from pydicom.errors import InvalidDicomError
@@ -142,8 +143,11 @@ def get_identifiers(dicom_files,force=True,config=None,
 def replace_identifiers(dicom_files,
                         ids=None,
                         deid=None,
-                        output_folder=None,
-                        force=True,config=None):
+                        overwrite=False,
+                        entity_id=None,
+                        item_id=None,
+                        force=True,
+                        config=None):
 
     '''replace identifiers will replace dicom_files with data from ids based
     on a combination of a config (default is blank all) and a users preferences (deid)
@@ -152,14 +156,15 @@ def replace_identifiers(dicom_files,
     :param force: force reading the file (default True)
     :param config: if None, uses default in provided module folder
     :param overwrite: if False, save updated files to temporary directory
-
-    THIS FUNCTION HAS NOT BEEN UPDATED YET
     '''
     if overwrite is False:
         save_base = tempfile.mkdtemp()
 
     if config is None:
         config = "%s/config.json" %(here)
+
+    if deid is not None:
+        deid = load_deid(deid)
 
     if not os.path.exists(config):
         bot.error("Cannot find config %s, exiting" %(config))
@@ -169,74 +174,75 @@ def replace_identifiers(dicom_files,
     if not isinstance(dicom_files,list):
         dicom_files = [dicom_files]
 
-    # We should have a list of responses
-    lookup = create_lookup(response)
+    # Organize the data based on the following
+    if entity_id is None:
+        entity_id = config['get']['ids']['entity']
+    if item_id is None:
+        item_id = config['get']['ids']['item']
     
+
     # Parse through dicom files, update headers, and save
     updated_files = []
 
     for dicom_file in dicom_files:
 
         dicom = read_file(dicom_file,force=True)
+        dicom_name = os.path.basename(dicom_file)
 
         # Read in / calculate preferred values
-        entity_id = get_identifier(tag='id',
-                                   dicom=dicom,
-                                   template=config['request']['entity'])
+        entity = dicom.get(entity_id)
+        item = dicom.get(item_id)
+        fields = dicom.dir()
 
-        item_id = get_identifier(tag='id',
-                                 dicom=dicom,
-                                 template=config['request']['item'])
-
+        bot.debug('entity id: %s' %(entity))
+        bot.debug('item id: %s' %(item))
 
         # Is the entity_id in the data structure given to de-identify?
-        if entity_id in lookup:
-            result = lookup[entity_id]
+        if ids is not None:
+            if entity in ids:
 
-            fields = dicom.dir()
-            
-            # Returns same dicom with action performed
-            for entity_action in config['response']['entity']['actions']:
+                items = ids[entity]
+                if item in items:
+                
+                    # First preference goes to user specified options
+                    if deid is not None:
+                        if deid['format'] == 'dicom':
+                            for action in deid['header']:
 
-                # We've dealt with this field
-                fields = [x for x in fields if x != entity_action['name']]
-                dicom = perform_action(dicom=dicom,
-                                       response=result,
-                                       params=entity_action)
+                                 # We've dealt with this field
+                                 fields = [x for x in fields if x != action['field']]
+                                 dicom = perform_action(dicom=dicom,
+                                                        item=items[item],
+                                                        action=action)
 
-            if "items" in result:
+        else:
 
-                for item in result['items']:
+            # Next perform actions in default config, only if not done
+            for action in config['put']['actions']:
+                if action['field'] in fields:
+                     fields = [x for x in fields if x != action['field']]
+                     dicom = perform_action(dicom=dicom,
+                                            item=items[item],
+                                            action=action)
 
-                    # Is this API response for this dicom?
-                    if item['id'] == item_id:
-                        for item_action in config['response']['item']['actions']:
-
-                           # Returns same dicom with action performed
-                           fields = [x for x in fields if x != item_action['name']]
-                           dicom = perform_action(dicom=dicom,
-                                                  response=item,
-                                                  params=item_action)
-
+            # Additions
+            for action in config['put']['additions']:
+                if action['name'] in fields:
+                     fields = [x for x in fields if x != action['name']]
+                     dicom = perform_addition(config,dicom)
 
             # Blank remaining fields
             for field in fields:
-                dicom = blank_tag(dicom,name=field)
+                dicom = blank_tag(dicom,field)
 
+            
+        # Save to file
+        output_dicom = dicom_file
+        if overwrite is False:
+            output_dicom = "%s/%s" %(save_base,os.path.basename(dicom_file))
+        dicom.save_as(output_dicom)
 
-            # Additions
-            dicom = perform_addition(config,dicom)
-
-            # Save to file
-            output_dicom = dicom_file
-            if overwrite is False:
-                output_dicom = "%s/%s" %(save_base,os.path.basename(dicom_file))
-            dicom.save_as(output_dicom)
-
-            updated_files.append(output_dicom)
+        updated_files.append(output_dicom)
        
-        else:
-            bot.warning("%s not found in identifiers lookup. Skipping" %(entity_id))
-
 
     return updated_files

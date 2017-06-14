@@ -4,4 +4,4 @@ FORMAT dicom
 
 ADD PatientIdentityRemoved Yes
 REPLACE PatientID var:id
-REPLACE InstanceSOPUID var:source_id
+REPLACE SOPInstanceUID var:source_id
