@@ -166,4 +166,4 @@ DEBUG Checking 1 dicom files for validation.
 Found 1 valid dicom files
 ```
 
-At this point, you should have a list of dicom files. You might now want to [configure](settings.md) your deidentifation.
+At this point, you should have a list of dicom files. You might now want to [configure](config.md) your deidentifation.
