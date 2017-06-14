@@ -32,7 +32,14 @@ ids['cookie-47']['1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947']
  'StudyTime': '191930'}
 ```
 
-At this point, let's walk through a few basic use cases.
+At this point, let's walk through a few basic use cases. We again first need to load our dicom files:
+
+```
+from deid.dicom import get_files
+from deid.data import get_dataset
+base = get_dataset('dicom-cookies')
+dicom_files = get_files(base)
+```
 
 
 ## Default: Blank Everything
@@ -94,8 +101,9 @@ REPLACE SOPInstanceUID var:source_id
 The above is a "coded" version of that, which has also been validated and checked. In the instruction, written in two forms:
 
 ```
-{'action': 'REPLACE', 'field': 'SOPInstanceUID', 'value': 'var:source_id'}
-REPLACE SOPInstanceUID var:source_id
+        {'action': 'REPLACE', 'field': 'SOPInstanceUID', 'value': 'var:source_id'}
+    
+        REPLACE SOPInstanceUID var:source_id
 ```
 
 we are saying that we want to replace the field `SOPInstanceUID` not with a value, but with a **variable** (`var`) that is called `source_id`. The full expression then for value, the third in the row, is `var:source_id`. What this means is that when we receive our ids data structure back from get_identifiers, we would need to do whatever lookup is necessary to get that item, and then set it for the appropriate item. Eg, for the entity/item showed above, we would do:

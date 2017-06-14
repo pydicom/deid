@@ -27,7 +27,8 @@ from deid.logger import bot
 from pydicom import read_file
 from pydicom._dicom_dict import DicomDictionary
 from pydicom.tag import Tag
-
+import os
+import sys
 
 #########################################################################
 # Functions for Single Dicom files
@@ -39,18 +40,12 @@ def add_tag(dicom,field,value):
     :param field: the name of the field to add
     :param value: the value to set, if name is a valid tag
     '''
-    dicom_file = os.path.basename(dicom.filename)
-    tag = get_tag(field)
+    bot.debug("Attempting ADDITION %s to %s." %(dicom.data_element(field),dicom_file))
 
-    if field in tag:
-        dicom.add_new(tag[field]['tag'], tag[field]['VR'], value) 
+    dicom = change_tag(dicom,field,value)
  
-        # dicom.data_element("PatientIdentityRemoved")
-        # (0012, 0062) Patient Identity Removed            CS: 'Yes'
-
-        bot.debug("ADDITION %s to %s." %(dicom.data_element(field),dicom_file))
-    else:
-        bot.error("%s is not a valid field to add. Skipping." %(field))
+    # dicom.data_element("PatientIdentityRemoved")
+    # (0012, 0062) Patient Identity Removed            CS: 'Yes'
 
     return dicom
 
@@ -79,14 +74,29 @@ def get_tag(field):
     return tags
 
 
+def change_tag(dicom,field,value):
+    '''change tag is a general function that can be used by 
+    update_tag or add_tag. The only difference is the print output,
+    and determining to call the function based on different conditions
+    '''
+    dicom_file = os.path.basename(dicom.filename)
+    tag = get_tag(field)
+
+    if field in tag:
+        dicom.add_new(tag[field]['tag'], tag[field]['VR'], value) 
+    else:
+        bot.error("%s is not a valid field to add. Skipping." %(field))
+
+    return dicom
+
+
 def update_tag(dicom,field,value):
     '''update tag will update a value in the header, if it exists
     if not, nothing is added. If the user wants to add a value
     (that might not exist) the function add_tag should be used
     '''
     if field in dicom:
-        tag = dicom.data_element(field).tag
-        dicom[tag] = value
+        dicom = change_tag(dicom,field,value)
     return dicom
 
 

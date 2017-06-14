@@ -215,30 +215,31 @@ def replace_identifiers(dicom_files,
                                                         item=items[item],
                                                         action=action)
 
-        else:
 
-            # Next perform actions in default config, only if not done
-            for action in config['put']['actions']:
-                if action['field'] in fields:
-                     fields = [x for x in fields if x != action['field']]
-                     dicom = perform_action(dicom=dicom,
-                                            item=items[item],
-                                            action=action)
+        # Next perform actions in default config, only if not done
+        for action in config['put']['actions']:
+            if action['field'] in fields:
+                 fields = [x for x in fields if x != action['field']]
+                 dicom = perform_action(dicom=dicom,
+                                        item=items[item],
+                                        action=action)
 
-            # Additions
-            for action in config['put']['additions']:
-                if action['name'] in fields:
-                     fields = [x for x in fields if x != action['name']]
-                     dicom = perform_addition(config,dicom)
+        # Additions
+        for action in config['put']['additions']:
+            if action['name'] in fields:
+                 fields = [x for x in fields if x != action['name']]
+                 dicom = perform_addition(config,dicom)
 
-            # Blank remaining fields
-            for field in fields:
-                dicom = blank_tag(dicom,field)
+        # Blank remaining fields
+        for field in fields:
+            dicom = blank_tag(dicom,field)
 
             
         # Save to file
         output_dicom = dicom_file
         if overwrite is False:
+
+            #STOPPED HERE - bug is that "blanking" must be specific to data field type
             output_dicom = "%s/%s" %(save_base,os.path.basename(dicom_file))
         dicom.save_as(output_dicom)
 
