@@ -1,8 +1,12 @@
-# Deidentify (deif)
+# Deidentify (deid)
 
-Deidentify medical images in Python
+Deidentify medical images in Python.
 
-[Documentations](docs)
+**under development!**
+
+These modules are not yet ready for use. For now, check out our:
+
+[Documentations](https://pydicom.github.io/deid/)
 
 These are basic Python based tools for working with medical images and text, specifically for de-identification.
 
