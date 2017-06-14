@@ -1,0 +1,24 @@
+{
+   "get": { 
+
+         
+         "skip": ["PixelData"],
+         "ids":{
+            "entity":"PatientID",
+            "item":"SOPInstanceUID"
+         }
+
+   },
+
+   "put":{
+      "additions":[
+         {
+            "name":"PatientIdentityRemoved",
+            "value":"Yes"
+         }
+      ],
+      "actions":[
+
+      ]
+   }
+}

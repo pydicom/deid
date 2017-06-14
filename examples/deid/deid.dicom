@@ -1,0 +1,7 @@
+FORMAT dicom
+
+%header
+
+ADD PatientIdentityRemoved Yes
+REPLACE PatientID var:id
+REPLACE InstanceSOPUID var:source_id
