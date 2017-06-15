@@ -81,26 +81,8 @@ def get_func(function_name):
     return None
 
 
-def perform_addition(config,dicom):
-    '''perform addition will add any additional fields to the dicom
-    :param config: the config, with expected ['response']['additions']
-    :param dicom: the dicom file to add a field to
-    if the field is already in the dicom, it will be overwritten
-    '''
-    ## Actions/Additions for each come from config
-    additions = config['response']['additions']
 
-    for addition in additions:
-
-        field = addition['field']
-        value = addition['value']
-        dicom = add_tag(dicom,field,value) 
-
-    return dicom
-
-
-
-def perform_action(dicom,item,action):
+def perform_action(dicom,action,item=None):
     '''perform action takes  
     :param dicom: a loaded dicom file (pydicom read_file)
     :param item: a dictionary with keys as fields, values as values
@@ -112,9 +94,23 @@ def perform_action(dicom,item,action):
     field = action.get('field')   # e.g: PatientID
     value = action.get('value')   # "suid" or "var:field"
     action = action.get('action') # "REPLACE"
+    return _perform_action(dicom=dicom,
+                           field=field,
+                           item=item,
+                           action=action,
+                           value=value)
 
+
+def _perform_action(dicom,field,action,value=None,item=None):
+    '''_perform_action is the base function for performing an action.
+    perform_action (above) typically is called using a loaded deid,
+    and perform_addition is typically done via an addition in a config
+    Both result in a call to this function. If an action fails or is not
+    done, None is returned, and the calling function should handle this.
+    '''
     dicom_file = os.path.basename(dicom.filename)
     done = False
+    result = None
 
     if action not in valid_actions:
         bot.warning('%s in not a valid choice [%s]. Defaulting to blanked.' %(action,
@@ -125,43 +121,57 @@ def perform_action(dicom,item,action):
 
         # Blank the value
         if action == "BLANK":
-            dicom = blank_tag(dicom,field)
+            result = blank_tag(dicom,field)
             done = True
  
         # Code the value with something in the response
         elif action == "REPLACE":
+            if item is None:
+                bot.error("An item must be provided to perform replace, skipping.")
+                return result
+ 
             if field in item:
       
                 value = parse_value(item,value)
                 if value is not None:
 
                     # If we make it here, do the replacement
-                    dicom = update_tag(dicom,
-                                       field=field,
-                                       value=value)
+                    done = True
+                    result = update_tag(dicom,
+                                        field=field,
+                                        value=value)
 
 
         # Do nothing. Keep the original
         elif action == "KEEP":
             done = True
+            result = dicom
 
         # Remove the field entirely
         elif action == "REMOVE":
-            dicom = remove_tag(dicom,field)
+            result = remove_tag(dicom,field)
             done = True
 
         if not done:            
-            bot.warning("%s %s %s not done for %s" %(action,field,value,
-                                                     dicom_file))
-
+            bot.warning("%s %s not done for %s" %(action,
+                                                  field,
+                                                  dicom_file))
 
 
     elif action == "ADD":
+        if item is None:
+            bot.error("An item must be provided to perform replace, skipping.")
+            return result
+ 
         value = parse_value(item,value)
         if value is not None:
-            dicom = add_tag(dicom,field,value) 
+            result = add_tag(dicom,field,value) 
 
-    return dicom
+
+    else:
+        bot.warning('Field %s is not present in %s' %(field,dicom_file))
+
+    return result
 
 
 # Values

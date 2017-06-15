@@ -42,21 +42,115 @@ dicom_files = get_files(base)
 ```
 
 
-## Default: Blank Everything
-In this first use case, we extracted identifiers to save to our database, and we want to blank everything in the data. To do this, we can use the dicom module defaults, and we don't need to give the function anything. Our call would look like this:
+## Default: Remove Everything
+In this first use case, we extracted identifiers to save to our database, and we want to remove everything in the data. To do this, we can use the dicom module defaults, and we don't need to give the function anything. Our call would look like this:
 
 ```
 from deid.dicom import replace_identifiers
 
 cleaned_files = replace_identifiers(dicom_files=dicom_files)
+
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5323.1495927169.335276
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5354.1495927170.440268
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5335.1495927169.763866
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5348.1495927170.228989
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5342.1495927169.3131
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
 ```
 
-Again, remember that you could set a custom `entity_id` or `item_id` if the defaults of `PatientID` and `SOPInstanceUID` aren't appropriate. By default, if you don't specify an `output_folder`, a temporary directory will be made. If you specify `overwrite=True`, the output folder will be the same where the images are, and the files will be over-written. Take caution with this approach.
+You will notice that by default, the files are written to a temporary directory:
+
+```
+cleaned_files 
+['/tmp/tmphvj05c6y/image4.dcm',
+ '/tmp/tmphvj05c6y/image2.dcm',
+ '/tmp/tmphvj05c6y/image7.dcm',
+ '/tmp/tmphvj05c6y/image6.dcm',
+ '/tmp/tmphvj05c6y/image3.dcm',
+ '/tmp/tmphvj05c6y/image1.dcm',
+ '/tmp/tmphvj05c6y/image5.dcm']
+```
+
+You can choose to use a custom output folder:
+
+```
+cleaned_files = replace_identifiers(dicom_files=dicom_files,
+                                    output_folder='/home/vanessa/Desktop')
+...
+cleaned_files
+['/home/vanessa/Desktop/image4.dcm',
+ '/home/vanessa/Desktop/image2.dcm',
+ '/home/vanessa/Desktop/image7.dcm',
+ '/home/vanessa/Desktop/image6.dcm',
+ '/home/vanessa/Desktop/image3.dcm',
+ '/home/vanessa/Desktop/image1.dcm',
+ '/home/vanessa/Desktop/image5.dcm']
+```
+
+One setting that is important is `overwrite`, which is by default set to False. For example, let's say we decided to run the above again, using the same output directory of desktop (where the files already exist!)
+
+```
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5323.1495927169.335276
+ERROR image4.dcm already exists, overwrite set to False. Not writing.
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5354.1495927170.440268
+ERROR image2.dcm already exists, overwrite set to False. Not writing.
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5335.1495927169.763866
+ERROR image7.dcm already exists, overwrite set to False. Not writing.
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5348.1495927170.228989
+ERROR image6.dcm already exists, overwrite set to False. Not writing.
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947
+ERROR image3.dcm already exists, overwrite set to False. Not writing.
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5342.1495927169.3131
+ERROR image1.dcm already exists, overwrite set to False. Not writing.
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
+ERROR image5.dcm already exists, overwrite set to False. Not writing.
+```
+
+The function gets angry at us, and returns the list of files that are already there. If you really want to force an overwrite, then you need to do this:
+
+
+```
+cleaned_files = replace_identifiers(dicom_files=dicom_files,
+                                    output_folder='/home/vanessa/Desktop',
+                                    overwrite=True)
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5323.1495927169.335276
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5354.1495927170.440268
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5335.1495927169.763866
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5348.1495927170.228989
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5342.1495927169.3131
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
+```
+
+wherever you dump your new dicoms, it's up to you to decide how to then move and store them, and (likely) deal with the original data with identifiers.
 
 
 ## Customize Replacement
 As we mentioned earlier, if you have a [deid settings](config.md) file, you can specify how you want the replacement to work, and in this case, you would want to provide the result `ids` variable from the [previous step](get.md)
 
+### Create your deid specification
 For this example, we will use an example file provided with this package. Likely this will be put into a function with easier use, but this will work for now.
 
 ```
@@ -64,18 +158,19 @@ from deid.utils import get_installdir
 from deid.config import load_deid
 import os
 
-deid = os.path.abspath("%s/../examples/deid/" %get_installdir())
+path = os.path.abspath("%s/../examples/deid/" %get_installdir())
 ```
 
 The above `deid` is just a path to a folder that we have a `deid` file in. The function will find it for us. This function will happen internally, but here is an example of what your loaded `deid` file might look like.
 
 ```
-load_deid(path)
+deid = load_deid(path)
 DEBUG FORMAT set to dicom
 DEBUG Adding ADD PatientIdentityRemoved Yes
 DEBUG Adding REPLACE PatientID var:id
 DEBUG Adding REPLACE SOPInstanceUID var:source_id
-Out[76]: 
+deid
+
 {
  'format': 'dicom',
  'header': [
@@ -112,12 +207,231 @@ we are saying that we want to replace the field `SOPInstanceUID` not with a valu
 ids['cookie-47']['1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947']['source_id'] = 'suid123'
 ```
 
-and then `suid123` will be used to replace `SOPInstanceUID` in the data. If we wanted it to be a string value, we would leave out the `var`. For example, to replace **all** entity/item `Modality` with the same string, you could do:
+### Add your variables
+Let's walk through that complete example, first getting our identifiers, adding some random source_id and id, and then running the function.
+
+```
+from deid.dicom import get_identifiers
+ids = get_identifiers(dicom_files)
+```
+
+Let's say that we want to change the `PatientID` `cookie-47` to `cookiemonster`, and for each identifier, we will give it a numerically increasing `SOPInstanceUID`.
+
+```
+count=0
+for entity, items in ids.items():
+    for item in items:
+        ids[entity][item]['id'] = "cookiemonster"
+        ids[entity][item]['source_id'] = "cookiemonster-image-%s" %(count)
+        count+=1
+```
+
+An important note - both fields are added on the level of the item, and not at the level of the entity! This is because, although we have an entity and item both represented, they are both represented in a flat hierarchy (on the level of the item) so the final data structure, for each item, should look like this:
+
+```
+entity = 'cookie-47'
+item = '1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351'
+
+ids[entity][item]
+
+{'BitsAllocated': 8,
+ 'BitsStored': 8,h
+ 'Columns': 2048,
+ 'ConversionType': 'WSD',
+ 'HighBit': 7,
+ 'ImageComments': 'This is a cookie tumor dataset for testing dicom tools.',
+ 'InstitutionName': 'STANFORD',
+ 'LossyImageCompression': '01',
+ 'LossyImageCompressionMethod': 'ISO_10918_1',
+ 'NameOfPhysiciansReadingStudy': 'Dr. lively wind',
+ 'OperatorsName': 'curly darkness',
+ 'PatientID': 'cookie-47',
+ 'PatientName': 'falling disk',
+ 'PatientSex': 'M',
+ 'PhotometricInterpretation': 'YBR_FULL_422',
+ 'PixelRepresentation': 0,
+ 'PlanarConfiguration': 0,
+ 'ReferringPhysicianName': 'Dr. solitary heart',
+ 'Rows': 1536,
+ 'SOPClassUID': '1.2.840.10008.5.1.4.1.1.7',
+ 'SOPInstanceUID': '1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351',
+ 'SamplesPerPixel': 3,
+ 'SeriesInstanceUID': '1.2.276.0.7230010.3.1.3.8323329.5329.1495927169.580349',
+ 'SpecificCharacterSet': 'ISO_IR 100',
+ 'StudyDate': '20131210',
+ 'StudyInstanceUID': '1.2.276.0.7230010.3.1.2.8323329.5329.1495927169.580350',
+ 'StudyTime': '191929',
+ 'id': 'cookiemonster',
+ 'id_source': 'cookiemonster-image-6'}
+```
+
+Now we are going to run our function again, but this time providing:
+ 1. The path to our deid specification
+ 2. the ids data structure we updated above
+
+
+### Replace identifiers
+It's time to clean our data with the deid specification and ids datastructure we have prepared.
+
+```
+# path is '/home/vanessa/Documents/Dropbox/Code/som/dicom/deid/examples/deid'
+cleaned_files = replace_identifiers(dicom_files=dicom_files,
+                                    deid=path,
+                                    ids=ids)
+
+DEBUG FORMAT set to dicom
+DEBUG Adding ADD PatientIdentityRemoved Yes
+DEBUG Adding REPLACE PatientID var:id
+DEBUG Adding REPLACE SOPInstanceUID var:source_id
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5323.1495927169.335276
+DEBUG Attempting ADDITION of PatientIdentityRemoved to image4.dcm.
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5354.1495927170.440268
+DEBUG Attempting ADDITION of PatientIdentityRemoved to image2.dcm.
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5335.1495927169.763866
+DEBUG Attempting ADDITION of PatientIdentityRemoved to image7.dcm.
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5348.1495927170.228989
+DEBUG Attempting ADDITION of PatientIdentityRemoved to image6.dcm.
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947
+DEBUG Attempting ADDITION of PatientIdentityRemoved to image3.dcm.
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5342.1495927169.3131
+DEBUG Attempting ADDITION of PatientIdentityRemoved to image1.dcm.
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
+DEBUG Attempting ADDITION of PatientIdentityRemoved to image5.dcm.
+```
+
+We can now read in one of the output files to see the result:
+
+```
+# We can load in a cleaned file to see what was done
+from pydicom import read_file
+test_file = read_file(cleaned_files[0])
+
+test_file
+(0008, 0018) SOP Instance UID                    UI: cookiemonster-image-4
+(0010, 0020) Patient ID                          LO: 'cookiemonster'
+(0012, 0062) Patient Identity Removed            CS: 'Yes'
+(0028, 0002) Samples per Pixel                   US: 3
+(0028, 0010) Rows                                US: 1536
+(0028, 0011) Columns                             US: 2048
+(7fe0, 0010) Pixel Data                          OB: Array of 738444 bytes
+```
+
+And it looks like we are good!
+
+In this example, we did the more complicated thing of setting the value to be a variable from the ids data structure (specified with `var:id`. We can take an even simpler approach. If we wanted it to be a string value, meaning the same for all items, we would leave out the `var`:
 
 ```
 REPLACE Modality CT-SPECIAL
 ```
 
-If you specify a replacement variable and it's not found in the data, a warning will be issued. If you specify a `REPLACE` command and the value isn't in the data, it will be added instead.
+This example would replace the Modality for all items to be the string `CT-SPECIAL`.
 
-Stopping here... zzz
+#### Define entity or items
+For this function, if you have set a custom `entity_id` or `item_id` (that you used for the first call) you would also want to specify it here. Again, the the defaults are `PatientID` for the entity, and `SOPInstanceUID` for each item. 
+
+
+```
+replace_identifiers(dicom_files,
+                    ids=ids,
+                    entity_id="PatientID",
+                    item_id="SOPInstanceUID")
+```
+
+For more refinement of the default config, see the [developers](developer.md) docs.
+
+## Errors During Replacement
+Let's try to break the above. We are going to extract ids, but then define the `source_id` at the wrong variable. What happens?
+
+```
+from deid.dicom import get_identifiers
+ids = get_identifiers(dicom_files)
+```
+
+Let's be stupid, oops, instead of `source_id` I wrote `source_uid`
+
+```
+count=0
+for entity, items in ids.items():
+    for item in items:
+        ids[entity][item]['id'] = "cookiemonster"
+        ids[entity][item]['source_uid'] = "cookiemonster-image-%s" %(count)
+        count+=1
+```
+
+Try the replacement...
+
+```
+cleaned_files = replace_identifiers(dicom_files=dicom_files,
+                                    deid=path,
+                                    ids=ids)
+DEBUG FORMAT set to dicom
+DEBUG Adding ADD PatientIdentityRemoved Yes
+DEBUG Adding REPLACE PatientID var:id
+DEBUG Adding REPLACE SOPInstanceUID var:source_id
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5323.1495927169.335276
+DEBUG Attempting ADDITION of PatientIdentityRemoved to image4.dcm.
+WARNING REPLACE SOPInstanceUID not done for image4.dcm
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5354.1495927170.440268
+DEBUG Attempting ADDITION of PatientIdentityRemoved to image2.dcm.
+WARNING REPLACE SOPInstanceUID not done for image2.dcm
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5335.1495927169.763866
+DEBUG Attempting ADDITION of PatientIdentityRemoved to image7.dcm.
+WARNING REPLACE SOPInstanceUID not done for image7.dcm
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5348.1495927170.228989
+DEBUG Attempting ADDITION of PatientIdentityRemoved to image6.dcm.
+WARNING REPLACE SOPInstanceUID not done for image6.dcm
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947
+DEBUG Attempting ADDITION of PatientIdentityRemoved to image3.dcm.
+WARNING REPLACE SOPInstanceUID not done for image3.dcm
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5342.1495927169.3131
+DEBUG Attempting ADDITION of PatientIdentityRemoved to image1.dcm.
+WARNING REPLACE SOPInstanceUID not done for image1.dcm
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
+DEBUG Attempting ADDITION of PatientIdentityRemoved to image5.dcm.
+WARNING REPLACE SOPInstanceUID not done for image5.dcm
+```
+
+You see that we get a warning. As a precaution, since the action wasn't taken, the field is removed from the data.
+
+```
+from pydicom import read_file
+test_file = read_file(cleaned_files[0])
+
+test_file
+(0010, 0020) Patient ID                          LO: 'cookiemonster'
+(0012, 0062) Patient Identity Removed            CS: 'Yes'
+(0028, 0002) Samples per Pixel                   US: 3
+(0028, 0010) Rows                                US: 1536
+(0028, 0011) Columns                             US: 2048
+(7fe0, 0010) Pixel Data                          OB: Array of 738444 bytes
+```
+
+
+```
+replace_identifiers(dicom_files,
+                    ids=ids,
+                    entity_id="PatientID",
+                    item_id="SOPInstanceUID")
+```
+
+
+```
+REPLACE Modality CT-SPECIAL
+```
+
+## Developer Replacement
+If you are a developer, you can create your own config.json and give it to the function above. You can read more about this in the [developers](developer.md) notes.

@@ -13,7 +13,7 @@ The application does the following, by default, taking a conservative de-identif
 
  1. All fields considered HIPAA are returned to you for inspection.
  2. You can replace none or all of these fields with your identifiers of choice
- 3. The data will be rewritten with your changes, and all other fields will be blanked.
+ 3. The data will be rewritten with your changes, and all other fields will be removed.
  4. A header field will be added that says the data has been de-identified.
 
 However, you might want to do either of the following:
@@ -25,10 +25,11 @@ However, you might want to do either of the following:
 We will show you a working example of the above as you continue this walkthrough. For now, let's talk about a few options, and show examples of settings. The settings that you choose depend on your use case, and we strongly suggest that you take the most conservative approach that is possible for your use case. 
 
 ### Option 1. Blanked Header
-In the case that you get a response after extraction and replace no fields, the datasets will be completely blanked (recommended for most). 
+In the case that you get a response after extraction and replace no fields, the header fields will be completely removed, other than a field to indicate this has been done (recommended for most). 
 
 ### Option 2. Blanked Header with Study identifier
-If you need to save some identifier as a lookup, we recommend a conservative approach that leaves the minimal required (de-identified) study identifier eg, (PatientID) is replaced with (StudyID), blanking the rest. Any identifiers that you might want to save should be kept separately from where you intend to release the data, and this of course will require IRB approval.
+If you need to save some identifier as a lookup, we recommend a conservative approach that leaves the minimal required (de-identified) study identifier eg, (PatientID) is replaced with (StudyID), removing the rest. Any identifiers that you might want to save should be kept separately from where you intend to release the data, and this of course will require IRB approval.
+
 
 ### Option 3: Custom
 For a custom de-identification, then you need to make a config file called `deid` that should be provided with your function calls. The format of this file is discussed below, and can be used to specify preferences for different kinds of datasets (dicom or nifti) and things to identify (pixels and headers).
@@ -51,10 +52,10 @@ REMOVE ReferringPhysicianName
 In the above example, we specify the commands are intended to use the dicom module by first `FORMAT` label. This is a message to the application that the following commands are intended to come from this exact module folder. We then know that we are dealing with functions relevant to the header of the image by way of the `%header` section. The section then consists of a series of commands, each specifying an action to be taken on a particular field. The allowed actions are the follow:
 
  - ADD: Add a new field to the dataset(s). If the value is a string, it's assumed to be the value that is desired to be added. If the value is in the form `var:OrdValue` then the application will expect to find the value to replace in a variable in the request called `OrdValue` (more on this later).
- - BLANK: By default, all fields that aren't specified to be replaced or removed will be blanked. You (currently) shouldn't ever need to specify this, as all are blanked by default.
+ - BLANK: If you want to blank a field instead of remove it, use this option. Note that there is a [bug](https://github.com/pydicom/pydicom/issues/372) related to how to properly blank fields, so in some cases you might see an error. For this reason I (@vsoch) have chosen to make the default removing for now.
  - KEEP: implies that the value should not be replaced, removed, or blanked.
  - REPLACE: implies that the value should be replaced by a string, or a variable in the format `var:FieldName`.
- - REMOVE: completely remove the field from the dataset. This is removing the entire header.
+ - REMOVE: completely remove the field from the dataset. This is the default action.
 
 For the above, given that there are conflicting commands, the more conservative is given preference. For example:
 
@@ -62,7 +63,7 @@ For the above, given that there are conflicting commands, the more conservative 
 REMOVE > BLANK > REPLACE > KEEP/ADD
 ``` 
 
-For example, if I add or keep a header, but then also specify to blank or remove it, it will be blanked or removed. If I specify to blank a header and remove it, it will be removed. If I specify to replace a header and blank it, it will be blanked. Most of the time, you won't need to specify blank, because it is the default. If we were to come up with a pretend config file to represent the default, it would look like this:
+For example, if I add or keep a header, but then also specify to blank or remove it, it will be blanked or removed. If I specify to blank a header and remove it, it will be removed. If I specify to replace a header and blank it, it will be blanked. Most of the time, you won't need to specify remove, because it is the default. If we were to come up with a pretend config file to represent the default, it would look like this:
 
 ```
 FORMAT dicom
@@ -70,7 +71,7 @@ FORMAT dicom
 %header
 
 ADD PatientIdentityRemoved Yes
-BLANK *
+REMOVE *
 
 ```
 
@@ -94,7 +95,7 @@ FORMAT dicom
 
 ADD PatientIdentityRemoved Yes
 REPLACE PatientID var:id
-REPLACE InstanceSOPUID var:source_id
+REPLACE SOPInstanceUID var:source_id
 ```
 
 And the expectation would be that you provide variables with keys `source_id` and `id` appended to the response from get that is handed to the put action. In the future when we add support for other data types, the config might look something like this (note the added nifti section):
@@ -126,7 +127,7 @@ FORMAT dicom
 
 ADD PatientIdentityRemoved Yes
 REPLACE PatientID var:id
-REPLACE InstanceSOPUID var:source_id
+REPLACE SOPInstanceUID var:source_id
 
 %pixels
 

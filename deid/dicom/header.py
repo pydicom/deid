@@ -28,7 +28,7 @@ from deid.utils import (
     read_json
 )
 
-from .tags import blank_tag
+from .tags import remove_tag
 
 from deid.identifiers.utils import (
     create_lookup
@@ -43,7 +43,6 @@ import tempfile
 
 from .utils import (
     get_func, 
-    perform_addition,
     perform_action,
     get_item_timestamp,
     get_entity_timestamp
@@ -144,21 +143,22 @@ def replace_identifiers(dicom_files,
                         ids=None,
                         deid=None,
                         overwrite=False,
+                        output_folder=None,
                         entity_id=None,
                         item_id=None,
                         force=True,
                         config=None):
 
     '''replace identifiers will replace dicom_files with data from ids based
-    on a combination of a config (default is blank all) and a users preferences (deid)
+    on a combination of a config (default is remove all) and a users preferences (deid)
     :param ids: the ids from get_identifiers, with any changes
     :param dicom_files: the dicom file(s) to extract from
     :param force: force reading the file (default True)
     :param config: if None, uses default in provided module folder
     :param overwrite: if False, save updated files to temporary directory
     '''
-    if overwrite is False:
-        save_base = tempfile.mkdtemp()
+    if output_folder is None and overwrite is False:
+        output_folder = tempfile.mkdtemp()
 
     if config is None:
         config = "%s/config.json" %(here)
@@ -210,38 +210,43 @@ def replace_identifiers(dicom_files,
                             for action in deid['header']:
 
                                  # We've dealt with this field
-                                 fields = [x for x in fields if x != action['field']]
-                                 dicom = perform_action(dicom=dicom,
-                                                        item=items[item],
-                                                        action=action)
+                                 result = perform_action(dicom=dicom,
+                                                         item=items[item],
+                                                         action=action)
+
+                                 if result is not None:
+                                     fields = [x for x in fields if x != action['field']]
+                                     dicom = result
 
 
         # Next perform actions in default config, only if not done
+        # Here we cannot assume the patient has provided any data, so we don't give items
         for action in config['put']['actions']:
             if action['field'] in fields:
-                 fields = [x for x in fields if x != action['field']]
-                 dicom = perform_action(dicom=dicom,
-                                        item=items[item],
-                                        action=action)
+                 result = perform_action(dicom=dicom,
+                                         action=action)
 
-        # Additions
-        for action in config['put']['additions']:
-            if action['name'] in fields:
-                 fields = [x for x in fields if x != action['name']]
-                 dicom = perform_addition(config,dicom)
+                 # Only count as done if we succeed
+                 if result is not None:
+                     fields = [x for x in fields if x != action['field']]
+                     dicom = result
 
-        # Blank remaining fields
+
+        # Remove remaining fields for now
         for field in fields:
-            dicom = blank_tag(dicom,field)
+            dicom = remove_tag(dicom,field)
 
-            
         # Save to file
-        output_dicom = dicom_file
+        dicom_name = os.path.basename(dicom_file)
+        output_dicom = "%s/%s" %(output_folder,dicom_name)
+        dowrite = True
         if overwrite is False:
+            if os.path.exists(output_dicom):
+                bot.error("%s already exists, overwrite set to False. Not writing." %dicom_name)
+                dowrite = False
 
-            #STOPPED HERE - bug is that "blanking" must be specific to data field type
-            output_dicom = "%s/%s" %(save_base,os.path.basename(dicom_file))
-        dicom.save_as(output_dicom)
+        if dowrite:
+            dicom.save_as(output_dicom)
 
         updated_files.append(output_dicom)
        

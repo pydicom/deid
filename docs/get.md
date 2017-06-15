@@ -113,7 +113,7 @@ ids['cookie-47']['1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947']
 ```
 
 ## Save what you need
-Pretty neat! At this point, you would want to use whatever methods that you have to save/store your data, and then call the function to `replace_identifiers`, which is considered a [put](put.md) operation. Remember that if you use the defaults, it won't matter what you specify above (and you won't need to provide anything) because all fields will be blanked. However, if you want to replace the variable `SOPClassUID` and you have specified this in your `deid` configuration file, you would want to replace that here:
+Pretty neat! At this point, you would want to use whatever methods that you have to save/store your data, and then call the function to `replace_identifiers`, which is considered a [put](put.md) operation. Remember that if you use the defaults, it won't matter what you specify above (and you won't need to provide anything) because all fields will be removed. However, if you want to replace the variable `SOPClassUID` and you have specified this in your `deid` configuration file, you would want to replace that here:
 
 ids['cookie-47']['1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947']['SOPInstanceUID'] = 'HalloMoto'
 

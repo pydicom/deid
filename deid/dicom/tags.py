@@ -40,7 +40,8 @@ def add_tag(dicom,field,value):
     :param field: the name of the field to add
     :param value: the value to set, if name is a valid tag
     '''
-    bot.debug("Attempting ADDITION %s to %s." %(dicom.data_element(field),dicom_file))
+    dicom_file = os.path.basename(dicom.filename)
+    bot.debug("Attempting ADDITION of %s to %s." %(field,dicom_file))
 
     dicom = change_tag(dicom,field,value)
  
