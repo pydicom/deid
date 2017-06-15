@@ -2,6 +2,10 @@
 
 This Python module is intended for basic de-identification of medical images, meaning both header and pixel data. For dicom data, we use [pydicom](https://www.github.com/pydicom/pydicom) and for nifti we use [nibabel](http://nipy.org/nibabel/) You can walk through these docs to get started.
 
+## Client
+We provide a simple client for working with the de-identification modules on the command line. If you are interested in this, see our [getting started](client.md) with the client. If you want to integrate the functions into your own applications, keep reading.
+
+
 ## Dicom
 
  - [Loading Data](loading.md): The starting point for any de-identification process is to read in your files from the system. We provide examples of how to do that.

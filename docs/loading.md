@@ -1,76 +1,12 @@
 # Loading Data
 
-Typically, you have two common scenarios when loading a dataset:
-
 ## File Organization
 
-### DICOMDIR
-
-A dicom directory is how some providers store datasets, and one might look like this:
+While they are different file organizations for dicom, we are going to take a simple approach of assuming some top level directory with some number of files within (yes, including subdirectories). For example, if you retrieved your data using a tool like [dcmqr](https://dcm4che.atlassian.net/wiki/display/d2/dcmqr) with a `C-MOVE`, then you might have a flat directory structure. Sometimes the files won't have an extension (for example, being named by a `SOPInstanceUID`, but sometimes they will:
 
 ```
-tree deid/data/example-patient/
-deid/data/example-patient/
-├── IMAGES
-│   └── REF
-│       ├── CT1_UNC
-│       ├── CT2_UNC
-│       ├── MG1_UNC
-│       ├── MR1_UNC
-│       ├── MR2_UNC
-│       ├── MR3_UNC
-│       ├── MR4_UNC
-│       ├── NM1_UNC
-│       ├── RG1_UNC
-│       ├── RG2_UNC
-│       ├── RG3_UNC
-│       ├── SC1_UNC
-│       ├── US1_UNC
-│       ├── VL1_UNC
-│       ├── VL2_UNC
-│       ├── VL3_UNC
-│       ├── VL4_UNC
-│       ├── VL5_UNC
-│       ├── VL6_UNC
-│       └── XA1_UNC
-└── DICOMDIR
-
-```
-
-### Flat
-
-if you retrieved your data using a tool like [dcmqr](https://dcm4che.atlassian.net/wiki/display/d2/dcmqr) with a `C-MOVE`, then you might have a flat directory structure. Sometimes the files won't have an extension:
-
-```
-tree deid/data/example-flat/
-deid/data/example-flat/
-├── CT1_UNC
-├── CT2_UNC
-├── MG1_UNC
-├── MR1_UNC
-├── MR2_UNC
-├── MR3_UNC
-├── MR4_UNC
-├── NM1_UNC
-├── RG1_UNC
-├── RG2_UNC
-├── RG3_UNC
-├── SC1_UNC
-├── US1_UNC
-├── VL1_UNC
-├── VL2_UNC
-├── VL3_UNC
-├── VL4_UNC
-├── VL5_UNC
-├── VL6_UNC
-└── XA1_UNC
-```
-
-and sometimes they will:
-
-```
-tree deid/data/cookie-series/
-deid/data/cookie-series/
+tree deid/data/dicom-cookies/
+deid/data/dicom-cookies/
 ├── image1.dcm
 ├── image2.dcm
 ├── image3.dcm
@@ -87,7 +23,7 @@ It doesn't actually matter so much how your data is structured, you can use any 
 from glob import glob
 import os
 
-base = "deid/data/cookie-series"
+base = "deid/data/dicom-cookies"
 
 dicom_files = glob("%s/*" %base)
 ['deid/data/cookie-series/image4.dcm',

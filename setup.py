@@ -30,8 +30,12 @@ def get_requirements(lookup=None):
     for module in lookup['INSTALL_REQUIRES']:
         module_name = module[0]
         module_meta = module[1]
+
+        # Install exact version
         if "exact_version" in module_meta:
             dependency = "%s==%s" %(module_name,module_meta['exact_version'])
+
+        # Install min version
         elif "min_version" in module_meta:
             if module_meta['min_version'] == None:
                 dependency = module_name
@@ -54,6 +58,7 @@ AUTHOR_EMAIL = lookup['AUTHOR_EMAIL']
 PACKAGE_URL = lookup['PACKAGE_URL']
 KEYWORDS = lookup['KEYWORDS']
 DESCRIPTION = lookup['DESCRIPTION']
+DEPENDENCY_LINKS = lookup['DEPENDENCY_LINKS']
 LICENSE = lookup['LICENSE']
 with open('README.md') as filey:
     LONG_DESCRIPTION = filey.read()
@@ -78,6 +83,7 @@ setup(
     long_description=LONG_DESCRIPTION,
     keywords=KEYWORDS,
     install_requires=INSTALL_REQUIRES,
+    dependency_links = DEPENDENCY_LINKS,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
@@ -100,5 +106,5 @@ setup(
         'Topic :: Utilities'
     ],
 
-    entry_points = {'console_scripts': [ 'deid=deid.app:main' ] }
+    entry_points = {'console_scripts': [ 'deid=deid.main:main' ] }
 )

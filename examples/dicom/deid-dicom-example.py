@@ -1,4 +1,4 @@
-#!/bin/env python3
+#!/usr/bin/env python3
 
 # This is a complete example of doing de-identifiction. For details, see our docs
 # https://pydicom.github.io/deid

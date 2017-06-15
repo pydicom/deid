@@ -26,7 +26,8 @@ SOFTWARE.
 import os
 import sys
 
-ABRT = -4
+ABORT = -5
+CRITICAL = -4
 ERROR = -3
 WARNING = -2
 LOG = -1
@@ -46,7 +47,8 @@ class DeidMessage:
         self.errorStream = sys.stderr
         self.outputStream = sys.stdout
         self.colorize = self.useColor()
-        self.colors = {ABRT:"\033[31m",    # dark red
+        self.colors = {ABORT:"\033[31m",   # dark red 
+                       CRITICAL:"\033[31m", 
                        ERROR: "\033[91m",  # red
                        WARNING:"\033[93m", # dark yellow
                        LOG:"\033[95m",     # purple
@@ -86,7 +88,8 @@ class DeidMessage:
     def emitError(self,level):
         '''determine if a level should print to
         stderr, includes all levels but INFO and QUIET'''
-        if level in [ABRT,
+        if level in [ABORT,
+                     CRITICAL,
                      ERROR,
                      WARNING,
                      VERBOSE,
@@ -202,7 +205,7 @@ class DeidMessage:
         # Only show progress bar for level > min_level
         if self.level > min_level:
             percent = "%5s" %("{0:.1f}").format(percent)
-            output = '\r' + prefix +  " |%s| %s%s %s" % (bar, percent, '%', suffix)            
+            output = '\r' + prefix +  " |%s| %s%s %s" % (bar, percent, '%', suffix)
             sys.stdout.write(output),
             if iteration == total and carriage_return: 
                 sys.stdout.write('\n')
@@ -211,34 +214,37 @@ class DeidMessage:
 
 
     def abort(self,message):
-        self.emit(ABRT,message,'ABRT')        
+        self.emit(ABORT,message,'ABORT')
+
+    def critical(self,message):
+        self.emit(CRITICAL,message,'CRITICAL')
 
     def error(self,message):
-        self.emit(ERROR,message,'ERROR')        
+        self.emit(ERROR,message,'ERROR')
 
     def warning(self,message):
-        self.emit(WARNING,message,'WARNING')        
+        self.emit(WARNING,message,'WARNING')
 
     def log(self,message):
-        self.emit(LOG,message,'LOG')        
+        self.emit(LOG,message,'LOG')
 
     def info(self,message):
-        self.emit(INFO,message)        
+        self.emit(INFO,message)
 
     def verbose(self,message):
-        self.emit(VERBOSE,message,"VERBOSE")        
+        self.emit(VERBOSE,message,"VERBOSE")
 
     def verbose1(self,message):
-        self.emit(VERBOSE,message,"VERBOSE1")        
+        self.emit(VERBOSE,message,"VERBOSE1")
 
     def verbose2(self,message):
-        self.emit(VERBOSE2,message,'VERBOSE2')        
+        self.emit(VERBOSE2,message,'VERBOSE2')
 
     def verbose3(self,message):
-        self.emit(VERBOSE3,message,'VERBOSE3')        
+        self.emit(VERBOSE3,message,'VERBOSE3')
 
     def debug(self,message):
-        self.emit(DEBUG,message,'DEBUG')        
+        self.emit(DEBUG,message,'DEBUG')
 
     def is_quiet(self):
         '''is_quiet returns true if the level is under 1
@@ -251,14 +257,40 @@ class DeidMessage:
 def get_logging_level():
     '''get_logging_level will configure a logging to standard out based on the user's
     selected level, which should be in an environment variable called
-    SOM_MESSAGELEVEL. if SOM_MESSAGELEVEL is not set, the maximum level
+    MESSAGELEVEL. if MESSAGELEVEL is not set, the maximum level
     (5) is assumed (all messages).     
     '''
-    return int(os.environ.get("SOM_MESSAGELEVEL",5))
-    
+    try:
+        level = int(os.environ.get("MESSAGELEVEL", DEBUG))
+
+    except ValueError:
+
+        level = os.environ.get("MESSAGELEVEL", DEBUG)
+        if level == "CRITICAL":
+            return CRITICAL
+        elif level == "ABORT":
+            return ABORT
+        elif level == "ERROR":
+            return ERROR
+        elif level == "WARNING":
+            return WARNING
+        elif level == "LOG":
+            return LOG
+        elif level == "INFO":
+            return INFO
+        elif level == "QUIET":
+            return QUIET
+        elif level.startswith("VERBOSE"):
+            return VERBOSE3
+        elif level == "LOG":
+            return LOG
+        elif level == "DEBUG":
+            return DEBUG
+     
+    return level
 
 def get_user_color_preference():
-    COLORIZE = os.environ.get('SOM_COLORIZE',None)
+    COLORIZE = os.environ.get('DEID_COLORIZE',None)
     if COLORIZE is not None:
         COLORIZE = convert2boolean(COLORIZE)
     return COLORIZE

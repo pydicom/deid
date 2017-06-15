@@ -32,7 +32,7 @@ import re
 import requests
 
 import shutil
-import simplejson
+import json
 import som.__init__ as hello
 from deid.logger import bot
 import sys
@@ -113,10 +113,11 @@ def write_json(json_obj,filename,mode="w",print_pretty=True):
     '''
     with open(filename,mode) as filey:
         if print_pretty == True:
-            filey.writelines(simplejson.dumps(json_obj, indent=4, separators=(',', ': ')))
+            filey.writelines(json.dumps(json_obj, indent=4, separators=(',', ': ')))
         else:
-            filey.writelines(simplejson.dumps(json_obj))
+            filey.writelines(json.dumps(json_obj))
     return filename
+
 
 
 def read_file(filename,mode="r"):

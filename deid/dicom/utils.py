@@ -24,7 +24,10 @@ SOFTWARE.
 
 
 import dateutil.parser
-from deid.identifiers.standards import valid_actions
+from deid.config.standards import (
+    actions as valid_actions
+)
+
 from deid.logger import bot
 from pydicom import read_file
 from pydicom._dicom_dict import DicomDictionary
@@ -218,4 +221,3 @@ def get_entity_timestamp(dicom):
     item_date = dicom.get("PatientBirthDate")
     timestamp = dateutil.parser.parse("%s" %(item_date))
     return timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
-

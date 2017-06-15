@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 AUTHOR = 'Vanessa Sochat'
 AUTHOR_EMAIL = 'vsochat@stanford.edu'
 NAME = 'deid'
@@ -43,6 +43,7 @@ INSTALL_REQUIRES = (
     ('python-dateutil',{'min_version': None }),
     ('urllib3',{'min_version': "1.15" }),
     ('validator.py',{'min_version': None })
- 
-
+    
 )
+
+DEPENDENCY_LINKS = ['https://github.com/pydicom/pydicom/tarball/master']

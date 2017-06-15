@@ -36,9 +36,7 @@ def get_dataset(dataset=None):
     to retrieve online datasets.
     '''
     here = get_installdir()
-    valid_datasets = {'dicom-patient':'%s/data/dicom-patient' %here,
-                      'dicom-flat':'%s/data/dicom-flat' %here,
-                      'dicom-cookies':'%s/data/dicom-cookies' %here}
+    valid_datasets = {'dicom-cookies':'%s/data/dicom-cookies' %here}
 
     if dataset is not None:
 

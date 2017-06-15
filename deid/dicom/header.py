@@ -31,7 +31,8 @@ from deid.utils import (
 from .tags import remove_tag
 
 from deid.identifiers.utils import (
-    create_lookup
+    create_lookup,
+    load_identifiers
 )
 
 from deid.config import load_deid
@@ -43,9 +44,7 @@ import tempfile
 
 from .utils import (
     get_func, 
-    perform_action,
-    get_item_timestamp,
-    get_entity_timestamp
+    perform_action
 )
 
 import os
@@ -199,6 +198,12 @@ def replace_identifiers(dicom_files,
 
         # Is the entity_id in the data structure given to de-identify?
         if ids is not None:
+
+            # Python 3 seems to load arg automatically?
+            if not isinstance(ids,dict):
+                if ids.endswith('.pkl'):
+                    ids = load_identifiers(ids)
+
             if entity in ids:
 
                 items = ids[entity]
