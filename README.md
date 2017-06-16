@@ -12,7 +12,7 @@ These are basic Python based tools for working with medical images and text, spe
 <script src="assets/js/asciinema-player.js"></script>
 <link rel="stylesheet" href="assets/css/asciinema-player.css"/>
 
-<asciinema-player src="assets/asciicast/deid.json" poster="data:text/plain,Intro to deid client" title="Introduction to the deid client" author="vsochat@stanford.edu" cols="125" rows="20" speed="2.0" theme="asciinema"></asciinema-player>
+<asciinema-player src="assets/asciicast/deid.json" poster="data:text/plain,Intro to deid client" title="Introduction to the deid client" author="vsochat@stanford.edu" cols="140" rows="15" speed="2.0" theme="asciinema"></asciinema-player>
 
 ## Installation
 For the stable release, install via pip:
