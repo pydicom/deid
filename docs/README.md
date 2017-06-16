@@ -1,9 +1,16 @@
 # De-identifiction (deid)
 
+<script src="assets/js/asciinema-player.js"></script>
+<link rel="stylesheet" href="assets/css/asciinema-player.css"/>
+
+
 This Python module is intended for basic de-identification of medical images, meaning both header and pixel data. For dicom data, we use [pydicom](https://www.github.com/pydicom/pydicom) and for nifti we use [nibabel](http://nipy.org/nibabel/) You can walk through these docs to get started.
 
 ## Client
 We provide a simple client for working with the de-identification modules on the command line. If you are interested in this, see our [getting started](client.md) with the client. If you want to integrate the functions into your own applications, keep reading.
+
+<asciinema-player src="assets/asciicast/deid.json" poster="data:text/plain,Intro to deid client" title="Introduction to the deid client" author="vsochat@stanford.edu" cols="115" rows="25" speed="2.0" theme="asciinema">
+</asciinema-player>
 
 
 ## Dicom
