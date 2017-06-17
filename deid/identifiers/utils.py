@@ -30,6 +30,8 @@ import pickle
 import re
 import sys
 import tempfile
+import dateutil.parser
+
 
 def create_lookup(response,lookup_field=None):
     '''create_identifier_lookup will take a response, which should be a list
@@ -80,3 +82,14 @@ def load_identifiers(identifiers_file):
     bot.info("Loading %s" %identifiers_file)
     result = pickle.load(open(identifiers_file,"rb"))
     return result
+
+
+def get_timestamp(item_date,item_time=None):
+    '''get_timestamp will return a UTC timestamp with some date and
+    (optionall) time.
+    '''
+    if item_time is None:
+        item_time = ""
+    timestamp = dateutil.parser.parse("%s%s" %(item_date,item_time))
+    return timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
+

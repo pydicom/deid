@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="assets/css/asciinema-player.css"/>
 
 
-This Python module is intended for basic de-identification of medical images, meaning both header and pixel data. For dicom data, we use [pydicom](https://www.github.com/pydicom/pydicom) and for nifti we use [nibabel](http://nipy.org/nibabel/) You can walk through these docs to get started.
+This Python module is intended for basic coding of medical images, which means replacing an identifier with a stable alias. We do this for both header and pixel data. For dicom data, we use [pydicom](https://www.github.com/pydicom/pydicom) and for nifti we use [nibabel](http://nipy.org/nibabel/) You can walk through these docs to get started.
 
 ## Client
 We provide a simple client for working with the de-identification modules on the command line. If you are interested in this, see our [getting started](client.md) with the client. If you want to integrate the functions into your own applications, keep reading.

@@ -22,8 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-
-import dateutil.parser
 from deid.config.standards import (
     actions as valid_actions
 )
@@ -35,6 +33,7 @@ from pydicom.tag import Tag
 from deid.utils import recursive_find
 from .tags import *
 from .validate import validate_dicoms
+from deid.identifiers import get_timestamp
 import os
 import re
 import sys
@@ -201,23 +200,29 @@ def parse_value(item,value):
 
 # Timestamps
 
-def get_item_timestamp(dicom):
-    '''get_item_timestamp will return the UTC time for an instance.
+def get_entity_timestamp(dicom,date_field=None):
+    '''get_entity_timestamp will return a timestamp from the dicom
+    header based on the PatientBirthDate (default) if a field is
+    not provided.'''
+    if date_field is None:
+        date_field = "PatientBirthDate"
+    item_date = dicom.get(field)
+    return get_timestamp(item_date=item_date)
+
+
+def get_item_timestamp(dicom,date_field=None,time_field=None):
+    '''get_dicom_timestamp will return the UTC time for an instance.
     This is derived from the InstanceCreationDate and InstanceCreationTime
     If the Time is not set, only the date is used.
     # testing function https://gist.github.com/vsoch/23d6b313bd231cad855877dc544c98ed
     '''
-    item_time = dicom.get("InstanceCreationTime","")
-    item_date = dicom.get("InstanceCreationDate")
-    timestamp = dateutil.parser.parse("%s%s" %(item_date,item_time))
-    return timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
+    if time_field is None:
+        time_field = "InstanceCreationTime"
+    if date_field is None:
+        date_field = "InstanceCreationDate"
 
+    item_time = dicom.get(time_field,"")
+    item_date = dicom.get(date_field)
 
-def get_entity_timestamp(dicom):
-    '''get_entity_timestamp will return a UTC timestamp for the entity,
-    derived from the patient's birthdate. In the config.json, this is
-    set by setting type=func, and value=get_entity_timestamp
-    '''
-    item_date = dicom.get("PatientBirthDate")
-    timestamp = dateutil.parser.parse("%s" %(item_date))
-    return timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
+    return get_timestamp(item_date=item_date,
+                         item_time=item_time)

@@ -6,12 +6,12 @@ The de-identification process has three parts:
  - [get](get.md) current fields (if you need to use them to look up replacements, etc)
  - [put](put.md) (possibly updated) identifiers back into the data, and deidentify fully.
 
-This document will talk about the first step of this process, how you can configure rules for the software.
+This document will talk about the first step of this process, how you can configure rules for the software. If you are interested in the command line client for these commands (and not functions) you should see [the client](client.md).
 
 ## Defaults
 The application does the following, by default, taking a conservative de-identification process:
 
- 1. All fields considered HIPAA are returned to you for inspection.
+ 1. All fields are returned to you for inspection.
  2. You can replace none or all of these fields with your identifiers of choice
  3. The data will be rewritten with your changes, and all other fields will be removed.
  4. A header field will be added that says the data has been de-identified.
@@ -24,10 +24,10 @@ However, you might want to do either of the following:
 
 We will show you a working example of the above as you continue this walkthrough. For now, let's talk about a few options, and show examples of settings. The settings that you choose depend on your use case, and we strongly suggest that you take the most conservative approach that is possible for your use case. 
 
-### Option 1. Blanked Header
+### Option 1. Scraped Header
 In the case that you get a response after extraction and replace no fields, the header fields will be completely removed, other than a field to indicate this has been done (recommended for most). 
 
-### Option 2. Blanked Header with Study identifier
+### Option 2. Scraped Header with Study identifier
 If you need to save some identifier as a lookup, we recommend a conservative approach that leaves the minimal required (de-identified) study identifier eg, (PatientID) is replaced with (StudyID), removing the rest. Any identifiers that you might want to save should be kept separately from where you intend to release the data, and this of course will require IRB approval.
 
 
@@ -49,7 +49,45 @@ REPLACE id
 REMOVE ReferringPhysicianName
 ```
 
-In the above example, we specify the commands are intended to use the dicom module by first `FORMAT` label. This is a message to the application that the following commands are intended to come from this exact module folder. We then know that we are dealing with functions relevant to the header of the image by way of the `%header` section. The section then consists of a series of commands, each specifying an action to be taken on a particular field. The allowed actions are the follow:
+In the above example, we tell the application exactly how to deal with header fields for dicom. We do that by way of sections (the lines that begin with `%` like `%header` and actions (eg, `KEEP`). Each of these variables will be discussed in detail, next.
+
+### Format
+The first thing that should appear in a recipe file is the `FORMAT` label. This is a message to the application that the following commands are intended for dicom files, and the name `dicom` matches exactly with the module we have provided, [dicom](../deid/dicom). 
+
+
+### Sections
+Each section corresponds to a part of the data (eg, header or pixels) and then defines actions that can be taken for it.
+
+#### Actions
+Although different sections can have their own actions defined, for simplicity many sections share the same set:
+
+ - ADD
+ - BLANK
+ - KEEP
+ - REMOVE
+ - REPLACE
+
+And the command in the file will either have the format of `<ACTION> <FIELD> <VALUE>` or in the case of binary actions, just `<ACTION> <VALUE>`. For example, both of the following are valid:
+
+```
+#<ACTION> <FIELD> <VALUE>
+ADD PatientIdentityRemoved Yes
+#<ACTION> <FIELD>
+KEEP PixelData
+```
+
+In the case that your need to do something like "replace FIELD with my other variable," then you want to format the value to tell the application that it should find the field in the data structure you pass it (discussed later). That format looks like this:
+
+```
+#<ACTION> <FIELD> <VALUE>
+REPLACE PatientID var:suid
+```
+
+In the above, we tell the software to replace the field `PatientID` with whatever value is defined under variable `suid`. Now let's talk about how the actions are relevant to different sections, first the header.
+
+
+#### Header
+We know that we are dealing with functions relevant to the header of the image by way of the `%header` section. This section can have a series of commands called actions that tell the software how to deal with different fields. For the header section, the following actions are allowed, and each is specific to an action to be taken on a header field/value:
 
  - ADD: Add a new field to the dataset(s). If the value is a string, it's assumed to be the value that is desired to be added. If the value is in the form `var:OrdValue` then the application will expect to find the value to replace in a variable in the request called `OrdValue` (more on this later).
  - BLANK: If you want to blank a field instead of remove it, use this option. Note that there is a [bug](https://github.com/pydicom/pydicom/issues/372) related to how to properly blank fields, so in some cases you might see an error. For this reason I (@vsoch) have chosen to make the default removing for now.
@@ -72,9 +110,69 @@ FORMAT dicom
 
 ADD PatientIdentityRemoved Yes
 REMOVE *
-
+KEEP PixelData
+KEEP SamplesPerPixel
+KEEP Columns
+KEEP Rows
 ```
 
+The above would remove everything except for the pixel data, and a few fields that are relevant to its dimensions. It would add a field to indicate the patient's identity was removed.
+
+#### Pixels
+The `%pixels` section has not been implemented yet, but will allow for specification of how to de-identify pixel data.
+
+#### Labels
+The `%labels` section is a way for the user to supply custom commands to an application that aren't relevant to the header or pixels. For example, If I wanted to carry around a version or a maintainer address, I could do that as follows:
+
+```
+FORMAT dicom
+
+%header
+
+ADD PatientIdentityRemoved Yes
+REPLACE PatientID cookie-monster
+
+%labels
+ADD MAINTAINER vsochat@stanford.edu
+ADD VERSION 1.0
+```
+
+As you can see, the labels follow the same action commands as before, in the case that the application needs them. In case you are interested in what the application sees when it reads the file above (if you are a developer) it looks like this:
+
+```
+{
+   "labels":[
+      {
+         "field":"MAINTAINER",
+         "value":"vsochat@stanford.edu",
+         "action":"ADD"
+      },
+      {
+         "field":"VERSION",
+         "value":"1.0",
+         "action":"ADD"
+      }
+   ],
+
+   "format":"dicom",
+   "header":[
+      {
+         "field":"PatientIdentityRemoved",
+         "value":"Yes",
+         "action":"ADD"
+      },
+      {
+         "field":"PatientID",
+         "value":"cookie-monster",
+         "action":"REPLACE"
+      }
+   ]
+}
+```
+
+And you are free to map the actions (eg, `ADD`, `REMOVE`) onto whatever functionality is relevant to your application, or just skip the action entirely and use the fields and values.
+
+## Examples
 The suggested approach that you should take, replacing the main entity data with some identifier that you've selected, would look something like this:
 
 ```
@@ -86,7 +184,7 @@ ADD PatientIdentityRemoved Yes
 REPLACE PatientID var:id
 ```
 
-If you wanted to also replace the image (InstanceSOPUID) with an identifier, that might look like this:
+If you wanted to also replace the image (SOPInstanceUID) with an identifier, that might look like this:
 
 ```
 FORMAT dicom
@@ -98,7 +196,12 @@ REPLACE PatientID var:id
 REPLACE SOPInstanceUID var:source_id
 ```
 
-And the expectation would be that you provide variables with keys `source_id` and `id` appended to the response from get that is handed to the put action. In the future when we add support for other data types, the config might look something like this (note the added nifti section):
+And the expectation would be that you provide variables with keys `source_id` and `id` appended to the response from get that is handed to the put action. 
+
+## Future Additions
+
+### Format nifti
+In the future when we add support for other data types, the config might look something like this (note the added nifti section):
 
 ```
 FORMAT dicom
@@ -118,6 +221,7 @@ REPLACE PatientID var:id
 REPLACE InstanceSOPUID var:source_id
 ```
 
+### Section pixels
 and when we have procedures (functions) to perform on data, for example, scrubbing pixels, those will be specified in a separate `%pixels` section: 
 
 ```
@@ -131,7 +235,7 @@ REPLACE SOPInstanceUID var:source_id
 
 %pixels
 
-RUN clean_pixels
+ADD clean_pixels
 ```
 
 In the above example, the function `clean_pixels` would be expected to be importable from the dicom module:

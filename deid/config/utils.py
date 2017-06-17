@@ -139,7 +139,7 @@ def parse_action(section,line,config):
     if section not in sections:
         bot.error("%s is not a valid section." %section)
         sys.exit(1)
-
+            
     if not line.upper().startswith(actions):
         bot.error("%s is not a valid action line." %line)
         sys.exit(1)
@@ -170,7 +170,7 @@ def parse_action(section,line,config):
 
     # Actions that don't require a value
     elif action in [ "BLANK" "KEEP", "REMOVE" ]:
-        bot.debug("Adding %s" %line)
+        bot.debug("%s: adding %s" %(section,line))
         config[section].append({ "action":action,
                                  "field":field })
 
