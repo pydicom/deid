@@ -58,7 +58,7 @@ class TestIdentifiers(unittest.TestCase):
 
         print("Case 2: Date and no time")
         ts = get_timestamp(item_date='12/12/2012')
-        self.assertEqual(ts,'1212-12-12T00:00:00Z')
+        self.assertEqual(ts,'2012-12-12T00:00:00Z')
 
 
 if __name__ == '__main__':
