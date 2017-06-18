@@ -11,6 +11,7 @@ python:
 
 install:
   - pip install pylint
+  - git clone https://github.com/pydicom/pydicom && cd pydicom && python setup.py install
   - cd $TRAVIS_BUILD_DIR/
   - python setup.py sdist
   - python setup.py install
