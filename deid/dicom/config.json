@@ -12,13 +12,11 @@
 
    "put":{
 
+          "default": "BLANK",
           "actions":[
  
               {"action":"ADD","field":"PatientIdentityRemoved","value": "Yes"},
-              {"action":"KEEP","field":"PixelData"},
-              {"action":"KEEP","field":"SamplesPerPixel"},
-              {"action":"KEEP","field":"Columns"},
-              {"action":"KEEP","field":"Rows"}
+              {"action":"KEEP","field":"PixelData"}
 
       ]
    }

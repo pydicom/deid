@@ -103,9 +103,16 @@ def update_tag(dicom,field,value):
 
 def blank_tag(dicom,field):
     '''blank tag calls update_tag with value set to an
-    empty string.
+    empty string. If the tag cannot be found, warns the user
+    and doesn't touch (in case of imaging data, or not found)
     '''
-    return update_tag(dicom,field,"")
+    # We cannot blank VR types of US or SS
+    element = dicom.data_element(field)
+    if element is not None:
+        if element.VR not in ['US','SS']:
+            return update_tag(dicom,field,"")
+        bot.warning('Cannot determine tag for %s, skipping blank.' %field)
+    return dicom
 
 
 def remove_tag(dicom,field):

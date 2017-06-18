@@ -35,7 +35,9 @@ from deid.identifiers.utils import (
     load_identifiers
 )
 
-from deid.config import load_deid
+from deid.config import (
+    load_deid
+)
 
 from pydicom import read_file
 from pydicom.errors import InvalidDicomError
@@ -179,6 +181,16 @@ def replace_identifiers(dicom_files,
     if item_id is None:
         item_id = config['get']['ids']['item']
     
+    # Is a default specified?
+    default = "REMOVE"
+    if "default" in config['put']:
+        config_default = config['put']['default'].upper()
+        if config_default in ["REMOVE","BLANK"]:
+            default = config_default
+        else:
+            bot.warning("%s specified as default, but is invalid" %(config_default))
+    bot.debug("Default action is %s" %default)
+
 
     # Parse through dicom files, update headers, and save
     updated_files = []
@@ -191,7 +203,7 @@ def replace_identifiers(dicom_files,
         # Read in / calculate preferred values
         entity = dicom.get(entity_id)
         item = dicom.get(item_id)
-        fields = dicom.dir()
+        fields = [x for x in dicom.dir() if dicom.data_element(x).VR not in ['US','SS']]
 
         bot.debug('entity id: %s' %(entity))
         bot.debug('item id: %s' %(item))
@@ -237,9 +249,11 @@ def replace_identifiers(dicom_files,
                      dicom = result
 
 
-        # Remove remaining fields for now
+        # Remaining fields must be blanked or removed
         for field in fields:
-            dicom = remove_tag(dicom,field)
+            dicom = perform_action(dicom=dicom,
+                                  action={'action': default, 
+                                          'field': field })
 
         # Save to file
         dicom_name = os.path.basename(dicom_file)
