@@ -2,7 +2,7 @@
 
 Deidentify medical images in Python.
 
-**under development!**
+[![Build Status](https://travis-ci.org/pydicom/deid.svg?branch=master)](https://travis-ci.org/pydicom/deid)
 
 Please see our [Documentation](https://pydicom.github.io/deid/)
 
