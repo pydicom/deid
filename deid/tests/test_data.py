@@ -1,7 +1,11 @@
-'''
-utils.py: helper functions for working with dicom module
+#!/usr/bin/env python
 
-Copyright (c) 2017 Vanessa Sochat
+'''
+Test data functions
+
+The MIT License (MIT)
+
+Copyright (c) 2016-2017 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,31 +24,36 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 '''
 
-from deid.logger import bot
-from pydicom import read_file
-import sys
+import unittest
+import tempfile
+import shutil
+import json
+import os
 
-def validate_dicoms(dcm_files,force=False):
-    '''validate dicoms will test opening one or more dicom files, and return a list
-    of valid files.
-    :param dcm_files: one or more dicom files to test'''
-    if not isinstance(dcm_files,list):
-        dcm_files = [dcm_files]
+class TestUtils(unittest.TestCase):
 
-    valids = []
-
-    bot.debug("Checking %s dicom files for validation." %(len(dcm_files)))
-    for dcm_file in dcm_files:
-
-        try:
-            with open(dcm_file, 'rb') as filey:
-                dataset = read_file(filey, force=force)
-            valids.append(dcm_file)
-        except:
-            bot.warning('Cannot read input file {0!s}, skipping.'.format(dcm_file))
+    def setUp(self):
+        print("\n######################START######################")
+        
+    def tearDown(self):
+        print("\n######################END########################")
 
 
-    bot.info("Found %s valid dicom files" %(len(valids)))
-    return valids
+    def test_get_dataset(self):
+        '''test_get_dataset will make sure we can load provided datasets
+        '''
+        print("Case 1: Ask for existing dataset.")
+        from deid.data import get_dataset
+        dataset = get_dataset('dicom-cookies')        
+        self.assertTrue(os.path.exists(dataset))        
+
+        print("Case 2: Ask for non existing dataset")
+        dataset = get_dataset('other-cookies')        
+        self.assertEqual(dataset,None)        
+
+
+if __name__ == '__main__':
+    unittest.main()

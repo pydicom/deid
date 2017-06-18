@@ -43,10 +43,12 @@ import sys
 #########################################################################
 
 
-def get_files(contenders,check=True,pattern=None):
+def get_files(contenders,check=True,pattern=None,force=False):
     '''get_dcm_files will take a list of single dicom files or directories,
     and return a single list of complete paths to all files
     :param pattern: A pattern to use with fnmatch. If None, * is used
+    :param force: force reading of the files, if some headers invalid.
+    Not recommended, as many non-dicom will come through
     '''
     if not isinstance(contenders,list):
         contenders = [contenders]
@@ -63,7 +65,7 @@ def get_files(contenders,check=True,pattern=None):
             dcm_files.append(contender)
 
     if check:
-        dcm_files = validate_dicoms(dcm_files)
+        dcm_files = validate_dicoms(dcm_files,force=force)
     return dcm_files
 
 
@@ -128,20 +130,14 @@ def _perform_action(dicom,field,action,value=None,item=None):
  
         # Code the value with something in the response
         elif action == "REPLACE":
-            if item is None:
-                bot.error("An item must be provided to perform replace, skipping.")
-                return result
- 
-            if field in item:
-      
-                value = parse_value(item,value)
-                if value is not None:
+            value = parse_value(item,value)
+            if value is not None:
 
-                    # If we make it here, do the replacement
-                    done = True
-                    result = update_tag(dicom,
-                                        field=field,
-                                        value=value)
+                # If we make it here, do the replacement
+                done = True
+                result = update_tag(dicom,
+                                    field=field,
+                                    value=value)
 
 
         # Do nothing. Keep the original
@@ -159,16 +155,10 @@ def _perform_action(dicom,field,action,value=None,item=None):
                                                   field,
                                                   dicom_file))
 
-
     elif action == "ADD":
-        if item is None:
-            bot.error("An item must be provided to perform replace, skipping.")
-            return result
- 
         value = parse_value(item,value)
         if value is not None:
             result = add_tag(dicom,field,value) 
-
 
     else:
         bot.warning('Field %s is not present in %s' %(field,dicom_file))
@@ -206,7 +196,7 @@ def get_entity_timestamp(dicom,date_field=None):
     not provided.'''
     if date_field is None:
         date_field = "PatientBirthDate"
-    item_date = dicom.get(field)
+    item_date = dicom.get(date_field)
     return get_timestamp(item_date=item_date)
 
 

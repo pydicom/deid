@@ -1,0 +1,22 @@
+language: python
+
+sudo: true
+
+os: linux
+
+language: python
+python:
+  - "2.7"
+  - "3.5"
+
+install:
+  - pip install pylint
+  - cd $TRAVIS_BUILD_DIR/
+  - cd $TRAVIS_BUILD_DIR && pip install -r requirements.txt
+  - cd $TRAVIS_BUILD_DIR && pip3 install -r requirements.txt
+  - python setup.py sdist
+  - python setup.py install
+  - pylint --version
+
+script:
+  - python -m unittest discover -s $TRAVIS_BUILD_DIR/deid/tests/ -p '[t|T]est*.py'

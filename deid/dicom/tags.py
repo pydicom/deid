@@ -93,8 +93,10 @@ def change_tag(dicom,field,value):
 
 def update_tag(dicom,field,value):
     '''update tag will update a value in the header, if it exists
-    if not, nothing is added. If the user wants to add a value
-    (that might not exist) the function add_tag should be used
+    if not, nothing is added. This check is the only difference
+    between this function and change_tag. 
+    If the user wants to add a value (that might not exist) 
+    the function add_tag should be used
     '''
     if field in dicom:
         dicom = change_tag(dicom,field,value)

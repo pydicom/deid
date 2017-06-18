@@ -88,6 +88,10 @@ def get_timestamp(item_date,item_time=None):
     '''get_timestamp will return a UTC timestamp with some date and
     (optionall) time.
     '''
+    if item_date in ['',None]:
+        bot.warning("No date in header, cannot create timestamp.")
+        return None
+
     if item_time is None:
         item_time = ""
     timestamp = dateutil.parser.parse("%s%s" %(item_date,item_time))
