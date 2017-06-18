@@ -51,18 +51,17 @@ The entire data structure isn't very large, and can be shown to you:
           "actions":[
  
               {"action":"ADD","field":"PatientIdentityRemoved","value": "Yes"},
-              {"action":"KEEP","field":"PixelData"},
-              {"action":"KEEP","field":"SamplesPerPixel"},
-              {"action":"KEEP","field":"Columns"},
-              {"action":"KEEP","field":"Rows"}
 
       ]
    }
 }
 ```
 
+Note that we don't need to specify the datatypes like "PixelData" or "Columns", or other fields related to the data. These fields are by default kept, as they are specific to the pixel data. For details see [this issue](https://github.com/pydicom/pydicom/issues/372).
+
+
 ### Get
-If you read the details about get (usage for the client) see [get](get.md), you probably see some commonality. We have identified default fields in the header for entity and item under `['get']['ids']` (both which can be altered by the user via a function call) and then we skip over PixelData, because we don't want to return that for inspection, or have it in the list to include. If there are others you don't want returned, then add them to the skip list. Have caution that the user won't see the field returned, and likely won't ask for any action to be taken, meaning it will by default be removed.
+If you read the details about get (usage for the client) see [get](get.md), you probably see some commonality. We have identified default fields in the header for entity and item under `['get']['ids']` (both which can be altered by the user via a function call) and then we skip over PixelData, because we don't want to return that for inspection, or have it in the list to include. If there are others you don't want returned, then add them to the skip list. Have caution that the user won't see the field returned, and likely won't ask for any action to be taken, meaning it will by default be blanked.
 
 
 ### Put

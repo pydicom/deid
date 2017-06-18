@@ -13,7 +13,7 @@ The application does the following, by default, taking a conservative de-identif
 
  1. All fields are returned to you for inspection.
  2. You can replace none or all of these fields with your identifiers of choice
- 3. The data will be rewritten with your changes, and all other fields will be removed.
+ 3. The data will be rewritten with your changes, and all other fields will be blanked.
  4. A header field will be added that says the data has been de-identified.
 
 However, you might want to do either of the following:
@@ -25,7 +25,8 @@ However, you might want to do either of the following:
 We will show you a working example of the above as you continue this walkthrough. For now, let's talk about a few options, and show examples of settings. The settings that you choose depend on your use case, and we strongly suggest that you take the most conservative approach that is possible for your use case. 
 
 ### Option 1. Scraped Header
-In the case that you get a response after extraction and replace no fields, the header fields will be completely removed, other than a field to indicate this has been done (recommended for most). 
+In the case that you get a response after extraction and replace no fields, the header fields will be completely blanked, other than a field to indicate this has been done (recommended for most), and fields related to the pixel data ([VR types SS and US](https://github.com/pydicom/pydicom/issues/372)).
+
 
 ### Option 2. Scraped Header with Study identifier
 If you need to save some identifier as a lookup, we recommend a conservative approach that leaves the minimal required (de-identified) study identifier eg, (PatientID) is replaced with (StudyID), removing the rest. Any identifiers that you might want to save should be kept separately from where you intend to release the data, and this of course will require IRB approval.
@@ -90,10 +91,10 @@ In the above, we tell the software to replace the field `PatientID` with whateve
 We know that we are dealing with functions relevant to the header of the image by way of the `%header` section. This section can have a series of commands called actions that tell the software how to deal with different fields. For the header section, the following actions are allowed, and each is specific to an action to be taken on a header field/value:
 
  - ADD: Add a new field to the dataset(s). If the value is a string, it's assumed to be the value that is desired to be added. If the value is in the form `var:OrdValue` then the application will expect to find the value to replace in a variable in the request called `OrdValue` (more on this later).
- - BLANK: If you want to blank a field instead of remove it, use this option. Note that there is a [bug](https://github.com/pydicom/pydicom/issues/372) related to how to properly blank fields, so in some cases you might see an error. For this reason I (@vsoch) have chosen to make the default removing for now.
+ - BLANK: If you want to blank a field instead of remove it, use this option. This is the default action.
  - KEEP: implies that the value should not be replaced, removed, or blanked.
  - REPLACE: implies that the value should be replaced by a string, or a variable in the format `var:FieldName`.
- - REMOVE: completely remove the field from the dataset. This is the default action.
+ - REMOVE: completely remove the field from the dataset.
 
 For the above, given that there are conflicting commands, the more conservative is given preference. For example:
 
