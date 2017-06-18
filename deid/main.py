@@ -47,7 +47,7 @@ def get_parser():
                         help="show deid software version", 
                         default=False, action='store_true')
 
-    parser.add_argument("--print","-p", dest='print', 
+    parser.add_argument("--print","-p", dest='do_print', 
                         help="if set, only print output to the screen.", 
                         default=False, action='store_true')
 
@@ -105,8 +105,9 @@ def main():
         sys.exit(0)
 
     output_folder = args.outfolder
-    if output_folder is None and args.print is False:
-        output_folder = tempfile.mkdtemp()
+    if output_folder is None:
+        if args.do_print is False:
+            output_folder = tempfile.mkdtemp()
 
     # Initialize the message bot, with level above
     from deid.logger import bot
@@ -154,7 +155,7 @@ def main():
     if do_get is True:
         from deid.dicom import get_identifiers
         ids = get_identifiers(dicom_files)
-        if args.print is True:
+        if args.do_print is True:
             print(ids)
         else:
             from deid.identifiers import save_identifiers
