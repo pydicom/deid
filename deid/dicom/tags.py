@@ -166,13 +166,3 @@ def has_private(dicom):
         return True
     return False
 
-
-
-def remove_private(dicom):
-    '''remove_private is a silly wrapper for 
-    dicom.remove_private_tags, in the case that we
-    want to add functionality on top of it.
-    '''
-    dicom.remove_private_tags()
-    return dicom
-

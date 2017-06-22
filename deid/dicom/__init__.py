@@ -1,6 +1,7 @@
 from .header import (
     get_identifiers,
-    replace_identifiers
+    replace_identifiers,
+    remove_private_identifiers
 )
 
 from .utils import (

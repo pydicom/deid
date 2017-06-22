@@ -34,6 +34,7 @@ from deid.utils import recursive_find
 from .tags import *
 from .validate import validate_dicoms
 from deid.identifiers import get_timestamp
+import tempfile
 import os
 import re
 import sys
@@ -68,6 +69,26 @@ def get_files(contenders,check=True,pattern=None,force=False):
         dcm_files = validate_dicoms(dcm_files,force=force)
     return dcm_files
 
+
+
+def save_dicom(dicom,dicom_file,output_folder=None,overwrite=False):
+    '''save_dicom will save a dicom file to an output folder,
+    making sure to not overwrite unless the user has enforced it
+    '''
+    if output_folder is None and overwrite is False:
+        output_folder = tempfile.mkdtemp()
+
+    dicom_name = os.path.basename(dicom_file)
+    output_dicom = "%s/%s" %(output_folder,dicom_name)
+    dowrite = True
+    if overwrite is False:
+        if os.path.exists(output_dicom):
+            bot.error("%s already exists, overwrite set to False. Not writing." %dicom_name)
+            dowrite = False
+
+    if dowrite:
+        dicom.save_as(output_dicom)
+    return output_dicom
 
 
 #########################################################################

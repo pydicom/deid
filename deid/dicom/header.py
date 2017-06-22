@@ -28,7 +28,9 @@ from deid.utils import (
     read_json
 )
 
-from .tags import remove_tag
+from .tags import (
+    remove_tag
+)
 
 from deid.identifiers.utils import (
     create_lookup,
@@ -46,6 +48,7 @@ import tempfile
 
 from .utils import (
     get_func, 
+    save_dicom,
     perform_action
 )
 
@@ -139,28 +142,55 @@ def get_identifiers(dicom_files,force=True,config=None,
     return ids
 
 
+def remove_private_identifiers(dicom_files,
+                               save=True,
+                               overwrite=False,
+                               output_folder=None,
+                               force=True):
+
+    '''remove_private_identifiers is a wrapper for the 
+    simple call to dicom.remove_private_tags, it simply
+    reads in the files for the user and saves accordingly
+    '''
+    updated_files = []
+
+    for dicom_file in dicom_files:
+        dicom = read_file(dicom_file,force=force)
+        dicom.remove_private_tags()
+        dicom_name = os.path.basename(dicom_file)
+        bot.debug("Removed private identifiers for %s" %dicom_file)
+
+        if save:
+            dicom = save_dicom(dicom=dicom,
+                               dicom_file=dicom_file,
+                               output_folder=output_folder,
+                               overwrite=overwrite)
+
+        updated_files.append(dicom)
+    return updated_files
+
 
 def replace_identifiers(dicom_files,
                         ids=None,
                         deid=None,
+                        save=True,
                         overwrite=False,
                         output_folder=None,
                         entity_id=None,
                         item_id=None,
                         force=True,
                         config=None,
-                        remove_private=False):
+                        remove_private=True):
 
     '''replace identifiers will replace dicom_files with data from ids based
     on a combination of a config (default is remove all) and a users preferences (deid)
     :param ids: the ids from get_identifiers, with any changes
     :param dicom_files: the dicom file(s) to extract from
     :param force: force reading the file (default True)
+    :param save: if True, save to file. Otherwise, return dicom objects
     :param config: if None, uses default in provided module folder
     :param overwrite: if False, save updated files to temporary directory
     '''
-    if output_folder is None and overwrite is False:
-        output_folder = tempfile.mkdtemp()
 
     if config is None:
         config = "%s/config.json" %(here)
@@ -198,7 +228,7 @@ def replace_identifiers(dicom_files,
 
     for dicom_file in dicom_files:
 
-        dicom = read_file(dicom_file,force=True)
+        dicom = read_file(dicom_file,force=force)
         dicom_name = os.path.basename(dicom_file)
 
         # Read in / calculate preferred values
@@ -257,23 +287,18 @@ def replace_identifiers(dicom_files,
                                           'field': field })
 
         if remove_private is True:
-            
-            dicom.remove_private_identifiers()
-      
+            dicom.remove_private_tags()
+        else:
+            bot.warning("Private tags were not removed!")
 
-        # Save to file
-        dicom_name = os.path.basename(dicom_file)
-        output_dicom = "%s/%s" %(output_folder,dicom_name)
-        dowrite = True
-        if overwrite is False:
-            if os.path.exists(output_dicom):
-                bot.error("%s already exists, overwrite set to False. Not writing." %dicom_name)
-                dowrite = False
+        # Save to file?
+        if save:
+            dicom = save_dicom(dicom=dicom,
+                               dicom_file=dicom_file,
+                               output_folder=output_folder,
+                               overwrite=overwrite)
 
-        if dowrite:
-            dicom.save_as(output_dicom)
-
-        updated_files.append(output_dicom)
+        updated_files.append(dicom)
        
 
     return updated_files

@@ -146,6 +146,93 @@ DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
 
 wherever you dump your new dicoms, it's up to you to decide how to then move and store them, and (likely) deal with the original data with identifiers.
 
+## Private Tags
+An important note is that by default, this function will also remove private tags (`remove_private=True`). If you need private tags to determine if there is burned pixel data, you would want to set this to False, perform pixel identification, and then remove the private tags yourself:
+
+
+```
+# Clean the files, but set remove_private to False
+cleaned_files = replace_identifiers(dicom_files=dicom_files,
+                                    remove_private=False)
+
+DEBUG Default action is BLANK
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5323.1495927169.335276
+WARNING Private tags were not removed!
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5354.1495927170.440268
+WARNING Private tags were not removed!
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5335.1495927169.763866
+WARNING Private tags were not removed!
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5348.1495927170.228989
+WARNING Private tags were not removed!
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947
+WARNING Private tags were not removed!
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5342.1495927169.3131
+WARNING Private tags were not removed!
+DEBUG entity id: cookie-47
+DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
+WARNING Private tags were not removed!
+```
+
+Notice how the warning appeared, because we didn't remove private tags? Next you would want to do your pixel cleaning, likely using those private tags that are still in the data. Then you would go back and remove them.
+
+```
+from deid.dicom import remove_private_identifiers
+
+really_cleaned = remove_private_identifiers(dicom_files=cleaned_files)
+DEBUG Removed private identifiers for /tmp/tmp2kayz83n/image4.dcm
+DEBUG Removed private identifiers for /tmp/tmp5iadxfb9/image2.dcm
+DEBUG Removed private identifiers for /tmp/tmpk0yii_ya/image7.dcm
+DEBUG Removed private identifiers for /tmp/tmpnxqirboq/image6.dcm
+DEBUG Removed private identifiers for /tmp/tmpp9_tj7zq/image3.dcm
+DEBUG Removed private identifiers for /tmp/tmpo_kwxmlj/image1.dcm
+DEBUG Removed private identifiers for /tmp/tmpf6whw73y/image5.dcm
+
+```
+
+You could also do pixel scraping first, and then call the function (per default) to remove private. These are the first calls that we did, not specifying the variable `remove_private`, and by default it was True. 
+
+### Getting Private Tags
+If you are working within python and want to get private tags for inspection, you can do that too! Let's first load some default data:
+
+
+```
+from deid.dicom import get_files
+from deid.data import get_dataset
+base = get_dataset('dicom-cookies')
+dicom_files = get_files(base)
+```
+
+and now the functions we can use. We will look at one dicom_file
+
+```
+from deid.dicom.tags import has_private, get_private
+
+from pydicom import read_file
+dicom = read_file(dicom_files[0])
+```
+
+Does it have private tags?
+
+```
+has_private(dicom)
+Found 0 private tags
+False
+```
+
+Nope! This is a dicom cookie, after all. If we wanted to get the list of tags, we could do:
+
+```
+private_tags = get_private(dicom)
+```
+
+Although in this case, the list is empty.
+
 
 ## Customize Replacement
 As we mentioned earlier, if you have a [deid settings](config.md) file, you can specify how you want the replacement to work, and in this case, you would want to provide the result `ids` variable from the [previous step](get.md)
