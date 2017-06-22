@@ -25,6 +25,7 @@ SOFTWARE.
 
 from deid.logger import bot
 from pydicom import read_file
+from pydicom.tagtools import tag_in_exception
 from pydicom._dicom_dict import DicomDictionary
 from pydicom.tag import Tag
 import os
@@ -126,3 +127,52 @@ def remove_tag(dicom,field):
         tag = dicom.data_element(field).tag
         del dicom[tag]
     return dicom
+
+
+
+#########################################################################
+# Private Tags
+#########################################################################
+
+
+def get_private(dicom):
+    '''get private tags
+    '''
+    datasets = [dicom]
+    private_tags = []
+
+    while len(datasets) > 0:
+        ds = datasets.pop(0)
+        taglist = sorted(ds.keys())
+        for tag in taglist:
+            with tag_in_exception(tag):
+                data_element = ds[tag]
+                if data_element.tag.is_private:
+                    bot.debug(data_element)
+                    private_tags.append(data_element)
+                    if tag in ds and data_element.VR == "SQ":
+                        sequence = data_element.value
+                        for dataset in sequence:
+                            datasets.append(dataset)                        
+    return private_tags
+
+
+def has_private(dicom):
+    '''has_private will return True if the header has private tags
+    '''
+    private_tags = len(get_private(dicom))
+    print("Found %s private tags" %private_tags)
+    if private_tags > 0:
+        return True
+    return False
+
+
+
+def remove_private(dicom):
+    '''remove_private is a silly wrapper for 
+    dicom.remove_private_tags, in the case that we
+    want to add functionality on top of it.
+    '''
+    dicom.remove_private_tags()
+    return dicom
+

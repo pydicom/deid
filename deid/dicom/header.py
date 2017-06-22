@@ -148,7 +148,8 @@ def replace_identifiers(dicom_files,
                         entity_id=None,
                         item_id=None,
                         force=True,
-                        config=None):
+                        config=None,
+                        remove_private=False):
 
     '''replace identifiers will replace dicom_files with data from ids based
     on a combination of a config (default is remove all) and a users preferences (deid)
@@ -254,6 +255,11 @@ def replace_identifiers(dicom_files,
             dicom = perform_action(dicom=dicom,
                                   action={'action': default, 
                                           'field': field })
+
+        if remove_private is True:
+            
+            dicom.remove_private_identifiers()
+      
 
         # Save to file
         dicom_name = os.path.basename(dicom_file)

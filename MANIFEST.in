@@ -1,3 +1,6 @@
-include README.md
-include LICENSE
+include README.md LICENSE
 recursive-include deid *
+recursive-exclude * __pycache__
+recursive-exclude * *.pyc
+recursive-exclude * *.pyo
+recursive-exclude * *.orig
