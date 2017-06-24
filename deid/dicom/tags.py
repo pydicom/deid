@@ -29,28 +29,12 @@ from pydicom.tagtools import tag_in_exception
 from pydicom._dicom_dict import DicomDictionary
 from pydicom.tag import Tag
 import os
+import re
 import sys
 
 #########################################################################
-# Functions for Single Dicom files
+# Functions for Finding / Getting Tags
 #########################################################################
-
-def add_tag(dicom,field,value):
-    '''add tag will add a tag only if it's in the (active) DicomDictionary
-    :param dicom: the pydicom.dataset Dataset (pydicom.read_file)
-    :param field: the name of the field to add
-    :param value: the value to set, if name is a valid tag
-    '''
-    dicom_file = os.path.basename(dicom.filename)
-    bot.debug("Attempting ADDITION of %s to %s." %(field,dicom_file))
-
-    dicom = change_tag(dicom,field,value)
- 
-    # dicom.data_element("PatientIdentityRemoved")
-    # (0012, 0062) Patient Identity Removed            CS: 'Yes'
-
-    return dicom
-
 
 def get_tag(field):
     '''get_tag will return a dictionary with tag indexed by field. For each entry,
@@ -74,6 +58,55 @@ def get_tag(field):
 
         tags[field] = manifest 
     return tags
+
+
+def find_tag(term,VR=None,VM=None):
+    '''find_tag will search over tags in the DicomDictionary and return the tags found
+    to match some term.
+    '''
+    found = [value for key,value 
+             in DicomDictionary.items() 
+             if re.search(term,value[4]) or re.search(term,value[2])]
+
+    # Filter by VR, VM, name, these are exact
+    if VR is not None: found = _filter_tags(found,0,VR)
+    if VM is not None: found = _filter_tags(found,1,VM)
+    return found
+
+
+def _filter_tags(tags,idx,fields=None):
+    '''filter tags is a helper function to take some list of tags in the format
+    [ (VR, VM, longname, retired, keyword).. ]
+    where each of the items above has some index, idx, and filter that index
+    down to what is provided in fields.
+    '''
+    if not isinstance(fields,list):
+        fields = [fields]
+    return [x for x in tags if x[idx] in fields]
+
+
+
+#########################################################################
+# Manipulating Tags in Data
+#########################################################################
+
+
+
+def add_tag(dicom,field,value):
+    '''add tag will add a tag only if it's in the (active) DicomDictionary
+    :param dicom: the pydicom.dataset Dataset (pydicom.read_file)
+    :param field: the name of the field to add
+    :param value: the value to set, if name is a valid tag
+    '''
+    dicom_file = os.path.basename(dicom.filename)
+    bot.debug("Attempting ADDITION of %s to %s." %(field,dicom_file))
+
+    dicom = change_tag(dicom,field,value)
+ 
+    # dicom.data_element("PatientIdentityRemoved")
+    # (0012, 0062) Patient Identity Removed            CS: 'Yes'
+
+    return dicom
 
 
 def change_tag(dicom,field,value):

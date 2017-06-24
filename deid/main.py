@@ -82,7 +82,7 @@ def get_parser():
     # Action
     parser.add_argument("--action","-a", dest='action', 
                         help="specify to get, put (replace), or all. Default will get identifiers.", 
-                        default=None, choices=['get','put','all'], required=True)
+                        default=None, choices=['get','put','all','inspect'],required=True)
 
     return parser
 
@@ -103,16 +103,16 @@ def main():
     if args.version is True:
         print(deid.__version__)
         sys.exit(0)
+        
+    # Initialize the message bot, with level above
+    from deid.logger import bot
+    from deid.dicom import get_files
+    from deid.data import get_dataset  
 
     output_folder = args.outfolder
     if output_folder is None:
         if args.do_print is False:
             output_folder = tempfile.mkdtemp()
-
-    # Initialize the message bot, with level above
-    from deid.logger import bot
-    from deid.dicom import get_files
-    from deid.data import get_dataset  
 
     # If a deid is given, check against format
     if args.deid is not None:
@@ -129,6 +129,12 @@ def main():
         base = get_dataset('dicom-cookies')
     basename = os.path.basename(base)
     dicom_files = get_files(base)
+
+    # Does the user want to inspect files?
+    if args.action == "inspect":
+        from deid.dicom import has_burned_pixels
+        has_burned_pixels(dicom_files)
+        sys.exit(0) 
 
 
     do_get = False

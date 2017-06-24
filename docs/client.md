@@ -2,7 +2,6 @@
 
 After you install deid, in either of the following ways:
 
-
 ```
 # stable
 pip install deid
@@ -25,12 +24,56 @@ If you run the executable without any arguments, it will show you it's usage:
 deid
 usage: deid [-h] [--input FOLDER] [--version] [--print] [--format {dicom}]
             [--quiet] [--outfolder OUTFOLDER] [--overwrite] [--deid DEID]
-            [--ids IDS] --action {get,put,all}
+            [--ids IDS] --action {get,put,all,inspect}
 deid: error: the following arguments are required: --action/-a
 ```
 
 It's telling us that it wants an action, which can be one of `{get,put,all}`, where "get" corresponds to getting identifiers from a dataset, "put" corresponds to doing the replacement, and "all" means you want to do both at the same time (meaning you won't intervene between the calls to customize any of the replacement actions. Let's walk through the simplest use case, giving an action without any other arguments, which will use the default dataset provided (a subset of [dicom-cookies](https://pydicom.github.io/dicom-cookies)).
 
+### Inspect
+Currently, inspect is simply going to look at header fields and try to guess if there are burned pixels in the image. I am not convinced this is robust - the filters I am using are from [MIRC CTP](https://github.com/johnperry/CTP/blob/master/source/files/scripts/BurnedInPixelsFilter.script), and seem to generally look for:
+
+ - if the field Burned Annotation is set to Yes
+ - if there is any indication of a SAVE
+ - if a secondary device was involved
+
+To inspect a dataset, call the `--action` (or `-a`) command with `inspect`:
+
+```
+deid --a inspect 
+No input folder specified, will use demo dicom-cookies.
+DEBUG Found 7 contender files in dicom-cookies
+DEBUG Checking 7 dicom files for validation.
+Found 7 valid dicom files
+DEBUG image4.dcm header filter indicates pixels are clean.
+DEBUG image2.dcm header filter indicates pixels are clean.
+DEBUG image7.dcm header filter indicates pixels are clean.
+DEBUG image6.dcm header filter indicates pixels are clean.
+DEBUG image3.dcm header filter indicates pixels are clean.
+DEBUG image1.dcm header filter indicates pixels are clean.
+DEBUG image5.dcm header filter indicates pixels are clean.
+```
+
+or specify your own dataset with `--input/-i`
+
+```
+deid --a inspect -i /home/vanessa/Desktop/test/su/
+DEBUG Found 62 contender files in 
+DEBUG Checking 62 dicom files for validation.
+WARNING Cannot read input file /home/vanessa/Desktop/test/su/__index.xml, skipping.
+Found 61 valid dicom files
+DEBUG FO-4893011557773677292.dcm header filter indicates pixels are clean.
+WARNING FO-7672974892203473954.dcm header filters indicate burned pixels.
+WARNING FO-7344077592634450132.dcm header filters indicate burned pixels.
+DEBUG FO-2297306028740147772.dcm header filter indicates pixels are clean.
+WARNING FO-6958553590975910128.dcm header filters indicate burned pixels.
+DEBUG FO-3801449217794418870.dcm header filter indicates pixels are clean.
+DEBUG FO-3156845437646327300.dcm header filter indicates pixels are clean.
+DEBUG FO-7969108085464715668.dcm header filter indicates pixels are clean.
+DEBUG FO-5786379487348112355.dcm header filter indicates pixels are clean.
+DEBUG FO-3565568840462998171.dcm header filter indicates pixels are clean.
+...
+```
 
 ### Get
 Let's specify `--action` as get. This means that we will use a demo dataset, and the ids (a data structure saved in compressed python file called a "pickle")  will be saved to a temporary directory.

@@ -12,6 +12,7 @@ We provide a simple client for working with the de-identification modules on the
 <asciinema-player src="assets/asciicast/deid.json" poster="data:text/plain,Intro to deid client" title="Introduction to the deid client" author="vsochat@stanford.edu" cols="125" rows="25" speed="2.0" theme="asciinema"></asciinema-player>
 
 
+
 ## Dicom
 
  - [Loading Data](loading.md): The starting point for any de-identification process is to read in your files from the system. We provide examples of how to do that.
@@ -19,3 +20,8 @@ We provide a simple client for working with the de-identification modules on the
  - [Get Identifiers](get.md): A request for identifiers is a get, meaning it will extract fields from the data, and give you a data structure that you can then (optionally) add to in the case of wanting to substitute any fields.
  - [Put Identifiers](put.md): `put` corresponds to the deidentification step. This is when you give your (possibly changed) request from get to a function to de-identify the data.
  - [Developer Notes](developer.md): explains how a module (eg, the folder `dicom`) is set up, and you should follow this format if you want to add a new module.
+
+
+## Dicom Tools
+ - [Tags](tags.md): A few helpful functions for searching and filtering tags.
+

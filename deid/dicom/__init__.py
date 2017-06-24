@@ -9,5 +9,7 @@ from .utils import (
 )
 
 from .pixels import (
-    clean_pixels
+    clean_pixels,
+    has_burned_pixels,
+    has_burned_pixels_single
 )
