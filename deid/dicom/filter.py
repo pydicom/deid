@@ -40,8 +40,6 @@ def apply_filter(dicom,field,filter_name,value):
     '''essentially a switch statement to apply a filter to
     a dicom file
     '''
-    bot.debug("Testing %s %s %s" %(field,filter_name,value))
-    bot.debug(dicom.get(field))
     if filter_name == "contains":
         return dicom.contains(field,value)
     elif filter_name == "containsIgnoreCase":

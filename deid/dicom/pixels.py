@@ -96,24 +96,17 @@ def has_burned_pixels_single(dicom_file,force=True, config=None):
                              criteria['label']]
                  if x is not None]
 
-        bot.log("STARTING group %s" %" ".join(label))
         for func,actions in filters.items():
             for action in actions:
-                answer = apply_filter(dicom=dicom,
-                                      field=action['field'],
-                                      filter_name=func,
-                                      value=action["value"])
-                     
-                if action['operator'] == "and":
-                    flagged = flagged and answer
-                else:
-                    flagged = flagged or answer
-        
-        # Check at end of each group
-        if flagged:
-            label = " ".join(label)
-            bot.warning("FLAG for %s: %s" %(dicom_name,label))
-            return flagged
+                flagged = apply_filter(dicom=dicom,
+                                       field=action['field'],
+                                       filter_name=func,
+                                       value=action["value"])
+                                     
+                if flagged:
+                    label = " ".join(label)
+                    bot.warning("FLAG for %s: %s" %(dicom_name,label))
+                    return flagged
 
 
     bot.debug("%s header filter indicates pixels are clean." %dicom_name)
