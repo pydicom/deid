@@ -18,6 +18,7 @@ We provide a simple client for working with the de-identification modules on the
  - [Loading Data](loading.md): The starting point for any de-identification process is to read in your files from the system. We provide examples of how to do that.
  - [Configuration](config.md): You next want to tell the software how to handle various fields. If you don't have a good sense, we provide a default configuration that returns fields for you to inspect, and removes them from the data.
  - [Get Identifiers](get.md): A request for identifiers is a get, meaning it will extract fields from the data, and give you a data structure that you can then (optionally) add to in the case of wanting to substitute any fields.
+ - [Clean Pixels](pixels.md): Before you scrape headers, you might need to use them to flag images that have burned in pixel annotations, and deal with them appropriately.
  - [Put Identifiers](put.md): `put` corresponds to the deidentification step. This is when you give your (possibly changed) request from get to a function to de-identify the data.
  - [Developer Notes](developer.md): explains how a module (eg, the folder `dicom`) is set up, and you should follow this format if you want to add a new module.
 

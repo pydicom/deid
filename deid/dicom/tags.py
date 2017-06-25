@@ -26,7 +26,10 @@ SOFTWARE.
 from deid.logger import bot
 from pydicom import read_file
 from pydicom.tagtools import tag_in_exception
-from pydicom._dicom_dict import DicomDictionary
+from pydicom._dicom_dict import (
+    DicomDictionary,
+    RepeatersDictionary
+)
 from pydicom.tag import Tag
 import os
 import re
@@ -60,12 +63,16 @@ def get_tag(field):
     return tags
 
 
-def find_tag(term,VR=None,VM=None):
+def find_tag(term,VR=None,VM=None,retired=False):
     '''find_tag will search over tags in the DicomDictionary and return the tags found
     to match some term.
     '''
+    searchin = DicomDictionary
+    if retired:
+        searchin = RepeatersDictionary
+
     found = [value for key,value 
-             in DicomDictionary.items() 
+             in searchin.items() 
              if re.search(term,value[4]) or re.search(term,value[2])]
 
     # Filter by VR, VM, name, these are exact

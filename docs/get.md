@@ -113,12 +113,18 @@ ids['cookie-47']['1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947']
 ```
 
 ## Save what you need
-Pretty neat! At this point, you would want to use whatever methods that you have to save/store your data, and then call the function to `replace_identifiers`, which is considered a [put](put.md) operation. Remember that if you use the defaults, it won't matter what you specify above (and you won't need to provide anything) because all fields will be removed. However, if you want to replace the variable `SOPClassUID` and you have specified this in your `deid` configuration file, you would want to replace that here:
+Pretty neat! At this point, you have two options:
 
+### Clean Pixels
+It's likely that the pixels in the images have burned in annotations, and we can use the header data to flag these images. Thus, before you replace identifiers, you probably want to do this. See [pixels](pixels.md) documentation for full instructions.
+
+### Replace Identifiers
+After you have obtained identifiers, and cleaned the pixels of your data (or just flagged and set aside images with Burned In Annotations) and (also optionally) used whatever methods that you have to save/store your data, you would want to `replace_identifiers`. This action is considered a [put](put.md) operation. Remember that if you use the defaults, it won't matter what you specify above (and you won't need to provide anything) because all fields will be removed. However, if you want to replace the variable `SOPClassUID` and you have specified this in your `deid` configuration file, you would want to replace that here:
+
+```
 ids['cookie-47']['1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947']['SOPInstanceUID'] = 'HalloMoto'
-
-More instruction will be provided on how to do this in the [put](put.md) docs.
-
+```
+More instruction on how to do this is provided in the [put](put.md) docs.
 
 
 ## Customization

@@ -23,9 +23,17 @@ SOFTWARE.
 '''
 
 from deid.logger import bot
-from deid.dicom.tags import get_tag
+from .tags import get_tag
+from .utils import perform_action
+from deid.utils import read_json
 from pydicom import read_file
+from .filter import (
+    Dataset,     # add additional filters
+    apply_filter
+)
 import os
+
+here = os.path.dirname(os.path.abspath(__file__))
 
 def clean_pixels():
     bot.warning('BEEP-BOOP - I am not written yet!')
@@ -51,53 +59,62 @@ def has_burned_pixels(dicom_files,force=True):
     return decision
 
 
-def has_burned_pixels_single(dicom_file,force=True):
+def has_burned_pixels_single(dicom_file,force=True, config=None):
     '''has burned pixels single will evaluate one dicom file.
     '''
     dicom = read_file(dicom_file,force=force)
     dicom_name = os.path.basename(dicom_file)
-    has_annotation = False
         
-    # has_annotation False given:
+    # We continue processing given that:
+    # ![0008,0008].contains("SAVE") *   ImageType doesn't contain save AND
+    # [0018,1012].equals("") *          DateofSecondaryCapture flat not present AND
+    # ![0008,103e].contains("SAVE") *   SeriesDescription does not contain save AND
+    # [0018,1016].equals("") *          SecondaryDeviceCaptureManufacturer flag not present AND
+    # [0018,1018].equals("") *          SecondaryDeviceCaptureManufacturerModelName flag not present AND
+    # [0018,1019].equals("") *          SecondaryDeviceCaptureDeviceSoftwareVersion flag not present AND
+    # ![0028,0301].contains("YES")      BurnedInAnnotation is not YES
 
-    # Image was not saved with some other software
+    # We continue processing given that:
+    # Image was not saved with some secondary software or device
+    # Image is not flagged to have burned pixels
 
-    # ![0008,0008].contains("SAVE") * 
-    if "SAVE" in dicom.get('ImageType',[]):
-        has_annotation=True
+    if config is None:
+        config = "%s/pixels.json" %(here)
 
-    # There are no flags to indicate secondary capture
+    if not os.path.exists(config):
+        bot.error("Cannot find config %s, exiting" %(config))
 
-    # [0018,1012].equals("") *
-    if dicom.get('DateOfSecondaryCapture') is not None:
-        has_annotation=True
+    config = read_json(config)
 
-    # ![0008,103e].contains("SAVE") * 
-    if "SAVE" in dicom.get('SeriesDescription',[]):
-        has_annotation=True
+    # Load criteria (actions) for flagging
+    for criteria in config:
 
-    # [0018,1016].equals("") *
-    if dicom.get('SecondaryCaptureDeviceManufacturer') is not None:
-        has_annotation = True
+        flagged = False
+        filters = criteria["filters"]
+        label = [x for x in [criteria['modality'],
+                             criteria['manufacturer'],
+                             criteria['label']]
+                 if x is not None]
 
-    # [0018,1018].equals("") *
-    if dicom.get('SecondaryCaptureDeviceManufacturerModelName') is not None:
-        has_annotation = True
-
-    # [0018,1019].equals("") *
-    if dicom.get('SecondaryCaptureDeviceSoftwareVersions') is not None:
-        has_annotation = True
-
-    # The image is not flagged to have a Burned Annotation
-
-    # ![0028,0301].contains("YES")
-    if dicom.get('BurnedInAnnotation','no').upper() == "YES":
-        has_annotation = True
-
-    if has_annotation:
-        bot.warning("%s header filters indicate burned pixels." %dicom_name)
-    else:
-        bot.debug("%s header filter indicates pixels are clean." %dicom_name)
-
-    return has_annotation
+        bot.log("STARTING group %s" %" ".join(label))
+        for func,actions in filters.items():
+            for action in actions:
+                answer = apply_filter(dicom=dicom,
+                                      field=action['field'],
+                                      filter_name=func,
+                                      value=action["value"])
+                     
+                if action['operator'] == "and":
+                    flagged = flagged and answer
+                else:
+                    flagged = flagged or answer
         
+        # Check at end of each group
+        if flagged:
+            label = " ".join(label)
+            bot.warning("FLAG for %s: %s" %(dicom_name,label))
+            return flagged
+
+
+    bot.debug("%s header filter indicates pixels are clean." %dicom_name)
+    return flagged
