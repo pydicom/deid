@@ -234,10 +234,9 @@ def replace_identifiers(dicom_files,
         # Read in / calculate preferred values
         entity = dicom.get(entity_id)
         item = dicom.get(item_id)
-        fields = [x for x in dicom.dir() if dicom.data_element(x).VR not in ['US','SS']]
-
-        bot.debug('entity id: %s' %(entity))
-        bot.debug('item id: %s' %(item))
+        fields = [x for x in dicom.dir() if dicom.data_element(x) is not None]      # empty
+        fields = [x for x in fields if "VR" in dicom.data_element(x).__dict__]      # no VR
+        fields = [x for x in fields if dicom.data_element(x).VR not in ['US','SS']] # filter
 
         # Is the entity_id in the data structure given to de-identify?
         if ids is not None:
@@ -254,6 +253,10 @@ def replace_identifiers(dicom_files,
                 
                     # First preference goes to user specified options
                     if deid is not None:
+
+                        if not isinstance(deid,dict):
+                            deid = load_deid(deid)
+
                         if deid['format'] == 'dicom':
                             for action in deid['header']:
 
@@ -261,7 +264,6 @@ def replace_identifiers(dicom_files,
                                  result = perform_action(dicom=dicom,
                                                          item=items[item],
                                                          action=action)
-
                                  if result is not None:
                                      fields = [x for x in fields if x != action['field']]
                                      dicom = result
@@ -283,8 +285,8 @@ def replace_identifiers(dicom_files,
         # Remaining fields must be blanked or removed
         for field in fields:
             dicom = perform_action(dicom=dicom,
-                                  action={'action': default, 
-                                          'field': field })
+                                   action={'action': default, 
+                                           'field': field })
 
         if remove_private is True:
             dicom.remove_private_tags()
