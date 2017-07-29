@@ -81,7 +81,7 @@ class TestConfig(unittest.TestCase):
         from deid.config import actions, sections, formats
 
         print("Testing standards: default actions")
-        default_actions = ["ADD","BLANK","KEEP","REPLACE","REMOVE"]
+        default_actions = ["ADD","BLANK","KEEP","REPLACE","REMOVE","JITTER"]
         [self.assertTrue(x in actions) for x in default_actions]
         
         # Should not be any we don't know about
