@@ -52,6 +52,11 @@ from .utils import (
     perform_action
 )
 
+from .fields import (
+    get_fields,
+    get_fields_byVR
+)
+
 import os
 
 here = os.path.dirname(os.path.abspath(__file__))
@@ -60,27 +65,6 @@ here = os.path.dirname(os.path.abspath(__file__))
 ######################################################################
 # MAIN GET FUNCTIONS
 ######################################################################
-
-def get_fields(dicom,skip=None):
-    '''get fields is a simple function to extract a dictionary of fields
-    (non empty) from a dicom file.
-    '''    
-    if skip is None:
-        skip = []
-
-    fields = dict()
-    contenders = dicom.dir()
-    dicom_file = os.path.basename(dicom.filename)
-    for contender in contenders:
-        if contender in skip:
-            continue
-        value = dicom.get(contender)
-        if value not in [None,""]:
-            fields[contender] = value
-    bot.debug("Found %s defined fields for %s" %(len(fields),
-                                                 dicom_file))
-    return fields
-
 
 
 def get_identifiers(dicom_files,force=True,config=None,
@@ -233,10 +217,8 @@ def replace_identifiers(dicom_files,
 
         # Read in / calculate preferred values
         entity = dicom.get(entity_id)
-        item = dicom.get(item_id)
-        fields = [x for x in dicom.dir() if dicom.data_element(x) is not None]      # empty
-        fields = [x for x in fields if "VR" in dicom.data_element(x).__dict__]      # no VR
-        fields = [x for x in fields if dicom.data_element(x).VR not in ['US','SS']] # filter
+        item = dicom.get(item_id) 
+        fields = get_fields_byVR(dicom)
 
         # Is the entity_id in the data structure given to de-identify?
         if ids is not None:
@@ -270,7 +252,6 @@ def replace_identifiers(dicom_files,
 
 
         # Next perform actions in default config, only if not done
-        # Here we cannot assume the patient has provided any data, so we don't give items
         for action in config['put']['actions']:
             if action['field'] in fields:
                  result = perform_action(dicom=dicom,

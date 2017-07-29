@@ -160,6 +160,17 @@ def _perform_action(dicom,field,action,value=None,item=None):
                                     field=field,
                                     value=value)
 
+        # Code the value with something in the response
+        elif action == "JITTER":
+            value = parse_value(item,value)
+            if value is not None:
+
+                # Jitter the field by the supplied value
+                done = True
+                result = jitter_timestamp(dicom,
+                                          field=field,
+                                          value=value)
+
 
         # Do nothing. Keep the original
         elif action == "KEEP":
@@ -210,6 +221,19 @@ def parse_value(item,value):
 
 
 # Timestamps
+def jitter_timestamp(dicom,field,value):
+    '''if present, jitter a timestamp in dicom
+    field "field" by number of days specified by "value"
+    The value can be positive or negative.
+    '''
+    if not isinstance(value, int):
+        value = int(value)
+
+    original = field,get(field,None)
+    if original is not None:
+        dicom[field] = original + value
+    return dicom
+   
 
 def get_entity_timestamp(dicom,date_field=None):
     '''get_entity_timestamp will return a timestamp from the dicom

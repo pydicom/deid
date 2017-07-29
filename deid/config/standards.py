@@ -31,6 +31,7 @@ sections = ['header','pixels','labels']
 
 actions = ('ADD',
            'BLANK',
+           'JITTER',
            'KEEP',
            'REPLACE',
            'REMOVE')
