@@ -64,6 +64,7 @@ Although different sections can have their own actions defined, for simplicity m
 
  - ADD
  - BLANK
+ - JITTER
  - KEEP
  - REMOVE
  - REPLACE
@@ -99,7 +100,7 @@ We know that we are dealing with functions relevant to the header of the image b
 For the above, given that there are conflicting commands, the more conservative is given preference. For example:
 
 ```
-REMOVE > BLANK > REPLACE > KEEP/ADD
+REMOVE > BLANK > REPLACE > JITTER/KEEP/ADD
 ``` 
 
 For example, if I add or keep a header, but then also specify to blank or remove it, it will be blanked or removed. If I specify to blank a header and remove it, it will be removed. If I specify to replace a header and blank it, it will be blanked. Most of the time, you won't need to specify remove, because it is the default. If we were to come up with a pretend config file to represent the default, it would look like this:
@@ -117,7 +118,14 @@ KEEP Columns
 KEEP Rows
 ```
 
-The above would remove everything except for the pixel data, and a few fields that are relevant to its dimensions. It would add a field to indicate the patient's identity was removed.
+The above would remove everything except for the pixel data, and a few fields that are relevant to its dimensions. It would add a field to indicate the patient's identity was removed. For jitter, you can add a hard coded number, or a variable to specify it:
+
+```
+JITTER StudyDate var:jitter
+JITTER Date 31
+JITTER PatientBirthDate -31
+```
+
 
 #### Pixels
 The `%pixels` section has not been implemented yet, but will allow for specification of how to de-identify pixel data.
