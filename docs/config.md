@@ -148,7 +148,6 @@ and this is the idea of an `expander`. And expander is an optional filter applie
 
 ```
 JITTER endswith:Date var:jitter
-
 ['AcquisitionDate', 'ContentDate', 'InstanceCreationDate', 'PatientBirthDate', 'PerformedProcedureStepStartDate', 'SeriesDate', 'StudyDate']
 
 
