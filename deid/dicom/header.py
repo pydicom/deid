@@ -59,12 +59,35 @@ from .fields import (
 
 import os
 
+from pydicom.sequence import Sequence
 here = os.path.dirname(os.path.abspath(__file__))
 
 
 ######################################################################
 # MAIN GET FUNCTIONS
 ######################################################################
+
+
+def extract_sequence(sequence,prefix=None):
+    '''return a pydicom.sequence.Sequence recursively
+       as a list of dictionary items
+    '''
+    items = []
+    for item in sequence:
+        for key,val in item.items():
+            header = val.keyword
+            if prefix is not None:
+                header = "%s__%s" %(prefix,val.keyword)            
+            value = val.value
+            if isinstance(value,bytes):
+                value = value.decode('utf-8')
+            if isinstance (value,Sequence):
+                items += extract_sequence(value,prefix=header)
+                continue
+            entry = {"key": header, "value": value}
+            items.append(entry)
+    return items
+
 
 
 def get_identifiers(dicom_files,force=True,config=None,

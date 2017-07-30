@@ -1,4 +1,5 @@
 from .header import (
+    extract_sequence,
     get_identifiers,
     replace_identifiers,
     remove_private_identifiers

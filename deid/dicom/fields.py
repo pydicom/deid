@@ -28,6 +28,22 @@ from pydicom import read_file
 import os
 
 
+def expand_field_expression(field,dicom):
+    '''Get a list of fields based on an expression. If 
+    no expression found, return single field.
+    '''
+    fields = field.split(':')
+    if fields == 1:
+        return fields
+    expander,expression = fields
+    fields = []
+    if expander.lower() == "endswith":
+        fields = [x for x in dicom.dir() if x.endswith(expression)]
+    elif expander.lower() == "startswith":
+        fields = [x for x in dicom.dir() if x.startswith(expression)]
+    return fields
+
+
 
 def get_fields(dicom,skip=None):
     '''get fields is a simple function to extract a dictionary of fields

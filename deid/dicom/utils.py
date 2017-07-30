@@ -26,6 +26,8 @@ from deid.config.standards import (
     actions as valid_actions
 )
 
+from .fields import expand_field_expression
+
 from deid.logger import bot
 from pydicom import read_file
 from pydicom._dicom_dict import DicomDictionary
@@ -116,14 +118,22 @@ def perform_action(dicom,action,item=None):
         "action" (eg, REPLACE) what to do with the field
         "value": if needed, the field from the response to replace with
     '''
-    field = action.get('field')   # e.g: PatientID
     value = action.get('value')   # "suid" or "var:field"
     action = action.get('action') # "REPLACE"
-    return _perform_action(dicom=dicom,
-                           field=field,
-                           item=item,
-                           action=action,
-                           value=value)
+
+    # If there is an expander applied to field, we iterate over
+    field = action.get('field')   # e.g: PatientID, endswith:ID
+    fields = expand_field_expression(field,dicom)
+
+    for field in fields:
+        result = _perform_action(dicom=dicom,
+                                 field=field,
+                                 item=item,
+                                 action=action,
+                                 value=value)
+        if result is not None:
+            dicom = result
+    return dicom
 
 
 def _perform_action(dicom,field,action,value=None,item=None):
@@ -134,6 +144,7 @@ def _perform_action(dicom,field,action,value=None,item=None):
     done, None is returned, and the calling function should handle this.
     '''
     dicom_file = os.path.basename(dicom.filename)
+    
     done = False
     result = None
 
