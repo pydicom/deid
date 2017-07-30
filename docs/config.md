@@ -118,12 +118,42 @@ KEEP Columns
 KEEP Rows
 ```
 
-The above would remove everything except for the pixel data, and a few fields that are relevant to its dimensions. It would add a field to indicate the patient's identity was removed. For jitter, you can add a hard coded number, or a variable to specify it:
+The above would remove everything except for the pixel data, and a few fields that are relevant to its dimensions. It would add a field to indicate the patient's identity was removed.
+
+##### Jitter
+For jitter, you can add a hard coded number, or a variable to specify it:
 
 ```
 JITTER StudyDate var:jitter
 JITTER Date 31
 JITTER PatientBirthDate -31
+```
+
+##### Field Expansion
+In some cases, it might be extremely tenuous to list every field ending in the same thing, to perform the same action for. For example:
+
+```
+JITTER StudyDate var:jitter
+JITTER Date var:jitter
+JITTER PatientBirthDate var:jitter
+```
+
+could much better be captured as:
+
+```
+JITTER endswith:Date var:jitter
+```
+
+and this is the idea of an `expander`. And expander is an optional filter applied to a header field (the middle value) to select some subset of header values. Currently, we support `startswith` and `endswith`. The following examples show what fields are selected based on each filter:
+
+```
+JITTER endswith:Date var:jitter
+
+['AcquisitionDate', 'ContentDate', 'InstanceCreationDate', 'PatientBirthDate', 'PerformedProcedureStepStartDate', 'SeriesDate', 'StudyDate']
+
+
+REMOVE startswith:Patient                  
+['PatientAddress', 'PatientAge', 'PatientBirthDate', 'PatientID', 'PatientName', 'PatientPosition', 'PatientSex']
 ```
 
 

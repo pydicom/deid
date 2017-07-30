@@ -90,8 +90,12 @@ def extract_sequence(sequence,prefix=None):
 
 
 
-def get_identifiers(dicom_files,force=True,config=None,
-                                entity_id=None,item_id=None):
+def get_identifiers(dicom_files,
+                    force=True,
+                    config=None,
+                    entity_id=None,
+                    item_id=None):
+
     '''extract all identifiers from a dicom image.
     This function cannot be sure if more than one source_id 
     is present in the data, so it returns a lookup dictionary 
@@ -268,7 +272,8 @@ def replace_identifiers(dicom_files,
                                  # We've dealt with this field
                                  result = perform_action(dicom=dicom,
                                                          item=items[item],
-                                                         action=action)
+                                                         action=action,
+                                                         fields=fields)
                                  if result is not None:
                                      fields = [x for x in fields if x != action['field']]
                                      dicom = result

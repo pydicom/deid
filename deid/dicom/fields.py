@@ -28,7 +28,7 @@ from pydicom import read_file
 import os
 
 
-def expand_field_expression(field,dicom):
+def expand_field_expression(field,dicom,contenders=None):
     '''Get a list of fields based on an expression. If 
     no expression found, return single field.
     '''
@@ -37,10 +37,12 @@ def expand_field_expression(field,dicom):
         return fields
     expander,expression = fields
     fields = []
+    if contenders is None:
+        contenders = dicom.dir()
     if expander.lower() == "endswith":
-        fields = [x for x in dicom.dir() if x.endswith(expression)]
+        fields = [x for x in contenders if x.endswith(expression)]
     elif expander.lower() == "startswith":
-        fields = [x for x in dicom.dir() if x.startswith(expression)]
+        fields = [x for x in contenders if x.startswith(expression)]
     return fields
 
 

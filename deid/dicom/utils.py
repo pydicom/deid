@@ -109,10 +109,11 @@ def get_func(function_name):
 
 
 
-def perform_action(dicom,action,item=None):
+def perform_action(dicom,action,item=None,fields=None):
     '''perform action takes  
     :param dicom: a loaded dicom file (pydicom read_file)
     :param item: a dictionary with keys as fields, values as values
+    :param fields: if provided, a filtered list of fields for expand
     :param action: the action from the parsed deid to take
         "dield" (eg, PatientID) the header field to process
         "action" (eg, REPLACE) what to do with the field
@@ -123,7 +124,9 @@ def perform_action(dicom,action,item=None):
 
     # If there is an expander applied to field, we iterate over
     field = action.get('field')   # e.g: PatientID, endswith:ID
-    fields = expand_field_expression(field,dicom)
+    fields = expand_field_expression(field=field,
+                                     dicom=dicom,
+                                     fields=fields)
 
     for field in fields:
         result = _perform_action(dicom=dicom,
