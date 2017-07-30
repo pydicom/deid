@@ -96,27 +96,12 @@ class TestDicomUtils(unittest.TestCase):
         dicom = perform_action(dicom=dicom,action=REPLACE,item=item)
         self.assertEqual(dicom.get("PatientIdentityRemoved"),"stick")
 
-        print("Case 4: Testing REPLACE action with non-existing variable")
-        REPLACE = { "action":"REPLACE",
-                    "field":"PatientIdentityRemoved",
-                    "value":"var:gummybear"} 
-        updated = perform_action(dicom=dicom,action=REPLACE,item=item)
-        self.assertEqual(updated,None)  
-
         print("Case 5: Testing REMOVE action")
         REMOVE = { "action":"REMOVE",
                    "field":"PatientIdentityRemoved"} 
 
         dicom = perform_action(dicom=dicom,action=REMOVE)
         self.assertTrue("PatientIdentityRemoved" not in dicom)  
-
-
-        print("Case 6: Testing invalid action")
-        RUN = { "action":"RUN",
-                "field":"PatientIdentityRemoved"} 
-
-        updated = perform_action(dicom=dicom,action=RUN)
-        self.assertEqual(updated,None)  
 
 
     def test_entity_timestamp(self):

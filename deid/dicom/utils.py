@@ -119,14 +119,14 @@ def perform_action(dicom,action,item=None,fields=None):
         "action" (eg, REPLACE) what to do with the field
         "value": if needed, the field from the response to replace with
     '''
+    field = action.get('field')   # e.g: PatientID, endswith:ID
     value = action.get('value')   # "suid" or "var:field"
     action = action.get('action') # "REPLACE"
 
     # If there is an expander applied to field, we iterate over
-    field = action.get('field')   # e.g: PatientID, endswith:ID
     fields = expand_field_expression(field=field,
                                      dicom=dicom,
-                                     fields=fields)
+                                     contenders=fields)
 
     for field in fields:
         result = _perform_action(dicom=dicom,

@@ -60,6 +60,7 @@ from .fields import (
 import os
 
 from pydicom.sequence import Sequence
+from pydicom.dataset import RawDataElement
 here = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -149,7 +150,7 @@ def get_identifiers(dicom_files,
             ids[entity] = dict()
          
         ids[entity][item] = get_fields(dicom,skip=skip)
-        
+
     return ids
 
 
