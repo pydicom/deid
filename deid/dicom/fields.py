@@ -62,8 +62,6 @@ def get_fields(dicom,skip=None):
             continue
         value = dicom.get(contender)
         if value not in [None,""]:
-            if isinstance(value,bytes):
-                value = value.decode('utf-8')
             fields[contender] = value
     bot.debug("Found %s defined fields for %s" %(len(fields),
                                                  dicom_file))
