@@ -127,7 +127,8 @@ def perform_action(dicom,action,item=None,fields=None):
     fields = expand_field_expression(field=field,
                                      dicom=dicom,
                                      contenders=fields)
-
+    
+    changed = False
     for field in fields:
         result = _perform_action(dicom=dicom,
                                  field=field,
@@ -135,8 +136,11 @@ def perform_action(dicom,action,item=None,fields=None):
                                  action=action,
                                  value=value)
         if result is not None:
+            changed = True
             dicom = result
-    return dicom
+    if changed is True:
+        return dicom
+    return None
 
 
 def _perform_action(dicom,field,action,value=None,item=None):
