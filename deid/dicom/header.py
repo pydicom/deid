@@ -76,17 +76,18 @@ def extract_sequence(sequence,prefix=None):
     items = []
     for item in sequence:
         for key,val in item.items():
-            header = val.keyword
-            if prefix is not None:
-                header = "%s__%s" %(prefix,val.keyword)            
-            value = val.value
-            if isinstance(value,bytes):
-                value = value.decode('utf-8')
-            if isinstance (value,Sequence):
-                items += extract_sequence(value,prefix=header)
-                continue
-            entry = {"key": header, "value": value}
-            items.append(entry)
+            if not isinstance(val,RawDataElement):
+                header = val.keyword
+                if prefix is not None:
+                    header = "%s__%s" %(prefix,header)  
+                value = val.value
+                if isinstance(value,bytes):
+                    value = value.decode('utf-8')
+                if isinstance (value,Sequence):
+                    items += extract_sequence(value,prefix=header)
+                    continue
+                entry = {"key": header, "value": value}
+                items.append(entry)
     return items
 
 
