@@ -1,5 +1,4 @@
 from .header import (
-    extract_sequence,
     get_identifiers,
     replace_identifiers,
     remove_private_identifiers
@@ -8,6 +7,8 @@ from .header import (
 from .utils import (
     get_files
 )
+
+from .fields import  extract_sequence
 
 from .pixels import (
     clean_pixels,
