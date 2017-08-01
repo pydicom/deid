@@ -81,7 +81,6 @@ def get_fields(dicom, skip=None, expand_sequences=True):
         skip = []
     if not isinstance(skip,list):
         skip = [skip]
-
     fields = dict()
     contenders = dicom.dir()
     dicom_file = os.path.basename(dicom.filename)
@@ -89,7 +88,6 @@ def get_fields(dicom, skip=None, expand_sequences=True):
         if contender in skip:
             continue
         value = dicom.get(contender)
-
         # Adding expanded sequences
         if isinstance(value,Sequence) and expand_sequences is True:
             sequence_fields = extract_sequence(value,prefix=contender)
@@ -99,7 +97,7 @@ def get_fields(dicom, skip=None, expand_sequences=True):
             if value not in [None,""]:
                 if isinstance(value,bytes):
                     value = value.decode('utf-8')
-                fields[contender] = value
+                fields[contender] = str(value)
 
     bot.debug("Found %s fields for %s" %(len(fields),
                                          dicom_file))
