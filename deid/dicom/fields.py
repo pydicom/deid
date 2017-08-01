@@ -97,7 +97,10 @@ def get_fields(dicom, skip=None, expand_sequences=True):
                 fields[sf['key']] = sf['value']
         else:
             if value not in [None,""]:
+                if isinstance(value,bytes):
+                    value = value.decode('utf-8')
                 fields[contender] = value
+
     bot.debug("Found %s fields for %s" %(len(fields),
                                          dicom_file))
     return fields
