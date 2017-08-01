@@ -59,8 +59,6 @@ from .fields import (
 
 import os
 
-from pydicom.sequence import Sequence
-from pydicom.dataset import RawDataElement
 here = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -69,34 +67,12 @@ here = os.path.dirname(os.path.abspath(__file__))
 ######################################################################
 
 
-def extract_sequence(sequence,prefix=None):
-    '''return a pydicom.sequence.Sequence recursively
-       as a list of dictionary items
-    '''
-    items = []
-    for item in sequence:
-        for key,val in item.items():
-            if not isinstance(val,RawDataElement):
-                header = val.keyword
-                if prefix is not None:
-                    header = "%s__%s" %(prefix,header)  
-                value = val.value
-                if isinstance(value,bytes):
-                    value = value.decode('utf-8')
-                if isinstance (value,Sequence):
-                    items += extract_sequence(value,prefix=header)
-                    continue
-                entry = {"key": header, "value": value}
-                items.append(entry)
-    return items
-
-
-
 def get_identifiers(dicom_files,
                     force=True,
                     config=None,
                     entity_id=None,
-                    item_id=None):
+                    item_id=None,
+                    expand_sequences=True):
 
     '''extract all identifiers from a dicom image.
     This function cannot be sure if more than one source_id 
@@ -107,6 +83,7 @@ def get_identifiers(dicom_files,
     :param config: if None, uses default in provided module folder
     :param entity_id: if specified, override default in config
     :param item_id: if specified, overrides 
+    :param expand_sequences: if True, expand sequences. otherwise, skips
     '''
 
     if config is None:
@@ -133,7 +110,6 @@ def get_identifiers(dicom_files,
 
 
     for dicom_file in dicom_files:
-
         dicom = read_file(dicom_file,force=True)
 
         # Read in / calculate preferred values
@@ -150,7 +126,9 @@ def get_identifiers(dicom_files,
         if entity not in ids:
             ids[entity] = dict()
          
-        ids[entity][item] = get_fields(dicom,skip=skip)
+        ids[entity][item] = get_fields(dicom,
+                                       skip=skip,
+                                       expand_sequences=expand_sequences)
 
     return ids
 

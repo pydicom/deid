@@ -23,9 +23,35 @@ SOFTWARE.
 '''
 
 
+from pydicom.sequence import Sequence
+from pydicom.dataset import RawDataElement
+
 from deid.logger import bot
 from pydicom import read_file
 import os
+
+
+def extract_sequence(sequence,prefix=None):
+    '''return a pydicom.sequence.Sequence recursively
+       as a list of dictionary items
+    '''
+    items = []
+    for item in sequence:
+        for key,val in item.items():
+            if not isinstance(val,RawDataElement):
+                header = val.keyword
+                if prefix is not None:
+                    header = "%s__%s" %(prefix,header)  
+                value = val.value
+                if isinstance(value,bytes):
+                    value = value.decode('utf-8')
+                if isinstance (value,Sequence):
+                    items += extract_sequence(value,prefix=header)
+                    continue
+                entry = {"key": header, "value": value}
+                items.append(entry)
+    return items
+
 
 
 def expand_field_expression(field,dicom,contenders=None):
@@ -47,12 +73,14 @@ def expand_field_expression(field,dicom,contenders=None):
 
 
 
-def get_fields(dicom,skip=None):
+def get_fields(dicom, skip=None, expand_sequences=True):
     '''get fields is a simple function to extract a dictionary of fields
     (non empty) from a dicom file.
     '''    
     if skip is None:
         skip = []
+    if not isinstance(skip,list):
+        skip = [skip]
 
     fields = dict()
     contenders = dicom.dir()
@@ -61,10 +89,17 @@ def get_fields(dicom,skip=None):
         if contender in skip:
             continue
         value = dicom.get(contender)
-        if value not in [None,""]:
-            fields[contender] = value
-    bot.debug("Found %s defined fields for %s" %(len(fields),
-                                                 dicom_file))
+
+        # Adding expanded sequences
+        if isinstance(value,Sequence) and expand_sequences is True:
+            sequence_fields = extract_sequence(value,prefix=contender)
+            for sf in sequence_fields:
+                fields[sf['key']] = sf['value']
+        else:
+            if value not in [None,""]:
+                fields[contender] = value
+    bot.debug("Found %s fields for %s" %(len(fields),
+                                         dicom_file))
     return fields
 
 
