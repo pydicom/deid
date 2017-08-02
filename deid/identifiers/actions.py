@@ -152,5 +152,7 @@ def jitter_timestamp(field,value,item):
 
     original = item.get(field,None)
     if original is not None:
+        if not isinstance(original, int):
+            original = int(original)
         item[field] = original + value
     return item
