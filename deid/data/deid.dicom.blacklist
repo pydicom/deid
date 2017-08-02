@@ -1,0 +1,12 @@
+FORMAT dicom
+
+%header
+
+ADD PatientIdentityRemoved Yes
+REMOVE AdditionalPatientHistory
+REPLACE PatientID var:entity_id
+REPLACE IssuerOfPatientID STARR
+REPLACE endswith:SOPInstanceUID var:item_id
+REPLACE endswith:PatientBirthDate var:entity_timestamp
+REPLACE endswith:InstanceCreationDate var:item_timestamp
+JITTER endswith:Date var:jitter

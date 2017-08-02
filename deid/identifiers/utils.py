@@ -31,7 +31,7 @@ import re
 import sys
 import tempfile
 import dateutil.parser
-
+from datetime import timedelta
 
 def create_lookup(response,lookup_field=None):
     '''create_identifier_lookup will take a response, which should be a list
@@ -84,18 +84,27 @@ def load_identifiers(identifiers_file):
     return result
 
 
-def get_timestamp(item_date,item_time=None):
-    '''get_timestamp will return a UTC timestamp with some date and
-    (optionall) time.
+def get_timestamp(item_date,item_time=None, jitter_days=None, format=None):
+    '''get_timestamp will return (default) a UTC timestamp 
+    with some date and (optionall) time. A different format can be 
+    provided to change default behavior. eg: "%Y%m%d"
     '''
+    if format is None:
+        format = "%Y-%m-%dT%H:%M:%SZ"
+
     if item_date in ['',None]:
         bot.warning("No date in header, cannot create timestamp.")
         return None
 
     if item_time is None:
         item_time = ""
+
     timestamp = dateutil.parser.parse("%s%s" %(item_date,item_time))
-    return timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
+    if jitter_days is not None:
+        jitter_days = int(float(jitter_days))
+        timestamp = timestamp + timedelta(days=jitter_days)
+
+    return timestamp.strftime(format)
 
 
 def expand_field_expression(field,contenders):
@@ -109,6 +118,8 @@ def expand_field_expression(field,contenders):
     fields = []
     if expander.lower() == "endswith":
         fields = [x for x in contenders if x.endswith(expression)]
+    elif expander.lower() == "contains":
+        fields = [x for x in contenders if expression in x]
     elif expander.lower() == "startswith":
         fields = [x for x in contenders if x.startswith(expression)]
     return fields

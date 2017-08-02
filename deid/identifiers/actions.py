@@ -24,7 +24,7 @@ SOFTWARE.
 '''
 
 from deid.config.standards import actions as valid_actions
-from .utils import expand_field_expression, to_int
+from deid.identifiers.utils import expand_field_expression, to_int
 
 from deid.logger import bot
 from deid.utils import recursive_find
@@ -150,6 +150,8 @@ def jitter_timestamp(field,value,item):
     value = to_int(value)
     original = item.get(field,None)
     if original is not None:
-        original = to_int(original)
-        item[field] = original + value
+        jittered = get_timestamp(item_date=original,
+                                 jitter_days=value,
+                                 format="%Y%m%d")
+        item[field] = jittered
     return item
