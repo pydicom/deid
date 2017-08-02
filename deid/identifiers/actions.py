@@ -153,5 +153,8 @@ def jitter_timestamp(field,value,item):
         jittered = get_timestamp(item_date=original,
                                  jitter_days=value,
                                  format="%Y%m%d")
+        bot.debug("JITTER %s + (%s): %s" %(original,
+                                           value,
+                                           jittered))
         item[field] = jittered
     return item
