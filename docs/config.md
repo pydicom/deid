@@ -4,6 +4,7 @@ The de-identification process has three parts:
 
  - define a set of rules for de-identification (optional)
  - [get](get.md) current fields (if you need to use them to look up replacements, etc)
+ - [update](update.md) identifiers however you need for your de-identification process.
  - [put](put.md) (possibly updated) identifiers back into the data, and deidentify fully.
 
 This document will talk about the first step of this process, how you can configure rules for the software. If you are interested in the command line client for these commands (and not functions) you should see [the client](client.md).
@@ -18,22 +19,13 @@ The application does the following, by default, taking a conservative de-identif
 
 However, you might want to do either of the following:
 
- - ask the application to return more fields (beyond default, and if present) from the dicom header
- - have a specific action for some set of headers, where actions include `BLANK`, `REPLACE`, `REMOVE`, and `KEEP`
- - perform some custom functions between `get` and `put`.
+ - have a specific action for some set of headers, where actions include `BLANK`, `REPLACE`, `JITTER`, `REMOVE`, and `KEEP`
+ - perform some custom functions between `get`, `update`, and `put`.
 
-We will show you a working example of the above as you continue this walkthrough. For now, let's talk about a few options, and show examples of settings. The settings that you choose depend on your use case, and we strongly suggest that you take the most conservative approach that is possible for your use case. 
+We will show you a working example of the above as you continue this walkthrough. For now, let's review configuration settings. 
 
-### Option 1. Scraped Header
-In the case that you get a response after extraction and replace no fields, the header fields will be completely blanked, other than a field to indicate this has been done (recommended for most), and fields related to the pixel data ([VR types SS and US](https://github.com/pydicom/pydicom/issues/372)).
-
-
-### Option 2. Scraped Header with Study identifier
-If you need to save some identifier as a lookup, we recommend a conservative approach that leaves the minimal required (de-identified) study identifier eg, (PatientID) is replaced with (StudyID), removing the rest. Any identifiers that you might want to save should be kept separately from where you intend to release the data, and this of course will require IRB approval.
-
-
-### Option 3: Custom
-For a custom de-identification, then you need to make a config file called `deid` that should be provided with your function calls. The format of this file is discussed below, and can be used to specify preferences for different kinds of datasets (dicom or nifti) and things to identify (pixels and headers).
+### Standard De-identification
+For a standard de-identification, you will likely want to extract data, replace some fields, and put back the replacements. In this case you need to make a config file called `deid` that should be provided with your function calls. The format of this file is discussed below, and can be used to specify preferences for different kinds of datasets (dicom or nifti) and things to identify (pixels and headers).
 
 ## Rules
 You can create a specification of rules, a file called `deid`, for the application to customize its behavior. Let's look at an example:
@@ -46,7 +38,8 @@ FORMAT dicom
 ADD PatientIdentityRemoved Yes
 BLANK OrdValue
 KEEP Modality
-REPLACE id
+REPLACE id var:entity_id
+JITTER StudyDate var:entity_timestamp
 REMOVE ReferringPhysicianName
 ```
 

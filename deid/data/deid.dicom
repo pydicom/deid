@@ -1,0 +1,62 @@
+FORMAT dicom
+
+%header
+
+ADD PatientIdentityRemoved Yes
+
+REPLACE PatientID var:entity_id
+REPLACE IssuerOfPatientID STRIDE
+REPLACE endswith:SOPInstanceUID var:item_id
+REPLACE endswith:PatientBirthDate var:entity_timestamp
+REPLACE endswith:InstanceCreationDate var:item_timestamp
+
+JITTER endswith:Time var:jitter
+JITTER endswith:Date var:jitter
+JITTER startswith:Date var:jitter
+JITTER IssueDateOfImagingServiceRequest var:jitter
+JITTER endswith:TimeTrial var:jitter
+JITTER endswith:DateTrial var:jitter
+
+KEEP Rows 
+KEEP Columns 
+KEEP WindowCenter 
+KEEP ImageOrientationPatient 
+KEEP RescaleSlope 
+KEEP PositionReferenceIndicator 
+KEEP SliceLocation 
+KEEP ProtocolName 
+KEEP Manufacturer 
+KEEP Modality 
+KEEP PixelSpacing 
+KEEP BitsAllocated 
+KEEP RescaleType 
+KEEP SpecificCharacterSet 
+KEEP BitsStored 
+KEEP PhotometricInterpretation 
+KEEP KVP 
+KEEP WindowWidth 
+KEEP ImageType 
+KEEP HighBit 
+KEEP ReconstructionDiameter 
+KEEP DataCollectionDiameter 
+KEEP ExposureTime 
+KEEP AcquisitionNumber 
+KEEP PixelRepresentation 
+KEEP SeriesDescription 
+KEEP PatientSex 
+KEEP ContrastBolusRoute 
+KEEP ConvolutionKernel 
+KEEP ScanOptions 
+KEEP InstanceNumber 
+KEEP GantryDetectorTilt 
+KEEP SliceThickness 
+KEEP ContrastBolusAgent 
+KEEP SamplesPerPixel 
+KEEP ManufacturerModelName 
+KEEP SOPClassUID 
+KEEP PatientPosition 
+KEEP WindowCenter 
+KEEP ImagePositionPatient 
+KEEP FrameOfReferenceUID 
+KEEP RescaleIntercept 
+KEEP StudyDescription

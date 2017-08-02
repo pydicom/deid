@@ -20,6 +20,13 @@ from deid.dicom import get_identifiers
 ids = get_identifiers(dicom_files)
 ```
 
+By default, any Sequences (lists of items) within the files are expanded and provided. This means that a Sequence with header value `AdditionalData` and item `Modality` will be returned as `AdditionalData_Modality`. If you want to disable this and not return expanded sequences:
+
+```
+ids = get_identifiers(dicom_files=dicom_files,
+                      expand_sequences=False)
+```
+
 We will see debug output for each, indicating that we found a particular number of fields:
 
 ```
@@ -47,8 +54,18 @@ DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
 DEBUG Found 27 defined fields for image5.dcm
 ```
 
+Since a data structure is returned indexed by an entity id and then item (eg, patient --> image). under the hood this means that we use fields from the header to use as the index for entity id and item id. Id you don't change the defaults, the entity_id is `PatientID` and item id is `SOPInstanceUID`. To change this, just specify in the function:
+
+```
+
+ids = get_identifiers(dicom_files,
+                      entity_id="PatientFullName",
+                      item_id="InstanceUID")
+```
+
+
 ## Organization
-How is the result organized? If you notice, the above seems to be able to identify entity and items. This is because in the default, the configuration has set an entity id to be the `PatientID` and the item the `SOPInstanceUID`. This is how it is organized in the returned result - the entity is the first lookup key:
+Let's take a closer look at how this is organized. If you notice, the above seems to be able to identify entity and items. This is because in the default, the configuration has set an entity id to be the `PatientID` and the item the `SOPInstanceUID`. This is how it is organized in the returned result - the entity is the first lookup key:
 
 ```
 # We found one entity
@@ -73,6 +90,7 @@ list(ids['cookie-47'].keys())
  '1.2.276.0.7230010.3.1.4.8323329.5335.1495927169.763866']
 ```
 **note** that I only made it a list for prettier printing. 
+
 
 ### Why this organization?
 We have this organization because by default, the software doesn't know what headers it will find in the dicom files, and it also doesn't know the number of (possibly) different entities (eg, a patient) or images (eg, an instance) it will find. For this reason, by default, for dicom we have specified that the entity id is the `PatientID` and the `itemID` is the `SOPInstanceUID`. 
@@ -116,37 +134,8 @@ ids['cookie-47']['1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947']
 Pretty neat! At this point, you have two options:
 
 ### Clean Pixels
-It's likely that the pixels in the images have burned in annotations, and we can use the header data to flag these images. Thus, before you replace identifiers, you probably want to do this. See [pixels](pixels.md) documentation for full instructions.
-
-### Replace Identifiers
-After you have obtained identifiers, and cleaned the pixels of your data (or just flagged and set aside images with Burned In Annotations) and (also optionally) used whatever methods that you have to save/store your data, you would want to `replace_identifiers`. This action is considered a [put](put.md) operation. Remember that if you use the defaults, it won't matter what you specify above (and you won't need to provide anything) because all fields will be removed. However, if you want to replace the variable `SOPClassUID` and you have specified this in your `deid` configuration file, you would want to replace that here:
-
-```
-ids['cookie-47']['1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947']['SOPInstanceUID'] = 'HalloMoto'
-```
-More instruction on how to do this is provided in the [put](put.md) docs.
+It's likely that the pixels in the images have burned in annotations, and we can use the header data to flag these images. Thus, before you replace identifiers, you probably want to do this. We currently don't have this implemented in production quality, but you can see progress in the [pixels](pixels.md) documentation.
 
 
-## Customization
-Let's say that you want to use a different entity or item id to index the data. How would you do that? Like this:
-
-```
-entity_id = 'OtherPatientNames'
-item_id = 'SOPInstanceUID'
-
-ids = get_identifiers(dicom_files=dicom_files,
-                      entity_id=entity_id,
-                      item_id=item_id)
-```
-
-Or if you are a developer, you can change the defaults by making your own version of a [config.json](../deid/dicom/config.json).
-
-
-and then specify it like this:
-
-```
-myconfig = '/path/to/myconfig.json'
-ids = get_identifiers(dicom_files,config=myconfig)
-```
-
-We recommend the first for most users that don't want to be writing json files.
+### Update Identifiers
+It's likely that you now want to query your special de-identification API to do some replacement of the PatientID with something else, or custom parsing of the data. You can read our [update](update.md) docs for instructions on how to do this replacement.

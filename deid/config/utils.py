@@ -85,7 +85,7 @@ def load_deid(path=None):
                 bot.error("%s is not a valid section." %section)
                 sys.exit(1)
 
-        # An action (replace, blank, remove, keep)
+        # An action (replace, blank, remove, keep, jitter)
         elif line.upper().startswith(actions):
             if section is None:
                 bot.error('You must define a section (e.g. %header) before any action.')

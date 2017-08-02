@@ -15,9 +15,8 @@
           "default": "BLANK",
           "actions":[
  
-              {"action":"ADD","field":"PatientIdentityRemoved","value": "Yes"},
+              {"action":"ADD" ,"field":"PatientIdentityRemoved","value": "Yes"},
               {"action":"KEEP","field":"PixelData"}
-
       ]
    }
 }

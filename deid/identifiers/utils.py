@@ -97,3 +97,18 @@ def get_timestamp(item_date,item_time=None):
     timestamp = dateutil.parser.parse("%s%s" %(item_date,item_time))
     return timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
 
+
+def expand_field_expression(field,contenders):
+    '''Get a subset of fields based on an expression. If 
+    no expression found, return single field.
+    '''
+    fields = field.split(':')
+    if len(fields) == 1:
+        return fields
+    expander,expression = fields
+    fields = []
+    if expander.lower() == "endswith":
+        fields = [x for x in contenders if x.endswith(expression)]
+    elif expander.lower() == "startswith":
+        fields = [x for x in contenders if x.startswith(expression)]
+    return fields

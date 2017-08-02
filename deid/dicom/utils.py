@@ -247,7 +247,7 @@ def jitter_timestamp(dicom,field,value):
     if not isinstance(value, int):
         value = int(value)
 
-    original = field,get(field,None)
+    original = dicom.get(field,None)
     if original is not None:
         dicom[field] = original + value
     return dicom

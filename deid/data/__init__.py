@@ -30,6 +30,10 @@ from deid.utils import get_installdir
 from deid.logger import bot
 import os
 
+
+here = os.path.dirname(os.path.abspath(__file__))
+
+
 def get_dataset(dataset=None):
     '''get_dataset will return some data provided by the application,
     based on a user-provided label. In the future, we can add https endpoints
@@ -47,3 +51,12 @@ def get_dataset(dataset=None):
 
     bot.info("Valid datasets include: %s" %(','.join(list(valid_datasets.keys()))))
 
+
+def get_deid(tag=None):
+    if tag is None:
+        tag = "dicom"
+    deid = "%s/deid.%s" %(here,tag)
+    if not os.path.exists(deid):
+        bot.warning("Cannot find %s, will use default." %(deid))
+        tag = "dicom"
+    return "%s/deid.%s" %(here,tag)
