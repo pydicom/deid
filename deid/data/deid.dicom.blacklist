@@ -3,7 +3,7 @@ FORMAT dicom
 %header
 
 ADD PatientIdentityRemoved Yes
-REPLACE PatientID var:entity_id
+REPLACE endswith:PatientID var:entity_id
 REPLACE IssuerOfPatientID STARR
 REPLACE endswith:SOPInstanceUID var:item_id
 REPLACE contains:PatientBirthDate var:entity_timestamp
