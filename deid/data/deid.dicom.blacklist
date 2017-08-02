@@ -20,3 +20,4 @@ REMOVE PatientBirthName
 REMOVE PatientMotherBirthName
 REMOVE PatientName
 REMOVE startswith:PatientTelephoneNumber
+REMOVE jitter
