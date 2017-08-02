@@ -70,3 +70,7 @@ KEEP FocalSpots
 KEEP PerformedProcedureStepID
 KEEP TotalCollimationWidth
 KEEP SpacingBetweenSlices
+KEEP PresentationLUTShape
+KEEP ContentLabel
+KEEP ImageRotation
+KEEP TimezoneOffsetFromUTC
