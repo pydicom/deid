@@ -37,11 +37,13 @@ from deid.config import load_deid
 from deid.data import get_deid
 
 
-def clean_item(item, deid, default="BLANK"):
+def clean_item(item, deid, default=None):
     '''clean a single item according to a deid specification.
     '''
     # Keep track of the fields we've seen, not to blank them
     seen = []
+    if default is None:
+        default = "BLANK"
 
     for action in deid['header']:
         item,fields = perform_action(item=item,
@@ -56,6 +58,7 @@ def clean_item(item, deid, default="BLANK"):
         bot.warning("%s fields set for default action %s" %(len(remaining),default))
         bot.debug(",".join(remaining))
         for field in remaining:
+            action = {'action': default, "field":field}
             item = perform_action(item=item, action=default)
 
     return item

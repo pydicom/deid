@@ -9,14 +9,12 @@ REPLACE IssuerOfPatientID STRIDE
 REPLACE endswith:SOPInstanceUID var:item_id
 REPLACE endswith:PatientBirthDate var:entity_timestamp
 REPLACE endswith:InstanceCreationDate var:item_timestamp
-
 JITTER endswith:Time var:jitter
 JITTER endswith:Date var:jitter
 JITTER startswith:Date var:jitter
 JITTER IssueDateOfImagingServiceRequest var:jitter
 JITTER endswith:TimeTrial var:jitter
 JITTER endswith:DateTrial var:jitter
-
 KEEP Rows 
 KEEP Columns 
 KEEP WindowCenter 
@@ -60,3 +58,21 @@ KEEP ImagePositionPatient
 KEEP FrameOfReferenceUID 
 KEEP RescaleIntercept 
 KEEP StudyDescription
+KEEP TableHeight
+KEEP PixelPaddingValue
+KEEP GeneratorPower
+KEEP SingleCollimationWidth
+KEEP SeriesDescription
+KEEP TableSpeed
+KEEP FilterType
+KEEP RotationDirection
+KEEP TableFeedPerRotation
+KEEP ProtocolName
+KEEP SpiralPitchFactor
+KEEP RevolutionTime
+KEEP SoftwareVersions
+KEEP XRayTubeCurrent
+KEEP FocalSpots
+KEEP PerformedProcedureStepID
+KEEP TotalCollimationWidth
+KEEP SpacingBetweenSlices

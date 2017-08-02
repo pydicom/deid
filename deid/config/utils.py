@@ -59,10 +59,10 @@ def load_deid(path=None):
            for x in read_file(path) 
            if x.strip('\n').strip(' ') not in ['']]
 
+    spec = [x for x in spec if x not in ['', None]]
     config = dict()
     section = None
     for line in spec:
-
         # Comment
         if line.startswith("#"):
             continue
@@ -158,7 +158,7 @@ def parse_action(section,line,config):
     field = parts.pop(0)
 
     # Actions that require a value
-    if action in [ "ADD", "REPLACE" ]:
+    if action in [ "ADD", "REPLACE", "JITTER" ]:
         if len(parts) == 0:
             bot.error("%s requires a VALUE, but not found" %(action))        
             sys.exit(1)
@@ -169,7 +169,7 @@ def parse_action(section,line,config):
                                  "value":value })
 
     # Actions that don't require a value
-    elif action in [ "BLANK" "KEEP", "REMOVE" ]:
+    elif action in [ "BLANK", "KEEP", "REMOVE" ]:
         bot.debug("%s: adding %s" %(section,line))
         config[section].append({ "action":action,
                                  "field":field })
