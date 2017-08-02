@@ -112,3 +112,9 @@ def expand_field_expression(field,contenders):
     elif expander.lower() == "startswith":
         fields = [x for x in contenders if x.startswith(expression)]
     return fields
+
+
+def to_int(value):
+    if not isinstance(value,int):
+        value = int(float(value))
+    return value
