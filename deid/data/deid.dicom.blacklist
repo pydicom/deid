@@ -20,3 +20,4 @@ REMOVE PatientBirthName
 REMOVE PatientMotherBirthName
 REMOVE PatientName
 REMOVE PatientTelephoneNumbers
+REMOVE PatientTelephoneNumber
