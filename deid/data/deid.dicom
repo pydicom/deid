@@ -34,7 +34,6 @@ KEEP DataCollectionDiameter
 KEEP ExposureTime 
 KEEP AcquisitionNumber 
 KEEP PixelRepresentation 
-KEEP SeriesDescription 
 KEEP PatientSex 
 KEEP ContrastBolusRoute 
 KEEP ConvolutionKernel 
@@ -51,12 +50,10 @@ KEEP WindowCenter
 KEEP ImagePositionPatient 
 KEEP FrameOfReferenceUID 
 KEEP RescaleIntercept 
-KEEP StudyDescription
 KEEP TableHeight
 KEEP PixelPaddingValue
 KEEP GeneratorPower
 KEEP SingleCollimationWidth
-KEEP SeriesDescription
 KEEP TableSpeed
 KEEP FilterType
 KEEP RotationDirection
