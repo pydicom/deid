@@ -59,7 +59,7 @@ def clean_item(item, deid, default=None):
         bot.debug(",".join(remaining))
         for field in remaining:
             action = {'action': default, "field":field}
-            item = perform_action(item=item, action=default)
+            item = perform_action(item=item, action=action)
 
     return item
 
