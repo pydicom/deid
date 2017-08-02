@@ -19,5 +19,4 @@ REMOVE PatientBirthDate
 REMOVE PatientBirthName
 REMOVE PatientMotherBirthName
 REMOVE PatientName
-REMOVE PatientTelephoneNumbers
-REMOVE PatientTelephoneNumber
+REMOVE startswith:PatientTelephoneNumber
