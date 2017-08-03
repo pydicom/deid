@@ -6,11 +6,10 @@ ADD PatientIdentityRemoved Yes
 REPLACE endswith:PatientID var:entity_id
 REPLACE IssuerOfPatientID STARR
 REPLACE endswith:SOPInstanceUID var:item_id
-REPLACE contains:PatientBirthDate var:entity_timestamp
-REPLACE endswith:InstanceCreationDate var:item_timestamp
 JITTER endswith:Date var:jitter
 REMOVE AdditionalPatientHistory
 REMOVE AccessionNumber
+REMOVE FillerOrderNumberImagingServiceRequest
 REMOVE OtherPatientIDs
 REMOVE OtherPatientNames
 REMOVE OtherPatientIDsSequence
@@ -19,5 +18,7 @@ REMOVE PatientBirthDate
 REMOVE PatientBirthName
 REMOVE PatientMotherBirthName
 REMOVE PatientName
+REMOVE ReasonForStudy
 REMOVE startswith:PatientTelephoneNumber
 REMOVE jitter
+REMOVE endswith:ID
