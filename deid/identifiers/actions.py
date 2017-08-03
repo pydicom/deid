@@ -79,6 +79,7 @@ def _perform_action(field,item,action,value=None):
         action = "BLANK"
 
     if field in item and action != "ADD":
+        
         # Blank the value
         if action == "BLANK":
             item[field] = ""
@@ -107,8 +108,10 @@ def _perform_action(field,item,action,value=None):
         elif action == "REMOVE":
             del item[field]
             done = True
+
         if not done:            
-            bot.warning("%s %s not done for %s" %(action,field))
+            bot.warning("%s not done for %s" %(action,field))
+
 
     elif action == "ADD":
         value = parse_value(item,value)
