@@ -41,7 +41,7 @@ from pydicom.errors import InvalidDicomError
 import dateutil.parser
 import tempfile
 
-from .utils import get_func, save_dicom,
+from .utils import get_func, save_dicom
 from .actions import perform_action
 
 from .fields import (
