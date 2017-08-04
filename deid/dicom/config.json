@@ -4,8 +4,8 @@
          
          "skip": ["PixelData"],
          "ids":{
-            "entity":"AccessionNumber",
-            "item":"SOPInstanceUID"
+            "entity":"PatientID",
+            "item":"AccessionNumber"
          }
 
    },
