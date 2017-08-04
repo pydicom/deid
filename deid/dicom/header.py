@@ -24,33 +24,25 @@ SOFTWARE.
 
 
 from deid.logger import bot
-from deid.utils import (
-    read_json
-)
+from deid.utils import read_json
 
 from .tags import (
-    remove_tag
+    remove_tag,
+    remove_sequences
 )
-
 from deid.identifiers.utils import (
     create_lookup,
     load_identifiers
 )
 
-from deid.config import (
-    load_deid
-)
-
+from deid.config import load_deid
 from pydicom import read_file
 from pydicom.errors import InvalidDicomError
 import dateutil.parser
 import tempfile
 
-from .utils import (
-    get_func, 
-    save_dicom,
-    perform_action
-)
+from .utils import get_func, save_dicom,
+from .actions import perform_action
 
 from .fields import (
     get_fields,
@@ -162,7 +154,7 @@ def remove_private_identifiers(dicom_files,
 
 
 def replace_identifiers(dicom_files,
-                        ids=None,
+                        ids,
                         deid=None,
                         save=True,
                         overwrite=False,
@@ -171,11 +163,12 @@ def replace_identifiers(dicom_files,
                         item_id=None,
                         force=True,
                         config=None,
+                        default_action="KEEP",
+                        remove_sequences=True,
                         remove_private=True):
 
     '''replace identifiers will replace dicom_files with data from ids based
-    on a combination of a config (default is remove all) and a users preferences (deid)
-    :param ids: the ids from get_identifiers, with any changes
+    on a combination of a config (default is remove all) and a user deid spec
     :param dicom_files: the dicom file(s) to extract from
     :param force: force reading the file (default True)
     :param save: if True, save to file. Otherwise, return dicom objects
@@ -186,11 +179,16 @@ def replace_identifiers(dicom_files,
     if config is None:
         config = "%s/config.json" %(here)
 
-    if deid is not None:
-        deid = load_deid(deid)
-
     if not os.path.exists(config):
         bot.error("Cannot find config %s, exiting" %(config))
+
+    # Validate any provided deid
+    if deid is not None:
+        if not isinstance(deid,dict):
+            deid = load_deid(deid)
+            if deid['format'] != 'dicom':
+                bot.error('DEID format must be dicom.')
+                sys.exit(1)
 
     config = read_json(config)
 
@@ -204,15 +202,7 @@ def replace_identifiers(dicom_files,
         item_id = config['get']['ids']['item']
     
     # Is a default specified?
-    default = "REMOVE"
-    if "default" in config['put']:
-        config_default = config['put']['default'].upper()
-        if config_default in ["REMOVE","BLANK"]:
-            default = config_default
-        else:
-            bot.warning("%s specified as default, but is invalid" %(config_default))
-    bot.debug("Default action is %s" %default)
-
+    bot.debug("Default action is %s" %default_action)
 
     # Parse through dicom files, update headers, and save
     updated_files = []
@@ -225,57 +215,39 @@ def replace_identifiers(dicom_files,
         # Read in / calculate preferred values
         entity = dicom.get(entity_id)
         item = dicom.get(item_id) 
-        fields = get_fields_byVR(dicom)
+        fields = dicom.dir()
 
-        # Is the entity_id in the data structure given to de-identify?
-        if ids is not None:
+        # Remove sequences first, maintained in DataStore
+        if remove_sequences is True:
+            dicom = remove_sequences(dicom)
 
-            # Python 3 seems to load arg automatically?
-            if not isinstance(ids,dict):
-                if ids.endswith('.pkl'):
-                    ids = load_identifiers(ids)
-
-            if entity in ids:
-
-                items = ids[entity]
-                if item in items:
-                
-                    # First preference goes to user specified options
-                    if deid is not None:
-
-                        if not isinstance(deid,dict):
-                            deid = load_deid(deid)
-
-                        if deid['format'] == 'dicom':
-                            for action in deid['header']:
-
-                                 # We've dealt with this field
-                                 result = perform_action(dicom=dicom,
-                                                         item=items[item],
-                                                         action=action,
-                                                         fields=fields)
-                                 if result is not None:
-                                     fields = [x for x in fields if x != action['field']]
-                                     dicom = result
+        if deid is not None:
+            for entity in ids:
+                if item in ids[entity]:
+                    for action in deid['header']:
+                        dicom,seen = perform_action(dicom=dicom,
+                                                item=items[item],
+                                                action=action,
+                                                fields=fields,
+                                                return_seen=True)
+                        fields = [x for x in fields if x not in seen]
 
 
         # Next perform actions in default config, only if not done
         for action in config['put']['actions']:
             if action['field'] in fields:
-                 result = perform_action(dicom=dicom,
-                                         action=action)
-
-                 # Only count as done if we succeed
-                 if result is not None:
-                     fields = [x for x in fields if x != action['field']]
-                     dicom = result
+                 dicom, seen = perform_action(dicom=dicom,
+                                              action=action,
+                                              return_seen=True)
+                 fields = [x for x in fields if x not in seen]
 
 
-        # Remaining fields must be blanked or removed
-        for field in fields:
-            dicom = perform_action(dicom=dicom,
-                                   action={'action': default, 
-                                           'field': field })
+        # Apply default action, only if not keep
+        if default_action != "KEEP":
+            for field in fields:
+                dicom = perform_action(dicom=dicom,
+                                       action={'action': default_action, 
+                                               'field': field })
 
         if remove_private is True:
             dicom.remove_private_tags()
@@ -291,5 +263,4 @@ def replace_identifiers(dicom_files,
 
         updated_files.append(dicom)
        
-
     return updated_files

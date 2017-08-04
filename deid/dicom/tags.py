@@ -26,6 +26,7 @@ SOFTWARE.
 from deid.logger import bot
 from pydicom import read_file
 from pydicom.tagtools import tag_in_exception
+from pydicom.sequence import Sequence
 from pydicom._dicom_dict import (
     DicomDictionary,
     RepeatersDictionary
@@ -97,6 +98,13 @@ def _filter_tags(tags,idx,fields=None):
 # Manipulating Tags in Data
 #########################################################################
 
+
+def remove_sequences(dicom):
+    bot.debug('Removing sequences')
+    for field in dicom.dir():
+        if isinstance(field,Sequence):
+            remove_tag(dicom,field)
+    return dicom
 
 
 def add_tag(dicom,field,value):
@@ -180,20 +188,23 @@ def get_private(dicom):
     '''
     datasets = [dicom]
     private_tags = []
-
     while len(datasets) > 0:
         ds = datasets.pop(0)
         taglist = sorted(ds.keys())
         for tag in taglist:
             with tag_in_exception(tag):
-                data_element = ds[tag]
-                if data_element.tag.is_private:
-                    bot.debug(data_element)
-                    private_tags.append(data_element)
-                    if tag in ds and data_element.VR == "SQ":
-                        sequence = data_element.value
-                        for dataset in sequence:
-                            datasets.append(dataset)                        
+                if tag in ds:
+                    try:
+                        data_element = ds[tag]
+                        if data_element.tag.is_private:
+                            bot.debug(data_element.name)
+                            private_tags.append(data_element)
+                            if tag in ds and data_element.VR == "SQ":
+                                sequence = data_element.value
+                                for dataset in sequence:
+                                    datasets.append(dataset)                        
+                    except IndexError:
+                        bot.debug("tag %s key present without value" %tag)
     return private_tags
 
 

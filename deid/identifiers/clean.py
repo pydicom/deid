@@ -24,7 +24,7 @@ SOFTWARE.
 
 
 from deid.logger import bot
-from .actions import perform_action
+from deid.identifiers.actions import perform_action
 
 import os
 import pickle
@@ -37,22 +37,17 @@ from deid.config import load_deid
 from deid.data import get_deid
 
 
-def clean_item(item, deid, default=None):
+def clean_item(item, deid, default="KEEP"):
     '''clean a single item according to a deid specification.
     '''
     # Keep track of the fields we've seen, not to blank them
     seen = []
-    if default is None:
-        default = "BLANK"
-
     for action in deid['header']:
         item,fields = perform_action(item=item,
                                      action=action,
                                      return_seen=True)
         seen = seen + [f for f in fields if f not in seen]
-
     remaining = [x for x in item.keys() if x not in seen]
-
     # Apply default action to remaining fields
     if len(remaining) > 0:
         bot.warning("%s fields set for default action %s" %(len(remaining),default))
@@ -60,11 +55,10 @@ def clean_item(item, deid, default=None):
         for field in remaining:
             action = {'action': default, "field":field}
             item = perform_action(item=item, action=action)
-
     return item
 
 
-def clean_identifiers(ids, deid=None, image_type=None, default=None):
+def clean_identifiers(ids, deid, default="KEEP"):
     '''clean identifiers will take a dictionary of entity, with key as entity id,
     and value another dictionary of items, with key the item id, and value a dict
     of key:value pairs. eg:
@@ -77,12 +71,8 @@ def clean_identifiers(ids, deid=None, image_type=None, default=None):
     Typically, the next step is to replace some data back into image headers
     with dicom.replace_identifiers, or upload this data to a database
     '''
-    if deid is None:
-        deid = get_deid(tag=image_type)
-
     if not isinstance(deid,dict):
         deid = load_deid(deid)
-
     # Generate ids dictionary for data put (replace_identifiers) function
     cleaned = dict()
     for entity, items in ids.items():
