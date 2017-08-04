@@ -99,8 +99,6 @@ def get_fields(dicom, skip=None, expand_sequences=True):
                     value = value.decode('utf-8')
                 fields[contender] = str(value)
 
-    bot.debug("Found %s fields for %s" %(len(fields),
-                                         dicom_file))
     return fields
 
 
