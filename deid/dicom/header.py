@@ -163,9 +163,8 @@ def replace_identifiers(dicom_files,
                         force=True,
                         config=None,
                         default_action="KEEP",
-                        remove_sequences=True,
+                        strip_sequences=True,
                         remove_private=True):
-
     '''replace identifiers will replace dicom_files with data from ids based
     on a combination of a config (default is remove all) and a user deid spec
     :param dicom_files: the dicom file(s) to extract from
@@ -174,13 +173,10 @@ def replace_identifiers(dicom_files,
     :param config: if None, uses default in provided module folder
     :param overwrite: if False, save updated files to temporary directory
     '''
-
     if config is None:
         config = "%s/config.json" %(here)
-
     if not os.path.exists(config):
         bot.error("Cannot find config %s, exiting" %(config))
-
     # Validate any provided deid
     if deid is not None:
         if not isinstance(deid,dict):
@@ -188,50 +184,38 @@ def replace_identifiers(dicom_files,
             if deid['format'] != 'dicom':
                 bot.error('DEID format must be dicom.')
                 sys.exit(1)
-
     config = read_json(config)
-
     if not isinstance(dicom_files,list):
         dicom_files = [dicom_files]
-
     # Organize the data based on the following
     if entity_id is None:
         entity_id = config['get']['ids']['entity']
     if item_id is None:
         item_id = config['get']['ids']['item']
-    
     # Is a default specified?
     bot.debug("Default action is %s" %default_action)
-
     # Parse through dicom files, update headers, and save
     updated_files = []
-
     for dicom_file in dicom_files:
-
         dicom = read_file(dicom_file,force=force)
         dicom_name = os.path.basename(dicom_file)
-
         # Read in / calculate preferred values
         entity = dicom.get(entity_id)
         item = dicom.get(item_id) 
         fields = dicom.dir()
-
         # Remove sequences first, maintained in DataStore
-        if remove_sequences is True:
+        if strip_sequences is True:
             dicom = remove_sequences(dicom)
-
         if deid is not None:
             for entity in ids:
                 if item in ids[entity]:
                     for action in deid['header']:
                         dicom,seen = perform_action(dicom=dicom,
-                                                item=items[item],
+                                                item=ids[entity][item],
                                                 action=action,
                                                 fields=fields,
                                                 return_seen=True)
                         fields = [x for x in fields if x not in seen]
-
-
         # Next perform actions in default config, only if not done
         for action in config['put']['actions']:
             if action['field'] in fields:
@@ -239,27 +223,21 @@ def replace_identifiers(dicom_files,
                                               action=action,
                                               return_seen=True)
                  fields = [x for x in fields if x not in seen]
-
-
         # Apply default action, only if not keep
         if default_action != "KEEP":
             for field in fields:
                 dicom = perform_action(dicom=dicom,
                                        action={'action': default_action, 
                                                'field': field })
-
         if remove_private is True:
             dicom.remove_private_tags()
         else:
             bot.warning("Private tags were not removed!")
-
         # Save to file?
         if save:
             dicom = save_dicom(dicom=dicom,
                                dicom_file=dicom_file,
                                output_folder=output_folder,
                                overwrite=overwrite)
-
         updated_files.append(dicom)
-       
     return updated_files
