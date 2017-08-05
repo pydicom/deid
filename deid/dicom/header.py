@@ -78,6 +78,8 @@ def get_identifiers(dicom_files,
     :param expand_sequences: if True, expand sequences. otherwise, skips
     '''
 
+    bot.debug('Extracting identifiers for %s dicom' %(len(dicom_files)))
+
     if config is None:
         config = "%s/config.json" %(here)
 
@@ -107,9 +109,6 @@ def get_identifiers(dicom_files,
         # Read in / calculate preferred values
         entity = dicom.get(entity_id)
         item = dicom.get(item_id)
-
-        bot.debug('entity id: %s' %(entity))
-        bot.debug('item id: %s' %(item))
 
         if entity is None or item is None:
             bot.warning("Cannot find entity or item id for %s, skipping." %(dicom_file))
