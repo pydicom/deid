@@ -162,7 +162,6 @@ def replace_identifiers(dicom_files,
                         item_id=None,
                         force=True,
                         config=None,
-                        default_action="KEEP",
                         strip_sequences=True,
                         remove_private=True):
     '''replace identifiers will replace dicom_files with data from ids based
@@ -195,9 +194,6 @@ def replace_identifiers(dicom_files,
     if item_id is None:
         item_id = config['get']['ids']['item']
 
-    # Is a default specified?
-    bot.debug("Default action is %s" %default_action)
-
     # Parse through dicom files, update headers, and save
     updated_files = []
     for dicom_file in dicom_files:
@@ -216,34 +212,24 @@ def replace_identifiers(dicom_files,
             for entity in ids:
                 if item in ids[entity]:
                     for action in deid['header']:
-                        dicom,seen = perform_action(dicom=dicom,
-                                                    item=ids[entity][item],
-                                                    action=action,
-                                                    fields=fields,
-                                                    return_seen=True)
-                        fields = [x for x in fields if x not in seen]
+                        dicom = perform_action(dicom=dicom,
+                                               item=ids[entity][item],
+                                               action=action,
+                                               fields=dicom.dir())
  
         # Next perform actions in default config, only if not done
         for action in config['put']['actions']:
             if action['field'] in fields:
-                 dicom, seen = perform_action(dicom=dicom,
-                                              action=action,
-                                              return_seen=True)
-                 fields = [x for x in fields if x not in seen]
+                 dicom = perform_action(dicom=dicom,
+                                        action=action)
 
-        # Apply default action, only if not keep
-        if default_action != "KEEP":
-            for field in fields:
-                dicom = perform_action(dicom=dicom,
-                                       action={'action': default_action, 
-                                               'field': field })
         if remove_private is True:
             dicom.remove_private_tags()
         else:
             bot.warning("Private tags were not removed!")
 
         # Save to file?
-        if save:
+        if save is True:
             dicom = save_dicom(dicom=dicom,
                                dicom_file=dicom_file,
                                output_folder=output_folder,
