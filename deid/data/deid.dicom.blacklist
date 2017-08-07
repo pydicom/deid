@@ -2,11 +2,13 @@ FORMAT dicom
 
 %header
 
-REPLACE endswith:PatientID var:entity_id
-REPLACE endswith:SOPInstanceUID var:item_id
 JITTER endswith:Date var:jitter
+REMOVE endswith:Time
 REMOVE AdditionalPatientHistory
 REMOVE AccessionNumber
+REMOVE PatientID
+REMOVE startswith:IssueDate
+REMOVE IssuerOfPatientID
 REMOVE FillerOrderNumberImagingServiceRequest
 REMOVE OtherPatientIDs
 REMOVE OtherPatientNames
@@ -16,14 +18,12 @@ REMOVE PatientBirthName
 REMOVE PatientMotherBirthName
 REMOVE PatientName
 REMOVE ReasonForStudy
+REMOVE contains:Trial
 REMOVE startswith:PatientTelephoneNumber
-REMOVE jitter
 REMOVE endswith:ID
 REMOVE endswith:IDs
-
 REPLACE IssuerOfPatientID STARR
-
-REPLACE
 ADD PatientID var:entity_id
 ADD AccessionNumber var:item_id
 ADD PatientIdentityRemoved Yes
+REMOVE jitter
