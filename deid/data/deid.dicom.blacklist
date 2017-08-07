@@ -12,7 +12,6 @@ REMOVE OtherPatientIDs
 REMOVE OtherPatientNames
 REMOVE OtherPatientIDsSequence
 REMOVE PatientAddress
-REMOVE PatientBirthDate
 REMOVE PatientBirthName
 REMOVE PatientMotherBirthName
 REMOVE PatientName
