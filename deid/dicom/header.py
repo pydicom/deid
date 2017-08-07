@@ -177,6 +177,7 @@ def replace_identifiers(dicom_files,
         config = "%s/config.json" %(here)
     if not os.path.exists(config):
         bot.error("Cannot find config %s, exiting" %(config))
+
     # Validate any provided deid
     if deid is not None:
         if not isinstance(deid,dict):
@@ -187,22 +188,27 @@ def replace_identifiers(dicom_files,
     config = read_json(config)
     if not isinstance(dicom_files,list):
         dicom_files = [dicom_files]
+
     # Organize the data based on the following
     if entity_id is None:
         entity_id = config['get']['ids']['entity']
     if item_id is None:
         item_id = config['get']['ids']['item']
+
     # Is a default specified?
     bot.debug("Default action is %s" %default_action)
+
     # Parse through dicom files, update headers, and save
     updated_files = []
     for dicom_file in dicom_files:
         dicom = read_file(dicom_file,force=force)
         dicom_name = os.path.basename(dicom_file)
+
         # Read in / calculate preferred values
         entity = dicom.get(entity_id)
         item = dicom.get(item_id) 
         fields = dicom.dir()
+
         # Remove sequences first, maintained in DataStore
         if strip_sequences is True:
             dicom = remove_sequences(dicom)
@@ -211,11 +217,12 @@ def replace_identifiers(dicom_files,
                 if item in ids[entity]:
                     for action in deid['header']:
                         dicom,seen = perform_action(dicom=dicom,
-                                                item=ids[entity][item],
-                                                action=action,
-                                                fields=fields,
-                                                return_seen=True)
+                                                    item=ids[entity][item],
+                                                    action=action,
+                                                    fields=fields,
+                                                    return_seen=True)
                         fields = [x for x in fields if x not in seen]
+ 
         # Next perform actions in default config, only if not done
         for action in config['put']['actions']:
             if action['field'] in fields:
@@ -223,6 +230,7 @@ def replace_identifiers(dicom_files,
                                               action=action,
                                               return_seen=True)
                  fields = [x for x in fields if x not in seen]
+
         # Apply default action, only if not keep
         if default_action != "KEEP":
             for field in fields:
@@ -233,6 +241,7 @@ def replace_identifiers(dicom_files,
             dicom.remove_private_tags()
         else:
             bot.warning("Private tags were not removed!")
+
         # Save to file?
         if save:
             dicom = save_dicom(dicom=dicom,
