@@ -22,6 +22,7 @@ REMOVE contains:Trial
 REMOVE startswith:PatientTelephoneNumber
 REMOVE endswith:ID
 REMOVE endswith:IDs
+REMOVE contains:UID
 REPLACE IssuerOfPatientID STARR
 ADD PatientID var:entity_id
 ADD AccessionNumber var:item_id
