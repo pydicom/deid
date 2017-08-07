@@ -62,22 +62,14 @@ here = os.path.dirname(os.path.abspath(__file__))
 def get_identifiers(dicom_files,
                     force=True,
                     config=None,
-                    entity_id=None,
-                    item_id=None,
                     expand_sequences=True):
-
     '''extract all identifiers from a dicom image.
-    This function cannot be sure if more than one source_id 
-    is present in the data, so it returns a lookup dictionary 
-    by patient and item id.
+    This function returns a lookup by file name
     :param dicom_files: the dicom file(s) to extract from
     :param force: force reading the file (default True)
     :param config: if None, uses default in provided module folder
-    :param entity_id: if specified, override default in config
-    :param item_id: if specified, overrides 
     :param expand_sequences: if True, expand sequences. otherwise, skips
     '''
-
     bot.debug('Extracting identifiers for %s dicom' %(len(dicom_files)))
 
     if config is None:
@@ -85,7 +77,6 @@ def get_identifiers(dicom_files,
 
     if not os.path.exists(config):
         bot.error("Cannot find config %s, exiting" %(config))
-
     config = read_json(config)['get']
 
     if not isinstance(dicom_files,list):
@@ -96,31 +87,16 @@ def get_identifiers(dicom_files,
     # We will skip PixelData
     skip = config['skip']
 
-    # Organize the data based on the following
-    if entity_id is None:
-        entity_id = config['ids']['entity']
-    if item_id is None:
-        item_id = config['ids']['item']
-
-
     for dicom_file in dicom_files:
+        item_id = os.path.basename(dicom_file)
         dicom = read_file(dicom_file,force=True)
 
-        # Read in / calculate preferred values
-        entity = dicom.get(entity_id)
-        item = dicom.get(item_id)
+        if item_id not in ids:
+            ids[item_id] = dict()
 
-        if entity is None or item is None:
-            bot.warning("Cannot find entity or item id for %s, skipping." %(dicom_file))
-            continue
-
-        if entity not in ids:
-            ids[entity] = dict()
-         
-        ids[entity][item] = get_fields(dicom,
-                                       skip=skip,
-                                       expand_sequences=expand_sequences)
-
+        ids[item_id] = get_fields(dicom,
+                                  skip=skip,
+                                  expand_sequences=expand_sequences)
     return ids
 
 

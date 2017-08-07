@@ -65,7 +65,6 @@ def perform_action(dicom,action,item=None,fields=None,return_seen=False):
                                      contenders=fields)
     # Keep track of fields we have seen
     seen = []    
-    changed = False
     for field in fields:
         seen.append(field)
         dicom = _perform_action(dicom=dicom,
@@ -93,10 +92,12 @@ def _perform_action(dicom,field,action,value=None,item=None):
                                                                               ".".join(valid_actions)))
         action = "BLANK"
     if field in dicom and action != "ADD":
+
         # Blank the value
         if action == "BLANK":
             dicom = blank_tag(dicom,field)
             done = True
+
         # Code the value with something in the response
         elif action == "REPLACE":
             value = parse_value(item,value)
@@ -118,10 +119,12 @@ def _perform_action(dicom,field,action,value=None,item=None):
         # Do nothing. Keep the original
         elif action == "KEEP":
             done = True
+
         # Remove the field entirely
         elif action == "REMOVE":
             dicom = remove_tag(dicom,field)
             done = True
+
         if not done:            
             bot.warning("%s %s not done for %s" %(action,
                                                   field,

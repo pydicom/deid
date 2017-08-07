@@ -20,7 +20,10 @@ REMOVE startswith:PatientTelephoneNumber
 REMOVE jitter
 REMOVE endswith:ID
 REMOVE endswith:IDs
+
 REPLACE IssuerOfPatientID STARR
+
+REPLACE
 ADD PatientID var:entity_id
 ADD AccessionNumber var:item_id
 ADD PatientIdentityRemoved Yes
