@@ -107,15 +107,15 @@ def remove_sequences(dicom):
     return dicom
 
 
-def add_tag(dicom,field,value):
+def add_tag(dicom,field,value, quiet=False):
     '''add tag will add a tag only if it's in the (active) DicomDictionary
     :param dicom: the pydicom.dataset Dataset (pydicom.read_file)
     :param field: the name of the field to add
     :param value: the value to set, if name is a valid tag
     '''
     dicom_file = os.path.basename(dicom.filename)
-    bot.debug("Attempting ADDITION of %s to %s." %(field,dicom_file))
-
+    if quiet is False:
+        bot.debug("Attempting ADDITION of %s to %s." %(field,dicom_file))
     dicom = change_tag(dicom,field,value)
  
     # dicom.data_element("PatientIdentityRemoved")

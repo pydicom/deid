@@ -96,7 +96,6 @@ def _perform_action(dicom,field,action,value=None,item=None):
 
         # Blank the value
         if action == "BLANK":
-            bot.debug("BLANKING %s" %field)
             dicom = blank_tag(dicom,field)
 
         # Code the value with something in the response
@@ -131,9 +130,7 @@ def _perform_action(dicom,field,action,value=None,item=None):
     elif action == "ADD":
         value = parse_value(item,value)
         if value is not None:
-            dicom = add_tag(dicom,field,value) 
-    else:
-        bot.warning('Field %s is not present in %s' %(field,dicom_file))
+            dicom = add_tag(dicom,field,value,quiet=True) 
     return dicom
 
 
