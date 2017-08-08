@@ -181,7 +181,8 @@ def replace_identifiers(dicom_files,
         dicom_file = dicom_files[d]
         dicom = read_file(dicom_file,force=force)
         idx = os.path.basename(dicom_file)
-        print("[%s of %s]:%s" %(d,len(dicom_files),idx))
+        status = "[%s of %s]:%s" %(d,len(dicom_files),idx)
+        print(status, end='', flush=True)
         fields = dicom.dir()
 
         # Remove sequences first, maintained in DataStore
@@ -226,7 +227,18 @@ def replace_identifiers(dicom_files,
         file_metas.MediaStorageSOPInstanceUID=''
         file_metas.ImplementationVersionName='' 
         file_metas.ImplementationClassUID=''
+
+        # File attributes for meta
+        attributes = ['TransferSyntaxUID',
+                      'FileMetaInformationGroupLength',
+                      'FileMetaInformationVersion']
+
+        for attribute in attributes:
+            file_metas.add(dicom.file_meta.data_element(attribute))        
+
+        # Preamble is required
         ds.file_meta=file_metas
+        ds.preamble = vars(dicom)['preamble']
           
         # Save to file?
         if save is True:
