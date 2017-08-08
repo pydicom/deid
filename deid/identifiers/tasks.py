@@ -1,5 +1,5 @@
 '''
-clean.py: clean data structure based on a deid specification
+clean.py: tasks for data structure based on a deid specification
 
 Copyright (c) 2017 Vanessa Sochat
 
@@ -37,6 +37,16 @@ from deid.config import load_deid
 from deid.data import get_deid
 
 
+# Checking
+
+def check_item(item):
+    '''print item fields and values to screen
+    '''
+    for key,val in item.items():
+        bot.info("%s: %s" %(key,val))
+
+# Cleaning
+
 def clean_item(item, deid, default="KEEP"):
     '''clean a single item according to a deid specification.
     '''
@@ -48,14 +58,15 @@ def clean_item(item, deid, default="KEEP"):
                                      return_seen=True)
         seen = seen + [f for f in fields if f not in seen]
     remaining = [x for x in item.keys() if x not in seen]
+
     # Apply default action to remaining fields
-    if len(remaining) > 0:
-        bot.warning("%s fields set for default action %s" %(len(remaining),default))
-        bot.debug(",".join(remaining))
+    if len(remaining) > 0 and default != "KEEP":
+        bot.debug("%s fields set for default action %s" %(len(remaining),default))
         for field in remaining:
             action = {'action': default, "field":field}
             item = perform_action(item=item, action=action)
     return item
+
 
 
 def clean_identifiers(ids, deid, default="KEEP"):
@@ -73,14 +84,11 @@ def clean_identifiers(ids, deid, default="KEEP"):
     '''
     if not isinstance(deid,dict):
         deid = load_deid(deid)
+
     # Generate ids dictionary for data put (replace_identifiers) function
     cleaned = dict()
-    for entity, items in ids.items():
-        cleaned[entity] = dict()
-        item_ids=list(items.keys())
-        for item_id in item_ids:
-            item = items[item_id]
-            cleaned[entity][item_id] = clean_item(item=item,
-                                                  deid=deid,
-                                                  default=default)
+    for item_id, item in ids.items():
+        cleaned[item_id] = clean_item(item=item,
+                                      deid=deid,
+                                      default=default)
     return cleaned

@@ -4,4 +4,4 @@ from .utils import (
     get_timestamp
 )
 
-from .clean import clean_identifiers
+from .tasks import clean_identifiers

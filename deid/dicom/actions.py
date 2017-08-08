@@ -85,50 +85,40 @@ def _perform_action(dicom,field,action,value=None,item=None):
     Both result in a call to this function. If an action fails or is not
     done, None is returned, and the calling function should handle this.
     '''
-    done = False
     dicom_file = os.path.basename(dicom.filename)    
     if action not in valid_actions:
         bot.warning('%s in not a valid choice [%s]. Defaulting to blanked.' %(action,
                                                                               ".".join(valid_actions)))
         action = "BLANK"
     if field in dicom and action != "ADD":
-
         # Blank the value
         if action == "BLANK":
+            bot.debug("BLANKING %s" %field)
             dicom = blank_tag(dicom,field)
-            done = True
-
         # Code the value with something in the response
         elif action == "REPLACE":
             value = parse_value(item,value)
             if value is not None:
                 # If we make it here, do the replacement
-                done = True
                 dicom = update_tag(dicom,
                                    field=field,
                                    value=value)
+            else:
+                bot.warning("REPLACE %s unsuccessful" %field)
         # Code the value with something in the response
         elif action == "JITTER":
             value = parse_value(item,value)
             if value is not None:
                 # Jitter the field by the supplied value
-                done = True
                 dicom = jitter_timestamp(item=dicom,
                                          field=field,
                                          value=value)
-        # Do nothing. Keep the original
-        elif action == "KEEP":
-            done = True
-
+            else:
+                bot.warning("JITTER %s unsuccessful" %field)
+        # elif "KEEP" --> Do nothing. Keep the original
         # Remove the field entirely
         elif action == "REMOVE":
             dicom = remove_tag(dicom,field)
-            done = True
-
-        if not done:            
-            bot.warning("%s %s not done for %s" %(action,
-                                                  field,
-                                                  dicom_file))
     elif action == "ADD":
         value = parse_value(item,value)
         if value is not None:

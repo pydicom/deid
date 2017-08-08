@@ -102,7 +102,7 @@ def _filter_tags(tags,idx,fields=None):
 def remove_sequences(dicom):
     bot.debug('Removing sequences')
     for field in dicom.dir():
-        if isinstance(field,Sequence):
+        if isinstance(dicom.get(field),Sequence):
             dicom = remove_tag(dicom,field)
     return dicom
 

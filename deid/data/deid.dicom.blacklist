@@ -2,8 +2,8 @@ FORMAT dicom
 
 %header
 
-JITTER endswith:Date var:jitter
 REMOVE endswith:Time
+REMOVE endswith:Date
 REMOVE AdditionalPatientHistory
 REMOVE AccessionNumber
 REMOVE PatientID
@@ -23,7 +23,9 @@ REMOVE startswith:PatientTelephoneNumber
 REMOVE endswith:ID
 REMOVE endswith:IDs
 REMOVE contains:UID
-REPLACE IssuerOfPatientID STARR
+ADD IssuerOfPatientID STARR
+ADD PatientBirthDate var:entity_timestamp
+ADD StudyDate var:item_timestamp
 ADD PatientID var:entity_id
 ADD AccessionNumber var:item_id
 ADD PatientIdentityRemoved Yes

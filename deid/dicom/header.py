@@ -43,6 +43,7 @@ import tempfile
 
 from .utils import get_func, save_dicom
 from .actions import perform_action
+from pydicom.dataset import Dataset
 
 from .fields import (
     get_fields,
@@ -134,8 +135,6 @@ def replace_identifiers(dicom_files,
                         save=True,
                         overwrite=False,
                         output_folder=None,
-                        entity_id=None,
-                        item_id=None,
                         force=True,
                         config=None,
                         strip_sequences=True,
@@ -160,38 +159,29 @@ def replace_identifiers(dicom_files,
             if deid['format'] != 'dicom':
                 bot.error('DEID format must be dicom.')
                 sys.exit(1)
+
     config = read_json(config)
     if not isinstance(dicom_files,list):
         dicom_files = [dicom_files]
-
-    # Organize the data based on the following
-    if entity_id is None:
-        entity_id = config['get']['ids']['entity']
-    if item_id is None:
-        item_id = config['get']['ids']['item']
 
     # Parse through dicom files, update headers, and save
     updated_files = []
     for dicom_file in dicom_files:
         dicom = read_file(dicom_file,force=force)
-        dicom_name = os.path.basename(dicom_file)
-
-        # Read in / calculate preferred values
-        entity = dicom.get(entity_id)
-        item = dicom.get(item_id) 
+        idx = os.path.basename(dicom_file)
         fields = dicom.dir()
 
         # Remove sequences first, maintained in DataStore
         if strip_sequences is True:
             dicom = remove_sequences(dicom)
+
         if deid is not None:
-            for entity in ids:
-                if item in ids[entity]:
-                    for action in deid['header']:
-                        dicom = perform_action(dicom=dicom,
-                                               item=ids[entity][item],
-                                               action=action,
-                                               fields=dicom.dir())
+            for item_id in ids:
+                for action in deid['header']:
+                    dicom = perform_action(dicom=dicom,
+                                           item=ids[item_id],
+                                           action=action,
+                                           fields=dicom.dir())
  
         # Next perform actions in default config, only if not done
         for action in config['put']['actions']:
@@ -206,7 +196,17 @@ def replace_identifiers(dicom_files,
 
         # Save to file?
         if save is True:
-            dicom = save_dicom(dicom=dicom,
+            ds = Dataset()
+            for field in dicom.dir():
+                ds.add(dicom.data_element(field))
+
+            # Copy original data types
+            attributes = ['is_little_endian','is_implicit_VR']
+            for attribute in attributes:
+                ds.__setattr__(attribute,
+                                dicom.__getattribute__(attribute))
+
+            dicom = save_dicom(dicom=ds,
                                dicom_file=dicom_file,
                                output_folder=output_folder,
                                overwrite=overwrite)

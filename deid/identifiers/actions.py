@@ -79,10 +79,11 @@ def _perform_action(field,item,action,value=None):
         action = "BLANK"
 
     if field in item and action != "ADD":
-        
+
         # Blank the value
         if action == "BLANK":
             item[field] = ""
+            bot.debug('BLANK %s' %field)
             done = True
 
         # Code the value with something in the response
@@ -91,6 +92,8 @@ def _perform_action(field,item,action,value=None):
             if value is not None:
                 done = True
                 item[field] = value
+            else:
+                bot.warning("REPLACE failed for %s" %field)
 
         # Code the value with something in the response
         elif action == "JITTER":
@@ -100,30 +103,31 @@ def _perform_action(field,item,action,value=None):
                 item = jitter_timestamp(field=field,
                                         value=value,
                                         item=item)
+            else:
+                bot.warning('JITTER failed for %s' %field)
+
         # Do nothing. Keep the original
         elif action == "KEEP":
             done = True
+            bot.debug('KEEP %s' %field)
 
         # Remove the field entirely
         elif action == "REMOVE":
             del item[field]
+            bot.debug('REMOVE %s' %field)
             done = True
-
         if not done:            
             bot.warning("%s not done for %s" %(action,field))
-
 
     elif action == "ADD":
         value = parse_value(item,value)
         if value is not None:
             item[field] = value
-
+        else:
+            bot.warning('ADD failed for %s' %field)
     else:
         bot.warning('Field %s is not present.' %(field))
     return item
-
-
-# Values
 
 def parse_value(item,value):
     '''parse_value will parse the value field of an action,
