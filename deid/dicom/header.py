@@ -194,21 +194,22 @@ def replace_identifiers(dicom_files,
         else:
             bot.warning("Private tags were not removed!")
 
+        ds = Dataset()
+        for field in dicom.dir():
+            ds.add(dicom.data_element(field))
+
+        # Copy original data types
+        attributes = ['is_little_endian','is_implicit_VR']
+        for attribute in attributes:
+            ds.__setattr__(attribute,
+                           dicom.__getattribute__(attribute))
+
         # Save to file?
         if save is True:
-            ds = Dataset()
-            for field in dicom.dir():
-                ds.add(dicom.data_element(field))
+            ds = save_dicom(dicom=ds,
+                            dicom_file=dicom_file,
+                            output_folder=output_folder,
+                            overwrite=overwrite)
+        updated_files.append(ds)
 
-            # Copy original data types
-            attributes = ['is_little_endian','is_implicit_VR']
-            for attribute in attributes:
-                ds.__setattr__(attribute,
-                                dicom.__getattribute__(attribute))
-
-            dicom = save_dicom(dicom=ds,
-                               dicom_file=dicom_file,
-                               output_folder=output_folder,
-                               overwrite=overwrite)
-        updated_files.append(dicom)
     return updated_files

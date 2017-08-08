@@ -77,8 +77,11 @@ def save_dicom(dicom,dicom_file,output_folder=None,overwrite=False):
     '''save_dicom will save a dicom file to an output folder,
     making sure to not overwrite unless the user has enforced it
     '''
-    if output_folder is None and overwrite is False:
-        output_folder = tempfile.mkdtemp()
+    if output_folder is None:
+        if overwrite is False:
+            output_folder = tempfile.mkdtemp()
+        else:
+            output_folder = os.path.basename(dicom_file)
 
     dicom_name = os.path.basename(dicom_file)
     output_dicom = "%s/%s" %(output_folder,dicom_name)
