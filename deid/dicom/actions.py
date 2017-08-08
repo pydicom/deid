@@ -63,6 +63,7 @@ def perform_action(dicom,action,item=None,fields=None,return_seen=False):
     fields = expand_field_expression(field=field,
                                      dicom=dicom,
                                      contenders=fields)
+
     # Keep track of fields we have seen
     seen = []    
     for field in fields:
@@ -90,11 +91,14 @@ def _perform_action(dicom,field,action,value=None,item=None):
         bot.warning('%s in not a valid choice [%s]. Defaulting to blanked.' %(action,
                                                                               ".".join(valid_actions)))
         action = "BLANK"
+
     if field in dicom and action != "ADD":
+
         # Blank the value
         if action == "BLANK":
             bot.debug("BLANKING %s" %field)
             dicom = blank_tag(dicom,field)
+
         # Code the value with something in the response
         elif action == "REPLACE":
             value = parse_value(item,value)
@@ -105,20 +109,25 @@ def _perform_action(dicom,field,action,value=None,item=None):
                                    value=value)
             else:
                 bot.warning("REPLACE %s unsuccessful" %field)
+
         # Code the value with something in the response
         elif action == "JITTER":
             value = parse_value(item,value)
             if value is not None:
+
                 # Jitter the field by the supplied value
                 dicom = jitter_timestamp(item=dicom,
                                          field=field,
                                          value=value)
             else:
                 bot.warning("JITTER %s unsuccessful" %field)
+
         # elif "KEEP" --> Do nothing. Keep the original
+
         # Remove the field entirely
         elif action == "REMOVE":
             dicom = remove_tag(dicom,field)
+
     elif action == "ADD":
         value = parse_value(item,value)
         if value is not None:

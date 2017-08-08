@@ -129,16 +129,8 @@ def remove_private_identifiers(dicom_files,
     return updated_files
 
 
-def replace_identifiers(dicom_files,
-                        ids,
-                        deid=None,
-                        save=True,
-                        overwrite=False,
-                        output_folder=None,
-                        force=True,
-                        config=None,
-                        strip_sequences=True,
-                        remove_private=True):
+
+def _prepare_replace_config(dicom_files, deid=None, config=None):
     '''replace identifiers will replace dicom_files with data from ids based
     on a combination of a config (default is remove all) and a user deid spec
     :param dicom_files: the dicom file(s) to extract from
@@ -159,51 +151,83 @@ def replace_identifiers(dicom_files,
             if deid['format'] != 'dicom':
                 bot.error('DEID format must be dicom.')
                 sys.exit(1)
-
     config = read_json(config)
     if not isinstance(dicom_files,list):
         dicom_files = [dicom_files]
+    return dicom_files, deid, config
+
+
+
+
+def replace_identifiers(dicom_files,
+                        ids,
+                        deid=None,
+                        save=True,
+                        overwrite=False,
+                        output_folder=None,
+                        force=True,
+                        config=None,
+                        strip_sequences=True,
+                        remove_private=True):
+    '''replace identifiers using pydicom, can be slow when writing
+    and saving new files'''
+    dicom_files, deid, config = _prepare_replace_config(dicom_files, 
+                                                        deid=deid,
+                                                        config=config)
 
     # Parse through dicom files, update headers, and save
     updated_files = []
-    for dicom_file in dicom_files:
+    for d in range(len(dicom_files)):
+        dicom_file = dicom_files[d]
         dicom = read_file(dicom_file,force=force)
         idx = os.path.basename(dicom_file)
+        print("[%s of %s]:%s" %(d,len(dicom_files),idx))
         fields = dicom.dir()
 
         # Remove sequences first, maintained in DataStore
         if strip_sequences is True:
             dicom = remove_sequences(dicom)
-
         if deid is not None:
-            for item_id in ids:
+            if idx in ids:
                 for action in deid['header']:
                     dicom = perform_action(dicom=dicom,
                                            item=ids[item_id],
-                                           action=action,
-                                           fields=dicom.dir())
- 
+                                           action=action) 
+            else:
+                bot.warning("%s is not in identifiers." %idx)
+                continue
+
         # Next perform actions in default config, only if not done
         for action in config['put']['actions']:
             if action['field'] in fields:
                  dicom = perform_action(dicom=dicom,
                                         action=action)
-
         if remove_private is True:
             dicom.remove_private_tags()
         else:
             bot.warning("Private tags were not removed!")
-
         ds = Dataset()
         for field in dicom.dir():
             ds.add(dicom.data_element(field))
 
         # Copy original data types
-        attributes = ['is_little_endian','is_implicit_VR']
+        attributes = ['is_little_endian',
+                      'is_implicit_VR',
+                      'preamble',
+                      '_parent_encoding']
+
         for attribute in attributes:
             ds.__setattr__(attribute,
                            dicom.__getattribute__(attribute))
 
+        # Retain required meta data
+        file_metas = getattr(dicom, 'file_meta', Dataset())
+        file_metas.MediaStorageSOPClassUID = ''
+        file_metas.MediaStorageSOPInstanceUID=''
+        file_metas.ImplementationVersionName='' 
+        file_metas.ImplementationClassUID=''
+        ds.file_meta=file_metas
+          
         # Save to file?
         if save is True:
             ds = save_dicom(dicom=ds,
