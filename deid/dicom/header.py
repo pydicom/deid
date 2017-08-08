@@ -191,7 +191,7 @@ def replace_identifiers(dicom_files,
             if idx in ids:
                 for action in deid['header']:
                     dicom = perform_action(dicom=dicom,
-                                           item=ids[item_id],
+                                           item=ids[idx],
                                            action=action) 
             else:
                 bot.warning("%s is not in identifiers." %idx)
