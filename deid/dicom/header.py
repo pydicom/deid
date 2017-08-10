@@ -181,7 +181,6 @@ def replace_identifiers(dicom_files,
         dicom_file = dicom_files[d]
         dicom = read_file(dicom_file,force=force)
         idx = os.path.basename(dicom_file)
-        print("[%s of %s]:%s" %(d,len(dicom_files),idx))
         fields = dicom.dir()
 
         # Remove sequences first, maintained in DataStore
