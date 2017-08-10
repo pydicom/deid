@@ -162,7 +162,7 @@ def parse_action(section,line,config):
         if len(parts) == 0:
             bot.error("%s requires a VALUE, but not found" %(action))        
             sys.exit(1)
-        value = parts.pop(0)
+        value = ' '.join(parts[0:])
         bot.debug("Adding %s" %line)
         config[section].append({ "action":action,
                                  "field":field,

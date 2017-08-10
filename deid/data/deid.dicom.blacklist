@@ -55,7 +55,7 @@ REMOVE ClinicalTrialSponsorName
 REMOVE ContentCreatorName
 REMOVE ClinicalTrialProtocolEthicsCommitteeName
 REMOVE contains:UID
-ADD IssuerOfPatientID STARR
+ADD IssuerOfPatientID STARR. In an effort to remove PHI all dates are offset from their original values.
 ADD PatientBirthDate var:entity_timestamp
 ADD StudyDate var:item_timestamp
 ADD PatientID var:entity_id

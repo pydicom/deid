@@ -83,7 +83,6 @@ def _perform_action(field,item,action,value=None):
         # Blank the value
         if action == "BLANK":
             item[field] = ""
-            bot.debug('BLANK %s' %field)
             done = True
 
         # Code the value with something in the response
@@ -114,7 +113,6 @@ def _perform_action(field,item,action,value=None):
         # Remove the field entirely
         elif action == "REMOVE":
             del item[field]
-            bot.debug('REMOVE %s' %field)
             done = True
         if not done:            
             bot.warning("%s not done for %s" %(action,field))
@@ -125,8 +123,7 @@ def _perform_action(field,item,action,value=None):
             item[field] = value
         else:
             bot.warning('ADD failed for %s' %field)
-    else:
-        bot.warning('Field %s is not present.' %(field))
+
     return item
 
 def parse_value(item,value):
