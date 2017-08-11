@@ -87,12 +87,16 @@ def get_fields(dicom, skip=None, expand_sequences=True):
     for contender in contenders:
         if contender in skip:
             continue
+
         value = dicom.get(contender)
         # Adding expanded sequences
         if isinstance(value,Sequence) and expand_sequences is True:
             sequence_fields = extract_sequence(value,prefix=contender)
             for sf in sequence_fields:
-                fields[sf['key']] = sf['value']
+                try:
+                    fields[sf['key']] = sf['value']
+                except:   # empty
+                    pass
         else:
             if value not in [None,""]:
                 if isinstance(value,bytes):

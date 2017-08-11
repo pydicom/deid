@@ -126,6 +126,7 @@ def _perform_action(field,item,action,value=None):
 
     return item
 
+
 def parse_value(item,value):
     '''parse_value will parse the value field of an action,
     either returning the string, or a variable looked up

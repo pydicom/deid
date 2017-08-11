@@ -143,7 +143,6 @@ def _prepare_replace_config(dicom_files, deid=None, config=None):
         config = "%s/config.json" %(here)
     if not os.path.exists(config):
         bot.error("Cannot find config %s, exiting" %(config))
-
     # Validate any provided deid
     if deid is not None:
         if not isinstance(deid,dict):
@@ -207,14 +206,16 @@ def replace_identifiers(dicom_files,
             bot.warning("Private tags were not removed!")
         ds = Dataset()
         for field in dicom.dir():
-            ds.add(dicom.data_element(field))
+            try:
+                ds.add(dicom.data_element(field))
+            except:
+                pass
 
         # Copy original data types
         attributes = ['is_little_endian',
                       'is_implicit_VR',
                       'preamble',
                       '_parent_encoding']
-
         for attribute in attributes:
             ds.__setattr__(attribute,
                            dicom.__getattribute__(attribute))
@@ -230,14 +231,13 @@ def replace_identifiers(dicom_files,
         attributes = ['TransferSyntaxUID',
                       'FileMetaInformationGroupLength',
                       'FileMetaInformationVersion']
-
         for attribute in attributes:
             file_metas.add(dicom.file_meta.data_element(attribute))        
 
         # Preamble is required
         ds.file_meta=file_metas
         ds.preamble = vars(dicom)['preamble']
-          
+
         # Save to file?
         if save is True:
             ds = save_dicom(dicom=ds,
