@@ -213,8 +213,6 @@ def _perform_action(dicom,field,action,value=None,item=None):
         if value is not None:
             result = add_tag(dicom,field,value) 
 
-    else:
-        bot.warning('Field %s is not present in %s' %(field,dicom_file))
 
     return result
 
