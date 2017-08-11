@@ -88,21 +88,20 @@ def get_fields(dicom, skip=None, expand_sequences=True):
         if contender in skip:
             continue
 
-        value = dicom.get(contender)
-        # Adding expanded sequences
-        if isinstance(value,Sequence) and expand_sequences is True:
-            sequence_fields = extract_sequence(value,prefix=contender)
-            for sf in sequence_fields:
-                try:
+        try:
+            value = dicom.get(contender)
+            # Adding expanded sequences
+            if isinstance(value,Sequence) and expand_sequences is True:
+                sequence_fields = extract_sequence(value,prefix=contender)
+                for sf in sequence_fields:
                     fields[sf['key']] = sf['value']
-                except:   # empty
-                    pass
-        else:
-            if value not in [None,""]:
-                if isinstance(value,bytes):
-                    value = value.decode('utf-8')
-                fields[contender] = str(value)
-
+            else:
+                if value not in [None,""]:
+                    if isinstance(value,bytes):
+                        value = value.decode('utf-8')
+                    fields[contender] = str(value)
+        except:
+            pass # need to look into this bug
     return fields
 
 
