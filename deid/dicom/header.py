@@ -59,6 +59,76 @@ here = os.path.dirname(os.path.abspath(__file__))
 # MAIN GET FUNCTIONS
 ######################################################################
 
+def get_shared_identifiers(dicom_files,
+                           force=True,
+                           config=None,
+                           aggregate=None,
+                           expand_sequences=True):
+    '''
+
+    extract shared identifiers across a set of dicom files, intended for
+    cases when a set of images (dicom) are being compressed into one file
+    and the file (still) should have some searchable metadata. By default,
+    we remove fields that differ between files. To aggregate unique, define
+    a list of aggregate fields (aggregate).
+
+    '''
+
+    bot.debug('Extracting shared identifiers for %s dicom' %(len(dicom_files)))
+
+    if aggregate is None:
+        aggregate = []
+
+    if config is None:
+        config = "%s/config.json" %(here)
+
+    if not os.path.exists(config):
+        bot.error("Cannot find config %s, exiting" %(config))
+    config = read_json(config)['get']
+
+    if not isinstance(dicom_files,list):
+        dicom_files = [dicom_files]
+    ids = dict() # identifiers
+
+    # We will skip PixelData
+    skip = config['skip']
+    for dicom_file in dicom_files:
+        item_id = os.path.basename(dicom_file)
+        dicom = read_file(dicom_file,force=True)
+        fields = get_fields(dicom,
+                            skip=skip,
+                            expand_sequences=expand_sequences)
+        for key,val in fields.items():
+
+            # If it's there, only keep if the same
+            if key in ids:
+
+                # Items to aggregate are appended, not removed
+                if key in aggregate:
+                    if val not in ids[key]:
+                        ids[key].append(val)
+                else:
+
+                    # Keep only if equal between
+                    if ids[key] == val:
+                        continue
+                    else:
+                        del ids[key]
+                        skip.append(key)
+            else:
+                if key in aggregate:
+                    val = [val]
+                ids[key] = val
+
+    # For any aggregates that are one item, unwrap again
+    for field in aggregate:
+        if field in ids:
+            if len(ids[field])==1:
+                ids[field] = ids[field][0]
+
+    return ids
+
+
 
 def get_identifiers(dicom_files,
                     force=True,
