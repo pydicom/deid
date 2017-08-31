@@ -27,11 +27,20 @@ SOFTWARE.
 formats = ['dicom']
 
 # Supported Sections
-sections = ['header','pixels','labels']
+sections = ['header','pixels','labels','filter']
 
 actions = ('ADD',
            'BLANK',
            'JITTER',
            'KEEP',
            'REPLACE',
-           'REMOVE')
+           'REMOVE',
+           'LABEL')
+
+# Valid actions for a filter action
+filters = ('contains',
+           'notcontains',
+           'equals',
+           'notequals',
+           'missing',
+           'empty')

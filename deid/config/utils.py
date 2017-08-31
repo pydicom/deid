@@ -31,7 +31,8 @@ from deid.utils import read_file
 from .standards import (
     formats,
     actions,
-    sections
+    sections,
+    filters
 )
 import os
 import re
@@ -62,7 +63,14 @@ def load_deid(path=None):
     spec = [x for x in spec if x not in ['', None]]
     config = dict()
     section = None
-    for line in spec:
+
+    while len(spec) > 0:
+
+        line = spec.pop(0)
+
+        # Clean up white trailing/leading space
+        line=line.strip()
+
         # Comment
         if line.startswith("#"):
             continue
@@ -80,21 +88,57 @@ def load_deid(path=None):
 
         # A new section?
         elif line.startswith('%'):
-            section = re.sub('[%]|(\s+)','',line).lower()
+ 
+            # Remove any comments
+            line = line.split('#',1)[0].strip()
+
+            # Is there a section name?
+            section_name = None
+            parts = line.split(' ')
+            if len(parts) > 1:
+                section_name = ' '.join(parts[1:])          
+
+            section = re.sub('[%]|(\s+)','',parts[0]).lower()
             if section not in sections:
                 bot.error("%s is not a valid section." %section)
                 sys.exit(1)
 
+            config = add_section(config=config,
+                                 section=section,
+                                 section_name=section_name)
+
         # An action (replace, blank, remove, keep, jitter)
         elif line.upper().startswith(actions):
-            if section is None:
-                bot.error('You must define a section (e.g. %header) before any action.')
-                sys.exit(1)
+              
+            # Start of a filter group
+            if line.upper().startswith('LABEL') and section == "filter":
+
+                # This is an index of starting points for groups
+                keep_going = True
+                members = []
+                while keep_going is True:
+                    next_line = spec[0]                
+                    if next_line.upper().strip().startswith('LABEL'):
+                        keep_going = False
+                    elif next_line.upper().strip().startswith("%"):
+                        keep_going = False
+                    else:
+                        new_member = spec.pop(0)
+                        members.append(new_member)
+
+                # Add the filter label to the config
+                config = parse_label(config=config,
+                                     section=section,
+                                     label=line,
+                                     section_name=section_name,
+                                     members=members)
 
             # Parse the action
-            config = parse_action(section=section,
-                                  line=line,
-                                  config=config)
+            else:
+                config = parse_action(section=section,
+                                      section_name=section_name,
+                                      line=line,
+                                      config=config)
         else:
             bot.debug("%s not recognized to be in valid format, skipping." %line)
 
@@ -123,6 +167,7 @@ def find_deid(path):
 
         path = contenders[0]
 
+
     # We have a file path at this point
     if not os.path.exists(path):
         bot.error("Cannot find deid file %s, exiting." %(path))
@@ -131,21 +176,118 @@ def find_deid(path):
     return path
 
 
-def parse_action(section,line,config):
-    '''add action will take a line from a deid config file, a config (dictionary), and
-    an active section name (eg header) and add an entry to the config file to perform
-    the action.
+def parse_label(section,config,section_name,members,label=None):
+    '''parse label will add a (optionally named) label to the filter
+    section, including one or more criteria'''
+    criteria = {'filters':[]}
+    if label is not None:                                   
+        label = (label.lower().replace('label','',1)
+                              .split('#')[0]
+                              .strip())
+        criteria['name'] = label
+    
+    entry = []
+    while len(members) > 0:
+        member = members.pop(0).strip()
+
+        # If if doesn't start with a +, it's a new criteria
+        if not member.startswith('+') or not member.startswith('||'):
+            if len(entry) > 0:
+                criteria['filters'].append(entry.copy())
+                entry = []
+
+        operator = None
+        values = None
+
+        if member.startswith('+'):
+            operator = 'and'
+            member = member.replace('+','',1)
+        elif member.startswith('||'):
+            operator = 'or'
+            member = member.replace('||','',1)
+       
+        # Now that operators removed, parse member
+        if not member.lower().startswith(filters):
+            bot.warning('%s filter is not valid, skipping.' %member.lower())
+        else:
+            action, member = member.split(' ',1)
+            if action.lower() in ['contains','notcontains','equals','notequals']:
+                field,values = member.split(' ',1)
+            elif action.lower() in ['missing', 'empty']:
+                field = member.strip()
+            else:
+                bot.error('%s is not a valid filter action.' %action.lower())
+                sys.exit(1)
+
+            entry_action = {'action':action.lower(),
+                            'field': field}
+
+            if values is not None:
+                entry_action['values'] = values            
+            if operator is not None:
+                entry_action['operator'] = operator            
+
+            entry.append(entry_action.copy())
+
+    # Add the last entry
+    if len(entry) > 0:
+        criteria['filters'].append(entry.copy())
+
+    print("adding to %s" %section_name)
+    config[section][section_name].append(criteria)
+    return config
+
+
+def add_section(config,section,section_name=None):
+    '''add section will add a section (and optionally)
+    section name to a config
     '''
+    if section is None:
+        bot.error('You must define a section (e.g. %header) before any action.')
+        sys.exit(1)
+
+    if section == 'filter' and section_name is None:
+        bot.error("You must provide a name for a filter section.")
+        sys.exit(1)
+
     if section not in sections:
         bot.error("%s is not a valid section." %section)
         sys.exit(1)
             
+    if section not in config:
+
+        # If a section is named, we have more one level (dict)
+        if section_name is not None:
+            config[section] = {}
+            config[section][section_name] = []
+        else:
+            config[section] = []
+        return config
+
+    # Section is in config
+    if section_name is not None and section_name not in config[section]:
+        config[section][section_name] = []
+
+    return config
+
+
+def parse_action(section,line,config,section_name=None):
+    '''add action will take a line from a deid config file, a config (dictionary), and
+    an active section name (eg header) and add an entry to the config file to perform
+    the action.
+
+    Parameters
+    =========
+    section: a valid section name from the deid config file
+    line: the line content to parse for the section/action
+    config: the growing/current config dictionary
+    section_name: optionally, a section name
+
+    '''
+            
     if not line.upper().startswith(actions):
         bot.error("%s is not a valid action line." %line)
         sys.exit(1)
-
-    if section not in config:
-        config[section] = []
 
     # We may have to deal with cases of spaces
     parts = line.split(' ')
@@ -155,6 +297,7 @@ def parse_action(section,line,config):
     if len(parts) < 1:
         bot.error("%s requires a FIELD value, but not found." %(action))        
         sys.exit(1)
+
     field = parts.pop(0)
 
     # Actions that require a value
