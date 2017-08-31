@@ -133,13 +133,15 @@ def get_shared_identifiers(dicom_files,
 def get_identifiers(dicom_files,
                     force=True,
                     config=None,
-                    expand_sequences=True):
+                    expand_sequences=True,
+                    skip_fields=None):
     '''extract all identifiers from a dicom image.
     This function returns a lookup by file name
     :param dicom_files: the dicom file(s) to extract from
     :param force: force reading the file (default True)
     :param config: if None, uses default in provided module folder
     :param expand_sequences: if True, expand sequences. otherwise, skips
+    :param skip_fields: if not None, added fields to skip
     '''
     bot.debug('Extracting identifiers for %s dicom' %(len(dicom_files)))
 
@@ -157,7 +159,11 @@ def get_identifiers(dicom_files,
 
     # We will skip PixelData
     skip = config['skip']
-
+    if skip_fields is not None:
+        if not isinstance(skip_fields,list):
+            skip_fields = [skip_fields]
+        skip = skip + skip_fields
+ 
     for dicom_file in dicom_files:
         item_id = os.path.basename(dicom_file)
         dicom = read_file(dicom_file,force=True)
