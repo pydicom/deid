@@ -1,6 +1,6 @@
 # Configuration
 
-The de-identification process has three parts:
+A full anonymization process has three parts:
 
  - define a set of rules for de-identification (optional)
  - [get](get.md) current fields (if you need to use them to look up replacements, etc)
