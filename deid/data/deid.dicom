@@ -273,14 +273,14 @@ LABEL MEDRAD Injection Profile # (CTP)
   coordinates 0,0,750,230
 
 
-LABEL Stanford Medical Center LightSpeed VCT
+LABEL Stanford Medical Center LightSpeed VCT # (Roger Goldman)
   contains Manufacturer GE
+  + Modality CT
   + contains ManufacturerModelName LightSpeed VCT 
-  + contains SeriesDescription DoseReport
-  + contains ImageType DERIVED|SECONDARY|SCREEN SAVE
+  + contains SeriesDescription Dose || contains ImageType SCREEN SAVE
 
 
-LABEL Stanford Medical Center LightSpeed VCT
+LABEL Stanford Medical Center LightSpeed VCT # (Roger Goldman)
   contains Manufacturer GE
   + contains ManufacturerModelName LightSpeed VCT 
   + contains SeriesDescription 3D Lab|COW|3d|vr|movie
@@ -310,11 +310,11 @@ LABEL Stanford Medicine  # (Roger Goldman)
 %filter blacklist
 
 LABEL Stanford Blacklist  # Susan Weber
-  missing ImageType
-  contains Modality CT|MR
-    + contains ImageType DERIVED|SECONDARY|SCREEN|SAVE
-  contains Modality CT|MR
-    + contains SeriesDescription Patient Protocol|PACS nomination form|Dose Report|Study acquired outside hospital
+missing ImageType
+contains Modality CT|MR
+  + contains ImageType DERIVED|SECONDARY|SCREEN|SAVE
+contains Modality CT|MR
+  + contains SeriesDescription Patient Protocol|PACS nomination form|Dose Report|Study acquired outside hospital
 
 LABEL Burned In Annotation # (CTP)
   contains ImageType SAVE

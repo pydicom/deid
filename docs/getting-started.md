@@ -110,6 +110,15 @@ equals ImageTyoe CT
 || equals ImageType MRI
 ```
 
+What if you want to evaluate an inner statement? Eg: "flag the image if Criteria 1 and (Criteria 2 OR Criteria 3)? The inner parentheses would need to be evaluated first. You would represent the content of the inner parentheses (Criteria 1 or Criteria 2) on the same line:
+
+```
+LABEL Ct Dose Series
+  contains Criteria1
+  + contains Criteria2 Value2 || contains Criteria3 Value3
+  coordinates 0,0,512,200
+```
+
 ##### What are the criteria options?
 For all of the below, case does not matter. All fields are changed to lowercase before comparison, and stripped of leading and trailing white spaces.
 
@@ -128,6 +137,76 @@ There are several things you can customize!
 
 
 ## An example
+
+### Deid Executable
+The deid executable is installed automatically with the module. Just running `deid` we see:
+
+```
+usage: deid [-h] [--version] [--quiet] [--debug] [--outfolder OUTFOLDER]
+            [--format {dicom}] [--overwrite] [--deid DEID]
+            {inspect,identifiers} ...
+
+Deid (de-identification, anonymization) command line tool.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --version, -v         show deid software version
+  --quiet, -q           Quiet the verbose output
+  --debug               use verbose logging to debug.
+  --outfolder OUTFOLDER, -o OUTFOLDER
+                        full path to save output, will use temporary folder if
+                        not specified
+  --format {dicom}, -f {dicom}
+                        format of images, default is dicom
+  --overwrite           overwrite pre-existing files in output directory, if
+                        they exist.
+
+actions:
+  actions for deid to perform
+
+  {inspect,identifiers}
+                        action for deid to perform
+    inspect             various checks for PHI and quality
+    identifiers         extract and replace identifiers from headers
+```
+
+What we want to do is inspect:
+
+```
+deid inspect --help
+
+usage: deid inspect [-h] folder [folder ...]
+
+positional arguments:
+  folder      input folder or single image. If not provided, test data will be
+              used.
+
+optional arguments:
+  -h, --help  show this help message and exit
+  --deid DEID           deid file with preferences, if not specified, default
+                        used.
+```
+
+Let's run the command with test data (dicom cookies) and specify the deid in our examples folder:
+
+```
+deid inspect --deid examples/deid deid/data/dicom-cookies
+
+SUMMARY ================================
+
+CLEAN deid/data/dicom-cookies/image4.dcm
+FLAGGED dangerouscookie
+deid/data/dicom-cookies/image2.dcm
+deid/data/dicom-cookies/image7.dcm
+deid/data/dicom-cookies/image6.dcm
+deid/data/dicom-cookies/image3.dcm
+deid/data/dicom-cookies/image1.dcm
+deid/data/dicom-cookies/image5.dcm
+
+```
+You will see an output, and then a summary of file lists for each of clean and flagged.
+
+### Within Python
 First, let's load the example "dicom cookies" dataset. We will first run this example within python, and then using a command line client (not written yet).
 
 ```
@@ -198,5 +277,69 @@ We won't be using the header section for this example, but for your FYI, this is
  2. If the header has field Rows 2048 and Columns 1536 we flag.
 
 The flag that is done first (more specific) is the final decision. This means that you should have your known coordinates of PHI (eg, specific modality, manufacturer, etc) first, and followed by more general estimates of PHI. Likely a later group will create flags for more manual inspection.
+
+Now let's run the filter! First just within python:
+
+```
+from deid.dicom import has_burned_pixels
+groups = has_burned_pixels(dicom_files=dicom_files, deid='examples/deid')
+```
+
+We immediately see that six are flagged for not having OperatorsName "bold bread"
+
+```
+FLAGGED image2.dcm in section dangerouscookie
+LABEL: criteria for dangerous cookie
+CRITERIA: and OperatorsName notequals bold bread
+
+FLAGGED image7.dcm in section dangerouscookie
+LABEL: criteria for dangerous cookie
+CRITERIA: and OperatorsName notequals bold bread
+
+FLAGGED image6.dcm in section dangerouscookie
+LABEL: criteria for dangerous cookie
+CRITERIA: and OperatorsName notequals bold bread
+
+FLAGGED image3.dcm in section dangerouscookie
+LABEL: criteria for dangerous cookie
+CRITERIA: and OperatorsName notequals bold bread
+
+FLAGGED image1.dcm in section dangerouscookie
+LABEL: criteria for dangerous cookie
+CRITERIA: and OperatorsName notequals bold bread
+
+FLAGGED image5.dcm in section dangerouscookie
+LABEL: criteria for dangerous cookie
+CRITERIA: and OperatorsName notequals bold bread
+```
+
+Is this accurate?
+
+```
+for dicom_file in dicom_files:
+    dicom = read_file(dicom_file)
+    print("%s:%s" %(os.path.basename(dicom_file),dicom.OperatorsName))
+
+image4.dcm:bold bread
+image2.dcm:lingering hill
+image7.dcm:sweet brook
+image6.dcm:green paper
+image3.dcm:nameless voice
+image1.dcm:fragrant pond
+image5.dcm:curly darkness
+
+```
+
+Seems to be! The data structure returned gives us programmatic access to the groups:
+
+```
+{'clean': ['/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image4.dcm'],
+ 'flagged': {'dangerouscookie': ['/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image2.dcm',
+   '/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image7.dcm',
+   '/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image6.dcm',
+   '/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image3.dcm',
+   '/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image1.dcm',
+   '/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image5.dcm']}}
+```
 
 More examples (and client) coming soon, need to write tests, etc. first!

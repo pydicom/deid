@@ -40,6 +40,7 @@ def apply_filter(dicom,field,filter_name,value):
     '''essentially a switch statement to apply a filter to
     a dicom file.
     '''
+    filter_name = filter_name.lower().strip()
 
     if filter_name == "contains":
         return dicom.contains(field,value)
@@ -56,7 +57,7 @@ def apply_filter(dicom,field,filter_name,value):
     elif filter_name == "empty":
         return dicom.empty(field)
 
-    elif filter_name == "notEquals":
+    elif filter_name == "notequals":
         return dicom.notEquals(field,value)
 
     bot.warning("%s is not a valid filter name, returning False" %filter_name)

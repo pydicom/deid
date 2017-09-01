@@ -44,7 +44,7 @@ import sys
 import os
 
 
-def main(args,parser,subparser):
+def main(args,parser):
 
     # Global output folder
     output_folder = args.outfolder

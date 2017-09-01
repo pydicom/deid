@@ -55,18 +55,19 @@ def has_burned_pixels(dicom_files,force=True,deid=None):
 
     # Store decisions in lookup based on filter groups
     decision = {'clean':[],
-                'flagged':[]}
+                'flagged':{}}
 
     for dicom_file in dicom_files:
-        decision,group = has_burned_pixels_single(dicom_file=dicom_file,
-                                                  force=force,
-                                                  deid=deid)
-        if decision is False:
+        flagged,group = has_burned_pixels_single(dicom_file=dicom_file,
+                                                 force=force,
+                                                 deid=deid)
+        if flagged is False:
+            # In this case, group is None
             decision['clean'].append(dicom_file)
         else:
             if group not in decision['flagged']:
-                decision['flagged'] = []
-            decision['flagged'].append(dicom_file)
+                decision['flagged'][group] = []
+            decision['flagged'][group].append(dicom_file)
 
     return decision
 
@@ -88,23 +89,23 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True
     force: force reading of a potentially erroneous file
     deid: the full path to a deid specification. if not defined, default used
     return_group: also return the group of the flagged files
+
+    config['filter']['dangerouscookie'] <-- filter list "dangerouscookie"
+
+     has one or more filter criteria associated with coordinates
+
+     [{'coordinates': ['0,0,512,110'],
+       'filters': [{'InnerOperators': [],
+       'action': ['notequals'],
+       'field': ['OperatorsName'],
+       'operator': 'and',
+       'value': ['bold bread']}],
+     'name': 'criteria for dangerous cookie'}]
     '''
 
     dicom = read_file(dicom_file,force=force)
     dicom_name = os.path.basename(dicom_file)
         
-    # We continue processing given that:
-    # ![0008,0008].contains("SAVE") *   ImageType doesn't contain save AND
-    # [0018,1012].equals("") *          DateofSecondaryCapture flat not present AND
-    # ![0008,103e].contains("SAVE") *   SeriesDescription does not contain save AND
-    # [0018,1016].equals("") *          SecondaryDeviceCaptureManufacturer flag not present AND
-    # [0018,1018].equals("") *          SecondaryDeviceCaptureManufacturerModelName flag not present AND
-    # [0018,1019].equals("") *          SecondaryDeviceCaptureDeviceSoftwareVersion flag not present AND
-    # ![0028,0301].contains("YES")      BurnedInAnnotation is not YES
-
-    # We continue processing given that:
-    # Image was not saved with some secondary software or device
-    # Image is not flagged to have burned pixels
 
     if deid is None:
         deid = get_deid('dicom')
@@ -123,29 +124,43 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True
         for item in items:
 
             flags = []
-            groups = []  # keep for printing if flagged
-            for filters in item['filters']:
-                for criteria in filters:
+            descriptions = [] # description for each group across items
 
+            for group in item['filters']:
+
+                group_flags = []         # evaluation for a single line
+                group_descriptions = []
+
+                for action in group['action']:
+                    field = group['field'].pop(0)
                     value = ''
-                    if 'values' in criteria:
-                        value = criteria['values']
-
+                    if len(group['value']) > 0:
+                        value = group['value'].pop(0)
                     flag = apply_filter(dicom=dicom,
-                                        field=criteria['field'],
-                                        filter_name=criteria['action'],
-                                        value=value)
-                                     
-                    operator = '  '
-                    if 'operator' in criteria:
-                        operator = criteria['operator']
-                        flags.append(operator)
+                                        field=field,
+                                        filter_name=action,
+                                        value=value or None)
 
-                    flags.append(flag)
-                    groups.append('%s %s %s %s\n' %(operator,
-                                                    criteria['field'],
-                                                    criteria['action'],
-                                                    value))
+                    group_flags.append(flag)
+                    description = "%s %s %s" %(field,action,value)
+                    if len(group['InnerOperators']) > 0:
+                        inner_operator = group['InnerOperators'].pop()
+                        group_flags.append(inner_operator)
+                        description = "%s %s" %(description,inner_operator)
+
+                    group_descriptions.append(description)
+
+                # At the end of a group, evaluate the inner group   
+                flag = evaluate_group(group_flags)
+                flags.append(flag)
+
+                # "Operator" is relevant for the outcome of the list of actions 
+                operator = '  '
+                if 'operator' in group:
+                    if group['operator'] is not None:
+                        operator = group['operator']
+                            
+                descriptions.append('%s %s\n' %(operator,'\n'.join(group_descriptions)))
 
             group_name = ''
             if "name" in item:
@@ -154,8 +169,9 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True
             # When we parse through a group, we evaluate based on all flags
             flagged = evaluate_group(flags=flags)
             if flagged is True:
-                bot.flag("%s in %%s %s" %(dicom_name,name,group_name))
-                print(''.join(groups))
+                bot.flag("%s in section %s\n" %(dicom_name,name))
+                print('LABEL: %s' %group_name)
+                print('CRITERIA: %s' %'\n'.join(descriptions))
                 return flagged, name
 
     bot.debug("%s header filter indicates pixels are clean." %dicom_name)

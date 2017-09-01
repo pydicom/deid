@@ -35,20 +35,21 @@ from deid.dicom import has_burned_pixels
 from glob import glob
 import tempfile
 import argparse
+import shutil
 import sys
 import os
 
 
-def main(args,parser,subparser):
+def main(args,parser):
     '''inspect currently serves to inspect the header fields of a set
     of dicom files against a standard, and flag images that don't
     pass the different levels of criteria
     '''
 
     # Global output folder
-    output_folder = args.outfolder
-    if output_folder is None:
-        output_folder = tempfile.mkdtemp()
+    #output_folder = args.outfolder
+    #if output_folder is None:
+    #    output_folder = tempfile.mkdtemp()
 
     # If a deid is given, check against format
     deid = args.deid
@@ -60,23 +61,24 @@ def main(args,parser,subparser):
         bot.error("Format in deid (%s) doesn't match choice here (%s) exiting." %(params['format'],
                                                                                   args.format))
     # Get list of dicom files
-    base = args.input
+    base = args.folder
     if base is None:
         bot.info("No input folder specified, will use demo dicom-cookies.")
         base = get_dataset('dicom-cookies')
-    basename = os.path.basename(base)
     dicom_files = get_files(base)
 
-    result = has_burned_pixels(dicom_files)
+    result = has_burned_pixels(dicom_files, deid=deid)
 
+    print('\nSUMMARY ================================\n')
     if len(result['clean']) > 0:
-        bot.debug("CLEAN:")
-        bot.info("\n".join(result['clean']))
+        bot.custom(prefix='CLEAN',
+                   message="\n".join(result['clean']),
+                   color="CYAN")
 
-    if len(result['flagged'] > 0):
+    if len(result['flagged']) > 0:
         for group,files in result['flagged'].items():
             bot.flag(group)
-            bot.info("\n".join(files)
+            bot.info("\n".join(files))
 
 
 if __name__ == '__main__':

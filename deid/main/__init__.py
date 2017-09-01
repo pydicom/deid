@@ -63,11 +63,6 @@ def get_parser():
                         help="overwrite pre-existing files in output directory, if they exist.", 
                         default=False, action='store_true')
 
-    # A path to a deid file, if customization wanted
-    parser.add_argument("--deid", dest='deid', 
-                        help="deid file with preferences, if not specified, default used.", 
-                        type=str, default=None)
-
     subparsers = parser.add_subparsers(help='action for deid to perform',
                                        title='actions',
                                        description='actions for deid to perform',
@@ -82,8 +77,16 @@ def get_parser():
                          help="input folder or single image. If not provided, test data will be used.", 
                          type=str, default=None)
 
+    inspect.add_argument("--deid", dest='deid', 
+                         help="deid file with preferences, if not specified, default used.", 
+                         type=str, default=None)
+
     ids = subparsers.add_parser("identifiers",
                                 help="extract and replace identifiers from headers")
+
+    ids.add_argument("--deid", dest='deid', 
+                     help="deid file with preferences, if not specified, default used.", 
+                     type=str, default=None)
 
     # A path to an ids file, required if user wants to put (without get)
     ids.add_argument("--ids", dest='ids', 
@@ -145,11 +148,11 @@ def main():
     elif args.command == "inspect":
         from .inspect import main
     else:
-        bot.error("Invalid subparser")
+        parser.print_help()
         sys.exit(1)
 
     # Run main for selection
-    return main(args,parser,subparser)
+    return main(args,parser)
 
 
 if __name__ == '__main__':

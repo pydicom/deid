@@ -227,7 +227,6 @@ def parse_label(section,config,section_name,members,label=None):
                 entry = []
 
         operator = None
-        values = None
 
         if member.startswith('+'):
             operator = 'and'
@@ -240,33 +239,9 @@ def parse_label(section,config,section_name,members,label=None):
         if not member.lower().startswith(filters):
             bot.warning('%s filter is not valid, skipping.' %member.lower())
         else:
-
-            action, member = member.split(' ',1)
-
-            # Contains, equals, not equals expects FieldName Values
-            if action.lower() in ['contains','equals','notequals']:
-                try:
-                    field,values = member.split(' ',1)
-                except ValueError:
-                    bot.error('%s for line %s must have field and values, exiting.' %(action,member))
-                    sys.exit(1)
-
-            # Missing, empty, notcontains expect only a field
-            elif action.lower() in ['missing', 'empty','notcontains']:
-                field = member.strip()
-            else:
-                bot.error('%s is not a valid filter action.' %action.lower())
-                sys.exit(1)
-
-            entry_action = {'action':action.lower(),
-                            'field': field}
-
-            if values is not None:
-                entry_action['values'] = values            
-            if operator is not None:
-                entry_action['operator'] = operator            
-
-            entry.append(entry_action.copy())
+            # Returns single member with field, values, operator,
+            # Or if multiple or/and in statement, a list
+            entry = parse_member(member, operator)
 
     # Add the last entry
     if len(entry) > 0:
@@ -274,6 +249,83 @@ def parse_label(section,config,section_name,members,label=None):
 
     config[section][section_name].append(criteria)
     return config
+
+
+def parse_member(members, operator=None):
+
+    main_operator = operator
+
+    actions = []
+    values = []
+    fields = []
+    operators = []
+    members = [members]
+
+    while len(members) > 0:
+
+        operator = None
+        value = None
+        member = members.pop(0).strip()
+
+        # Find the first || or +
+        match_or=re.search('\|\|',member)
+        match_and=re.search('\+',member)
+
+        if match_or is not None:
+            operator = "||"
+        if match_and is not None:
+            if match_or is not None:
+                if match_or.start() >= match_and.start():
+                    operator = "+" 
+            else:
+                operator = "+"
+
+        if operator is not None:
+
+            member,rest = member.split(operator,1)
+
+            # The rest is only valid if contains a filter statement
+            if any(word in rest for word in filters):
+                members.append(rest.strip())
+
+                # Split the statement based on found operator
+                operator = (operator.replace('||','or')
+                                    .replace('+', 'and'))
+                operators.append(operator)
+            else:
+                member = operator.join([member,rest])
+
+        # Parse the member
+        action, member = member.split(' ',1)
+        action = action.lower().strip()
+
+        # Contains, equals, not equals expects FieldName Values
+        if action in ['contains','equals','notequals']:
+            try:
+                field,value = member.split(' ',1)
+            except ValueError:
+                bot.error('%s for line %s must have field and values, exiting.' %(action,member))
+                sys.exit(1)
+
+        # Missing, empty, notcontains expect only a field
+        elif action in ['missing', 'empty','notcontains']:
+            field = member.strip()
+        else:
+            bot.error('%s is not a valid filter action.' %action)
+            sys.exit(1)
+
+        actions.append(action)
+        fields.append(field.strip())
+
+        if value is not None:
+            values.append(value.strip())  
+        
+    entry = {'action':actions,
+             'field':fields,
+             'operator': main_operator,
+             'InnerOperators':operators,
+             'value': values }
+    return entry
 
 
 def add_section(config,section,section_name=None):
