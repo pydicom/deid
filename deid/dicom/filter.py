@@ -82,8 +82,12 @@ def equalsBase(self,field,term,ignore_case=True,not_equals=False):
     for contender in contenders:
         if contender is not None:
             if ignore_case:
-                contender = contender.lower().strip()
-                term = term.lower().strip()
+                try:
+                    contender = contender.lower().strip()
+                    term = term.lower().strip()
+                except AttributeError:
+                    pass # we are dealing with number
+
             if contender == term:
                 is_equal = True
 

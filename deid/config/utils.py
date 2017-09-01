@@ -272,7 +272,6 @@ def parse_label(section,config,section_name,members,label=None):
     if len(entry) > 0:
         criteria['filters'].append(entry.copy())
 
-    print("adding to %s" %section_name)
     config[section][section_name].append(criteria)
     return config
 
@@ -306,8 +305,10 @@ def add_section(config,section,section_name=None):
         if section_name is not None:
             config[section] = {}
             config[section][section_name] = []
+            bot.debug("Adding section %s %s" %(section, section_name))
         else:
             config[section] = []
+            bot.debug("Adding section %s" %section)
         return config
 
     # Section is in config

@@ -36,13 +36,12 @@ from deid.config import load_deid
 
 import os
 
-here = os.path.dirname(os.path.abspath(__file__))
 
 def clean_pixels():
     bot.warning('BEEP-BOOP - I am not written yet!')
 
 
-def has_burned_pixels(dicom_files,force=True):
+def has_burned_pixels(dicom_files,force=True,deid=None):
     ''' has burned pixels will use the MIRCTP criteria (see ref folder with the
     original scripts used by CTP) to determine if an image is likely to have 
     PHI, based on fields in the header alone. This script does NOT perform
@@ -54,15 +53,25 @@ def has_burned_pixels(dicom_files,force=True):
     if not isinstance(dicom_files,list):
         dicom_files = [dicom_files]
 
-    decision = dict()
+    # Store decisions in lookup based on filter groups
+    decision = {'clean':[],
+                'flagged':[]}
 
     for dicom_file in dicom_files:
-        decision[dicom_file] = has_burned_pixels_single(dicom_file,force)
+        decision,group = has_burned_pixels_single(dicom_file=dicom_file,
+                                                  force=force,
+                                                  deid=deid)
+        if decision is False:
+            decision['clean'].append(dicom_file)
+        else:
+            if group not in decision['flagged']:
+                decision['flagged'] = []
+            decision['flagged'].append(dicom_file)
 
     return decision
 
 
-def has_burned_pixels_single(dicom_file,force=True, deid=None):
+def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True):
     '''has burned pixels single will evaluate one dicom file for burned in
     pixels based on 'filter' criteria in a deid. If deid is not provided,
     will use application default. The method proceeds as follows:
@@ -72,6 +81,13 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None):
     3. passing through the entire list gives status of pass
     
     The default deid has a greylist, whitelist, then blacklist
+
+    Parameters
+    =========
+    dicom_file: the fullpath to the file to evaluate
+    force: force reading of a potentially erroneous file
+    deid: the full path to a deid specification. if not defined, default used
+    return_group: also return the group of the flagged files
     '''
 
     dicom = read_file(dicom_file,force=force)
@@ -93,7 +109,7 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None):
     if deid is None:
         deid = get_deid('dicom')
 
-    if not os.path.exists(config):
+    if not os.path.exists(deid):
         bot.error("Cannot find config %s, exiting" %(config))
 
     config = load_deid(deid)
@@ -140,10 +156,10 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None):
             if flagged is True:
                 bot.flag("%s in %%s %s" %(dicom_name,name,group_name))
                 print(''.join(groups))
-                return flagged
+                return flagged, name
 
     bot.debug("%s header filter indicates pixels are clean." %dicom_name)
-    return flagged
+    return flagged, None
 
 
 def evaluate_group(flags):

@@ -1,5 +1,21 @@
 FORMAT dicom
 
+%filter dangerouscookie
+
+LABEL Criteria for Dangerous Cookie
+contains PatientSex M
+  + missing PatientBirthDate
+  + notequals OperatorsName bold bread
+  coordinates 0,0,512,110
+
+
+%filter bigimage
+
+LABEL Image Size Good for Machine Learning
+equals Rows 2048
+  + equals Columns 1536
+  coordinates 0,0,512,200
+
 %header
 
 ADD PatientIdentityRemoved Yes

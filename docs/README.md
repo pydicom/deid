@@ -1,4 +1,4 @@
-# De-identifiction (deid)
+# Anonymization toward De-identifiction (deid)
 
 This Python module is intended for basic coding of medical images, which means "cleaning" image headers and pixel data, and integrating with your own functions to replace with anonymous identifiers. Per HIPAA, this process is technically called "anonymization," meaning we did our best effort. What this module does not do:
 
@@ -30,4 +30,3 @@ If you are *not* a developer, or interested in getting started with using and un
 
 ## Dicom Tools
  - [Tags](tags.md): A few helpful functions for searching and filtering tags.
-
