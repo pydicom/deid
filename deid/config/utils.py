@@ -28,7 +28,7 @@ user can specify a custom name.
 
 from deid.logger import bot
 from deid.utils import read_file
-from .standards import (
+from deid.config.standards import (
     formats,
     actions,
     sections,
@@ -51,7 +51,14 @@ def load_deid(path=None):
              deid.dicom
              deid.nifti
 
-    (and this is TBA in terms of proper use case)
+    Parameters
+    ==========
+    path: a path to a deid file
+
+    Returns
+    =======
+    config: a parsed deid (dictionary) with valid sections
+
     '''
     path = find_deid(path)
 
@@ -113,9 +120,8 @@ def load_deid(path=None):
             # Start of a filter group
             if line.upper().startswith('LABEL') and section == "filter":
 
-                # This is an index of starting points for groups
-                keep_going = True
                 members = []
+                keep_going = True
                 while keep_going is True:
                     next_line = spec[0]                
                     if next_line.upper().strip().startswith('LABEL'):
@@ -125,6 +131,8 @@ def load_deid(path=None):
                     else:
                         new_member = spec.pop(0)
                         members.append(new_member)
+                    if len(spec) == 0:
+                        keep_going = False
 
                 # Add the filter label to the config
                 config = parse_label(config=config,
@@ -145,9 +153,13 @@ def load_deid(path=None):
     return config
 
 
-def find_deid(path):
+def find_deid(path=None):
     '''find_deid is a helper function to load_deid to find a deid file in
     a folder, or return the path provided if it is the file.
+
+    Parameters
+    ==========
+    path: a path on the filesystem. If not provided, will assume PWD.
     '''
     if path is None:
         path = os.getcwd()
@@ -178,8 +190,20 @@ def find_deid(path):
 
 def parse_label(section,config,section_name,members,label=None):
     '''parse label will add a (optionally named) label to the filter
-    section, including one or more criteria'''
-    criteria = {'filters':[]}
+    section, including one or more criteria
+
+    Parameters
+    ==========
+    section: the section name (e.g., header) must be one in sections
+    config: the config (dictionary) parsed thus far
+    section_name: an optional name for a section
+    members: the lines beloning to the section/section_name
+    label: an optional name for the group of commands
+    '''
+
+    criteria = {'filters':[],
+                'coordinates':[]}
+
     if label is not None:                                   
         label = (label.lower().replace('label','',1)
                               .split('#')[0]
@@ -190,8 +214,14 @@ def parse_label(section,config,section_name,members,label=None):
     while len(members) > 0:
         member = members.pop(0).strip()
 
+        # We have a coordinate line
+        if member.lower().startswith('coordinates'):
+            coordinate = member.lower().replace('coordinates','').strip()
+            criteria['coordinates'].append(coordinate)
+            continue
+
         # If if doesn't start with a +, it's a new criteria
-        if not member.startswith('+') or not member.startswith('||'):
+        if not member.startswith('+') and not member.startswith('||'):
             if len(entry) > 0:
                 criteria['filters'].append(entry.copy())
                 entry = []
@@ -201,19 +231,28 @@ def parse_label(section,config,section_name,members,label=None):
 
         if member.startswith('+'):
             operator = 'and'
-            member = member.replace('+','',1)
+            member = member.replace('+','',1).strip()
         elif member.startswith('||'):
             operator = 'or'
-            member = member.replace('||','',1)
+            member = member.replace('||','',1).strip()
        
         # Now that operators removed, parse member
         if not member.lower().startswith(filters):
             bot.warning('%s filter is not valid, skipping.' %member.lower())
         else:
+
             action, member = member.split(' ',1)
-            if action.lower() in ['contains','notcontains','equals','notequals']:
-                field,values = member.split(' ',1)
-            elif action.lower() in ['missing', 'empty']:
+
+            # Contains, equals, not equals expects FieldName Values
+            if action.lower() in ['contains','equals','notequals']:
+                try:
+                    field,values = member.split(' ',1)
+                except ValueError:
+                    bot.error('%s for line %s must have field and values, exiting.' %(action,member))
+                    sys.exit(1)
+
+            # Missing, empty, notcontains expect only a field
+            elif action.lower() in ['missing', 'empty','notcontains']:
                 field = member.strip()
             else:
                 bot.error('%s is not a valid filter action.' %action.lower())
@@ -241,7 +280,14 @@ def parse_label(section,config,section_name,members,label=None):
 def add_section(config,section,section_name=None):
     '''add section will add a section (and optionally)
     section name to a config
+
+    Parameters
+    ==========
+    config: the config (dict) parsed thus far
+    section: the section name to add
+    section_name: an optional name, added as a level
     '''
+
     if section is None:
         bot.error('You must define a section (e.g. %header) before any action.')
         sys.exit(1)
@@ -319,4 +365,3 @@ def parse_action(section,line,config,section_name=None):
                                  "field":field })
 
     return config
-

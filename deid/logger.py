@@ -29,6 +29,7 @@ import sys
 ABORT = -5
 CRITICAL = -4
 ERROR = -3
+FLAG = -3
 WARNING = -2
 LOG = -1
 INFO = 1
@@ -49,6 +50,7 @@ class DeidMessage:
         self.colorize = self.useColor()
         self.colors = {ABORT:"\033[31m",   # dark red 
                        CRITICAL:"\033[31m", 
+                       FLAG:"\033[31m", 
                        ERROR: "\033[91m",  # red
                        WARNING:"\033[93m", # dark yellow
                        LOG:"\033[95m",     # purple
@@ -221,6 +223,9 @@ class DeidMessage:
 
     def error(self,message):
         self.emit(ERROR,message,'ERROR')
+
+    def flag(self,message):
+        self.emit(FLAG,message,'FLAGGED')
 
     def warning(self,message):
         self.emit(WARNING,message,'WARNING')

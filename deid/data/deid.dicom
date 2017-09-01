@@ -57,7 +57,7 @@ LABEL Volume Rendering - MRCP  # (CTP)
   + equals Rows 512
   + equals Columns 512
   + contains BurnedInAnnotation YES
-  + ImageType VOLREN
+  + contains ImageType VOLREN
   coordinates 350,0,162,30
   coordinates 390,80,122,15
 
@@ -160,7 +160,6 @@ LABEL EPIQ 7G # (CTP)
 LABEL CX50 # (CTP)
   contains Modality US
   + contains Manufacturer Philips
-  + equals Rows 
   + contains ManufacturerModelName CX50
   coordinates 0,0,800,59
 
@@ -303,7 +302,7 @@ LABEL Stanford Medicine  # (Roger Goldman)
   + contains ManufacturerModelName LightSpeed CVT
   + contains SeriesDescription SCOUT
   contains SeriesDescription (0008,103e) SCOUT
-  contains ImageType ORIGINAL | DERIVED | PRIMARY | LOCALIZER | AXIAL | SECONDARY | REFORMATTED | AVERAGE
+  contains ImageType ORIGINAL|DERIVED|PRIMARY|LOCALIZER|AXIAL|SECONDARY|REFORMATTED|AVERAGE
   contains ScanOptions SCOUT MODE
   contains ScanOptions Axial MODE 
 
@@ -311,21 +310,21 @@ LABEL Stanford Medicine  # (Roger Goldman)
 %filter blacklist
 
 LABEL Stanford Blacklist  # Susan Weber
-missing ImageType
-contains Modality CT|MR
-+ contains ImageType DERIVED|SECONDARY|SCREEN|SAVE
-contains Modality CT|MR
-+ contains SeriesDescription Patient Protocol | PACS nomination form | Dose Report | Study acquired outside hospital
+  missing ImageType
+  contains Modality CT|MR
+    + contains ImageType DERIVED|SECONDARY|SCREEN|SAVE
+  contains Modality CT|MR
+    + contains SeriesDescription Patient Protocol|PACS nomination form|Dose Report|Study acquired outside hospital
 
 LABEL Burned In Annotation # (CTP)
-contains ImageType SAVE
-contains SeriesDescription SAVE
-contains BurnedInAnnotation YES
-empty ImageType
-empty DateOfSecondaryCapture
-empty SecondaryCaptureDeviceManufacturer
-empty SecondaryCaptureDeviceManufacturerModelName
-empty SecondaryCaptureDeviceSoftwareVersions
+  contains ImageType SAVE
+  contains SeriesDescription SAVE
+  contains BurnedInAnnotation YES
+  empty ImageType
+  empty DateOfSecondaryCapture
+  empty SecondaryCaptureDeviceManufacturer
+  empty SecondaryCaptureDeviceManufacturerModelName
+  empty SecondaryCaptureDeviceSoftwareVersions
 
 
 %header

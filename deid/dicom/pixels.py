@@ -23,14 +23,17 @@ SOFTWARE.
 '''
 
 from deid.logger import bot
-from .tags import get_tag
-from .utils import perform_action
+from deid.dicom.tags import get_tag
+from deid.dicom.utils import perform_action
 from deid.utils import read_json
 from pydicom import read_file
-from .filter import (
+from deid.dicom.filter import (
     Dataset,     # add additional filters
     apply_filter
 )
+from deid.data import get_deid
+from deid.config import load_deid
+
 import os
 
 here = os.path.dirname(os.path.abspath(__file__))
@@ -59,9 +62,18 @@ def has_burned_pixels(dicom_files,force=True):
     return decision
 
 
-def has_burned_pixels_single(dicom_file,force=True, config=None):
-    '''has burned pixels single will evaluate one dicom file.
+def has_burned_pixels_single(dicom_file,force=True, deid=None):
+    '''has burned pixels single will evaluate one dicom file for burned in
+    pixels based on 'filter' criteria in a deid. If deid is not provided,
+    will use application default. The method proceeds as follows:
+
+    1. deid is loaded, with criteria groups ordered from specific --> general
+    2. image is run down the criteria, stops when hits and reports FLAG
+    3. passing through the entire list gives status of pass
+    
+    The default deid has a greylist, whitelist, then blacklist
     '''
+
     dicom = read_file(dicom_file,force=force)
     dicom_name = os.path.basename(dicom_file)
         
@@ -78,36 +90,87 @@ def has_burned_pixels_single(dicom_file,force=True, config=None):
     # Image was not saved with some secondary software or device
     # Image is not flagged to have burned pixels
 
-    if config is None:
-        config = "%s/pixels.json" %(here)
+    if deid is None:
+        deid = get_deid('dicom')
 
     if not os.path.exists(config):
         bot.error("Cannot find config %s, exiting" %(config))
 
-    config = read_json(config)
+    config = load_deid(deid)
 
     # Load criteria (actions) for flagging
-    for criteria in config:
+    if 'filter' not in config:
+        bot.error('Deid provided does not have %filter, exiting.')
+        sys.exit(1)
 
-        flagged = False
-        filters = criteria["filters"]
-        label = [x for x in [criteria['modality'],
-                             criteria['manufacturer'],
-                             criteria['label']]
-                 if x is not None]
+    for name,items in config['filter'].items():
+        for item in items:
 
-        for func,actions in filters.items():
-            for action in actions:
-                flagged = apply_filter(dicom=dicom,
-                                       field=action['field'],
-                                       filter_name=func,
-                                       value=action["value"])
+            flags = []
+            groups = []  # keep for printing if flagged
+            for filters in item['filters']:
+                for criteria in filters:
+
+                    value = ''
+                    if 'values' in criteria:
+                        value = criteria['values']
+
+                    flag = apply_filter(dicom=dicom,
+                                        field=criteria['field'],
+                                        filter_name=criteria['action'],
+                                        value=value)
                                      
-                if flagged:
-                    label = " ".join(label)
-                    bot.warning("FLAG for %s: %s" %(dicom_name,label))
-                    return flagged
+                    operator = '  '
+                    if 'operator' in criteria:
+                        operator = criteria['operator']
+                        flags.append(operator)
 
+                    flags.append(flag)
+                    groups.append('%s %s %s %s\n' %(operator,
+                                                    criteria['field'],
+                                                    criteria['action'],
+                                                    value))
+
+            group_name = ''
+            if "name" in item:
+                group_name = item['name']
+
+            # When we parse through a group, we evaluate based on all flags
+            flagged = evaluate_group(flags=flags)
+            if flagged is True:
+                bot.flag("%s in %%s %s" %(dicom_name,name,group_name))
+                print(''.join(groups))
+                return flagged
 
     bot.debug("%s header filter indicates pixels are clean." %dicom_name)
+    return flagged
+
+
+def evaluate_group(flags):
+    '''evaluate group will take a list of flags (eg:
+
+        [True, and, False, or, True]
+
+    And read through the logic to determine if the image result
+    is to be flagged.
+    '''
+    flagged = False
+    first_entry = True
+
+    while len(flags) > 0:
+        flag = flags.pop(0)
+        if flag == "and":
+            flag = flags.pop(0)
+            flagged = flag and flagged
+        elif flag == "or":
+            flag = flags.pop(0)
+            flagged = flag or flagged
+        else:
+            # If it's the first entry
+            if first_entry is True:
+                flagged = flag
+            else:
+                flagged = flagged and flag
+        first_entry = False
+
     return flagged

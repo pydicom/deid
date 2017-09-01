@@ -27,7 +27,7 @@ SOFTWARE.
 formats = ['dicom']
 
 # Supported Sections
-sections = ['header','pixels','labels','filter']
+sections = ['header','labels','filter']
 
 actions = ('ADD',
            'BLANK',

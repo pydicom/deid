@@ -203,16 +203,22 @@ def remove_private_identifiers(dicom_files,
 def _prepare_replace_config(dicom_files, deid=None, config=None):
     '''replace identifiers will replace dicom_files with data from ids based
     on a combination of a config (default is remove all) and a user deid spec
-    :param dicom_files: the dicom file(s) to extract from
-    :param force: force reading the file (default True)
-    :param save: if True, save to file. Otherwise, return dicom objects
-    :param config: if None, uses default in provided module folder
-    :param overwrite: if False, save updated files to temporary directory
+
+    Parameters
+    ==========
+    dicom_files: the dicom file(s) to extract from
+    force: force reading the file (default True)
+    save: if True, save to file. Otherwise, return dicom objects
+    config: if None, uses default in provided module folder
+    overwrite: if False, save updated files to temporary directory
+    
     '''
+
     if config is None:
         config = "%s/config.json" %(here)
     if not os.path.exists(config):
         bot.error("Cannot find config %s, exiting" %(config))
+
     # Validate any provided deid
     if deid is not None:
         if not isinstance(deid,dict):
@@ -220,12 +226,13 @@ def _prepare_replace_config(dicom_files, deid=None, config=None):
             if deid['format'] != 'dicom':
                 bot.error('DEID format must be dicom.')
                 sys.exit(1)
+
     config = read_json(config)
+
     if not isinstance(dicom_files,list):
         dicom_files = [dicom_files]
+
     return dicom_files, deid, config
-
-
 
 
 def replace_identifiers(dicom_files,
@@ -238,8 +245,10 @@ def replace_identifiers(dicom_files,
                         config=None,
                         strip_sequences=True,
                         remove_private=True):
+
     '''replace identifiers using pydicom, can be slow when writing
     and saving new files'''
+
     dicom_files, deid, config = _prepare_replace_config(dicom_files, 
                                                         deid=deid,
                                                         config=config)
