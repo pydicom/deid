@@ -4,7 +4,7 @@
 ## Application Flow
 The general flow of the main function to anonymize is the following:
 
- 1. Check each image against a set of filters, with increasing levels of specificity. An image is attributed to the filter group with the highest level of specificity, which is most specific to it. For example, an image that is flagged with a general Blacklist criteria that is subsequently flagged with Greylist (meaning we know how to clean it) is moved to the Greylist.
+ 1. Check each image against a set of filters, with increasing levels of specificity. An image is attributed to the filter group with the highest level of specificity, which is most specific to it. For example, an image that would be flagged with a general Blacklist criteria that is first flagged with Greylist (meaning we know how to clean it) is belongs to Greylist.
  2. Proceed to process each group separately
 
 ### Groups
@@ -48,7 +48,7 @@ empty SecondaryCaptureDeviceManufacturerModelName
 empty SecondaryCaptureDeviceSoftwareVersions
 ```
 
-Each section is indicated by `%filter`, and within sections, a set of criteria are defined under a `LABEL`. 
+Each section is indicated by `%filter`, and within sections, a set of criteria are defined under a `LABEL`.  The formatting of this is inspired by both [CTP](http://mircwiki.rsna.org/index.php?title=The_CTP_DICOM_Filter) and [Singularity](http://singularity.lbl.gov/bootstrap-image#post), which is based on RPM.
 
 ##### How are images filtered?
 You can imagine an image starting at the top of the file, and moving down line by line. If at any point it doesn't pass criteria, it is flagged and placed with the group, and no further checking is done.  For this purpose, the sections are ordered by their specificity and preference. This means that, for the above, by placing blacklist after graylist we are saying that an image that could be flagged to be both in the blacklist and graylist will hit the graylist first. This is logical because the graylist corresponds to a specific set of image header criteria for which we know how to clean. We only resort to general blacklist criteria if we make it far enough and haven't been convinced that there isn't PHI.
