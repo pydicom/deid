@@ -4,14 +4,16 @@
 ## Application Flow
 The general flow of the main function to anonymize is the following:
 
- 1. Check each image against a set of filters, with increasing levels of specificity. An image is attributed to the filter group with the highest level of specificity, which is most specific to it. For example, an image that would be flagged with a general Blacklist criteria that is first flagged with Greylist (meaning we know how to clean it) is belongs to Greylist.
+ 1. Check each image against a set of filters, with decreasing levels of specificity. An image is attributed to the filter group with the highest level of specificity, which is most specific to it. For example, an image that would be flagged with a general Blacklist criteria that is first flagged with Greylist (meaning we know how to clean it) is belongs to Greylist. We check more specific first to be computationally more efficient, because we can stop checking the image when we hit the first criteria flag.
  2. Proceed to process each group separately
 
 ### Groups
-The final groups that an image belongs to are considered accordingly:
+While you are free to define your own groups and criteria, we provide a [default deid](../deid/data/deid.dicom) that has the following levels defined within:
 
  - **Greylist** is typically checked first, and an image being flagged for this groups means that contains PHI in a reliable, known configuration. The greylist checks are based on image headers like modality, and manufacturer that we are positive about the locations of pixels that need to be scrubbed. If an image is greylisted, we can confidently clean it, and continue processing. This strategy is similar to the MIRC-CTP protocol.
+
  - **Whitelist**: images also must pass through sets of criteria that serve as flags that the image is reliable to not contain any PHI.  These images can be passed without intervention (Note from Vanessa, I don't see many circumstances for which this might apply).
+
  - **Blacklist** images that are not Greylisted or Blacklisted are largely unknowns. They may contain PHI in an unstructured fashion, and we need to be conservative and precaucious. Blacklist images may be passed through a more sophisticated filter (such as a character recognition algorithm), deleted, or passed through and possibly marked (in the DICOM header or on the image) to note the images are blacklisted (with the requesting researcher defining the best method).
 
 
@@ -126,7 +128,7 @@ There are several things you can customize!
 
 
 ## An example
-First, let's load the example "dicom cookies" dataset. We will first run this example within python, and then using a command line client.
+First, let's load the example "dicom cookies" dataset. We will first run this example within python, and then using a command line client (not written yet).
 
 ```
 from deid.data import get_dataset
