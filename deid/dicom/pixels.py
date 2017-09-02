@@ -55,12 +55,13 @@ def has_burned_pixels(dicom_files,force=True,deid=None):
 
     # Store decisions in lookup based on filter groups
     decision = {'clean':[],
-                'flagged':{}}
+                'flagged':{},
+                'reason':{}}
 
     for dicom_file in dicom_files:
-        flagged,group = has_burned_pixels_single(dicom_file=dicom_file,
-                                                 force=force,
-                                                 deid=deid)
+        flagged,group,reason = has_burned_pixels_single(dicom_file=dicom_file,
+                                                        force=force,
+                                                        deid=deid)
         if flagged is False:
             # In this case, group is None
             decision['clean'].append(dicom_file)
@@ -68,11 +69,12 @@ def has_burned_pixels(dicom_files,force=True,deid=None):
             if group not in decision['flagged']:
                 decision['flagged'][group] = []
             decision['flagged'][group].append(dicom_file)
+            decision['reason'][dicom_file] = reason
 
     return decision
 
 
-def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True):
+def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True, return_reason=True):
     '''has burned pixels single will evaluate one dicom file for burned in
     pixels based on 'filter' criteria in a deid. If deid is not provided,
     will use application default. The method proceeds as follows:
@@ -89,6 +91,7 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True
     force: force reading of a potentially erroneous file
     deid: the full path to a deid specification. if not defined, default used
     return_group: also return the group of the flagged files
+    return_reason: return a string reason for why the flag was done (none if clean)
 
     config['filter']['dangerouscookie'] <-- filter list "dangerouscookie"
 
@@ -127,7 +130,6 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True
             descriptions = [] # description for each group across items
 
             for group in item['filters']:
-
                 group_flags = []         # evaluation for a single line
                 group_descriptions = []
                 for action in group['action']:
@@ -146,20 +148,17 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True
                         group_flags.append(inner_operator)
                         description = "%s %s" %(description,inner_operator)
                     group_descriptions.append(description)
-
                 # At the end of a group, evaluate the inner group   
                 flag = evaluate_group(group_flags)
                 flags.append(flag)
-
                 # "Operator" is relevant for the outcome of the list of actions 
-                operator = '  '
+                operator = ''
                 if 'operator' in group:
                     if group['operator'] is not None:
                         operator = group['operator']
-                reason = '%s %s\n' %('\n'.join(group_descriptions),operator)
+                reason = '%s %s\n' %(operator,' '.join(group_descriptions))
                 descriptions.append(reason)
             group_name = ''
-
             if "name" in item:
                 group_name = item['name']
 
@@ -169,11 +168,13 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True
             if flagged is True:
                 bot.flag("%s in section %s\n" %(dicom_name,name))
                 print('LABEL: %s' %group_name)
-                print('CRITERIA: %s' %'\n'.join(descriptions))
+                print('CRITERIA: %s' %' '.join(descriptions))
+                if return_reason is True:
+                    return flagged, name, reason
                 return flagged, name
 
     bot.debug("%s header filter indicates pixels are clean." %dicom_name)
-    return flagged, None
+    return flagged, None, None
 
 
 def evaluate_group(flags):

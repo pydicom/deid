@@ -88,6 +88,10 @@ def get_parser():
                      help="deid file with preferences, if not specified, default used.", 
                      type=str, default=None)
 
+    ids.add_argument('--save',"-s", dest="save", 
+                     help="save result to output tab separated file.", 
+                     default=False, action='store_true')
+
     # A path to an ids file, required if user wants to put (without get)
     ids.add_argument("--ids", dest='ids', 
                      help="Path to a json file with identifiers, required for PUT if you don't do get (via all)", 

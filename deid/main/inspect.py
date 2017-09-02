@@ -33,6 +33,7 @@ from deid.config import load_deid
 from deid.dicom import has_burned_pixels
 
 from glob import glob
+import datetime
 import tempfile
 import argparse
 import shutil
@@ -71,15 +72,27 @@ def main(args,parser):
 
     print('\nSUMMARY ================================\n')
     if len(result['clean']) > 0:
-        bot.custom(prefix='CLEAN',
-                   message="\n".join(result['clean']),
+        bot.custom(prefix='CLEAN,
+                   message="%s files" %len(result['clean']),
                    color="CYAN")
 
     if len(result['flagged']) > 0:
         for group,files in result['flagged'].items():
-            bot.flag(group)
-            bot.info("\n".join(files))
+            bot.flag("%s %s files" %(group, len(files)))
 
+    if args.save is True:
+        outfile = "%s-%s-pixel-flag-results.tsv" %(base,datetime.datetime.now().strftime('%y-%m-%d'))
+        with open(outfile,'w') as filey:
+            filey.writelines('dicom_file\tpixels_flagged\tflag_list\treason\n')
+            for clean in result['clean']:
+                filey.writelines('%s,CLEAN\t\t\n' %clean)
+            for group,files in result['flagged'].items():
+                for flagged in files:
+                    reason = result['reason'][flagged]
+                    filey.writelines('%s,FLAGGED\t%s\t%s\n' %(clean,group,reason))
 
+            print('Result written to %s' %outfile)
+            
+ 
 if __name__ == '__main__':
     main()
