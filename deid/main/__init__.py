@@ -81,16 +81,16 @@ def get_parser():
                          help="deid file with preferences, if not specified, default used.", 
                          type=str, default=None)
 
+    inspect.add_argument('--save',"-s", dest="save", 
+                         help="save result to output tab separated file.", 
+                         default=False, action='store_true')
+
     ids = subparsers.add_parser("identifiers",
                                 help="extract and replace identifiers from headers")
 
     ids.add_argument("--deid", dest='deid', 
                      help="deid file with preferences, if not specified, default used.", 
                      type=str, default=None)
-
-    ids.add_argument('--save',"-s", dest="save", 
-                     help="save result to output tab separated file.", 
-                     default=False, action='store_true')
 
     # A path to an ids file, required if user wants to put (without get)
     ids.add_argument("--ids", dest='ids', 
