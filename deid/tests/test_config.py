@@ -89,7 +89,7 @@ class TestConfig(unittest.TestCase):
         self.assertEqual(len(unknown),0)
 
         print("Testing standards: allowed sections")
-        default_sections = ["header","pixels","labels","filter"]
+        default_sections = ["header","labels","filter"]
         [self.assertTrue(x in sections) for x in default_sections]
         unknown = [x for x in sections if x not in default_sections]
         self.assertEqual(len(unknown),0)
