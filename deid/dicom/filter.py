@@ -23,6 +23,7 @@ SOFTWARE.
 '''
 
 from pydicom.dataset import Dataset
+from pydicom.sequence import Sequence
 from deid.logger import bot
 import os
 import re
@@ -168,11 +169,18 @@ def compareBase(self,field,expression,func,ignore_case=True):
 
     for contender in contenders:
         if contender is not None:
-            if ignore_case:
-                expression = expression.lower().strip()
-                contender = contender.lower().strip()
-            if func(expression,contender):
-                is_match = True
+
+            if not isinstance(Sequence,contender):                
+                if ignore_case:
+                    try:
+                        contender = contender.lower().strip()
+                        expression = expression.lower().strip()
+                    except AttributeError:
+                        pass # we are dealing with number
+                             # sequence, or other private tag
+
+                if func(expression,contender):
+                    is_match = True
 
     return is_match
 
