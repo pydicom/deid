@@ -170,7 +170,7 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True
                 print('LABEL: %s' %group_name)
                 print('CRITERIA: %s' %' '.join(descriptions))
                 if return_reason is True:
-                    return flagged, name, reason
+                    return flagged, name, %' '.join(descriptions)
                 return flagged, name
 
     bot.debug("%s header filter indicates pixels are clean." %dicom_name)
