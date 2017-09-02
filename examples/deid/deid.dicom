@@ -4,7 +4,6 @@ FORMAT dicom
 
 LABEL Criteria for Dangerous Cookie
 contains PatientSex M
-  + missing PatientBirthDate
   + notequals OperatorsName bold bread
   coordinates 0,0,512,110
 

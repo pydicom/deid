@@ -173,18 +173,16 @@ actions:
 What we want to do is inspect:
 
 ```
-deid inspect --help
-
-usage: deid inspect [-h] folder [folder ...]
+usage: deid inspect [-h] [--deid DEID] [--save] folder [folder ...]
 
 positional arguments:
-  folder      input folder or single image. If not provided, test data will be
-              used.
+  folder       input folder or single image. If not provided, test data will
+               be used.
 
 optional arguments:
-  -h, --help  show this help message and exit
-  --deid DEID           deid file with preferences, if not specified, default
-                        used.
+  -h, --help   show this help message and exit
+  --deid DEID  deid file with preferences, if not specified, default used.
+  --save, -s   save result to output tab separated file.
 ```
 
 Let's run the command with test data (dicom cookies) and specify the deid in our examples folder:
@@ -192,19 +190,45 @@ Let's run the command with test data (dicom cookies) and specify the deid in our
 ```
 deid inspect --deid examples/deid deid/data/dicom-cookies
 
+Found 7 valid dicom files
+FLAGGED image6.dcm in section dangerouscookie
+LABEL: LABEL Criteria for Dangerous Cookie
+CRITERIA:  PatientSex contains M and OperatorsName notequals bold bread
+FLAGGED image5.dcm in section dangerouscookie
+LABEL: LABEL Criteria for Dangerous Cookie
+CRITERIA:  PatientSex contains M and OperatorsName notequals bold bread
+
 SUMMARY ================================
 
-CLEAN deid/data/dicom-cookies/image4.dcm
-FLAGGED dangerouscookie
-deid/data/dicom-cookies/image2.dcm
-deid/data/dicom-cookies/image7.dcm
-deid/data/dicom-cookies/image6.dcm
-deid/data/dicom-cookies/image3.dcm
-deid/data/dicom-cookies/image1.dcm
-deid/data/dicom-cookies/image5.dcm
-
+CLEAN 5 files
+FLAGGED dangerouscookie 2 files
 ```
 You will see an output, and then a summary of file lists for each of clean and flagged.
+
+If you want to run the above and save the result to file:
+
+```
+deid inspect --deid examples/deid deid/data/dicom-cookies --save
+...
+SUMMARY ================================
+
+CLEAN 5 files
+FLAGGED dangerouscookie 2 files
+Result written to pixel-flag-results-dicom-cookies-17-09-02.tsv
+```
+
+and the file looks like this - images with OperatorsName notequals "bold bread" and PatientSex "M" are flagged:
+
+```
+dicom_file      pixels_flagged  flag_list       reason
+deid/data/dicom-cookies/image4.dcm,CLEAN
+deid/data/dicom-cookies/image2.dcm,CLEAN
+deid/data/dicom-cookies/image7.dcm,CLEAN
+deid/data/dicom-cookies/image3.dcm,CLEAN
+deid/data/dicom-cookies/image1.dcm,CLEAN
+deid/data/dicom-cookies/image1.dcm,FLAGGED      dangerouscookie  PatientSex contains M and OperatorsName notequals bold bread
+deid/data/dicom-cookies/image1.dcm,FLAGGED      dangerouscookie  PatientSex contains M and OperatorsName notequals bold bread
+```
 
 ### Within Python
 First, let's load the example "dicom cookies" dataset. We will first run this example within python, and then using a command line client (not written yet).
@@ -252,7 +276,6 @@ FORMAT dicom
 
 LABEL Criteria for Dangerous Cookie
 contains PatientSex M
-  + missing PatientBirthDate
   + notequals OperatorsName bold bread
   coordinates 0,0,512,110
 
@@ -273,7 +296,7 @@ REPLACE SOPInstanceUID var:source_id
 
 We won't be using the header section for this example, but for your FYI, this is the recipe for how we would want to replace information in the header, if we were cleaning the headers. Right now we are just filtering images to flag those that might have PHI. Let's very strictly walk through the logic that will be taken above:
 
- 1. If the header contains field PatientSex "M" (Male), and is missing PatientBirthDate and OperatorsName is not "bold bread," we flag. Otherwise, keep going.
+ 1. If the header contains field PatientSex "M" (Male), and OperatorsName is not "bold bread," we flag. Otherwise, keep going.
  2. If the header has field Rows 2048 and Columns 1536 we flag.
 
 The flag that is done first (more specific) is the final decision. This means that you should have your known coordinates of PHI (eg, specific modality, manufacturer, etc) first, and followed by more general estimates of PHI. Likely a later group will create flags for more manual inspection.
@@ -285,32 +308,15 @@ from deid.dicom import has_burned_pixels
 groups = has_burned_pixels(dicom_files=dicom_files, deid='examples/deid')
 ```
 
-We immediately see that six are flagged for not having OperatorsName "bold bread"
+We immediately see that two are flagged:
 
 ```
-FLAGGED image2.dcm in section dangerouscookie
-LABEL: criteria for dangerous cookie
-CRITERIA: and OperatorsName notequals bold bread
-
-FLAGGED image7.dcm in section dangerouscookie
-LABEL: criteria for dangerous cookie
-CRITERIA: and OperatorsName notequals bold bread
-
 FLAGGED image6.dcm in section dangerouscookie
-LABEL: criteria for dangerous cookie
-CRITERIA: and OperatorsName notequals bold bread
-
-FLAGGED image3.dcm in section dangerouscookie
-LABEL: criteria for dangerous cookie
-CRITERIA: and OperatorsName notequals bold bread
-
-FLAGGED image1.dcm in section dangerouscookie
-LABEL: criteria for dangerous cookie
-CRITERIA: and OperatorsName notequals bold bread
-
+LABEL: LABEL Criteria for Dangerous Cookie
+CRITERIA:  PatientSex contains M and OperatorsName notequals bold bread
 FLAGGED image5.dcm in section dangerouscookie
-LABEL: criteria for dangerous cookie
-CRITERIA: and OperatorsName notequals bold bread
+LABEL: LABEL Criteria for Dangerous Cookie
+CRITERIA:  PatientSex contains M and OperatorsName notequals bold bread
 ```
 
 Is this accurate?
@@ -318,28 +324,39 @@ Is this accurate?
 ```
 for dicom_file in dicom_files:
     dicom = read_file(dicom_file)
-    print("%s:%s" %(os.path.basename(dicom_file),dicom.OperatorsName))
+    print("%s:%s - %s" %(os.path.basename(dicom_file),
+                         dicom.OperatorsName,
+                         dicom.PatientSex))
 
-image4.dcm:bold bread
-image2.dcm:lingering hill
-image7.dcm:sweet brook
-image6.dcm:green paper
-image3.dcm:nameless voice
-image1.dcm:fragrant pond
-image5.dcm:curly darkness
-
+image4.dcm:bold bread - M
+image2.dcm:lingering hill - F
+image7.dcm:sweet brook - F
+image6.dcm:green paper - M       <--- FLAGGED
+image3.dcm:nameless voice - F
+image1.dcm:fragrant pond - F
+image5.dcm:curly darkness - M    <--- FLAGGED
 ```
 
-Seems to be! The data structure returned gives us programmatic access to the groups:
+Seems to be! The data structure returned gives us programmatic access to the groups, including list of clean (top), list of flagged and flag list name (flagged) and given flagged, a lookup dictionary with reasons:
 
 ```
-{'clean': ['/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image4.dcm'],
- 'flagged': {'dangerouscookie': ['/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image2.dcm',
-   '/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image7.dcm',
-   '/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image6.dcm',
-   '/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image3.dcm',
-   '/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image1.dcm',
-   '/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image5.dcm']}}
+{
+   "clean":[
+      "/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image4.dcm",
+      "/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image2.dcm",
+      "/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image7.dcm",
+      "/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image3.dcm",
+      "/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image1.dcm"
+   ],
+   "flagged":{
+      "dangerouscookie":[
+         "/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image6.dcm",
+         "/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image5.dcm"
+      ]
+   },
+   "reason":{
+      "/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image5.dcm":" PatientSex contains M and OperatorsName notequals bold bread",
+      "/home/vanessa/Documents/Dropbox/Code/dicom/deid/deid/data/dicom-cookies/image6.dcm":" PatientSex contains M and OperatorsName notequals bold bread"
+   }
+}
 ```
-
-More examples (and client) coming soon, need to write tests, etc. first!
