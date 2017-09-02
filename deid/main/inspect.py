@@ -54,9 +54,9 @@ def main(args,parser):
     # If a deid is given, check against format
     deid = args.deid
     if deid is None:
-        deid = get_deid('dicom')
+        deid = get_deid()
 
-    params = load_deid(args.deid)
+    params = load_deid(deid)
     if params['format'] != args.format:
         bot.error("Format in deid (%s) doesn't match choice here (%s) exiting." %(params['format'],
                                                                                   args.format))

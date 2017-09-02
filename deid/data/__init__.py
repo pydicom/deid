@@ -52,7 +52,7 @@ def get_dataset(dataset=None):
     bot.info("Valid datasets include: %s" %(','.join(list(valid_datasets.keys()))))
 
 
-def get_deid(tag=None):
+def get_deid(tag):
     if tag is None:
         tag = "dicom"
     deid = "%s/deid.%s" %(here,tag)
