@@ -81,7 +81,8 @@ def main(args,parser):
             bot.flag("%s %s files" %(group, len(files)))
 
     if args.save is True:
-        outfile = "%s-%s-pixel-flag-results.tsv" %(base,datetime.datetime.now().strftime('%y-%m-%d'))
+        folders = '-'.join([os.path.basename(folder) for folder in base])
+        outfile = "pixel-flag-results.tsv" %(folders,datetime.datetime.now().strftime('%y-%m-%d'))
         with open(outfile,'w') as filey:
             filey.writelines('dicom_file\tpixels_flagged\tflag_list\treason\n')
             for clean in result['clean']:
