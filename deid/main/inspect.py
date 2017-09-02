@@ -28,7 +28,7 @@ SOFTWARE.
 
 from deid.logger import bot
 from deid.dicom import get_files
-from deid.data import get_dataset  
+from deid.data import get_dataset, get_deid  
 from deid.config import load_deid
 from deid.dicom import has_burned_pixels
 
