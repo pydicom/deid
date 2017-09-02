@@ -166,11 +166,12 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True
             flagged = evaluate_group(flags=flags)
 
             if flagged is True:
+                reason = ' '.join(descriptions)
                 bot.flag("%s in section %s\n" %(dicom_name,name))
                 print('LABEL: %s' %group_name)
-                print('CRITERIA: %s' %' '.join(descriptions))
+                print('CRITERIA: %s' %reason)
                 if return_reason is True:
-                    return flagged, name, %' '.join(descriptions)
+                    return flagged, name, reason
                 return flagged, name
 
     bot.debug("%s header filter indicates pixels are clean." %dicom_name)
