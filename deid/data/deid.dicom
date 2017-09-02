@@ -31,7 +31,7 @@ contains ManufacturerModelName SOMATOM Definition AS+
 coordinates 0,0,512,121
 
 LABEL Somatom Localizers # (Susan Weber)
-ManufacturerModelName SOMATOM Definition AS+
+contains ManufacturerModelName SOMATOM Definition AS+
   + contains Modality CT
   + contains ImageType LOCAL || contains SeriesDescription Localizer
 coordinates 0,0,80,85
@@ -312,7 +312,7 @@ LABEL MEDRAD Injection Profile # (CTP)
 
 LABEL Stanford Medical Center LightSpeed VCT # (Roger Goldman)
   contains Manufacturer GE
-  + Modality CT
+  + contains Modality CT
   + contains ManufacturerModelName LightSpeed VCT 
   + contains SeriesDescription Dose || contains ImageType SCREEN SAVE
 
@@ -329,6 +329,7 @@ LABEL Stanford Medicine Outpatient center
   + contains ImageType DERIVED|SECONDARY|SCREEN SAVE|VOLREN|VXTL STATE
 
 %filter whitelist
+
 
 LABEL Stanford Medicine  # (Roger Goldman)
   contains Modality CT
