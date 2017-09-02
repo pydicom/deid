@@ -72,7 +72,7 @@ def main(args,parser):
 
     print('\nSUMMARY ================================\n')
     if len(result['clean']) > 0:
-        bot.custom(prefix='CLEAN,
+        bot.custom(prefix='CLEAN',
                    message="%s files" %len(result['clean']),
                    color="CYAN")
 
