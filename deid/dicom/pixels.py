@@ -156,7 +156,7 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True
                 if 'operator' in group:
                     if group['operator'] is not None:
                         operator = group['operator']
-                reason = '%s %s\n' %(operator,' '.join(group_descriptions))
+                reason = '%s %s' %(operator,' '.join(group_descriptions))
                 descriptions.append(reason)
             group_name = ''
             if "name" in item:
