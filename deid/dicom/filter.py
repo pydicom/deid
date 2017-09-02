@@ -86,8 +86,8 @@ def equalsBase(self,field,term,ignore_case=True,not_equals=False):
             if ignore_case:
                 if not isinstance(contender,Sequence):                
                     try:
-                        contender = contender.lower().strip()
-                        term = term.lower().strip()
+                        contender = str(contender).lower().strip()
+                        term = str(term).lower().strip()
                     except AttributeError:
                         pass # we are dealing with number
 
@@ -174,8 +174,8 @@ def compareBase(self,field,expression,func,ignore_case=True):
             if not isinstance(contender,Sequence):                
                 if ignore_case:
                     try:
-                        contender = contender.lower().strip()
-                        expression = expression.lower().strip()
+                        contender = str(contender).lower().strip()
+                        expression = str(expression).lower().strip()
                     except AttributeError:
                         pass # we are dealing with number
                              # sequence, or other private tag
