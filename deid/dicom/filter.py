@@ -84,14 +84,15 @@ def equalsBase(self,field,term,ignore_case=True,not_equals=False):
     for contender in contenders:
         if contender is not None:
             if ignore_case:
-                try:
-                    contender = contender.lower().strip()
-                    term = term.lower().strip()
-                except AttributeError:
-                    pass # we are dealing with number
+                if not isinstance(contender,Sequence):                
+                    try:
+                        contender = contender.lower().strip()
+                        term = term.lower().strip()
+                    except AttributeError:
+                        pass # we are dealing with number
 
-            if contender == term:
-                is_equal = True
+                if contender == term:
+                    is_equal = True
 
     # If we want to know not_equals, reverse
     if not_equals is True:
@@ -170,7 +171,7 @@ def compareBase(self,field,expression,func,ignore_case=True):
     for contender in contenders:
         if contender is not None:
 
-            if not isinstance(Sequence,contender):                
+            if not isinstance(contender,Sequence):                
                 if ignore_case:
                     try:
                         contender = contender.lower().strip()
