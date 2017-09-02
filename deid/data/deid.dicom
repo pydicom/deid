@@ -1,11 +1,5 @@
 FORMAT dicom
 
-%filter manual
-
-LABEL Stanford Requires Review # Susan Weber
-contains ImageType ORIGINAL|PRIMARY|LOCALIZER
-+ contains ProcedureCodeSequence LOCAL
-
 %filter graylist
 
 LABEL LightSpeed Dose Report # (Susan Weber)
@@ -315,6 +309,7 @@ LABEL Stanford Medical Center LightSpeed VCT # (Roger Goldman)
   + contains Modality CT
   + contains ManufacturerModelName LightSpeed VCT 
   + contains SeriesDescription Dose || contains ImageType SCREEN SAVE
+coordinates 0,0,512,121
 
 LABEL Stanford Medical Center LightSpeed VCT # (Roger Goldman)
   contains Manufacturer GE
@@ -330,17 +325,15 @@ LABEL Stanford Medicine Outpatient center
 
 %filter whitelist
 
+LABEL CT Siemens Sensation 64 Catch-all # (Susan Weber)
+contains ManufacturerModelName Sensation 64
+  + contains Modality CT
 
-LABEL Stanford Medicine  # (Roger Goldman)
-  contains Modality CT
-  + contains InstitutionName Stanford Medical Center
-  + contains Manufacturer GE
-  + contains ManufacturerModelName LightSpeed CVT
-  + contains SeriesDescription SCOUT
-  contains SeriesDescription (0008,103e) SCOUT
-  contains ImageType ORIGINAL|DERIVED|PRIMARY|LOCALIZER|AXIAL|SECONDARY|REFORMATTED|AVERAGE
-  contains ScanOptions SCOUT MODE
-  contains ScanOptions Axial MODE 
+
+LABEL Matt Lungren CHEST CR 
+  contains Modality  CR|DX
+  || contains StudyDescription DX 
+  + contains StudyDescription CHEST || contains BodyPartExamined CHEST
 
 
 %filter blacklist
