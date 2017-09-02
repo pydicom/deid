@@ -10,6 +10,8 @@ These are basic Python based tools for working with medical images and text, spe
 
 
 ## Installation
+
+### Local
 For the stable release, install via pip:
 
 ```
@@ -20,6 +22,13 @@ For the development version, install from Github:
 
 ```
 pip install git+git://github.com/pydicom/deid
+```
+
+### Docker
+
+```
+docker build -t pydicom/deid .
+docker run pydicom/deid --help
 ```
 
 ## Issues
