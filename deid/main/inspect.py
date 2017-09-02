@@ -82,7 +82,7 @@ def main(args,parser):
 
     if args.save is True:
         folders = '-'.join([os.path.basename(folder) for folder in base])
-        outfile = "pixel-flag-results.tsv" %(folders,datetime.datetime.now().strftime('%y-%m-%d'))
+        outfile = "pixel-flag-results-%s-%s.tsv" %(folders,datetime.datetime.now().strftime('%y-%m-%d'))
         with open(outfile,'w') as filey:
             filey.writelines('dicom_file\tpixels_flagged\tflag_list\treason\n')
             for clean in result['clean']:
