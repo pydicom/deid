@@ -217,12 +217,6 @@ def parse_label(section,config,section_name,members,label=None):
     return config
 
 
-        # If if doesn't start with a +, it's a new criteria
-        if not member.startswith('+') and not member.startswith('||'):
-            if len(entry) > 0:
-                criteria['filters'].append(entry.copy())
-                entry = []
-
 
 def parse_member(members, operator=None):
 
