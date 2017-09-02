@@ -72,54 +72,40 @@ def load_deid(path=None):
     section = None
 
     while len(spec) > 0:
-
-        line = spec.pop(0)
-
         # Clean up white trailing/leading space
-        line=line.strip()
-
+        line = spec.pop(0).strip()
         # Comment
         if line.startswith("#"):
             continue
-
         # Starts with Format?
         elif bool(re.match('format', line, re.I)):
             fmt = re.sub('FORMAT|(\s+)','',line).lower()
             if fmt not in formats:
                 bot.error("%s is not a valid format." %fmt)
                 sys.exit(1)
-
             # Set format
             config['format'] = fmt
             bot.debug("FORMAT set to %s" %fmt)
-
         # A new section?
         elif line.startswith('%'):
- 
             # Remove any comments
             line = line.split('#',1)[0].strip()
-
             # Is there a section name?
             section_name = None
             parts = line.split(' ')
             if len(parts) > 1:
                 section_name = ' '.join(parts[1:])          
-
             section = re.sub('[%]|(\s+)','',parts[0]).lower()
             if section not in sections:
                 bot.error("%s is not a valid section." %section)
                 sys.exit(1)
-
             config = add_section(config=config,
                                  section=section,
                                  section_name=section_name)
-
         # An action (replace, blank, remove, keep, jitter)
         elif line.upper().startswith(actions):
-              
             # Start of a filter group
             if line.upper().startswith('LABEL') and section == "filter":
-
                 members = []
                 keep_going = True
                 while keep_going is True:
@@ -133,14 +119,12 @@ def load_deid(path=None):
                         members.append(new_member)
                     if len(spec) == 0:
                         keep_going = False
-
                 # Add the filter label to the config
                 config = parse_label(config=config,
                                      section=section,
                                      label=line,
                                      section_name=section_name,
                                      members=members)
-
             # Parse the action
             else:
                 config = parse_action(section=section,
@@ -149,7 +133,6 @@ def load_deid(path=None):
                                       config=config)
         else:
             bot.debug("%s not recognized to be in valid format, skipping." %line)
-
     return config
 
 
@@ -191,7 +174,6 @@ def find_deid(path=None):
 def parse_label(section,config,section_name,members,label=None):
     '''parse label will add a (optionally named) label to the filter
     section, including one or more criteria
-
     Parameters
     ==========
     section: the section name (e.g., header) must be one in sections
@@ -200,41 +182,28 @@ def parse_label(section,config,section_name,members,label=None):
     members: the lines beloning to the section/section_name
     label: an optional name for the group of commands
     '''
-
     criteria = {'filters':[],
                 'coordinates':[]}
-
     if label is not None:                                   
-        label = (label.lower().replace('label','',1)
-                              .split('#')[0]
-                              .strip())
+        label = (label.replace('label','',1)
+                      .split('#')[0]
+                      .strip())
         criteria['name'] = label
-    
-    entry = []
     while len(members) > 0:
         member = members.pop(0).strip()
-
         # We have a coordinate line
         if member.lower().startswith('coordinates'):
             coordinate = member.lower().replace('coordinates','').strip()
             criteria['coordinates'].append(coordinate)
             continue
-
-        # If if doesn't start with a +, it's a new criteria
-        if not member.startswith('+') and not member.startswith('||'):
-            if len(entry) > 0:
-                criteria['filters'].append(entry.copy())
-                entry = []
-
         operator = None
-
+        entry = None
         if member.startswith('+'):
             operator = 'and'
             member = member.replace('+','',1).strip()
         elif member.startswith('||'):
             operator = 'or'
             member = member.replace('||','',1).strip()
-       
         # Now that operators removed, parse member
         if not member.lower().startswith(filters):
             bot.warning('%s filter is not valid, skipping.' %member.lower())
@@ -242,13 +211,17 @@ def parse_label(section,config,section_name,members,label=None):
             # Returns single member with field, values, operator,
             # Or if multiple or/and in statement, a list
             entry = parse_member(member, operator)
-
-    # Add the last entry
-    if len(entry) > 0:
-        criteria['filters'].append(entry.copy())
-
+        if entry is not None:
+            criteria['filters'].append(entry.copy())
     config[section][section_name].append(criteria)
     return config
+
+
+        # If if doesn't start with a +, it's a new criteria
+        if not member.startswith('+') and not member.startswith('||'):
+            if len(entry) > 0:
+                criteria['filters'].append(entry.copy())
+                entry = []
 
 
 def parse_member(members, operator=None):

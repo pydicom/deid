@@ -122,15 +122,14 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True
 
     for name,items in config['filter'].items():
         for item in items:
-
             flags = []
+
             descriptions = [] # description for each group across items
 
             for group in item['filters']:
 
                 group_flags = []         # evaluation for a single line
                 group_descriptions = []
-
                 for action in group['action']:
                     field = group['field'].pop(0)
                     value = ''
@@ -140,14 +139,12 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True
                                         field=field,
                                         filter_name=action,
                                         value=value or None)
-
                     group_flags.append(flag)
                     description = "%s %s %s" %(field,action,value)
                     if len(group['InnerOperators']) > 0:
                         inner_operator = group['InnerOperators'].pop()
                         group_flags.append(inner_operator)
                         description = "%s %s" %(description,inner_operator)
-
                     group_descriptions.append(description)
 
                 # At the end of a group, evaluate the inner group   
@@ -159,15 +156,16 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True
                 if 'operator' in group:
                     if group['operator'] is not None:
                         operator = group['operator']
-                            
-                descriptions.append('%s %s\n' %(operator,'\n'.join(group_descriptions)))
-
+                reason = '%s %s\n' %('\n'.join(group_descriptions),operator)
+                descriptions.append(reason)
             group_name = ''
+
             if "name" in item:
                 group_name = item['name']
 
             # When we parse through a group, we evaluate based on all flags
             flagged = evaluate_group(flags=flags)
+
             if flagged is True:
                 bot.flag("%s in section %s\n" %(dicom_name,name))
                 print('LABEL: %s' %group_name)
