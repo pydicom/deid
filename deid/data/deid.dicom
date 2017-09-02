@@ -8,6 +8,44 @@ contains ImageType ORIGINAL|PRIMARY|LOCALIZER
 
 %filter graylist
 
+LABEL LightSpeed Dose Report # (Susan Weber)
+contains ManufacturerModelName LightSpeed VCT
+  + contains Modality CT
+  + contains ImageType SCREEN SAVE || contains SeriesDescription Dose
+coordinates 0,0,512,121
+
+LABEL LightSpeed Localizers # (Susan Weber)
+contains ManufacturerModelName LightSpeed VCT
+  + contains Modality CT
+  + contains ImageType LOCAL || contains SeriesDescription Localizer
+coordinates 0,0,80,85
+
+LABEL Stanford CT GE Medical Systems LightSpeed VCT # (Susan Weber)
+contains ManufacturerModelName LightSpeed VCT
+  + contains Modality CT
+
+LABEL Enhancement Curve # (Susan Weber)
+contains ManufacturerModelName SOMATOM Definition AS+
+  + contains Modality CT
+  + contains ImageType OTHER || contains SeriesDescription Enhancement
+coordinates 0,0,512,121
+
+LABEL Somatom Localizers # (Susan Weber)
+ManufacturerModelName SOMATOM Definition AS+
+  + contains Modality CT
+  + contains ImageType LOCAL || contains SeriesDescription Localizer
+coordinates 0,0,80,85
+
+LABEL 3D Lab reconstructions # (Susan Weber)
+contains ManufacturerModelName SOMATOM Definition AS+
+  + contains Modality CT
+  + contains SeriesDescription 3D
+coordinates 450,0,672, 85
+
+LABEL CT Siemens SOMATOM Catch-all # (Susan Weber)
+contains ManufacturerModelName SOMATOM Definition AS+
+  + contains Modality CT
+
 LABEL CT Dose Series # (CTP)
   contains Modality CT
   + contains Manufacturer GE
@@ -272,20 +310,17 @@ LABEL MEDRAD Injection Profile # (CTP)
   + contains SeriesDescription MEDRAD
   coordinates 0,0,750,230
 
-
 LABEL Stanford Medical Center LightSpeed VCT # (Roger Goldman)
   contains Manufacturer GE
   + Modality CT
   + contains ManufacturerModelName LightSpeed VCT 
   + contains SeriesDescription Dose || contains ImageType SCREEN SAVE
 
-
 LABEL Stanford Medical Center LightSpeed VCT # (Roger Goldman)
   contains Manufacturer GE
   + contains ManufacturerModelName LightSpeed VCT 
   + contains SeriesDescription 3D Lab|COW|3d|vr|movie
   + contains ImageType DERIVED|SECONDARY|SCREEN SAVE
-
 
 LABEL Stanford Medicine Outpatient center
   contains Manufacturer Siemens
