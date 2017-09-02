@@ -184,13 +184,16 @@ def parse_label(section,config,section_name,members,label=None):
     '''
     criteria = {'filters':[],
                 'coordinates':[]}
+
     if label is not None:                                   
         label = (label.replace('label','',1)
                       .split('#')[0]
                       .strip())
         criteria['name'] = label
+
     while len(members) > 0:
         member = members.pop(0).strip()
+
         # We have a coordinate line
         if member.lower().startswith('coordinates'):
             coordinate = member.lower().replace('coordinates','').strip()
@@ -204,15 +207,18 @@ def parse_label(section,config,section_name,members,label=None):
         elif member.startswith('||'):
             operator = 'or'
             member = member.replace('||','',1).strip()
+
         # Now that operators removed, parse member
         if not member.lower().startswith(filters):
             bot.warning('%s filter is not valid, skipping.' %member.lower())
         else:
+
             # Returns single member with field, values, operator,
             # Or if multiple or/and in statement, a list
             entry = parse_member(member, operator)
         if entry is not None:
             criteria['filters'].append(entry.copy())
+
     config[section][section_name].append(criteria)
     return config
 
