@@ -312,21 +312,19 @@ LABEL MEDRAD Injection Profile # (CTP)
 LABEL Stanford Medical Center LightSpeed VCT # (Roger Goldman)
   contains Manufacturer GE
   + contains Modality CT
-  + contains ManufacturerModelName LightSpeed VCT 
+  + contains ManufacturerModelName GE|Stanford
   + contains SeriesDescription Dose || contains ImageType SCREEN SAVE
 coordinates 0,0,512,121
 
-LABEL Stanford Medical Center LightSpeed VCT # (Roger Goldman)
+LABEL Stanford Medical Center GE # (Roger Goldman)
   contains Manufacturer GE
-  + contains ManufacturerModelName LightSpeed VCT 
-  + contains SeriesDescription 3D Lab|COW|3d|vr|movie
-  + contains ImageType DERIVED|SECONDARY|SCREEN SAVE
+  + contains ManufacturerModelName GE|Stanford
+  + contains ImageType DERIVED+SECONDARY+SCREEN SAVE
 coordinates 0,0,512,121
 
 LABEL Stanford Medicine Outpatient center
   contains Manufacturer Siemens
   + contains ManufacturerModelName SOMATOM Definition AS+
-  + contains SeriesDescription 3D Saved State | 3D Lab | CPR
   + contains ImageType DERIVED|SECONDARY|SCREEN SAVE|VOLREN|VXTL STATE
 
 %filter whitelist
