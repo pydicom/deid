@@ -86,11 +86,11 @@ def main(args,parser):
         with open(outfile,'w') as filey:
             filey.writelines('dicom_file\tpixels_flagged\tflag_list\treason\n')
             for clean in result['clean']:
-                filey.writelines('%s,CLEAN\t\t\n' %clean)
+                filey.writelines('%s\tCLEAN\t\t\n' %clean)
             for group,files in result['flagged'].items():
                 for flagged in files:
                     reason = result['reason'][flagged]
-                    filey.writelines('%s,FLAGGED\t%s\t%s\n' %(flagged,group,reason))
+                    filey.writelines('%s\tFLAGGED\t%s\t%s\n' %(flagged,group,reason))
 
             print('Result written to %s' %outfile)
             
