@@ -26,10 +26,6 @@ from deid.logger import bot
 from deid.dicom.tags import get_tag
 from deid.dicom.utils import perform_action
 from deid.utils import read_json
-from matplotlib import pyplot as plt
-import matplotlib.patches as mpatches
-
-from pylab import fill
 from pydicom import read_file
 from deid.dicom.filter import (
     Dataset,     # add additional filters
@@ -70,6 +66,11 @@ def clean_pixels(dicom_file, coordinates, output_folder=None, show=False,
     margin: pixels of padding to add, if add_padding True
 
     '''
+    from matplotlib import pyplot as plt
+    import matplotlib.patches as mpatches
+
+    from pylab import fill
+
     if not isinstance(coordinates,list):
         coordinates = [coordinates]
     coordinates = [coordinates]   # [[1,2,3,4],...[1,2,3,4]]
