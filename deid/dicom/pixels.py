@@ -68,6 +68,7 @@ def clean_pixels(dicom_file, coordinates, output_folder=None, show=False,
     output_folder: if provided, save dicom to this folder
     add_padding: add N=margin pixels of padding
     margin: pixels of padding to add, if add_padding True
+
     '''
     if not isinstance(coordinates,list):
         coordinates = [coordinates]
@@ -95,14 +96,14 @@ def clean_pixels(dicom_file, coordinates, output_folder=None, show=False,
                                
         #if show:
         #    plt.show()
-        return plt
-
-
-    def scrape_save(self,output_file):
-        '''realign text and save to output file'''
-        plt = self.scrape(show=False)
-        plt.savefig(output_file)
-
+        if output_folder is not None:
+            dicom_name = "%s/cleaned-%s.dcm" %(output_folder,
+                                               os.path.basename(dicom_file).strip('.dcm','.dicom'))
+            dicom.PixelData = image
+            dicom.save_as(dicom_name)
+            return dicom_name
+        return image
+ 
 
 
 def has_burned_pixels(dicom_files,force=True,deid=None):
