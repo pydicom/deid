@@ -138,7 +138,7 @@ LABEL Toshiba Aquilion One CT Dose Series # (CTP)
   coordinates 0,0,410,240
 
 LABEL Overlay # (CTP)
-  contains Modality PET/CT|PET|CT
+  contains Modality PET/CT
   + contains Manufacturer SIEMENS
   + contains OverlayDescription Siemens MedCom Object Graphics
   coordinates 0,0,512,90
