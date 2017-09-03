@@ -2,6 +2,10 @@ FORMAT dicom
 
 %filter graylist
 
+LABEL Stanford Med Reconstruction # (Vanessa Sochat)
+missing Manufacturer || empty Manufacturer
+  + contains ImageType RECONSTRUCTION|SECONDARY|DERIVED
+
 LABEL LightSpeed Dose Report # (Susan Weber)
 contains ManufacturerModelName LightSpeed VCT
   + contains Modality CT
@@ -121,6 +125,7 @@ LABEL CT Dose Series # (CTP)
   + contains Manufacturer PHILIPS
   + contains ImageType DOSE
   coordinates 0,0,512,135
+
 
 LABEL Toshiba Aquilion One CT Dose Series # (CTP)
   contains Modality CT
@@ -316,6 +321,7 @@ LABEL Stanford Medical Center LightSpeed VCT # (Roger Goldman)
   + contains ManufacturerModelName LightSpeed VCT 
   + contains SeriesDescription 3D Lab|COW|3d|vr|movie
   + contains ImageType DERIVED|SECONDARY|SCREEN SAVE
+coordinates 0,0,512,121
 
 LABEL Stanford Medicine Outpatient center
   contains Manufacturer Siemens

@@ -182,6 +182,8 @@ def remove_private_identifiers(dicom_files,
     reads in the files for the user and saves accordingly
     '''
     updated_files = []
+    if not isinstance(dicom_files,list):
+        dicom_files = [dicom_files]
 
     for dicom_file in dicom_files:
         dicom = read_file(dicom_file,force=force)

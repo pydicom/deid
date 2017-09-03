@@ -26,6 +26,10 @@ from deid.logger import bot
 from deid.dicom.tags import get_tag
 from deid.dicom.utils import perform_action
 from deid.utils import read_json
+from matplotlib import pyplot as plt
+import matplotlib.patches as mpatches
+
+from pylab import fill
 from pydicom import read_file
 from deid.dicom.filter import (
     Dataset,     # add additional filters
@@ -36,9 +40,69 @@ from deid.config import load_deid
 
 import os
 
+def preview_clean_pixels(dicom_file, coordinates):
+    '''
+    run clean pixels with show set to true and output folder None
 
-def clean_pixels():
-    bot.warning('BEEP-BOOP - I am not written yet!')
+    Parameters
+    ==========
+    dicom_file: the full path to a dicom file to clean
+    coordinates: the list of coordinates
+
+    '''
+    return clean_pixels(dicom_file=dicom_file,
+                        coordinates=coordinates)
+
+
+def clean_pixels(dicom_file, coordinates, output_folder=None, show=False,
+                 add_padding=False, margin=3):
+    '''
+    take a dicom image and a list of pixel coordinates, and return
+    a cleaned file (if output file is specified) or simply plot 
+    the cleaned result (if no file is specified)
+    
+    Parameters
+    ==========
+    dicom_file: the full path to a dicom file to clean
+    coordinates: the list of coordinates
+    output_folder: if provided, save dicom to this folder
+    add_padding: add N=margin pixels of padding
+    margin: pixels of padding to add, if add_padding True
+    '''
+    if not isinstance(coordinates,list):
+        coordinates = [coordinates]
+    coordinates = [coordinates]   # [[1,2,3,4],...[1,2,3,4]]
+    dicom = read_file(dicom_file,force=True)
+    image = dicom._get_pixel_array()
+    
+    if show is True:
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+    for coordinate in coordinates:
+        minr, minc, maxr, maxc = coordinate
+
+        if add_padding is True:
+            minr, minc, maxr, maxc = minr-margin, minc-margin, maxr+margin, maxc+margin
+
+        print("Blanking (%s,%s,%s,%s)" %(minr, minc, maxr, maxc))
+        rect = mpatches.Rectangle((minc, minr), maxc - minc, maxr - minr,
+                                  fill=True, facecolor='black', edgecolor='black', linewidth=2)
+        ax.add_patch(rect)
+            
+        if show is True:
+            ax.imshow(image)
+        #fill([minr,minc,maxr,maxc], 'r', alpha=0.2, edgecolor='r')
+                               
+        #if show:
+        #    plt.show()
+        return plt
+
+
+    def scrape_save(self,output_file):
+        '''realign text and save to output file'''
+        plt = self.scrape(show=False)
+        plt.savefig(output_file)
+
 
 
 def has_burned_pixels(dicom_files,force=True,deid=None):
@@ -132,32 +196,40 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True
             for group in item['filters']:
                 group_flags = []         # evaluation for a single line
                 group_descriptions = []
+
                 for action in group['action']:
                     field = group['field'].pop(0)
                     value = ''
+
                     if len(group['value']) > 0:
                         value = group['value'].pop(0)
+
                     flag = apply_filter(dicom=dicom,
                                         field=field,
                                         filter_name=action,
                                         value=value or None)
                     group_flags.append(flag)
                     description = "%s %s %s" %(field,action,value)
+
                     if len(group['InnerOperators']) > 0:
                         inner_operator = group['InnerOperators'].pop()
                         group_flags.append(inner_operator)
                         description = "%s %s" %(description,inner_operator)
                     group_descriptions.append(description)
+
                 # At the end of a group, evaluate the inner group   
                 flag = evaluate_group(group_flags)
                 flags.append(flag)
+
                 # "Operator" is relevant for the outcome of the list of actions 
                 operator = ''
                 if 'operator' in group:
                     if group['operator'] is not None:
                         operator = group['operator']
+
                 reason = ('%s %s' %(operator,' '.join(group_descriptions))).replace('\n',' ')
                 descriptions.append(reason)
+
             group_name = ''
             if "name" in item:
                 group_name = item['name']

@@ -31,6 +31,7 @@ LICENSE = "LICENSE"
 
 INSTALL_REQUIRES = (
 
+    ('matplotlib', {'min_version': None}),
     ('requests', {'min_version': '2.12.4'}),
     ('retrying', {'min_version': '1.3.3'}),
     ('simplejson', {'min_version': '3.10.0'}),
