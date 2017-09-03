@@ -90,7 +90,7 @@ def main(args,parser):
             for group,files in result['flagged'].items():
                 for flagged in files:
                     reason = result['reason'][flagged]
-                    filey.writelines('%s,FLAGGED\t%s\t%s\n' %(clean,group,reason))
+                    filey.writelines('%s,FLAGGED\t%s\t%s\n' %(flagged,group,reason))
 
             print('Result written to %s' %outfile)
             
