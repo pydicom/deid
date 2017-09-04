@@ -141,7 +141,8 @@ def has_burned_pixels(dicom_files,force=True,deid=None):
     return decision
 
 
-def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True, return_reason=True):
+def has_burned_pixels_single(dicom_file,force=True, deid=None, quiet=False,
+                             return_group=True, return_reason=True):
     '''has burned pixels single will evaluate one dicom file for burned in
     pixels based on 'filter' criteria in a deid. If deid is not provided,
     will use application default. The method proceeds as follows:
@@ -159,6 +160,7 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True
     deid: the full path to a deid specification. if not defined, default used
     return_group: also return the group of the flagged files
     return_reason: return a string reason for why the flag was done (none if clean)
+    quiet: if quiet, won't print to screen
 
     config['filter']['dangerouscookie'] <-- filter list "dangerouscookie"
 
@@ -241,9 +243,12 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True
 
             if flagged is True:
                 reason = ' '.join(descriptions)
-                bot.flag("%s in section %s\n" %(dicom_name,name))
-                print('LABEL: %s' %group_name)
-                print('CRITERIA: %s' %reason)
+
+                if quiet is False:
+                    bot.flag("%s in section %s\n" %(dicom_name,name))
+                    print('LABEL: %s' %group_name)
+                    print('CRITERIA: %s' %reason)
+
                 if return_reason is True:
                     return flagged, name, reason
                 return flagged, name
