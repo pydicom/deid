@@ -1,5 +1,19 @@
 FORMAT dicom
 
+%filter whitelist
+
+LABEL CT Siemens Sensation 64 Catch-all # (Susan Weber)
+contains ManufacturerModelName Sensation 64
+  + contains Modality CT
+
+LABEL Marked as Clean Catch All # (Vanessa Sochat)
+contains BurnedInAnnotation No
+
+LABEL Matt Lungren CHEST CR 
+  contains Modality  CR|DX
+  || contains StudyDescription DX 
+  + contains StudyDescription CHEST || contains BodyPartExamined CHEST
+
 %filter graylist
 
 LABEL Stanford Med Reconstruction # (Vanessa Sochat)
@@ -327,23 +341,10 @@ LABEL Stanford Medicine Outpatient center
   + contains ManufacturerModelName SOMATOM Definition AS+
   + contains ImageType DERIVED|SECONDARY|SCREEN SAVE|VOLREN|VXTL STATE
 
-%filter whitelist
-
-LABEL CT Siemens Sensation 64 Catch-all # (Susan Weber)
-contains ManufacturerModelName Sensation 64
-  + contains Modality CT
-
-
-LABEL Matt Lungren CHEST CR 
-  contains Modality  CR|DX
-  || contains StudyDescription DX 
-  + contains StudyDescription CHEST || contains BodyPartExamined CHEST
-
-
 %filter blacklist
 
-LABEL Stanford Blacklist  # Susan Weber
-missing ImageType
+LABEL Stanford Blacklist  # Susan Weber, Vanessa Sochat
+missing ImageType || empty ImageType
 contains Modality CT|MR
   + contains ImageType DERIVED|SECONDARY|SCREEN|SAVE
 contains Modality CT|MR
@@ -351,13 +352,14 @@ contains Modality CT|MR
 
 LABEL Burned In Annotation # (CTP)
   contains ImageType SAVE
-  contains SeriesDescription SAVE
-  contains BurnedInAnnotation YES
-  empty ImageType
-  empty DateOfSecondaryCapture
-  empty SecondaryCaptureDeviceManufacturer
-  empty SecondaryCaptureDeviceManufacturerModelName
-  empty SecondaryCaptureDeviceSoftwareVersions
+  || present BurnedInAnnotation
+  || contains SeriesDescription SAVE
+  || contains BurnedInAnnotation YES
+  || empty ImageType
+  || empty DateOfSecondaryCapture
+  || empty SecondaryCaptureDeviceManufacturer
+  || empty SecondaryCaptureDeviceManufacturerModelName
+  || empty SecondaryCaptureDeviceSoftwareVersions
 
 
 %header

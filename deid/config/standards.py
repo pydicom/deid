@@ -43,4 +43,5 @@ filters = ('contains',
            'equals',
            'notequals',
            'missing',
+           'present',
            'empty')

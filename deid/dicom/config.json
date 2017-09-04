@@ -2,7 +2,11 @@
    "get": { 
 
          
-         "skip": ["PixelData"],
+         "skip": ["PixelData",
+                  "RedPaletteColorLookupTableData",
+                  "GreenPaletteColorLookupTableData",
+                  "BluePaletteColorLookupTableData"],
+
          "ids":{
             "entity":"PatientID",
             "item":"AccessionNumber"

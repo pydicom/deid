@@ -55,6 +55,9 @@ def apply_filter(dicom,field,filter_name,value):
     elif filter_name == "missing":
         return dicom.missing(field)
 
+    elif filter_name == "present":
+        return not dicom.missing(field)
+
     elif filter_name == "empty":
         return dicom.empty(field)
 
