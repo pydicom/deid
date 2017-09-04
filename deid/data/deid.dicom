@@ -343,10 +343,14 @@ LABEL Stanford Medicine Outpatient center
 
 %filter blacklist
 
-LABEL Stanford Blacklist  # Susan Weber, Vanessa Sochat
+LABEL Stanford Blacklist Missing ImageType  # Susan Weber, Vanessa Sochat
 missing ImageType || empty ImageType
+
+LABEL Stanford Blacklist CT or MR secondary or derived # Vanessa Sochat
 contains Modality CT|MR
   + contains ImageType DERIVED|SECONDARY|SCREEN|SAVE
+
+LABEL Stanford Blacklist Dose Report or External # Vanessa Sochat
 contains Modality CT|MR
   + contains SeriesDescription Patient Protocol|PACS nomination form|Dose Report|Study acquired outside hospital
 

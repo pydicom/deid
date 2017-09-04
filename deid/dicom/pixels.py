@@ -173,11 +173,7 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True
      'name': 'criteria for dangerous cookie'}]
     '''
 
-    dicom = dicom_file
-    try: 
-        dicom = read_file(dicom_file,force=force)
-    except AttributeError: # we already have a dataset
-        pass
+    dicom = read_file(dicom_file,force=force)
     dicom_name = os.path.basename(dicom_file)
         
     if deid is None:
