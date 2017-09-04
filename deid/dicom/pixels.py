@@ -31,7 +31,10 @@ from deid.dicom.filter import (
     Dataset,     # add additional filters
     apply_filter
 )
-from pydicom.dataset import Dataset as PydicomDataset
+from pydicom.dataset import (
+    Dataset as PydicomDataset,
+    FileDataset
+)
 from deid.data import get_deid
 from deid.config import load_deid
 
@@ -174,7 +177,7 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, return_group=True
     '''
 
     dicom = dicom_file
-    if not isinstance(dicom,PydicomDataset):
+    if not isinstance(dicom,(PydicomDataset,FileDataset)):
         dicom = read_file(dicom_file,force=force)
     dicom_name = os.path.basename(dicom_file)
         
