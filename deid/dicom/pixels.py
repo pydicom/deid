@@ -223,13 +223,15 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, quiet=False,
 
                 # At the end of a group, evaluate the inner group   
                 flag = evaluate_group(group_flags)
-                flags.append(flag)
 
                 # "Operator" is relevant for the outcome of the list of actions 
                 operator = ''
                 if 'operator' in group:
                     if group['operator'] is not None:
                         operator = group['operator']
+                        flags.append(operator)
+
+                flags.append(flag)
 
                 reason = ('%s %s' %(operator,' '.join(group_descriptions))).replace('\n',' ')
                 descriptions.append(reason)
