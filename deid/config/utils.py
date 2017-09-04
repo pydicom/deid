@@ -281,7 +281,7 @@ def parse_member(members, operator=None):
                 sys.exit(1)
 
         # Missing, empty, notcontains expect only a field
-        elif action in ['missing', 'empty','notcontains']:
+        elif action in ['missing', 'empty','notcontains', 'present']:
             field = member.strip()
         else:
             bot.error('%s is not a valid filter action.' %action)
