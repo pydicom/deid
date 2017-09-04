@@ -5,7 +5,8 @@
          "skip": ["PixelData",
                   "RedPaletteColorLookupTableData",
                   "GreenPaletteColorLookupTableData",
-                  "BluePaletteColorLookupTableData"],
+                  "BluePaletteColorLookupTableData",
+                  "VOILUTSequence"],
 
          "ids":{
             "entity":"PatientID",
