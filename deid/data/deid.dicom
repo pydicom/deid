@@ -3,59 +3,59 @@ FORMAT dicom
 %filter whitelist
 
 LABEL CT Siemens Sensation 64 Catch-all # (Susan Weber)
-contains ManufacturerModelName Sensation 64
+  contains ManufacturerModelName Sensation 64
   + contains Modality CT
 
 LABEL Marked as Clean Catch All # (Vanessa Sochat)
-contains BurnedInAnnotation No
+  contains BurnedInAnnotation No
 
 LABEL Matt Lungren CHEST CR 
-  contains Modality  CR|DX
-  || contains StudyDescription DX 
+  contains Modality CR|DX|PR
+  || contains StudyDescription DX|PR
   + contains StudyDescription CHEST || contains BodyPartExamined CHEST
 
 %filter graylist
 
 LABEL Stanford Med Reconstruction # (Vanessa Sochat)
-missing Manufacturer || empty Manufacturer
+  missing Manufacturer || empty Manufacturer
   + contains ImageType RECONSTRUCTION|SECONDARY|DERIVED
 
 LABEL LightSpeed Dose Report # (Susan Weber)
-contains ManufacturerModelName LightSpeed VCT
+  contains ManufacturerModelName LightSpeed VCT
   + contains Modality CT
   + contains ImageType SCREEN SAVE || contains SeriesDescription Dose
-coordinates 0,0,512,121
+  coordinates 0,0,512,121
 
 LABEL LightSpeed Localizers # (Susan Weber)
-contains ManufacturerModelName LightSpeed VCT
+  contains ManufacturerModelName LightSpeed VCT
   + contains Modality CT
   + contains ImageType LOCAL || contains SeriesDescription Localizer
-coordinates 0,0,80,85
+  coordinates 0,0,80,85
 
 LABEL Stanford CT GE Medical Systems LightSpeed VCT # (Susan Weber)
-contains ManufacturerModelName LightSpeed VCT
+  contains ManufacturerModelName LightSpeed VCT
   + contains Modality CT
 
 LABEL Enhancement Curve # (Susan Weber)
-contains ManufacturerModelName SOMATOM Definition AS+
+  contains ManufacturerModelName SOMATOM Definition AS+
   + contains Modality CT
   + contains ImageType OTHER || contains SeriesDescription Enhancement
-coordinates 0,0,512,121
+  coordinates 0,0,512,121
 
 LABEL Somatom Localizers # (Susan Weber)
-contains ManufacturerModelName SOMATOM Definition AS+
+  contains ManufacturerModelName SOMATOM Definition AS+
   + contains Modality CT
   + contains ImageType LOCAL || contains SeriesDescription Localizer
-coordinates 0,0,80,85
+  coordinates 0,0,80,85
 
 LABEL 3D Lab reconstructions # (Susan Weber)
-contains ManufacturerModelName SOMATOM Definition AS+
+  contains ManufacturerModelName SOMATOM Definition AS+
   + contains Modality CT
   + contains SeriesDescription 3D
 coordinates 450,0,672, 85
 
 LABEL CT Siemens SOMATOM Catch-all # (Susan Weber)
-contains ManufacturerModelName SOMATOM Definition AS+
+  contains ManufacturerModelName SOMATOM Definition AS+
   + contains Modality CT
 
 LABEL CT Dose Series # (CTP)
@@ -347,7 +347,8 @@ LABEL Stanford Blacklist Missing ImageType  # Susan Weber, Vanessa Sochat
 missing ImageType || empty ImageType
 
 LABEL Stanford Blacklist secondary or derived catchall # Vanessa Sochat
-  contains ImageType DERIVED|SECONDARY|SCREEN|SAVE
+  contains Modality CT|MR
+  + contains ImageType DERIVED|SECONDARY|SCREEN|SAVE
 
 LABEL Stanford Blacklist Dose Report or External # Vanessa Sochat
   contains Modality CT|MR
