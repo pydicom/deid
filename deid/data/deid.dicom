@@ -356,7 +356,7 @@ LABEL Stanford Blacklist Dose Report or External # Vanessa Sochat
 
 LABEL Burned In Annotation # (CTP)
   contains ImageType SAVE
-  || present BurnedInAnnotation
+  + contains Modality CT|MR
   || contains SeriesDescription SAVE
   || contains BurnedInAnnotation YES
   || empty ImageType
