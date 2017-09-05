@@ -36,7 +36,7 @@ from deid.identifiers.utils import (
 )
 
 from deid.config import (
-    load_deid,
+    get_deid,
     load_combined_deid
 )
 
@@ -229,7 +229,7 @@ def _prepare_replace_config(dicom_files, deid=None, config=None):
     if deid is not None:
         deid = load_combined_deid([deid,'dicom'])
     else:
-        deid = load_deid('dicom')
+        deid = get_deid('dicom', load=True)
 
     config = read_json(config, ordered_dict=True)
 

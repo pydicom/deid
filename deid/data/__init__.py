@@ -50,36 +50,3 @@ def get_dataset(dataset=None):
             return valid_datasets[dataset]
 
     bot.info("Valid datasets include: %s" %(','.join(list(valid_datasets.keys()))))
-
-
-def get_deid(tag=None, exit_on_fail=True, quiet=False):
-    '''
-    get deid is intended to retrieve the full path of a deid file provided with
-    the software, based on a tag. For example, under deid/data if a file is called
-    "deid.dicom", the tag would be "dicom". 
-
-    Parameters
-    ==========
-    tag: the text that comes after deid to indicate the tag of the file in deid/data
-    exit_on_fail: if None is an acceptable return value, this should be set to False
-                  (default is True).
-    quiet: Default False. If None is acceptable, quiet can be set to True
-
-    '''
-    # If it's a path, return full path
-    if os.path.exists(tag):
-        return os.path.abspath(tag)
-
-    if tag is None:
-        tag = "dicom"
-
-    deid = "%s/deid.%s" %(here,tag)
-    if not os.path.exists(deid):
-        if quiet is False:
-            bot.error("Cannot find %s" %(deid))
-        if exit_on_fail is True:
-            sys.exit(1)
-        else:
-            return None
-
-    return "%s/deid.%s" %(here,tag)

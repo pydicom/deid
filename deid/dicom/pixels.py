@@ -32,9 +32,9 @@ from deid.dicom.filter import (
     apply_filter
 )
 
-from deid.data import get_deid
 from deid.config import (
     load_deid,
+    get_deid,
     load_combined_deid
 )
 
@@ -132,7 +132,7 @@ def has_burned_pixels(dicom_files,force=True,deid=None):
     if deid is not None:
         deid = load_combined_deid([deid,'dicom'])
     else:
-        deid = load_deid('dicom')
+        deid = get_deid('dicom', load=True)
 
     for dicom_file in dicom_files:
         flagged,group,reason = has_burned_pixels_single(dicom_file=dicom_file,
@@ -189,14 +189,9 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, quiet=False,
         
     # if the user has provided a custom deid, load it
     if deid is not None:
-        deid = load_combined_deid([deid,'dicom'])
+        config = load_combined_deid([deid,'dicom'])
     else:
-        deid = load_deid('dicom')
-
-    if not os.path.exists(deid):
-        bot.error("Cannot find config %s, exiting" %(config))
-
-    config = load_deid(deid)
+        config = get_deid('dicom', load=True)
 
     # Load criteria (actions) for flagging
     if 'filter' not in config:

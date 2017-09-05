@@ -34,8 +34,6 @@ import tempfile
 import dateutil.parser
 
 from deid.config import load_deid
-from deid.data import get_deid
-
 
 # Checking
 

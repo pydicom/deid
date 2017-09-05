@@ -26,7 +26,6 @@ user can specify a custom name.
 
 '''
 
-from deid.data import get_deid
 from deid.logger import bot
 from deid.utils import read_file
 from deid.config.standards import (
@@ -39,6 +38,7 @@ import os
 import re
 import sys
 from collections import OrderedDict
+
 
 def load_combined_deid(deids):
     '''
@@ -61,10 +61,10 @@ def load_combined_deid(deids):
         # If not a tag or path, returns None
         next_deid = get_deid(tag=single_deid,
                              exit_on_fail=False,
-                             quiet=True)
+                             quiet=True,
+                             load=True)
 
         if next_deid is not None:
-            next_deid = load_deid(next_deid)
 
             # Formats must match
             if found_format is None:
@@ -135,11 +135,14 @@ def load_deid(path=None):
     section = None
 
     while len(spec) > 0:
+
         # Clean up white trailing/leading space
         line = spec.pop(0).strip()
+
         # Comment
         if line.startswith("#"):
             continue
+
         # Starts with Format?
         elif bool(re.match('format', line, re.I)):
             fmt = re.sub('FORMAT|(\s+)','',line).lower()
@@ -149,10 +152,13 @@ def load_deid(path=None):
             # Set format
             config['format'] = fmt
             bot.debug("FORMAT set to %s" %fmt)
+
         # A new section?
         elif line.startswith('%'):
+
             # Remove any comments
             line = line.split('#',1)[0].strip()
+
             # Is there a section name?
             section_name = None
             parts = line.split(' ')
@@ -165,8 +171,10 @@ def load_deid(path=None):
             config = add_section(config=config,
                                  section=section,
                                  section_name=section_name)
+
         # An action (replace, blank, remove, keep, jitter)
         elif line.upper().startswith(actions):
+
             # Start of a filter group
             if line.upper().startswith('LABEL') and section == "filter":
                 members = []
@@ -182,6 +190,7 @@ def load_deid(path=None):
                         members.append(new_member)
                     if len(spec) == 0:
                         keep_going = False
+
                 # Add the filter label to the config
                 config = parse_label(config=config,
                                      section=section,
@@ -454,3 +463,41 @@ def parse_action(section,line,config,section_name=None):
                                  "field":field })
 
     return config
+
+
+def get_deid(tag=None, exit_on_fail=True, quiet=False, load=False):
+    '''
+    get deid is intended to retrieve the full path of a deid file provided with
+    the software, based on a tag. For example, under deid/data if a file is called
+    "deid.dicom", the tag would be "dicom". 
+
+    Parameters
+    ==========
+    tag: the text that comes after deid to indicate the tag of the file in deid/data
+    exit_on_fail: if None is an acceptable return value, this should be set to False
+                  (default is True).
+    quiet: Default False. If None is acceptable, quiet can be set to True
+    load: also load the deid, if resulting path (from path or tag) is not None
+    '''
+    # no tag/path means load default
+    if tag is None:
+        tag = 'dicom'
+
+    # If it's a path, get full path
+    if os.path.exists(tag):
+        deid = os.path.abspath(tag)
+    else:
+        deid = "%s/deid.%s" %(here,tag)
+
+    if not os.path.exists(deid):
+        if quiet is False:
+            bot.error("Cannot find %s" %(deid))
+        if exit_on_fail is True:
+            sys.exit(1)
+        else:
+            return None
+
+    if load is True:
+        return load_deid(deid)
+
+    return deid
