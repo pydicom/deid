@@ -26,6 +26,7 @@ user can specify a custom name.
 
 '''
 
+from deid.data import get_deid
 from deid.logger import bot
 from deid.utils import read_file
 from deid.config.standards import (
@@ -37,6 +38,68 @@ from deid.config.standards import (
 import os
 import re
 import sys
+
+
+def load_combined_deid(deids):
+    '''
+    load one or more deids, either based on a path or a tag
+    
+    Parameters
+    ==========
+    deids: should be a custom list of deids
+
+    '''
+    if not isinstance(deids,list):
+        bot.warning("load_combined_deids expects a list.")
+        sys.exit(1)
+
+    found_format = None
+    deid = None
+
+    for single_deid in deids:
+  
+        # If not a tag or path, returns None
+        next_deid = get_deid(tag=single_deid,
+                             exit_on_fail=False,
+                             quiet=True)
+
+        if next_deid is not None:
+            next_deid = load_deid(next_deid)
+
+            # Formats must match
+            if found_format is None:
+                found_format = next_deid['format']
+            else:
+                if found_format != next_deid['format']:
+                    bot.error('Mismatch in deid formats, %s and %s' %(found_format,
+                                                                      next_deid['format']))
+                    sys.exit(1)
+
+            # If it's the first one, use as starter template
+            if deid is None:
+                deid = next_deid
+            else:
+
+                # Update filter, appending to end to give first preference
+                if "filter" in next_deid:
+                    if "filter" not in deid:
+                        deid['filter'] = next_deid['filter']
+                    else:
+                        for name,group in next_deid['filter'].items():
+                            if name in deid['filter']:
+                                deid['filter'][name] = deid['filter'][name] + group
+                            else:
+                                deid['filter'][name] = group                      
+
+                if "header" in next_deid:
+                    if "header" not in deid:
+                        deid['header'] = next_deid['header']
+                    else:
+                        deid['header'] = deid['header'] + next_deid['header']
+
+        else:
+            bot.warning('Problem loading %s, skipping.' %single_deid)
+    return deid
 
 
 def load_deid(path=None):

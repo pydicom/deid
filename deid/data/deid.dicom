@@ -9,11 +9,6 @@ LABEL CT Siemens Sensation 64 Catch-all # (Susan Weber)
 LABEL Marked as Clean Catch All # (Vanessa Sochat)
   contains BurnedInAnnotation No
 
-LABEL Matt Lungren CHEST CR 
-  contains Modality CR|DX
-  || contains StudyDescription DX
-  + contains StudyDescription CHEST || contains BodyPartExamined CHEST
-
 %filter graylist
 
 LABEL Stanford Med Reconstruction # (Vanessa Sochat)

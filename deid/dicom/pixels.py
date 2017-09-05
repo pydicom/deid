@@ -33,7 +33,10 @@ from deid.dicom.filter import (
 )
 
 from deid.data import get_deid
-from deid.config import load_deid
+from deid.config import (
+    load_deid,
+    load_combined_deid
+)
 
 import os
 
@@ -124,6 +127,12 @@ def has_burned_pixels(dicom_files,force=True,deid=None):
     decision = {'clean':[],
                 'flagged':{},
                 'reason':{}}
+
+    # if the user has provided a custom deid, load it
+    if deid is not None:
+        deid = load_combined_deid([deid,'dicom'])
+    else:
+        deid = load_deid('dicom')
 
     for dicom_file in dicom_files:
         flagged,group,reason = has_burned_pixels_single(dicom_file=dicom_file,

@@ -35,7 +35,11 @@ from deid.identifiers.utils import (
     load_identifiers
 )
 
-from deid.config import load_deid
+from deid.config import (
+    load_deid,
+    load_combined_deid
+)
+
 from pydicom import read_file
 from pydicom.errors import InvalidDicomError
 import dateutil.parser
@@ -220,14 +224,12 @@ def _prepare_replace_config(dicom_files, deid=None, config=None):
         config = "%s/config.json" %(here)
     if not os.path.exists(config):
         bot.error("Cannot find config %s, exiting" %(config))
-
-    # Validate any provided deid
+    
+    # if the user has provided a custom deid, load it
     if deid is not None:
-        if not isinstance(deid,dict):
-            deid = load_deid(deid)
-            if deid['format'] != 'dicom':
-                bot.error('DEID format must be dicom.')
-                sys.exit(1)
+        deid = load_combined_deid([deid,'dicom'])
+    else:
+        deid = load_deid('dicom')
 
     config = read_json(config)
 

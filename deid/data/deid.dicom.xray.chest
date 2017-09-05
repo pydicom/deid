@@ -1,0 +1,13 @@
+FORMAT dicom
+
+%filter whitelist
+
+LABEL Matt Lungren CHEST CR 
+  contains Modality CR|DX|PR
+  || contains StudyDescription DX|PR
+  + contains StudyDescription CHEST || contains BodyPartExamined CHEST
+
+%filter blacklist
+
+LABEL Matt Lungren Only Accept X-ray
+  contains Modality RF|XA
