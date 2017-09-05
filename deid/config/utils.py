@@ -401,7 +401,7 @@ def add_section(config,section,section_name=None):
 
         # If a section is named, we have more one level (dict)
         if section_name is not None:
-            config[section] = {}
+            config[section] = OrderedDict()
             config[section][section_name] = []
             bot.debug("Adding section %s %s" %(section, section_name))
         else:
