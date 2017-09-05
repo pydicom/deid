@@ -10,8 +10,8 @@ LABEL Marked as Clean Catch All # (Vanessa Sochat)
   contains BurnedInAnnotation No
 
 LABEL Matt Lungren CHEST CR 
-  contains Modality CR|DX|PR
-  || contains StudyDescription DX|PR
+  contains Modality CR|DX
+  || contains StudyDescription DX
   + contains StudyDescription CHEST || contains BodyPartExamined CHEST
 
 %filter graylist
