@@ -88,7 +88,7 @@ def get_shared_identifiers(dicom_files,
 
     if not os.path.exists(config):
         bot.error("Cannot find config %s, exiting" %(config))
-    config = read_json(config)['get']
+    config = read_json(config, ordered_dict=True)['get']
 
     if not isinstance(dicom_files,list):
         dicom_files = [dicom_files]
@@ -152,7 +152,7 @@ def get_identifiers(dicom_files,
 
     if not os.path.exists(config):
         bot.error("Cannot find config %s, exiting" %(config))
-    config = read_json(config)['get']
+    config = read_json(config, ordered_dict=True)['get']
 
     if not isinstance(dicom_files,list):
         dicom_files = [dicom_files]
@@ -231,7 +231,7 @@ def _prepare_replace_config(dicom_files, deid=None, config=None):
     else:
         deid = load_deid('dicom')
 
-    config = read_json(config)
+    config = read_json(config, ordered_dict=True)
 
     if not isinstance(dicom_files,list):
         dicom_files = [dicom_files]

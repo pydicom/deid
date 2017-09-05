@@ -31,6 +31,7 @@ import re
 import requests
 import json
 from deid.logger import bot
+from collections import OrderedDict
 import sys
 
 
@@ -88,11 +89,14 @@ def read_file(filename,mode="r"):
 
 
 
-def read_json(filename,mode="r"):
+def read_json(filename,mode="r", ordered_dict=False):
     '''read_json will open a file, "filename" and read the string as json
     '''
     with open(filename,mode) as filey:
-        content = json.loads(filey.read())
+        if ordered_dict is False:
+            content = json.loads(filey.read())
+        else:
+            content = json.loads(filey.read(), object_pairs_hook=OrderedDict)
     return content
 
 
