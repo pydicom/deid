@@ -28,6 +28,7 @@ user can specify a custom name.
 
 from deid.logger import bot
 from deid.utils import read_file
+from deid.data import data_base
 from deid.config.standards import (
     formats,
     actions,
@@ -487,7 +488,7 @@ def get_deid(tag=None, exit_on_fail=True, quiet=False, load=False):
     if os.path.exists(tag):
         deid = os.path.abspath(tag)
     else:
-        deid = "%s/deid.%s" %(here,tag)
+        deid = "%s/deid.%s" %(data_base,tag)
 
     if not os.path.exists(deid):
         if quiet is False:

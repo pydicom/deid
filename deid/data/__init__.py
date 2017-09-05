@@ -31,7 +31,7 @@ from deid.logger import bot
 import os
 
 
-here = os.path.dirname(os.path.abspath(__file__))
+data_base = os.path.dirname(os.path.abspath(__file__))
 
 
 def get_dataset(dataset=None):
@@ -39,8 +39,8 @@ def get_dataset(dataset=None):
     based on a user-provided label. In the future, we can add https endpoints
     to retrieve online datasets.
     '''
-    here = get_installdir()
-    valid_datasets = {'dicom-cookies':'%s/data/dicom-cookies' %here}
+    data_base = get_installdir()
+    valid_datasets = {'dicom-cookies':'%s/data/dicom-cookies' %data_base}
 
     if dataset is not None:
 
