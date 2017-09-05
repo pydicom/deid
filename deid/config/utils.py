@@ -38,7 +38,7 @@ from deid.config.standards import (
 import os
 import re
 import sys
-
+from collections import OrderedDict
 
 def load_combined_deid(deids):
     '''
@@ -131,7 +131,7 @@ def load_deid(path=None):
            if x.strip('\n').strip(' ') not in ['']]
 
     spec = [x for x in spec if x not in ['', None]]
-    config = dict()
+    config = OrderedDict()
     section = None
 
     while len(spec) > 0:
