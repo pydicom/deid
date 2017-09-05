@@ -187,8 +187,11 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, quiet=False,
     dicom = read_file(dicom_file,force=force)
     dicom_name = os.path.basename(dicom_file)
         
-    if deid is None:
-        deid = get_deid('dicom')
+    # if the user has provided a custom deid, load it
+    if deid is not None:
+        deid = load_combined_deid([deid,'dicom'])
+    else:
+        deid = load_deid('dicom')
 
     if not os.path.exists(deid):
         bot.error("Cannot find config %s, exiting" %(config))
