@@ -33,7 +33,7 @@ import sys
 import tempfile
 import dateutil.parser
 
-from deid.config import load_deid
+from deid.config import get_deid
 
 # Checking
 
@@ -48,6 +48,10 @@ def check_item(item):
 def clean_item(item, deid, default="KEEP"):
     '''clean a single item according to a deid specification.
     '''
+
+    if not isinstance(deid,dict):
+        deid = get_deid(deid, load=True)
+
     # Keep track of the fields we've seen, not to blank them
     seen = []
     for action in deid['header']:
@@ -81,7 +85,7 @@ def clean_identifiers(ids, deid, default="KEEP"):
     with dicom.replace_identifiers, or upload this data to a database
     '''
     if not isinstance(deid,dict):
-        deid = load_deid(deid)
+        deid = get_deid(deid, load=True)
 
     # Generate ids dictionary for data put (replace_identifiers) function
     cleaned = dict()
