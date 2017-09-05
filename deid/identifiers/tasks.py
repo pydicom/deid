@@ -33,7 +33,10 @@ import sys
 import tempfile
 import dateutil.parser
 
-from deid.config import get_deid
+from deid.config import (
+    get_deid,
+    load_combined_deid
+)
 
 # Checking
 
