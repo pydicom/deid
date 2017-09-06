@@ -19,6 +19,6 @@ LABEL Matt Lungren Only Accept X-ray
   contains Modality RF|XA
 
 LABEL Matt Lungren Filter Known notChest
-  contains StudyDescription ANKLE|WRIST|PELVIS
-  || contains SeriesDescription ANKLE|WRIST|PELVIS
-  || contains BodyPartExamined ANKLE|WRIST|PELVIS
+  contains StudyDescription ANKLE|WRIST|PELVIS|EXTREMETY|KNEE|SHOULDER|CSPINE|LSPINE|FOOT|HAND|ELBOW
+  || contains SeriesDescription ANKLE|WRIST|PELVIS|EXTREMETY|KNEE|SHOULDER|CSPINE|LSPINE|FOOT|HAND|ELBOW
+  || contains BodyPartExamined ANKLE|WRIST|PELVIS|EXTREMETY|KNEE|SHOULDER|CSPINE|LSPINE|FOOT|HAND|ELBOW
