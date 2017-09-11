@@ -484,6 +484,11 @@ def get_deid(tag=None, exit_on_fail=True, quiet=False, load=False):
     if tag is None:
         tag = 'dicom'
 
+    # If it's already loaded 
+    if isinstance(tag,dict):
+        bot.debug('deid is already loaded.')
+        return tag
+
     # If it's a path, get full path
     if os.path.exists(tag):
         deid = os.path.abspath(tag)

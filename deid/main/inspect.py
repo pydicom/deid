@@ -54,20 +54,18 @@ def main(args,parser):
 
     # If a deid is given, check against format
     deid = args.deid
-    if deid is None:
-        deid = get_deid()
-
-    params = load_deid(deid)
-    if params['format'] != args.format:
-        bot.error("Format in deid (%s) doesn't match choice here (%s) exiting." %(params['format'],
-                                                                                  args.format))
+    if deid is not None:
+        params = load_deid(deid)
+        if params['format'] != args.format:
+            bot.error("Format in deid (%s) doesn't match choice here (%s) exiting." %(params['format'],
+                                                                                      args.format))
     # Get list of dicom files
     base = args.folder
     if base is None:
         bot.info("No input folder specified, will use demo dicom-cookies.")
         base = get_dataset('dicom-cookies')
-    dicom_files = get_files(base)
 
+    dicom_files = get_files(base, pattern=args.pattern)
     result = has_burned_pixels(dicom_files, deid=deid)
 
     print('\nSUMMARY ================================\n')

@@ -132,7 +132,7 @@ def has_burned_pixels(dicom_files,force=True,deid=None):
     if deid is not None:
         deid = load_combined_deid([deid,'dicom'])
     else:
-        deid = get_deid('dicom', load=True)
+        deid = get_deid(tag=deid, load=True)
 
     for dicom_file in dicom_files:
         flagged,group,reason = has_burned_pixels_single(dicom_file=dicom_file,
@@ -208,22 +208,21 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, quiet=False,
                 group_flags = []         # evaluation for a single line
                 group_descriptions = []
 
-                for action in group['action']:
-                    field = group['field'].pop(0)
+                # You cannot pop from the list
+                for a in range(len(group['action'])):
+                    action = group['action'][a]
+                    field = group['field'][a]
                     value = ''
-
-                    if len(group['value']) > 0:
-                        value = group['value'].pop(0)
-
+                    if len(group['value']) > a:
+                        value = group['value'][a]
                     flag = apply_filter(dicom=dicom,
                                         field=field,
                                         filter_name=action,
                                         value=value or None)
                     group_flags.append(flag)
                     description = "%s %s %s" %(field,action,value)
-
-                    if len(group['InnerOperators']) > 0:
-                        inner_operator = group['InnerOperators'].pop()
+                    if len(group['InnerOperators']) > a:
+                        inner_operator = group['InnerOperators'][a]
                         group_flags.append(inner_operator)
                         description = "%s %s" %(description,inner_operator)
                     group_descriptions.append(description)
@@ -239,7 +238,6 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, quiet=False,
                         flags.append(operator)
 
                 flags.append(flag)
-
                 reason = ('%s %s' %(operator,' '.join(group_descriptions))).replace('\n',' ')
                 descriptions.append(reason)
 

@@ -81,6 +81,10 @@ def get_parser():
                          help="deid file with preferences, if not specified, default used.", 
                          type=str, default=None)
 
+    inspect.add_argument("--pattern", dest='pattern', 
+                         help="A pattern to match files in input folder.", 
+                         type=str, default=None)
+
     inspect.add_argument('--save',"-s", dest="save", 
                          help="save result to output tab separated file.", 
                          default=False, action='store_true')
