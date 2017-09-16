@@ -365,6 +365,7 @@ LABEL Burned In Annotation # (CTP)
 
 REMOVE endswith:Time
 REMOVE endswith:Date
+REMOVE endswith:time
 REMOVE AdditionalPatientHistory
 REMOVE AccessionNumber
 REMOVE PatientID
