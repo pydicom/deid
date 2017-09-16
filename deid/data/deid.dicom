@@ -378,7 +378,7 @@ REMOVE OtherPatientIDsSequence
 REMOVE PatientAddress
 REMOVE PatientBirthName
 REMOVE PatientMotherBirthName
-REMOVE PatientName
+REMOVE PatientsName
 REMOVE ReasonForStudy
 REMOVE contains:Trial
 REMOVE startswith:PatientTelephoneNumber
