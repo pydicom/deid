@@ -418,6 +418,13 @@ REMOVE ClinicalTrialSponsorName
 REMOVE ContentCreatorName
 REMOVE ClinicalTrialProtocolEthicsCommitteeName
 REMOVE contains:UID
+REMOVE RegionOfResidence
+REMOVE CurrentPatientLocation
+REMOVE PatientComments
+REMOVE PatientTransportArrangements
+REMOVE PatientDeathDateInAlternativeCalendar
+REMOVE PatientInstitutionResidence
+
 ADD IssuerOfPatientID STARR. In an effort to remove PHI all dates are offset from their original values.
 ADD PatientBirthDate var:entity_timestamp
 ADD StudyDate var:item_timestamp
