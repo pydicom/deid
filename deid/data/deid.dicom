@@ -424,6 +424,11 @@ REMOVE PatientComments
 REMOVE PatientTransportArrangements
 REMOVE PatientDeathDateInAlternativeCalendar
 REMOVE PatientInstitutionResidence
+REMOVE PerformedLocation
+REMOVE ScheduledStudyLocation
+REMOVE ScheduledStudyLocationAETitle
+REMOVE OrderEntererLocation
+REMOVE AssignedLocation
 
 ADD IssuerOfPatientID STARR. In an effort to remove PHI all dates are offset from their original values.
 ADD PatientBirthDate var:entity_timestamp
