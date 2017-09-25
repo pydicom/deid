@@ -284,7 +284,13 @@ def replace_identifiers(dicom_files,
                  dicom = perform_action(dicom=dicom,
                                         action=action)
         if remove_private is True:
-            dicom.remove_private_tags()
+            try:
+                dicom.remove_private_tags()
+            except:
+                bot.error('''Private tags for %s could not be removed, usually
+                             this is due to invalid data type. Skipping.''' % idx)
+                continue
+
         else:
             bot.warning("Private tags were not removed!")
         ds = Dataset()
