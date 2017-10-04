@@ -9,4 +9,4 @@ WORKDIR /code
 RUN python /code/setup.py install
 
 RUN chmod 0755 /opt/conda/bin/deid
-ENTRYPOINT '/opt/conda/bin/deid'
+ENTRYPOINT ["/opt/conda/bin/deid"]
