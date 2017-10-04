@@ -35,6 +35,7 @@ from deid.identifiers.utils import (
     load_identifiers
 )
 
+from deid.dicom.tags import get_private
 from deid.config import (
     get_deid,
     load_combined_deid
@@ -277,7 +278,6 @@ def replace_identifiers(dicom_files,
             else:
                 bot.warning("%s is not in identifiers." %idx)
                 continue
-
         # Next perform actions in default config, only if not done
         for action in config['put']['actions']:
             if action['field'] in fields:
@@ -287,10 +287,12 @@ def replace_identifiers(dicom_files,
             try:
                 dicom.remove_private_tags()
             except:
-                bot.error('''Private tags for %s could not be removed, usually
-                             this is due to invalid data type. Skipping.''' % idx)
+                bot.error('''Private tags for %s could not be completely removed, usually
+                             this is due to invalid data type. Removing others.''' % idx)
+                private_tags = get_private(dicom)
+                for ptag in private_tags:
+                    del dicom[ptag.tag]
                 continue
-
         else:
             bot.warning("Private tags were not removed!")
         ds = Dataset()

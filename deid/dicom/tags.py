@@ -204,6 +204,8 @@ def get_private(dicom):
                                     datasets.append(dataset)                        
                     except IndexError:
                         bot.debug("tag %s key present without value" %tag)
+                    except NotImplementedError:
+                        bot.debug('tag %s is invalid, skipping' %tag)
     return private_tags
 
 
