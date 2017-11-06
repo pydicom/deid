@@ -313,10 +313,12 @@ def replace_identifiers(dicom_files,
 
         # Retain required meta data
         file_metas = getattr(dicom, 'file_meta', Dataset())
-        file_metas.MediaStorageSOPClassUID = ''
-        file_metas.MediaStorageSOPInstanceUID=''
-        file_metas.ImplementationVersionName='' 
-        file_metas.ImplementationClassUID=''
+        
+        # Retain required meta data - not identifying
+        # file_metas.MediaStorageSOPClassUID
+        # file_metas.MediaStorageSOPInstanceUID
+        # file_metas.ImplementationVersionName 
+        # file_metas.ImplementationClassUID
 
         # File attributes for meta
         attributes = ['TransferSyntaxUID',
