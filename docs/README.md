@@ -1,16 +1,21 @@
-# De-identifiction (deid)
+# Anonymization toward De-identifiction (deid)
 
-<script src="assets/js/asciinema-player.js"></script>
-<link rel="stylesheet" href="assets/css/asciinema-player.css"/>
+This Python module is intended for basic coding of medical images, which means "cleaning" image headers and pixel data, and integrating with your own functions to replace with anonymous identifiers. Per HIPAA, this process is technically called "anonymization," meaning we did our best effort. What this module does not do:
 
+ - does *not* provide a workflow manager to perform these actions. If you need one, see [sendit](https://www.github.com/pydicom/sendit) or [dicom-database](https://www.github.com/pydicom/dicom-database) use `deid` for this task.
+ - does *not* implement any custom API calls to retrieve identifiers from some specific database. If you are from Stanford and looking for those tools, [see here](https://www.github.com/vsoch/som).
 
-This Python module is intended for basic coding of medical images, which means replacing an identifier with a stable alias. We do this for both header and pixel data. For dicom data, we use [pydicom](https://www.github.com/pydicom/pydicom) and for nifti we use [nibabel](http://nipy.org/nibabel/) You can walk through these docs to get started.
+What this module does do:
 
-## Client
-We provide a simple client for working with the de-identification modules on the command line. If you are interested in this, see our [getting started](client.md) with the client. If you want to integrate the functions into your own applications, keep reading.
+ - Anonymize header data based on a specific logic of replacing, blanking, removing, or some custom function (e.g., "replace field X with item Y,")
+ - Pass images through a filter for quarantine based on header logic.
+ - For each of the above, you can use defaults (blacklist, whitelist, graylist), or create your own customized logic.
+ - provides functions for developers, and executables and containers for users.
 
-<asciinema-player src="assets/asciicast/deid.json" poster="data:text/plain,Intro to deid client" title="Introduction to the deid client" author="vsochat@stanford.edu" cols="125" rows="25" speed="2.0" theme="asciinema"></asciinema-player>
+For dicom data, we use [pydicom](https://www.github.com/pydicom/pydicom) and for nifti we (will) use [nibabel](http://nipy.org/nibabel/).
 
+## Getting Started
+If you are *not* a developer, or interested in getting started with using and understanding the software, you should start out by reading our [getting-started](getting-started.md) guide.  If you are a developer and are interested in using `deid` to implement a custom pipeline, see the following sections:
 
 
 ## Dicom
@@ -19,10 +24,9 @@ We provide a simple client for working with the de-identification modules on the
  - [Configuration](config.md): You next want to tell the software how to handle various fields. If you don't have a good sense, we provide a default configuration that returns fields for you to inspect, and removes them from the data.
  - [Get Identifiers](get.md): A request for identifiers is a get, meaning it will extract fields from the data, and give you a data structure that you can then (optionally) add to in the case of wanting to substitute any fields.
  - [Clean Pixels](pixels.md): Before you scrape headers, you might need to use them to flag images that have burned in pixel annotations, and deal with them appropriately.
- - [Put Identifiers](put.md): `put` corresponds to the deidentification step. This is when you give your (possibly changed) request from get to a function to de-identify the data.
+ - [Put Identifiers](put.md): `put` corresponds to the anonymization step. This is when you give your (possibly changed) request from get to a function to de-identify the data.
  - [Developer Notes](developer.md): explains how a module (eg, the folder `dicom`) is set up, and you should follow this format if you want to add a new module.
 
 
 ## Dicom Tools
  - [Tags](tags.md): A few helpful functions for searching and filtering tags.
-

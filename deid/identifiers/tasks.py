@@ -33,9 +33,10 @@ import sys
 import tempfile
 import dateutil.parser
 
-from deid.config import load_deid
-from deid.data import get_deid
-
+from deid.config import (
+    get_deid,
+    load_combined_deid
+)
 
 # Checking
 
@@ -47,9 +48,18 @@ def check_item(item):
 
 # Cleaning
 
-def clean_item(item, deid, default="KEEP"):
+def _clean_item(item, deid, default="KEEP"):
     '''clean a single item according to a deid specification.
+    This function is expected to be called from clean_identifiers
+    below
+
+    Parameters
+    ==========
+    item: the item dictionary to clean
+    deid: the already loaded deid, with a header section with 
+          actions to specify how to clean
     '''
+
     # Keep track of the fields we've seen, not to blank them
     seen = []
     for action in deid['header']:
@@ -69,7 +79,7 @@ def clean_item(item, deid, default="KEEP"):
 
 
 
-def clean_identifiers(ids, deid, default="KEEP"):
+def clean_identifiers(ids, deid=None, default="KEEP"):
     '''clean identifiers will take a dictionary of entity, with key as entity id,
     and value another dictionary of items, with key the item id, and value a dict
     of key:value pairs. eg:
@@ -82,13 +92,16 @@ def clean_identifiers(ids, deid, default="KEEP"):
     Typically, the next step is to replace some data back into image headers
     with dicom.replace_identifiers, or upload this data to a database
     '''
-    if not isinstance(deid,dict):
-        deid = load_deid(deid)
+    # if the user has provided a custom deid, load it
+    if deid is not None:
+        deid = load_combined_deid([deid,'dicom'])
+    else:
+        deid = get_deid('dicom', load=True)
 
     # Generate ids dictionary for data put (replace_identifiers) function
     cleaned = dict()
     for item_id, item in ids.items():
-        cleaned[item_id] = clean_item(item=item,
-                                      deid=deid,
-                                      default=default)
+        cleaned[item_id] = _clean_item(item=item,
+                                       deid=deid,
+                                       default=default)
     return cleaned

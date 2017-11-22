@@ -35,7 +35,12 @@ from deid.identifiers.utils import (
     load_identifiers
 )
 
-from deid.config import load_deid
+from deid.dicom.tags import get_private
+from deid.config import (
+    get_deid,
+    load_combined_deid
+)
+
 from pydicom import read_file
 from pydicom.errors import InvalidDicomError
 import dateutil.parser
@@ -84,7 +89,7 @@ def get_shared_identifiers(dicom_files,
 
     if not os.path.exists(config):
         bot.error("Cannot find config %s, exiting" %(config))
-    config = read_json(config)['get']
+    config = read_json(config, ordered_dict=True)['get']
 
     if not isinstance(dicom_files,list):
         dicom_files = [dicom_files]
@@ -150,7 +155,7 @@ def get_identifiers(dicom_files,
 
     if not os.path.exists(config):
         bot.error("Cannot find config %s, exiting" %(config))
-    config = read_json(config)['get']
+    config = read_json(config, ordered_dict=True)['get']
 
     if not isinstance(dicom_files,list):
         dicom_files = [dicom_files]
@@ -188,6 +193,8 @@ def remove_private_identifiers(dicom_files,
     reads in the files for the user and saves accordingly
     '''
     updated_files = []
+    if not isinstance(dicom_files,list):
+        dicom_files = [dicom_files]
 
     for dicom_file in dicom_files:
         dicom = read_file(dicom_file,force=force)
@@ -209,29 +216,34 @@ def remove_private_identifiers(dicom_files,
 def _prepare_replace_config(dicom_files, deid=None, config=None):
     '''replace identifiers will replace dicom_files with data from ids based
     on a combination of a config (default is remove all) and a user deid spec
-    :param dicom_files: the dicom file(s) to extract from
-    :param force: force reading the file (default True)
-    :param save: if True, save to file. Otherwise, return dicom objects
-    :param config: if None, uses default in provided module folder
-    :param overwrite: if False, save updated files to temporary directory
+
+    Parameters
+    ==========
+    dicom_files: the dicom file(s) to extract from
+    force: force reading the file (default True)
+    save: if True, save to file. Otherwise, return dicom objects
+    config: if None, uses default in provided module folder
+    overwrite: if False, save updated files to temporary directory
+    
     '''
+
     if config is None:
         config = "%s/config.json" %(here)
     if not os.path.exists(config):
         bot.error("Cannot find config %s, exiting" %(config))
-    # Validate any provided deid
+    
+    # if the user has provided a custom deid, load it
     if deid is not None:
-        if not isinstance(deid,dict):
-            deid = load_deid(deid)
-            if deid['format'] != 'dicom':
-                bot.error('DEID format must be dicom.')
-                sys.exit(1)
-    config = read_json(config)
+        deid = load_combined_deid([deid,'dicom'])
+    else:
+        deid = get_deid('dicom', load=True)
+
+    config = read_json(config, ordered_dict=True)
+
     if not isinstance(dicom_files,list):
         dicom_files = [dicom_files]
+
     return dicom_files, deid, config
-
-
 
 
 def replace_identifiers(dicom_files,
@@ -244,8 +256,10 @@ def replace_identifiers(dicom_files,
                         config=None,
                         strip_sequences=True,
                         remove_private=True):
+
     '''replace identifiers using pydicom, can be slow when writing
     and saving new files'''
+
     dicom_files, deid, config = _prepare_replace_config(dicom_files, 
                                                         deid=deid,
                                                         config=config)
@@ -270,14 +284,21 @@ def replace_identifiers(dicom_files,
             else:
                 bot.warning("%s is not in identifiers." %idx)
                 continue
-
         # Next perform actions in default config, only if not done
         for action in config['put']['actions']:
             if action['field'] in fields:
                  dicom = perform_action(dicom=dicom,
                                         action=action)
         if remove_private is True:
-            dicom.remove_private_tags()
+            try:
+                dicom.remove_private_tags()
+            except:
+                bot.error('''Private tags for %s could not be completely removed, usually
+                             this is due to invalid data type. Removing others.''' % idx)
+                private_tags = get_private(dicom)
+                for ptag in private_tags:
+                    del dicom[ptag.tag]
+                continue
         else:
             bot.warning("Private tags were not removed!")
         ds = Dataset()
@@ -298,10 +319,12 @@ def replace_identifiers(dicom_files,
 
         # Retain required meta data
         file_metas = getattr(dicom, 'file_meta', Dataset())
-        file_metas.MediaStorageSOPClassUID = ''
-        file_metas.MediaStorageSOPInstanceUID=''
-        file_metas.ImplementationVersionName='' 
-        file_metas.ImplementationClassUID=''
+        
+        # Retain required meta data - not identifying
+        # file_metas.MediaStorageSOPClassUID
+        # file_metas.MediaStorageSOPInstanceUID
+        # file_metas.ImplementationVersionName 
+        # file_metas.ImplementationClassUID
 
         # File attributes for meta
         attributes = ['TransferSyntaxUID',

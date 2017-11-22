@@ -23,6 +23,7 @@ SOFTWARE.
 '''
 
 from pydicom.dataset import Dataset
+from pydicom.sequence import Sequence
 from deid.logger import bot
 import os
 import re
@@ -38,20 +39,31 @@ import re
 
 def apply_filter(dicom,field,filter_name,value):
     '''essentially a switch statement to apply a filter to
-    a dicom file
+    a dicom file.
     '''
+    filter_name = filter_name.lower().strip()
+
     if filter_name == "contains":
         return dicom.contains(field,value)
-    elif filter_name == "containsIgnoreCase":
-        return dicom.containsIgnoreCase(field,value)
+
+    if filter_name == "contains":
+        return dicom.notContains(field,value)
+
     elif filter_name == "equals":
         return dicom.equals(field,value)
-    elif filter_name == "equalsIgnoreCase":
-        return dicom.equalsIgnoreCase(field,value)
-    elif filter_name == "notEquals":
+
+    elif filter_name == "missing":
+        return dicom.missing(field)
+
+    elif filter_name == "present":
+        return not dicom.missing(field)
+
+    elif filter_name == "empty":
+        return dicom.empty(field)
+
+    elif filter_name == "notequals":
         return dicom.notEquals(field,value)
-    elif filter_name == "notEqualsIgnoreCase":
-        return dicom.notEqualsIgnoreCase(field,value)
+
     bot.warning("%s is not a valid filter name, returning False" %filter_name)
     return False
 
@@ -62,8 +74,8 @@ def apply_filter(dicom,field,filter_name,value):
 ######################################################################
 
 
-def equalsBase(self,field,term,ignore_case=False,not_equals=False):
-    '''base of equals, with variable for ignore case'''
+def equalsBase(self,field,term,ignore_case=True,not_equals=False):
+    '''base of equals, with variable for ignore case (default True)'''
     is_equal = False
 
     contenders = self.get(field)
@@ -75,10 +87,15 @@ def equalsBase(self,field,term,ignore_case=False,not_equals=False):
     for contender in contenders:
         if contender is not None:
             if ignore_case:
-                contender = contender.lower()
-                term = term.lower()
-            if contender == term:
-                is_equal = True
+                if not isinstance(contender,Sequence):                
+                    try:
+                        contender = str(contender).lower().strip()
+                        term = str(term).lower().strip()
+                    except AttributeError:
+                        pass # we are dealing with number
+
+                if contender == term:
+                    is_equal = True
 
     # If we want to know not_equals, reverse
     if not_equals is True:
@@ -93,36 +110,57 @@ def equals(self,field,term):
     return self.equalsBase(field,term)
 
 
-def equalsIgnoreCase(self,field,term):
-    '''equalsIgnoreCase is the case-insensitive version of equals.'''
-    return self.equalsBase(field,term,ignore_case=True)
-
-
 def notEquals(self,field,term):
     return self.equalsBase(field=field,
                            term=term,
                            not_equals=True)
 
-def notEqualsIgnoreCase(self,field,term):
-    return self.equalsBase(field=field,
-                           term=term,
-                           ignore_case=True,
-                           not_equals=True)
 
 
 Dataset.equalsBase = equalsBase
 Dataset.equals = equals
 Dataset.notEquals = notEquals
-Dataset.equalsIgnoreCase = equalsIgnoreCase
-Dataset.notEqualsIgnoreCase = notEqualsIgnoreCase
+
+######################################################################
+# Empty and Null
+#
+# missing: means the field is not present (None)
+# empty: means the field is present and empty
+######################################################################
+
+
+def missing(self,field):
+    '''missing returns True if the dicom is missing the field entirely
+    This means that the entire field is None
+    '''
+    content = self.get(field)
+    if content == None:
+        return True
+    return False
+
+ 
+def empty(self,field):
+    '''empty returns True if the value is found to be ""
+    '''
+    content = self.get(field)
+    if content == "":
+        return True
+    return False
+
+
+Dataset.empty = empty
+Dataset.missing = missing
 
 
 ######################################################################
 # Matches and Contains
+# 
+# contains: searches across entire field
+# matches: looks for exact match
 ######################################################################
 
 
-def compareBase(self,field,expression,func,ignore_case=False):
+def compareBase(self,field,expression,func,ignore_case=True):
     '''compareBase takes either re.search (for contains) or
     re.match (for matches) and returns True if the given regular
     expression is contained or matched'''
@@ -135,11 +173,18 @@ def compareBase(self,field,expression,func,ignore_case=False):
 
     for contender in contenders:
         if contender is not None:
-            if ignore_case:
-                expression = expression.lower()
-                contender = contender.lower()
-            if func(expression,contender):
-                is_match = True
+
+            if not isinstance(contender,Sequence):                
+                if ignore_case:
+                    try:
+                        contender = str(contender).lower().strip()
+                        expression = str(expression).lower().strip()
+                    except AttributeError:
+                        pass # we are dealing with number
+                             # sequence, or other private tag
+
+                if func(expression,contender):
+                    is_match = True
 
     return is_match
 
@@ -161,19 +206,19 @@ def contains(self,field,expression):
                             expression=expression,
                             func=re.search)
 
+def notContains(self,field,expression):
+    '''notContains returns true if the value of the identifier 
+    does not contain the the string argument anywhere within it; 
+    '''
+    return not self.compareBase(field=field,
+                                expression=expression,
+                                func=re.search)
 
-def containsIgnoreCase(self,field,expression):
-    '''containsIgnoreCase is the case-insensitive version of contains.'''
-    return self.compareBase(field=field,
-                            expression=expression,
-                            func=re.search,
-                            ignore_case=True)
 
 Dataset.compareBase = compareBase
 Dataset.matches = matches
 Dataset.contains = contains
-Dataset.containsIgnoreCase = containsIgnoreCase
-
+Dataset.notContains = notContains
 
 ######################################################################
 # Starts and Endswith
@@ -188,16 +233,6 @@ def startsWith(self,field,term):
                             expression=expression,
                             func=re.match)
     
-
-def startsWithIgnoreCase(self,field,term):
-    '''startsWithIgnoreCase is the case-insensitive version of startsWith.'''
-    expression = "^%s" %term
-    return self.compareBase(field=field,
-                            ignore_case=True,
-                            expression=expression,
-                            func=re.match)
-
-
 def endsWith(self,field,term):
     '''endsWith returns true if the value of the identifier ends with 
     the string argument; otherwise, it returns false.'''
@@ -206,17 +241,5 @@ def endsWith(self,field,term):
                             expression=expression,
                             func=re.match)
     
-
-def endsWithIgnoreCase(self,field,term):
-    '''endsWithIgnoreCase is the case-insensitive version of endsWith.'''
-    expression = "%s$" %term
-    return self.compareBase(field=field,
-                            ignore_case=True,
-                            expression=expression,
-                            func=re.match)
-
-
 Dataset.startsWith = startsWith
-Dataset.startsWithIgnoreCase = startsWithIgnoreCase
 Dataset.endsWith = endsWith
-Dataset.endsWithIgnoreCase = endsWithIgnoreCase
