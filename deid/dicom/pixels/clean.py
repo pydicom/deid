@@ -88,7 +88,7 @@ class DicomCleaner():
 
             # We will set original image to image, cleaned to clean
             self.image = dicom._get_pixel_array()
-            self.clean = self.image.copy()
+            self.cleaned = self.image.copy()
 
             # Compile coordinates from result
             coordinates = []
@@ -99,17 +99,16 @@ class DicomCleaner():
             print("Blanking %s coordinate boxes" %(len(coordinates)))
             for coordinate in coordinates:
                 minr, minc, maxr, maxc = coordinate
-                self.clean[minr:maxr, minc:maxc] = 0  # should fill with black
+                self.cleaned[minr:maxr, minc:maxc] = 0  # should fill with black
                                            
 
     def get_figure(self, show=False):
         '''get a figure for a cleaned image, if exists.'''
         from matplotlib import pyplot as plt
-        plt = None
         
-        if hasattr(self,"clean"):
-            fig, ax = plt.subplots(figsize=(10, 6))        
-            ax.imshow(self.clean)
+        if hasattr(self,"cleaned"):
+            fig, ax = plt.subplots(figsize=(10, 6))      
+            ax.imshow(self.cleaned)
             if show is True:
                 plt.show()
         return plt
@@ -126,10 +125,10 @@ class DicomCleaner():
         if output_folder is None:
             output_folder = self.output_folder
 
-        if hasattr(self,"clean"):
+        if hasattr(self,"cleaned"):
             png_file = self._get_clean_name('png')
             fig, ax = plt.subplots(figsize=(10, 6))        
-            ax.imshow(self.clean)
+            ax.imshow(self.cleaned)
             plt.savefig(png_file)
 
 
@@ -139,7 +138,7 @@ class DicomCleaner():
             output_folder = self.output_folder
 
         # Having clean also means has dicom image
-        if hasattr(self,"clean"):
+        if hasattr(self,"cleaned"):
             dicom_name = self._get_clean_name()
             dicom = read_file(self.dicom_file,force=True)
             dicom.PixelData = self.clean.tostring()
