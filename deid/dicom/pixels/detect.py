@@ -1,5 +1,6 @@
 '''
-pixels.py: functions for pixel scrubbing
+
+detect.py: functions for pixel scrubbing
 
 Copyright (c) 2017 Vanessa Sochat
 
@@ -23,135 +24,64 @@ SOFTWARE.
 '''
 
 from deid.logger import bot
-from deid.dicom.tags import get_tag
-from deid.dicom.utils import perform_action
-from deid.utils import read_json
 from pydicom import read_file
-from deid.dicom.filter import (
-    Dataset,     # add additional filters
-    apply_filter
-)
+from deid.dicom.filter import apply_filter
 
 from deid.config import (
-    load_deid,
     get_deid,
     load_combined_deid
 )
 
 import os
-
-def preview_clean_pixels(dicom_file, coordinates):
-    '''
-    run clean pixels with show set to true and output folder None
-
-    Parameters
-    ==========
-    dicom_file: the full path to a dicom file to clean
-    coordinates: the list of coordinates
-
-    '''
-    return clean_pixels(dicom_file=dicom_file,
-                        coordinates=coordinates)
-
-
-def clean_pixels(dicom_file, coordinates, output_folder=None, show=False,
-                 add_padding=False, margin=3):
-    '''
-    take a dicom image and a list of pixel coordinates, and return
-    a cleaned file (if output file is specified) or simply plot 
-    the cleaned result (if no file is specified)
-    
-    Parameters
-    ==========
-    dicom_file: the full path to a dicom file to clean
-    coordinates: the list of coordinates
-    output_folder: if provided, save dicom to this folder
-    add_padding: add N=margin pixels of padding
-    margin: pixels of padding to add, if add_padding True
-
-    '''
-    from matplotlib import pyplot as plt
-    import matplotlib.patches as mpatches
-
-    from pylab import fill
-
-    if not isinstance(coordinates,list):
-        coordinates = [coordinates]
-    coordinates = [coordinates]   # [[1,2,3,4],...[1,2,3,4]]
-    dicom = read_file(dicom_file,force=True)
-    image = dicom._get_pixel_array()
-    
-    if show is True:
-        fig, ax = plt.subplots(figsize=(10, 6))
-        
-    for coordinate in coordinates:
-        minr, minc, maxr, maxc = coordinate
-
-        if add_padding is True:
-            minr, minc, maxr, maxc = minr-margin, minc-margin, maxr+margin, maxc+margin
-
-        print("Blanking (%s,%s,%s,%s)" %(minr, minc, maxr, maxc))
-        rect = mpatches.Rectangle((minc, minr), maxc - minc, maxr - minr,
-                                  fill=True, facecolor='black', edgecolor='black', linewidth=2)
-        ax.add_patch(rect)
-            
-        if show is True:
-            ax.imshow(image)
-        #fill([minr,minc,maxr,maxc], 'r', alpha=0.2, edgecolor='r')
-                               
-        #if show:
-        #    plt.show()
-        if output_folder is not None:
-            dicom_name = "%s/cleaned-%s.dcm" %(output_folder,
-                                               os.path.basename(dicom_file).strip('.dcm','.dicom'))
-            dicom.PixelData = image
-            dicom.save_as(dicom_name)
-            return dicom_name
-        return image
- 
-
+import sys
 
 def has_burned_pixels(dicom_files,force=True,deid=None):
-    ''' has burned pixels will use the MIRCTP criteria (see ref folder with the
+    ''' has burned pixels is an entrypoint for has_burned_pixels_multi (for 
+    multiple images) or has_burned_pixels_single (for one detailed repor)
+    We will use the MIRCTP criteria (see ref folder with the
     original scripts used by CTP) to determine if an image is likely to have 
     PHI, based on fields in the header alone. This script does NOT perform
-    pixel cleaning, but returns a dictionary of results, where the key is
-    the file, and the value is True/False to indicate if there are burned 
-    pixels in the image (with possible identifiers)
+    pixel cleaning, but returns a dictionary of results (for multi) or one
+    detailed result (for single)
     '''
-
-    if not isinstance(dicom_files,list):
-        dicom_files = [dicom_files]
-
-    # Store decisions in lookup based on filter groups
-    decision = {'clean':[],
-                'flagged':{},
-                'reason':{}}
-
     # if the user has provided a custom deid, load it
     if deid is not None:
         deid = load_combined_deid([deid,'dicom'])
     else:
         deid = get_deid(tag=deid, load=True)
 
+    if isinstance(dicom_files,list):
+        return _has_burned_pixels_multi(dicom_files, force, deid)
+    return _has_burned_pixels_single(dicom_files, force, deid)
+
+
+
+def _has_burned_pixels_multi(dicom_files,force=True,deid=None):
+    '''return a summary dictionary with lists of clean, and then lookups
+       for flagged images with reasons.
+    '''
+
+    # Store decisions in lookup based on filter groups
+    decision = {'clean':[],
+                'flagged':{}}
+
     for dicom_file in dicom_files:
-        flagged,group,reason = has_burned_pixels_single(dicom_file=dicom_file,
-                                                        force=force,
-                                                        deid=deid)
-        if flagged is False:
+        result = _has_burned_pixels_single(dicom_file=dicom_file,
+                                           force=force,
+                                           deid=deid)
+
+
+        if result['flagged'] is False:
             # In this case, group is None
             decision['clean'].append(dicom_file)
         else:
-            if group not in decision['flagged']:
-                decision['flagged'][group] = []
-            decision['flagged'][group].append(dicom_file)
-            decision['reason'][dicom_file] = reason
+            decision['flagged'][dicom_file] = result
 
     return decision
 
 
-def has_burned_pixels_single(dicom_file,force=True, deid=None, quiet=False,
-                             return_group=True, return_reason=True):
+def _has_burned_pixels_single(dicom_file,force=True, deid=None):
+
     '''has burned pixels single will evaluate one dicom file for burned in
     pixels based on 'filter' criteria in a deid. If deid is not provided,
     will use application default. The method proceeds as follows:
@@ -166,39 +96,49 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, quiet=False,
     =========
     dicom_file: the fullpath to the file to evaluate
     force: force reading of a potentially erroneous file
-    deid: the full path to a deid specification. if not defined, default used
-    return_group: also return the group of the flagged files
-    return_reason: return a string reason for why the flag was done (none if clean)
-    quiet: if quiet, won't print to screen
+    deid: the full path to a deid specification. if not defined, only default used
 
-    config['filter']['dangerouscookie'] <-- filter list "dangerouscookie"
+    deid['filter']['dangerouscookie'] <-- filter list "dangerouscookie"
 
-     has one or more filter criteria associated with coordinates
+    --> This is what an item in the criteria looks like
+        [{'coordinates': ['0,0,512,110'],
+          'filters': [{'InnerOperators': [],
+          'action': ['notequals'],
+          'field': ['OperatorsName'],
+          'operator': 'and',
+          'value': ['bold bread']}],
+        'name': 'criteria for dangerous cookie'}]
 
-     [{'coordinates': ['0,0,512,110'],
-       'filters': [{'InnerOperators': [],
-       'action': ['notequals'],
-       'field': ['OperatorsName'],
-       'operator': 'and',
-       'value': ['bold bread']}],
-     'name': 'criteria for dangerous cookie'}]
+    
+    Returns
+    =======
+    --> This is what a clean image looks like:
+        {'flagged': False, 'results': []}
+
+
+    --> This is what a flagged image looks like:
+       {'flagged': True,
+        'results': [
+                      {'reason': ' ImageType missing  or ImageType empty ',
+                       'group': 'blacklist',
+                       'coordinates': []}
+                   ]
+        }
     '''
 
     dicom = read_file(dicom_file,force=force)
     dicom_name = os.path.basename(dicom_file)
         
-    # if the user has provided a custom deid, load it
-    if deid is not None:
-        config = load_combined_deid([deid,'dicom'])
-    else:
-        config = get_deid('dicom', load=True)
-
     # Load criteria (actions) for flagging
-    if 'filter' not in config:
+    if 'filter' not in deid:
         bot.error('Deid provided does not have %filter, exiting.')
         sys.exit(1)
 
-    for name,items in config['filter'].items():
+    # Return list with lookup as dicom_file
+    results = []
+    global_flagged = False
+
+    for name,items in deid['filter'].items():
         for item in items:
             flags = []
 
@@ -249,19 +189,18 @@ def has_burned_pixels_single(dicom_file,force=True, deid=None, quiet=False,
             flagged = evaluate_group(flags=flags)
 
             if flagged is True:
+                global_flagged = True
                 reason = ' '.join(descriptions)
 
-                if quiet is False:
-                    bot.flag("%s in section %s\n" %(dicom_name,name))
-                    print('LABEL: %s' %group_name)
-                    print('CRITERIA: %s' %reason)
+                result = {'reason': reason,
+                          'group': name,
+                          'coordinates': item['coordinates'] }
 
-                if return_reason is True:
-                    return flagged, name, reason
-                return flagged, name
+                results.append(result)
 
-    bot.debug("%s header filter indicates pixels are clean." %dicom_name)
-    return flagged, None, None
+    results = {'flagged': global_flagged,
+               'results': results }
+    return results
 
 
 def evaluate_group(flags):
@@ -270,7 +209,8 @@ def evaluate_group(flags):
         [True, and, False, or, True]
 
     And read through the logic to determine if the image result
-    is to be flagged.
+    is to be flagged. This is how we combine a set of criteria in
+    a group to come to a final decision.
     '''
     flagged = False
     first_entry = True

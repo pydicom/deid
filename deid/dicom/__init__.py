@@ -12,7 +12,6 @@ from .utils import (
 from .fields import  extract_sequence
 
 from .pixels import (
-    clean_pixels,
     has_burned_pixels,
-    has_burned_pixels_single
+    DicomCleaner
 )
