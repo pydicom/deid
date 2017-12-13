@@ -129,7 +129,7 @@ class DicomCleaner():
             fig, ax = plt.subplots(figsize=(10, 6))      
             ax.imshow(self.cleaned)
             if title is not None:
-                plt.title(title, fontdict=self.font)
+                plt.title(title, fontdict=self.font())
             if show is True:
                 plt.show()
             return plt
