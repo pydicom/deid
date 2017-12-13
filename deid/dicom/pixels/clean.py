@@ -94,7 +94,7 @@ class DicomCleaner():
             bot.warning('Use %s.detect() to find coordinates first.' %self)
 
         elif self.results['flagged'] is False:
-            bot.info('Image was not flagged, nothing to clean.' %self)
+            bot.info('Image %s was not flagged, nothing to clean.' %self)
 
         else:
             bot.info('Cleaning %s.' %self.dicom_file)
