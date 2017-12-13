@@ -24,6 +24,8 @@ SOFTWARE.
 
 from deid.logger import bot
 from pydicom import read_file
+import matplotlib
+matplotlib.use('pdf')
 import tempfile
 import os
 import re
