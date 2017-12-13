@@ -44,19 +44,33 @@ class DicomCleaner():
     def __init__(self, output_folder=None,
                        add_padding=False,
                        margin=3,
-                       deid=None):
+                       deid=None,
+                       font=None):
 
         if output_folder is None:
             output_folder = tempfile.mkdtemp()
+
+        if font is None:
+            font = self.default_font
+        self.font = font
 
         self.output_folder = output_folder
         self.deid = deid
         self.results = None
 
+    def default_font(self):
+        '''define the font style for saving png figures
+           if a title is provided
+        '''
+        return {'family': 'serif',
+                'color':  'darkred',
+                'weight': 'normal',
+                'size': 16}
+
     def detect(self, dicom_file):
         '''detect will initiate the cleaner for a new dicom file.
         '''
-        from .detect import has_burned_pixels
+        from deid.dicom.pixels.detect import has_burned_pixels
         self.results = has_burned_pixels(dicom_file)
         self.dicom_file = dicom_file
         return self.results
@@ -87,8 +101,8 @@ class DicomCleaner():
             dicom = read_file(self.dicom_file,force=True)
 
             # We will set original image to image, cleaned to clean
-            self.image = dicom._get_pixel_array()
-            self.cleaned = self.image.copy()
+            self.original = dicom._get_pixel_array()
+            self.cleaned = self.original.copy()
 
             # Compile coordinates from result
             coordinates = []
@@ -102,43 +116,56 @@ class DicomCleaner():
                 self.cleaned[minr:maxr, minc:maxc] = 0  # should fill with black
                                            
 
-    def get_figure(self, show=False):
-        '''get a figure for a cleaned image, if exists.'''
+    def get_figure(self, show=False, image_type="cleaned", title=None):
+        '''get a figure for an original or cleaned image. If the image
+           was already clean, it is simply a copy of the original.
+           If show is True, plot the image.
+        '''
         from matplotlib import pyplot as plt
         
-        if hasattr(self,"cleaned"):
+        if hasattr(self, image_type):
             fig, ax = plt.subplots(figsize=(10, 6))      
             ax.imshow(self.cleaned)
+            if title is not None:
+                plt.title(title, fontdict=self.font)
             if show is True:
                 plt.show()
-        return plt
+            return plt
 
 
     def _get_clean_name(self, extension='dcm'):
         basename = re.sub('[.]dicom|[.]dcm', '', os.path.basename(self.dicom_file))
         return "%s/cleaned-%s.%s" %(output_folder, basename, extension)
         
-    def save_png(self, output_folder=None):
-        '''save a cleaned dicom as png to disk'''
+    def save_png(self, output_folder=None, image_type="cleaned", title=None):
+        '''save an original or cleaned dicom as png to disk.
+           Default image_format is "cleaned" and can be set 
+           to "original." If the image was already clean (not 
+           flagged) the cleaned image is just a copy of original
+        '''
         from matplotlib import pyplot as plt
         
         if output_folder is None:
             output_folder = self.output_folder
 
-        if hasattr(self,"cleaned"):
+        if hasattr(self,image_type):
             png_file = self._get_clean_name('png')
-            fig, ax = plt.subplots(figsize=(10, 6))        
-            ax.imshow(self.cleaned)
+            plt = self.get_figure(image_type=image_type, title=title)
             plt.savefig(png_file)
+            plt.close()
 
 
-    def save_dicom(self, output_folder=None):
-        '''save a cleaned dicom to disk'''
+    def save_dicom(self, output_folder=None, image_type="cleaned"):
+        '''save a cleaned dicom to disk. We expose an option to save
+           an original (change image_type to "original" to be consistent,
+           although this is not incredibly useful given it would duplicate
+           the original data.
+        '''
         if output_folder is None:
             output_folder = self.output_folder
 
         # Having clean also means has dicom image
-        if hasattr(self,"cleaned"):
+        if hasattr(self, image_type):
             dicom_name = self._get_clean_name()
             dicom = read_file(self.dicom_file,force=True)
             dicom.PixelData = self.clean.tostring()
