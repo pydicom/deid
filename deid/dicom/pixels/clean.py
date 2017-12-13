@@ -135,7 +135,13 @@ class DicomCleaner():
             return plt
 
 
-    def _get_clean_name(self, extension='dcm'):
+    def _get_clean_name(self, output_folder, extension='dcm'):
+        '''return a full path to an output file, with custom folder and
+           extension
+        '''
+        if output_folder is None:
+            output_folder = self.output_folder
+
         basename = re.sub('[.]dicom|[.]dcm', '', os.path.basename(self.dicom_file))
         return "%s/cleaned-%s.%s" %(output_folder, basename, extension)
         
@@ -147,11 +153,8 @@ class DicomCleaner():
         '''
         from matplotlib import pyplot as plt
         
-        if output_folder is None:
-            output_folder = self.output_folder
-
         if hasattr(self,image_type):
-            png_file = self._get_clean_name('png')
+            png_file = self._get_clean_name(output_folder, 'png')
             plt = self.get_figure(image_type=image_type, title=title)
             plt.savefig(png_file)
             plt.close()
@@ -163,12 +166,9 @@ class DicomCleaner():
            although this is not incredibly useful given it would duplicate
            the original data.
         '''
-        if output_folder is None:
-            output_folder = self.output_folder
-
         # Having clean also means has dicom image
         if hasattr(self, image_type):
-            dicom_name = self._get_clean_name()
+            dicom_name = self._get_clean_name(output_folder)
             dicom = read_file(self.dicom_file,force=True)
             dicom.PixelData = self.clean.tostring()
             dicom.save_as(dicom_name)
