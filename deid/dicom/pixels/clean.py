@@ -157,6 +157,7 @@ class DicomCleaner():
             plt = self.get_figure(image_type=image_type, title=title)
             plt.savefig(png_file)
             plt.close()
+            return png_file
         else:
             bot.warning('use detect() --> clean() before saving is possible.')
 
