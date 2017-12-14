@@ -130,7 +130,7 @@ class DicomCleaner():
             if title is not None:
                 plt.title(title, fontdict=self.font())
             if show is True:
-                plt.show()
+                plt.show(cmap='gray')
             return plt
 
 
