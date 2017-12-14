@@ -53,9 +53,9 @@ class DicomCleaner():
             output_folder = tempfile.mkdtemp()
 
         if font is None:
-            font = self.default_font
+            font = self.default_font()
         self.font = font
-
+        self.cmap = 'gray'
         self.output_folder = output_folder
         self.deid = deid
         self.results = None
@@ -126,9 +126,9 @@ class DicomCleaner():
         
         if hasattr(self, image_type):
             fig, ax = plt.subplots(figsize=(10, 6))      
-            ax.imshow(self.cleaned)
+            ax.imshow(self.cleaned, cmap=self.cmap)
             if title is not None:
-                plt.title(title, fontdict=self.font())
+                plt.title(title, fontdict=self.font)
             if show is True:
                 plt.show()
             return plt
