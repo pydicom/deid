@@ -93,11 +93,8 @@ class DicomCleaner():
         if not self.results:
             bot.warning('Use %s.detect() to find coordinates first.' %self)
 
-        elif self.results['flagged'] is False:
-            bot.info('Image %s was not flagged, nothing to clean.' %self)
-
         else:
-            bot.info('Cleaning %s.' %self.dicom_file)
+            bot.info('Scrubbing %s.' %self.dicom_file)
 
             # Load in dicom file, and image data
             dicom = read_file(self.dicom_file,force=True)
@@ -110,9 +107,11 @@ class DicomCleaner():
             coordinates = []
             for item in self.results['results']:
                 if len(item['coordinates']) > 0:
-                    coordinates.append(item['coordinates']) # [[1,2,3,4],...[1,2,3,4]]
+                    for coordinate_set in item['coordinates']:
+                        # Coordinates expected to be list separated by commas
+                        new_coordinates = [int(x) for x in coordinate_set.split(',')]
+                        coordinates.append(new_coordinates) # [[1,2,3,4],...[1,2,3,4]]
 
-            print("Blanking %s coordinate boxes" %(len(coordinates)))
             for coordinate in coordinates:
                 minr, minc, maxr, maxc = coordinate
                 self.cleaned[minr:maxr, minc:maxc] = 0  # should fill with black
@@ -158,7 +157,8 @@ class DicomCleaner():
             plt = self.get_figure(image_type=image_type, title=title)
             plt.savefig(png_file)
             plt.close()
-
+        else:
+            bot.warning('use detect() --> clean() before saving is possible.')
 
     def save_dicom(self, output_folder=None, image_type="cleaned"):
         '''save a cleaned dicom to disk. We expose an option to save
@@ -174,4 +174,4 @@ class DicomCleaner():
             dicom.save_as(dicom_name)
             return dicom_name
         else:
-            bot.warning('use detect() --> clean() before saving clean is possible.')
+            bot.warning('use detect() --> clean() before saving is possible.')
