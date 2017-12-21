@@ -343,7 +343,7 @@ LABEL Stanford Blacklist Missing ImageType  # Susan Weber, Vanessa Sochat
 
 LABEL Stanford Blacklist secondary or derived catchall # Vanessa Sochat
   contains Modality CT|MR
-  + contains ImageType SECONDARY|SCREEN|SAVE
+  + contains ImageType DERIVED|SECONDARY|SCREEN|SAVE
 
 LABEL Stanford Blacklist Dose Report or External # Vanessa Sochat
   contains Modality CT|MR

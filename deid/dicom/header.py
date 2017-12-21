@@ -233,10 +233,9 @@ def _prepare_replace_config(dicom_files, deid=None, config=None):
         bot.error("Cannot find config %s, exiting" %(config))
     
     # if the user has provided a custom deid, load it
-    if deid is not None:
-        deid = load_combined_deid([deid,'dicom'])
-    else:
-        deid = get_deid('dicom', load=True)
+    if deid is None:
+        deid = 'dicom'
+    deid = get_deid(deid, load=True)
 
     config = read_json(config, ordered_dict=True)
 
