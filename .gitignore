@@ -3,3 +3,6 @@ dist
 deid.egg-info
 build
 pypi.sh
+
+private
+.vscode

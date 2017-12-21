@@ -7,6 +7,7 @@
 # This will get a set of example cookie dicoms
 from deid.dicom import get_files
 from deid.data import get_dataset
+from deid.dicom import replace_identifiers
 base = get_dataset('dicom-cookies')
 dicom_files = get_files(base)
 
