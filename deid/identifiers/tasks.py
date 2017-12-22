@@ -93,10 +93,10 @@ def clean_identifiers(ids, deid=None, default="KEEP"):
     with dicom.replace_identifiers, or upload this data to a database
     '''
     # if the user has provided a custom deid, load it
-    if deid is not None:
-        deid = load_combined_deid([deid,'dicom'])
-    else:
-        deid = get_deid('dicom', load=True)
+    # if the user has provided a custom deid, load it
+    if deid is None:
+        deid = 'dicom'
+    deid = get_deid(deid, load=True)
 
     # Generate ids dictionary for data put (replace_identifiers) function
     cleaned = dict()

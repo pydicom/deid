@@ -45,10 +45,9 @@ def has_burned_pixels(dicom_files,force=True,deid=None):
     detailed result (for single)
     '''
     # if the user has provided a custom deid, load it
-    if deid is not None:
-        deid = load_combined_deid([deid,'dicom'])
-    else:
-        deid = get_deid(tag=deid, load=True)
+    if deid is None:
+        deid = 'dicom'
+    deid = get_deid(deid, load=True)
 
     if isinstance(dicom_files,list):
         return _has_burned_pixels_multi(dicom_files, force, deid)

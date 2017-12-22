@@ -47,7 +47,8 @@ class DicomCleaner():
                        add_padding=False,
                        margin=3,
                        deid=None,
-                       font=None):
+                       font=None,
+                       force=True):
 
         if output_folder is None:
             output_folder = tempfile.mkdtemp()
@@ -59,6 +60,7 @@ class DicomCleaner():
         self.output_folder = output_folder
         self.deid = deid
         self.results = None
+        self.force = force
 
     def default_font(self):
         '''define the font style for saving png figures
@@ -73,7 +75,7 @@ class DicomCleaner():
         '''detect will initiate the cleaner for a new dicom file.
         '''
         from deid.dicom.pixels.detect import has_burned_pixels
-        self.results = has_burned_pixels(dicom_file)
+        self.results = has_burned_pixels(dicom_file, deid=self.deid, force=self.force)
         self.dicom_file = dicom_file
         return self.results
         
