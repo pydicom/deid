@@ -44,10 +44,7 @@ def has_burned_pixels(dicom_files,force=True,deid=None):
     pixel cleaning, but returns a dictionary of results (for multi) or one
     detailed result (for single)
     '''
-    # if the user has provided a custom deid, load it
-    if deid is None:
-        deid = 'dicom'
-    deid = get_deid(deid, load=True)
+    deid = setup_deid(deid)
 
     if isinstance(dicom_files,list):
         return _has_burned_pixels_multi(dicom_files, force, deid)

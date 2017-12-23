@@ -280,3 +280,9 @@ def get_item_timestamp(dicom,date_field=None,time_field=None):
 
     return get_timestamp(item_date=item_date,
                          item_time=item_time)
+
+def setup_deid(deid):
+    # if the user has provided a custom deid, load it
+    if deid is None:
+        deid = 'dicom'
+    deid = get_deid(deid, load=True)
