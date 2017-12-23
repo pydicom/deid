@@ -280,3 +280,14 @@ def get_item_timestamp(dicom,date_field=None,time_field=None):
 
     return get_timestamp(item_date=item_date,
                          item_time=item_time)
+
+def initialize_deid(deid_file_path):
+    '''initialize_deid will load and return a deid configuration from the 
+    deid_file_path if specified. If deid_file_path is None a default
+    configuration will be loaded.    
+    '''
+    # if the user has provided a custom deid, load it
+    if deid_file_path is None:
+        deid_file_path = 'dicom'
+    deid = get_deid(deid_file_path, load=True)
+    return deid
