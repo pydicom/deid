@@ -92,7 +92,7 @@ def clean_identifiers(ids, deid=None, default="KEEP"):
     Typically, the next step is to replace some data back into image headers
     with dicom.replace_identifiers, or upload this data to a database
     '''
-    deid = setup_deid(deid)
+    deid = initialize_deid(deid)
 
     # Generate ids dictionary for data put (replace_identifiers) function
     cleaned = dict()

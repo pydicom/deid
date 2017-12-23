@@ -46,7 +46,7 @@ from pydicom.errors import InvalidDicomError
 import dateutil.parser
 import tempfile
 
-from .utils import get_func, save_dicom, setup_deid
+from .utils import get_func, save_dicom, initialize_deid
 from .actions import perform_action
 from pydicom.dataset import Dataset
 
@@ -232,7 +232,7 @@ def _prepare_replace_config(dicom_files, deid=None, config=None):
     if not os.path.exists(config):
         bot.error("Cannot find config %s, exiting" %(config))
     
-    deid = setup_deid(deid)
+    deid = initialize_deid(deid)
 
     config = read_json(config, ordered_dict=True)
 
