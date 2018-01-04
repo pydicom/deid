@@ -237,7 +237,7 @@ First, let's load the example "dicom cookies" dataset. We will first run this ex
 from deid.data import get_dataset
 from deid.dicom import get_files
 
-dicom_files = get_files(get_dataset('dicom-cookies'))
+dicom_files = list(get_files(get_dataset('dicom-cookies')))
 DEBUG Found 7 contender files in dicom-cookies
 DEBUG Checking 7 dicom files for validation.
 Found 7 valid dicom files

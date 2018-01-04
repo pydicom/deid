@@ -65,7 +65,7 @@ def main(args,parser):
         bot.info("No input folder specified, will use demo dicom-cookies.")
         base = get_dataset('dicom-cookies')
 
-    dicom_files = get_files(base, pattern=args.pattern)
+    dicom_files = list(get_files(base, pattern=args.pattern)) # todo : consider using generator functionality
     result = has_burned_pixels(dicom_files, deid=deid)
 
     print('\nSUMMARY ================================\n')

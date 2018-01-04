@@ -9,7 +9,7 @@ from deid.dicom import get_files
 from deid.data import get_dataset
 from deid.dicom import replace_identifiers
 base = get_dataset('dicom-cookies')
-dicom_files = get_files(base)
+dicom_files = list(get_files(base)) # todo : consider using generator functionality
 
 
 # This is the function to get identifiers

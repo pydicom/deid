@@ -63,7 +63,7 @@ def main(args,parser):
         bot.info("No input folder specified, will use demo dicom-cookies.")
         base = get_dataset('dicom-cookies')
     basename = os.path.basename(base)
-    dicom_files = get_files(base)
+    dicom_files = list(get_files(base)) # todo : consider using generator functionality
 
 
     do_get = False

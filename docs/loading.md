@@ -79,7 +79,7 @@ In the above, all we've done it retrieved the full path for a folder of dicom fi
 ```
 from deid.dicom import get_files
 
-dicom_files = get_files(base)
+dicom_files = list(get_files(base))
 DEBUG Found 7 contender files in dicom-cookies
 DEBUG Checking 7 dicom files for validation.
 Found 7 valid dicom files
@@ -88,7 +88,7 @@ Found 7 valid dicom files
 We can also specify to not do the check, if we are absolutely sure. For larger datasets this might speed up processing a little bit.
 
 ```
-dicom_files = get_files(base,check=False)
+dicom_files = list(get_files(base,check=False))
 DEBUG Found 7 contender files in dicom-cookies
 ```
 
@@ -96,7 +96,7 @@ We can also give it a particular pattern to match. Since these files all end wit
 
 
 ```
-dicom_files = get_files(base,pattern="image1*")
+dicom_files = list(get_files(base,pattern="image1*"))
 DEBUG Found 1 contender files in dicom-cookies
 DEBUG Checking 1 dicom files for validation.
 Found 1 valid dicom files

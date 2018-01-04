@@ -97,15 +97,28 @@ class TestUtils(unittest.TestCase):
         whereami = get_installdir()
         self.assertTrue(whereami.endswith('deid'))
 
-
     def test_recursive_find(self):
         '''test_recursive_find should detect 7 dicoms
         '''
         print("Testing recursive find.")
         from deid.utils import recursive_find
-        files = recursive_find(self.pwd,pattern='*.dcm')
+        found = 0
+        expected = 7
+        for file in recursive_find(self.pwd,pattern='*.dcm'):
+            found += 1
+        print("Found %s files" %(found))
+        self.assertTrue(found==expected)
+
+    def test_recursive_find_as_list(self):
+        '''test_recursive_find_as_list should detect 7 dicoms
+        '''
+        print("Testing recursive find as lit.")
+        from deid.utils import recursive_find
+        expected = 7
+        files = list(recursive_find(self.pwd,pattern='*.dcm'))
+        found = len(files)
         print("Found %s files" %(len(files)))
-        self.assertTrue(len(files)==7)
+        self.assertTrue(found==expected)
 
 
 if __name__ == '__main__':

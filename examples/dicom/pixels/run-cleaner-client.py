@@ -16,7 +16,7 @@ from deid.dicom import get_files
 from deid.data import get_dataset
 
 base = get_dataset('dicom-cookies')
-dicom_files = get_files(base)
+dicom_files = list(get_files(base)) # todo : consider using generator functionality
 dicom_file = dicom_files[3]
 
 
