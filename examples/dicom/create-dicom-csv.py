@@ -9,30 +9,39 @@ from collections import OrderedDict
 
 def load_tags_in_files(tag_file_path):
     tags_in_files = {}
-    with open(tag_file_path, 'r') as tag_file:
-        reader = csv.reader(tag_file)
+    with open(tag_file_path, 'r') as f:
+        reader = csv.reader(f)
         next(reader, None) # skip headers
         for row in reader:
             tags_in_files[row[2]] = row
     return tags_in_files
 
 def get_tags_in_files(dicom_path, tag_file_path):
-    tags_in_files = {}
+    # create the output directory
     if not os.path.exists(os.path.dirname(tag_file_path)):
         os.makedirs(os.path.dirname(tag_file_path))
 
-    with open(tag_file_path, 'w') as tag_file:
-        dicom_file_paths = file_paths(filtered_walk(dicom_path, included_files=['*.dcm']))
-        tag_file.write('group,element,keyword,name\n')
-        for dicom_file_path in dicom_file_paths:
-            dicom_file = pydicom.read_file(dicom_file_path)
-            for item in dicom_file:
-                if item.keyword not in tags_in_files:
-                    group = '0x%04x' %item.tag.group
-                    element = '0x%04x' %item.tag.element
-                    tags_in_files[item.keyword] = group,element,item.keyword,item.name
-                    tag_file.write('%s,%s,%s,%s\n' %(group,element,item.keyword,item.name))
-                    tag_file.flush()
+    # get the tags
+    tags_in_files = {}
+    dicom_file_paths = file_paths(filtered_walk(dicom_path, included_files=['*.dcm']))
+    for dicom_file_path in dicom_file_paths:
+        dicom_file = pydicom.read_file(dicom_file_path)
+        for item in dicom_file:
+            if item.keyword not in tags_in_files:
+                group = '0x%04x' %item.tag.group
+                element = '0x%04x' %item.tag.element
+                tags_in_files[item.keyword] = group,element,item.keyword,item.name
+
+    # sort the tags
+    tags_in_files = OrderedDict(sorted(tags_in_files.items(), key=(lambda k: (k[1][0], k[1][1]))))
+
+    # write out the file
+    with open(tag_file_path, 'w') as f:
+        writer = csv.writer(f)
+        writer.writerow(['group', 'element', 'keyword', 'name'])
+        for item in tags_in_files:
+            writer.writerow(tags_in_files[item])
+    
     return tags_in_files
 
 def directory_to_csv(dicom_path, csv_file_path, tags_in_files, tags_to_exclude):
@@ -47,6 +56,7 @@ def directory_to_csv(dicom_path, csv_file_path, tags_in_files, tags_to_exclude):
 
     with open(csv_file_path, 'w') as f:
         writer = csv.writer(f)
+        
         # write the headers
         header_row = list(tags_in_files.keys())
         header_row.append('FilePath')
@@ -68,8 +78,7 @@ def directory_to_csv(dicom_path, csv_file_path, tags_in_files, tags_to_exclude):
                     elif not isinstance(tag_val, str):
                         tag_val = str(tag_val)
 
-                    if ',' in tag_val:
-                        tag_val = tag_val.replace(',','^')
+                    tag_val = tag_val.replace(',','^').replace('\n', '').replace('\r','')
                 row_vals.append(tag_val)
 
             row_vals.append(dicom_file_path)
@@ -90,7 +99,7 @@ if __name__ == "__main__":
     tag_file_path = os.path.join(validate_path, 'tags_in_files.csv')
     csv_file_path = os.path.join(validate_path, 'dicom.csv')
 
-    # tags_in_files = get_tags_in_files(dicom_path, tag_file_path)    
+    tags_in_files = get_tags_in_files(dicom_path, tag_file_path)    
     # print(tags_in_files)
 
     tags_in_files = load_tags_in_files(tag_file_path)
