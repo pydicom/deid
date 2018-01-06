@@ -122,6 +122,12 @@ def directory_to_csv(dicom_path, csv_file_path, tags_in_files, tags_to_exclude):
 
 
 if __name__ == "__main__":
+    """
+    Need an easy way to for a person to validate their deidentification worked. 
+    This example 1st scans a directory and creates a unique set of dicom tags
+    across all files. It then reads the values for all tags in all files and
+    creates a csv file which can be loaded into excel or a database to review. 
+    """
     osx = platform.system().lower() == "darwin"
     if osx:
         # osx
