@@ -8,6 +8,16 @@ from collections.abc import Sequence
 from collections import OrderedDict
 
 def load_tags_in_files(tag_file_path):
+    """
+    load tags_in_files reads a csv file containing dicom tags 
+    and creates a dictionary
+
+    Args:
+        tag_file_path (str): Path to the tag file to load.
+
+    Returns:
+        dict: A dictionary containing the tags loaded.
+    """
     tags_in_files = {}
     with open(tag_file_path, 'r') as f:
         reader = csv.reader(f)
@@ -17,6 +27,18 @@ def load_tags_in_files(tag_file_path):
     return tags_in_files
 
 def get_tags_in_files(dicom_path, tag_file_path):
+    """
+    get_tags_in_files iterates over a directory, finds dicom files with
+    a .dcm extension, and finds all unique dicom tag instances. it then
+    writes the tags out as a csv file.
+
+    Args:
+        dicom_path (str): Path to scan for dicom files.
+        tag_file_path (str): Path and file name for the output csv file.
+
+    Returns:
+        dict: A dictionary containing the tags loaded.
+    """
     # create the output directory
     if not os.path.exists(os.path.dirname(tag_file_path)):
         os.makedirs(os.path.dirname(tag_file_path))
@@ -45,6 +67,20 @@ def get_tags_in_files(dicom_path, tag_file_path):
     return tags_in_files
 
 def directory_to_csv(dicom_path, csv_file_path, tags_in_files, tags_to_exclude):
+    """
+    directory_to_csv iterates over a directory, finds dicom files with
+    a .dcm extension and then creates a spreadsheet containing all of 
+    the tag values for the tags in the csv for every dicom file
+
+    Args:
+        dicom_path (str): Path to scan for dicom files.
+        csv_file_path (str): Path and file name for the output csv file.
+        tags_in_files (dict): Dictionary containing tags to include in the csv
+        tags_to_exclude (dict): Dictionary containing tags to exclude in the csv
+
+    Returns:
+        None
+    """
     tags_in_files = tags_in_files.copy() # copy because we're going to modify
     for tag_to_exclude in tags_to_exclude:
         if tag_to_exclude in tags_in_files:
