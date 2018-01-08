@@ -99,7 +99,7 @@ if __name__ == "__main__":
     tag_file_path = os.path.join(validate_path, 'tags_in_files.csv')
     csv_file_path = os.path.join(validate_path, 'dicom.csv')
 
-    # tags_in_files = get_tags_in_files(dicom_path, tag_file_path)    
+    tags_in_files = get_tags_in_files(dicom_path, tag_file_path)    
     # print(tags_in_files)
 
     tags_in_files = load_tags_in_files(tag_file_path)
