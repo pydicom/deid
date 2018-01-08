@@ -18,7 +18,7 @@ import os
 bot.level = 3
 
 base = get_dataset('dicom-cookies')
-dicom_files = get_files(base)
+dicom_files = list(get_files(base)) # todo : consider using generator functionality
 
 results = has_burned_pixels(dicom_files=dicom_files, deid='examples/deid')
 

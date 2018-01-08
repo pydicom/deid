@@ -101,14 +101,12 @@ def read_json(filename,mode="r", ordered_dict=False):
 
 
 def recursive_find(base,pattern=None):
-    '''recursive find dicoms will search for dicom files in all directory levels
-    below a base. It uses get_dcm_files to find the files in the bases.
+    '''recursive find will yield dicom files in all directory levels
+    below a base path. It uses get_dcm_files to find the files in the bases.
     '''
     if pattern is None:
         pattern = "*"
-    files = []
+
     for root, dirnames, filenames in os.walk(base):
         for filename in fnmatch.filter(filenames, pattern):
-            files.append(os.path.join(root, filename))
-
-    return files
+            yield os.path.join(root, filename)

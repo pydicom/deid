@@ -86,6 +86,7 @@ class TestDicomHeader(unittest.TestCase):
         self.assertTrue(len(notblanked_fields)==28)
 
         updated_files = replace_identifiers(dicom_files,
+                                            ids,
                                             output_folder=self.tmpdir)
 
         # After replacing only 9 don't have blanks
@@ -102,8 +103,8 @@ def get_dicom(dataset,return_dir=False):
     from pydicom import read_file
     dicom_files = get_files(dataset)
     if return_dir:
-        return dicom_files
-    return read_file(dicom_files[0])
+        return list(dicom_files)
+    return read_file(next(dicom_files))
 
 
 if __name__ == '__main__':

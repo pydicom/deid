@@ -51,20 +51,43 @@ class TestDicomUtils(unittest.TestCase):
 
 
     def test_get_files(self):
+        print("Test test_get_files")
         print("Case 1: Test get files from dataset")
         from deid.dicom import get_files
         from deid.config import load_deid
-        dicom_files = get_files(self.dataset)
-        self.assertEqual(len(dicom_files), 7)
+        found = 0
+        for dicom_file in get_files(self.dataset):
+            found += 1
+        expected = 7
+        self.assertEqual(found, expected)
 
         print("Case 2: Ask for files from empty folder")
-        dicom_files = get_files(self.tmpdir)
-        self.assertEqual(len(dicom_files), 0)
+        found = 0
+        for dicom_file in get_files(self.tmpdir):
+            found += 1
+        expected = 0
+        self.assertEqual(found, expected)
 
+    def test_get_files_as_list(self):
+        print("Test test_get_files_as_list")
+        print("Case 1: Test get files from dataset")
+        from deid.dicom import get_files
+        from deid.config import load_deid
+
+        dicom_files = list(get_files(self.dataset))
+        found = len(dicom_files)
+        expected = 7
+        self.assertEqual(found, expected)
+
+        print("Case 2: Ask for files from empty folder")
+        dicom_files = list(get_files(self.tmpdir))
+        found = len(dicom_files)
+        expected = 0
+        self.assertEqual(found, expected)
 
 
     def test_parse_action(self):
-        print("Testing parse action")
+        print("Test test_parse_action")
         from deid.dicom.utils import perform_action
         dicom = get_dicom(self.dataset)
 
@@ -119,9 +142,9 @@ class TestDicomUtils(unittest.TestCase):
         self.assertEqual(updated,None)  
 
 
-    def test_entity_timestamp(self):
+    def test_entity_timestamp(self):        
         from deid.dicom.utils import get_entity_timestamp
-        print("Testing entity timestamp")
+        print("Test test_entity_timestamp")
  
         print("Case 1: field is empty returns None")
         dicom = get_dicom(self.dataset)
@@ -136,7 +159,7 @@ class TestDicomUtils(unittest.TestCase):
 
     def test_item_timestamp(self):
         from deid.dicom.utils import get_item_timestamp
-        print("Testing item timestamp")
+        print("Test test_item_timestamp")
  
         print("Case 1: field is empty returns None")
         dicom = get_dicom(self.dataset)
@@ -153,14 +176,13 @@ class TestDicomUtils(unittest.TestCase):
         self.assertEqual(ts,'2010-01-01T00:00:00Z')
 
 
-
 def get_dicom(dataset):
     '''helper function to load a dicom
     '''
     from deid.dicom import get_files
     from pydicom import read_file
     dicom_files = get_files(dataset)
-    return read_file(dicom_files[0])
+    return read_file(next(dicom_files))
 
 
 if __name__ == '__main__':

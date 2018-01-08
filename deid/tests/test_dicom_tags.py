@@ -89,7 +89,7 @@ class TestDicomTags(unittest.TestCase):
         updated = change_tag(dicom,field='PatientID',value="shiny-ham")
         self.assertEqual(updated.get('PatientID'),"shiny-ham")
 
-        print("Case 1: Change unknown tag")
+        print("Case 2: Change unknown tag")
         updated = change_tag(dicom,field='PatientWazaa',value="shiny-ham")
         self.assertEqual(updated.get('PatientWazaa'),None)
 
@@ -115,16 +115,13 @@ class TestDicomTags(unittest.TestCase):
         self.assertTrue("PatientID" not in updated)
 
 
-def get_dicom(dataset,return_dir=False):
+def get_dicom(dataset):
     '''helper function to load a dicom
     '''
     from deid.dicom import get_files
     from pydicom import read_file
     dicom_files = get_files(dataset)
-    if return_dir:
-        return dicom_files
-    return read_file(dicom_files[0])
-
+    return read_file(next(dicom_files))
 
 if __name__ == '__main__':
     unittest.main()

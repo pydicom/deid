@@ -45,10 +45,9 @@ import sys
 # Functions for Dicom files
 #########################################################################
 
-
 def get_files(contenders,check=True,pattern=None,force=False):
     '''get_dcm_files will take a list of single dicom files or directories,
-    and return a single list of complete paths to all files
+    and return a generator that yields complete paths to all files
     :param pattern: A pattern to use with fnmatch. If None, * is used
     :param force: force reading of the files, if some headers invalid.
     Not recommended, as many non-dicom will come through
@@ -56,21 +55,22 @@ def get_files(contenders,check=True,pattern=None,force=False):
     if not isinstance(contenders,list):
         contenders = [contenders]
 
-    dcm_files = []
     for contender in contenders:
         if os.path.isdir(contender):
-            dicom_dir = recursive_find(contender,pattern=pattern)
-            bot.debug("Found %s contender files in %s" %(len(dicom_dir),
-                                                         os.path.basename(contender)))
-            dcm_files.extend(dicom_dir)
+            dicom_files = recursive_find(contender, pattern=pattern)
         else:
-            bot.debug("Adding single contender file %s" %(contender))
-            dcm_files.append(contender)
+            dicom_files = [contender]
 
-    if check:
-        dcm_files = validate_dicoms(dcm_files,force=force)
-    return dcm_files
+        for dicom_file in dicom_files:
+            if dicom_file is not None:
+                if check:
+                    validated_files = validate_dicoms(dicom_file, force=force)
+                else:
+                    validated_files = [dicom_file]
 
+                for validated_file in validated_files:
+                    bot.debug("Found contender file %s" %(validated_file))
+                    yield validated_file
 
 
 def save_dicom(dicom,dicom_file,output_folder=None,overwrite=False):
