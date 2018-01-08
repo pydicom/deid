@@ -15,6 +15,10 @@ and changes prior to that are (unfortunately) done retrospectively. Critical ite
 
 ## [vxx](https://github.com/pydicom/deid/tree/development) (development)
 
+**addition**
+ - the get_files function now returns a generator instead of a list.
+
+
 ## [0.1.1](https://pypi.python.org/packages/28/26/ee80e7f1c3f65fae1c901497bb2388701158f0c96e0d633ab301abeaa478/deid-0.1.1.tar.gz#md5=39df7efb03e5d3b63308016742062a43) (0.1.1)
 
 **additions**
