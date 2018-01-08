@@ -38,7 +38,7 @@ At this point, let's walk through a few basic use cases. We again first need to 
 from deid.dicom import get_files
 from deid.data import get_dataset
 base = get_dataset('dicom-cookies')
-dicom_files = get_files(base)
+dicom_files = list(get_files(base))
 ```
 
 
@@ -205,7 +205,7 @@ If you are working within python and want to get private tags for inspection, yo
 from deid.dicom import get_files
 from deid.data import get_dataset
 base = get_dataset('dicom-cookies')
-dicom_files = get_files(base)
+dicom_files = list(get_files(base))
 ```
 
 and now the functions we can use. We will look at one dicom_file

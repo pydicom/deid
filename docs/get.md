@@ -7,7 +7,7 @@ from deid.data import get_dataset
 from deid.dicom import get_files
 
 base = get_dataset("dicom-cookies")
-dicom_files = get_files(base)
+dicom_files = list(get_files(base))
 DEBUG Found 7 contender files in dicom-cookies
 DEBUG Checking 7 dicom files for validation.
 Found 7 valid dicom files
