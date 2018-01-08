@@ -66,7 +66,8 @@ from deid.data import get_dataset
 and grabbing a dicom file to work with
 
 ```
-dicom_file = get_files(get_dataset('dicom-cookies'))[0]
+dataset = get_dataset('dicom-cookies')
+dicom_file = list(get_files(dataset))[0]
 ```
 
 ### Client

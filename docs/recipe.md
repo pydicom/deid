@@ -159,7 +159,7 @@ import os
 
 # This will get a set of example cookie dicoms
 base = get_dataset('dicom-cookies')
-dicom_files = get_files(base)
+dicom_files = list(get_files(base))
 ```
 
 Here is the function to get identifiers
