@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+from deid.config import DeidRecipe
 from deid.logger import bot
 from pydicom import read_file
 import matplotlib
@@ -58,7 +59,7 @@ class DicomCleaner():
         self.font = font
         self.cmap = 'gray'
         self.output_folder = output_folder
-        self.deid = deid
+        self.recipe = DeidRecipe(deid)
         self.results = None
         self.force = force
 
@@ -75,7 +76,9 @@ class DicomCleaner():
         '''detect will initiate the cleaner for a new dicom file.
         '''
         from deid.dicom.pixels.detect import has_burned_pixels
-        self.results = has_burned_pixels(dicom_file, deid=self.deid, force=self.force)
+        self.results = has_burned_pixels(dicom_file, 
+                                         deid=self.recipe.deid,
+                                         force=self.force)
         self.dicom_file = dicom_file
         return self.results
         
@@ -99,7 +102,7 @@ class DicomCleaner():
             bot.info('Scrubbing %s.' %self.dicom_file)
 
             # Load in dicom file, and image data
-            dicom = read_file(self.dicom_file,force=True)
+            dicom = read_file(self.dicom_file, force=True)
 
             # We will set original image to image, cleaned to clean
             self.original = dicom._get_pixel_array()
@@ -145,6 +148,7 @@ class DicomCleaner():
 
         basename = re.sub('[.]dicom|[.]dcm', '', os.path.basename(self.dicom_file))
         return "%s/cleaned-%s.%s" %(output_folder, basename, extension)
+
         
     def save_png(self, output_folder=None, image_type="cleaned", title=None):
         '''save an original or cleaned dicom as png to disk.
@@ -162,6 +166,7 @@ class DicomCleaner():
             return png_file
         else:
             bot.warning('use detect() --> clean() before saving is possible.')
+
 
     def save_dicom(self, output_folder=None, image_type="cleaned"):
         '''save a cleaned dicom to disk. We expose an option to save

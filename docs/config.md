@@ -2,12 +2,12 @@
 
 A full anonymization process has three parts:
 
- - define a set of rules for de-identification (optional)
+ - define a set of rules for de-identification, we call this a [deid recipe](recipe.md) (optional)
  - [get](get.md) current fields (if you need to use them to look up replacements, etc)
  - [update](update.md) identifiers however you need for your de-identification process.
  - [put](put.md) (possibly updated) identifiers back into the data, and deidentify fully.
 
-This document will talk about the first step of this process, how you can configure rules for the software. If you are interested in the command line client for these commands (and not functions) you should see [the client](client.md).
+this document will talk about the first step of this process, how you can configure rules for the software. If you are interested in the command line client for these commands (and not functions) you should see [the client](client.md).
 
 ## Defaults
 The application does the following, by default, taking a conservative de-identification process:
@@ -252,29 +252,4 @@ REPLACE PatientID var:id
 REPLACE InstanceSOPUID var:source_id
 ```
 
-### Section pixels
-and when we have procedures (functions) to perform on data, for example, scrubbing pixels, those will be specified in a separate `%pixels` section: 
-
-```
-FORMAT dicom
-
-%header
-
-ADD PatientIdentityRemoved Yes
-REPLACE PatientID var:id
-REPLACE SOPInstanceUID var:source_id
-
-%pixels
-
-ADD clean_pixels
-```
-
-In the above example, the function `clean_pixels` would be expected to be importable from the dicom module:
-
-```
-from deid.dicom import clean_pixels
-```
-
-For more complex tasks like converting from dicom to nifti, the user is (for now) suggested to work with the formats separately, meaning a config file for the dicoms (meaning with `FORMAT dicom`) to output to a folder with nifti files, and then using a separate `deid` with `FORMAT nifti` for that folder. It could be possible to combine these into one file at some point, i need to think about it.
-
-Now that you know how configuration works, we should look at some examples for generating a basic [get](get.md), which is will get a set of fields and values from your dicom files.
+Now that you know how configuration works, you have two options. If you care about interacting with your recipe via a client, [read about that here](recipe.md). If you want to write a text file and get going with cleaning your files, you should look at some examples for generating a basic [get](get.md), which is will get a set of fields and values from your dicom files.
