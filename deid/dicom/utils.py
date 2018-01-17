@@ -81,7 +81,7 @@ def save_dicom(dicom,dicom_file,output_folder=None,overwrite=False):
         if overwrite is False:
             output_folder = tempfile.mkdtemp()
         else:
-            output_folder = os.path.basename(dicom_file)
+            output_folder = os.path.dirname(dicom_file)
 
     dicom_name = os.path.basename(dicom_file)
     output_dicom = "%s/%s" %(output_folder,dicom_name)
