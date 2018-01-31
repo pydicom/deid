@@ -95,7 +95,6 @@ def get_shared_identifiers(dicom_files,
     # We will skip PixelData
     skip = config['skip']
     for dicom_file in dicom_files:
-        item_id = os.path.basename(dicom_file)
         dicom = read_file(dicom_file,force=True)
         fields = get_fields(dicom,
                             skip=skip,
@@ -167,13 +166,12 @@ def get_identifiers(dicom_files,
         skip = skip + skip_fields
  
     for dicom_file in dicom_files:
-        item_id = os.path.basename(dicom_file)
         dicom = read_file(dicom_file,force=True)
 
-        if item_id not in ids:
-            ids[item_id] = dict()
+        if dicom_file not in ids:
+            ids[dicom_file] = dict()
 
-        ids[item_id] = get_fields(dicom,
+        ids[dicom_file] = get_fields(dicom,
                                   skip=skip,
                                   expand_sequences=expand_sequences)
     return ids

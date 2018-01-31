@@ -13,9 +13,12 @@ and changes prior to that are (unfortunately) done retrospectively. Critical ite
  - migration guidance (how to convert images?)
  - changed behaviour (recipe sections work differently)
 
-## [vxx](https://github.com/pydicom/deid/tree/development) (development)
+Referenced versions in headers are tagged on Github, in parentheses are for pypi.
+
+## [vxx](https://github.com/pydicom/deid/tree/master) (development)
 
 **additions**
+ - ensuring that ids for images are full paths (0.1.11)
  - addition of the DeidRecipe class to better interact with and combine deid recipe files.
  - the get_files function now returns a generator instead of a list.
 
