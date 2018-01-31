@@ -17,6 +17,11 @@ which deid
 /home/vanessa/anaconda3/bin/deid
 ```
 
+**Note** @vsoch thinks this client could be better organized (with regard to usage and commands) please [provide feedback]
+(https://www.github.com/pydicom/deid/issues) as you test these functions! The primary use of deid by the developers group has 
+been via functions in Python, so the client might be neglected.
+
+
 ## Usage
 If you run the executable without any arguments, it will show you it's usage:
 
@@ -29,6 +34,7 @@ deid: error: the following arguments are required: --action/-a
 ```
 
 It's telling us that it wants an action, which can be one of `{get,put,all}`, where "get" corresponds to getting identifiers from a dataset, "put" corresponds to doing the replacement, and "all" means you want to do both at the same time (meaning you won't intervene between the calls to customize any of the replacement actions. Let's walk through the simplest use case, giving an action without any other arguments, which will use the default dataset provided (a subset of [dicom-cookies](https://pydicom.github.io/dicom-cookies)).
+
 
 ### Inspect
 Currently, inspect is simply going to look at header fields and try to guess if there are burned pixels in the image. I am not convinced this is robust - the filters I am using are from [MIRC CTP](https://github.com/johnperry/CTP/blob/master/source/files/scripts/BurnedInPixelsFilter.script), and seem to generally look for:

@@ -7,7 +7,7 @@ from deid.data import get_dataset
 from deid.dicom import get_files
 
 base = get_dataset("dicom-cookies")
-dicom_files = get_files(base)
+dicom_files = list(get_files(base))
 DEBUG Found 7 contender files in dicom-cookies
 DEBUG Checking 7 dicom files for validation.
 Found 7 valid dicom files
@@ -131,11 +131,13 @@ ids['cookie-47']['1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947']
 ```
 
 ## Save what you need
-Pretty neat! At this point, you have two options:
+Pretty neat! At this point, you have a few options:
+
+### Recipe Interaction
+If you want to do more than load in a basic recipe file (e.g., add new actions, use only a subset of groups, or any customization) then you should read about how to [work with recipes](recipes.md).
 
 ### Clean Pixels
-It's likely that the pixels in the images have burned in annotations, and we can use the header data to flag these images. Thus, before you replace identifiers, you probably want to do this. We currently don't have this implemented in production quality, but you can see progress in the [pixels](pixels.md) documentation.
-
+It's likely that the pixels in the images have burned in annotations, and we can use the header data to flag these images. Thus, before you replace identifiers, you probably want to do this. We have a DicomCleaner class that can flag images for PHI based on matching some header filter criteria, and you can [read about that here](pixels.md). 
 
 ### Update Identifiers
-It's likely that you now want to query your special de-identification API to do some replacement of the PatientID with something else, or custom parsing of the data. You can read our [update](update.md) docs for instructions on how to do this replacement.
+Once you are finished with any customization of the recipe, updating identifiers, and/or potentially flagging and quarantining images that have PHI, you should be ready to [update your images](update.md) with new fields based on the deid recipe.

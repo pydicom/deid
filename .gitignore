@@ -7,7 +7,6 @@ pypi.sh
 private
 .vscode
 
-
 # osx
 # General
 .DS_Store
@@ -35,3 +34,4 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+.cache

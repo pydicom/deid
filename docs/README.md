@@ -8,7 +8,7 @@ This Python module is intended for basic coding of medical images, which means "
 What this module does do:
 
  - Anonymize header data based on a specific logic of replacing, blanking, removing, or some custom function (e.g., "replace field X with item Y,")
- - Pass images through a filter for quarantine based on header logic.
+ - Pass images through a filter for quarantine based on header logic, and if pixel coordinates are available, can black them out.
  - For each of the above, you can use defaults (blacklist, whitelist, graylist), or create your own customized logic.
  - provides functions for developers, and executables and containers for users.
 
@@ -16,7 +16,6 @@ For dicom data, we use [pydicom](https://www.github.com/pydicom/pydicom) and for
 
 ## Getting Started
 If you are *not* a developer, or interested in getting started with using and understanding the software, you should start out by reading our [getting-started](getting-started.md) guide.  If you are a developer and are interested in using `deid` to implement a custom pipeline, see the following sections:
-
 
 ## Dicom
 
