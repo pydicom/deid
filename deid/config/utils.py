@@ -416,7 +416,7 @@ def add_section(config,section,section_name=None):
     return config
 
 
-def parse_action(section,line,config,section_name=None):
+def parse_action(section, line, config, section_name=None):
     '''add action will take a line from a deid config file, a config (dictionary), and
     an active section name (eg header) and add an entry to the config file to perform
     the action.
@@ -467,8 +467,7 @@ def parse_action(section,line,config,section_name=None):
 
 
 def get_deid(tag=None, exit_on_fail=True, quiet=False, load=False):
-    '''
-    get deid is intended to retrieve the full path of a deid file provided with
+    '''get deid is intended to retrieve the full path of a deid file provided with
     the software, based on a tag. For example, under deid/data if a file is called
     "deid.dicom", the tag would be "dicom". 
 
