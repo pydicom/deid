@@ -84,7 +84,7 @@ def save_dicom(dicom,dicom_file,output_folder=None,overwrite=False):
             output_folder = os.path.dirname(dicom_file)
 
     dicom_name = os.path.basename(dicom_file)
-    output_dicom = "%s/%s" %(output_folder,dicom_name)
+    output_dicom = os.path.join(output_folder,dicom_name)
     dowrite = True
     if overwrite is False:
         if os.path.exists(output_dicom):
