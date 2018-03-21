@@ -2,9 +2,7 @@
 
 This is a manually generated log to track changes to the repository for each release. 
 Each section should include general headers such as **Implemented enhancements** 
-and **Merged pull requests**. All closed issued and bug fixes should be 
-represented by the pull requests that fixed them. This log originated with Singularity 2.4
-and changes prior to that are (unfortunately) done retrospectively. Critical items to know are:
+and **Merged pull requests**. Critical items to know are:
 
  - renamed commands
  - deprecated / removed commands
@@ -16,8 +14,7 @@ and changes prior to that are (unfortunately) done retrospectively. Critical ite
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (development)
-
-**additions**
+ - index should be full path in header.py (0.0.12)
  - ensuring that ids for images are full paths (0.1.11)
  - addition of the DeidRecipe class to better interact with and combine deid recipe files.
  - the get_files function now returns a generator instead of a list.

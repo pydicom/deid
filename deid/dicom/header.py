@@ -260,7 +260,7 @@ def replace_identifiers(dicom_files,
     for d in range(len(dicom_files)):
         dicom_file = dicom_files[d]
         dicom = read_file(dicom_file,force=force)
-        idx = os.path.basename(dicom_file)
+        dicom_name = os.path.basename(dicom_file)
         fields = dicom.dir()
 
         # Remove sequences first, maintained in DataStore
@@ -268,13 +268,13 @@ def replace_identifiers(dicom_files,
             dicom = remove_sequences(dicom)
 
         if recipe.deid is not None:
-            if idx in ids:
+            if dicom_file in ids:
                 for action in deid.get_actions():
                     dicom = perform_action(dicom=dicom,
-                                           item=ids[idx],
+                                           item=ids[dicom_file],
                                            action=action) 
             else:
-                bot.warning("%s is not in identifiers." %idx)
+                bot.warning("%s is not in identifiers." %dicom_name)
                 continue
         # Next perform actions in default config, only if not done
         for action in config['put']['actions']:
@@ -286,7 +286,7 @@ def replace_identifiers(dicom_files,
                 dicom.remove_private_tags()
             except:
                 bot.error('''Private tags for %s could not be completely removed, usually
-                             this is due to invalid data type. Removing others.''' % idx)
+                             this is due to invalid data type. Removing others.''' % dicom_name)
                 private_tags = get_private(dicom)
                 for ptag in private_tags:
                     del dicom[ptag.tag]
