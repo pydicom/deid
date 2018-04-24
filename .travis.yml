@@ -10,8 +10,7 @@ python:
   - "3.5"
 
 install:
-  - pip install pylint
-  - pip install git+git://github.com/pydicom/pydicom.git@4ddd9a70000ec72a53ea2dab8bc8063043691548
+  - pip install pylint pydicom
   - cd $TRAVIS_BUILD_DIR/
   - python setup.py sdist
   - python setup.py install
