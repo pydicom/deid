@@ -13,8 +13,9 @@ and **Merged pull requests**. Critical items to know are:
 
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
-## [vxx](https://github.com/pydicom/deid/tree/master) (development)
- - index should be full path in header.py (0.0.12)
+## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+ - index should be full path in header.py (0.0.13)
+ - pydicom bumped to install latest (1.0.2) (0.1.12)
  - ensuring that ids for images are full paths (0.1.11)
  - addition of the DeidRecipe class to better interact with and combine deid recipe files.
  - the get_files function now returns a generator instead of a list.
