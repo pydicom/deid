@@ -105,7 +105,7 @@ class DicomCleaner():
             dicom = read_file(self.dicom_file, force=True)
 
             # We will set original image to image, cleaned to clean
-            self.original = dicom._get_pixel_array()
+            self.original = dicom.pixel_array 
             self.cleaned = self.original.copy()
 
             # Compile coordinates from result
@@ -127,6 +127,7 @@ class DicomCleaner():
            was already clean, it is simply a copy of the original.
            If show is True, plot the image.
         '''
+
         from matplotlib import pyplot as plt
         
         if hasattr(self, image_type):
