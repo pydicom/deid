@@ -63,7 +63,7 @@ recipe = DeidRecipe(deid=path, base=True)
 # do:
 recipe = DeidRecipe(deid=path, base=True, default_base='dicom.xray.chest')
 
-# We can also specify one of the deid recipes provided by the library as our 
+# We can also specify one of the deid recipes provided by the library as our
 # only to use.
 recipe = DeidRecipe(deid='dicom.xray.chest')
 
@@ -76,8 +76,8 @@ recipe = DeidRecipe(deid='dicom.xray.chest')
 # To see an entire (raw in a dictionary) recipe just look at
 recipe.deid
 
-# Now let's look at parts of this recipe. There are two categories of things: 
-# - filters: are used for parsing over headers and flagging images 
+# Now let's look at parts of this recipe. There are two categories of things:
+# - filters: are used for parsing over headers and flagging images
 # - header: is a set of rules that govern a replacement procedure
 
 ################################################################################
@@ -177,7 +177,7 @@ recipe.get_actions()
 
 # Let's be lazy and just update the extracted ones
 updated_ids = dict(); count=0
-for image, fields in ids.items():    
+for image, fields in ids.items():
     fields['id'] = 'cookiemonster'
     fields['source_id'] = "cookiemonster-image-%s" %(count)
     updated_ids[image] = fields
@@ -210,11 +210,13 @@ test_file = read_file(cleaned_files[0])
 
 # Different output folder
 cleaned_files = replace_identifiers(dicom_files=dicom_files,
+                                    deid=recipe,
                                     ids=updated_ids,
-                                    output_folder='/home/vanessa/Desktop')
+                                    output_folder='/tmp/')
 
 # Force overwrite (be careful!)
 cleaned_files = replace_identifiers(dicom_files=dicom_files,
+                                    deid=recipe,
                                     ids=updated_ids,
-                                    output_folder='/home/vanessa/Desktop',
+                                    output_folder='/tmp/',
                                     overwrite=True)
