@@ -38,7 +38,7 @@ INSTALL_REQUIRES = (
     ('six', {'min_version': '1.10'}),
     ('pygments', {'min_version': '2.1.3'}),
     ('python-dateutil',{'min_version': None }),
-    ('urllib3',{'min_version': "1.22" }),
+    ('urllib3',{'exact_version': "1.21.1" }),
     ('validator.py',{'min_version': None })
     
 )
