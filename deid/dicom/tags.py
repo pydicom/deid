@@ -113,7 +113,7 @@ def add_tag(dicom,field,value, quiet=False):
     :param value: the value to set, if name is a valid tag
     '''
     if quiet is False:
-        bot.debug("Attempting ADDITION of %s to %s." %(field))
+        bot.debug("Attempting ADDITION of %s." %(field))
     dicom = change_tag(dicom,field,value)
  
     # dicom.data_element("PatientIdentityRemoved")
