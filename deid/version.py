@@ -32,13 +32,13 @@ LICENSE = "LICENSE"
 INSTALL_REQUIRES = (
 
     ('matplotlib', {'min_version': None}),
-    ('requests', {'min_version': '2.12.4'}),
+    ('requests', {'min_version': '2.18.4'}),
     ('retrying', {'min_version': '1.3.3'}),
     ('simplejson', {'min_version': '3.10.0'}),
     ('six', {'min_version': '1.10'}),
     ('pygments', {'min_version': '2.1.3'}),
     ('python-dateutil',{'min_version': None }),
-    ('urllib3',{'min_version': "1.15" }),
+    ('urllib3',{'min_version': "1.22" }),
     ('validator.py',{'min_version': None })
     
 )
