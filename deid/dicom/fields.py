@@ -83,7 +83,6 @@ def get_fields(dicom, skip=None, expand_sequences=True):
         skip = [skip]
     fields = dict()
     contenders = dicom.dir()
-    dicom_file = os.path.basename(dicom.filename)
     for contender in contenders:
         if contender in skip:
             continue

@@ -112,9 +112,8 @@ def add_tag(dicom,field,value, quiet=False):
     :param field: the name of the field to add
     :param value: the value to set, if name is a valid tag
     '''
-    dicom_file = os.path.basename(dicom.filename)
     if quiet is False:
-        bot.debug("Attempting ADDITION of %s to %s." %(field,dicom_file))
+        bot.debug("Attempting ADDITION of %s to %s." %(field))
     dicom = change_tag(dicom,field,value)
  
     # dicom.data_element("PatientIdentityRemoved")
@@ -128,7 +127,6 @@ def change_tag(dicom,field,value):
     update_tag or add_tag. The only difference is the print output,
     and determining to call the function based on different conditions
     '''
-    dicom_file = os.path.basename(dicom.filename)
     tag = get_tag(field)
 
     if field in tag:
