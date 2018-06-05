@@ -153,8 +153,7 @@ def _perform_action(dicom,field,action,value=None,item=None):
     Both result in a call to this function. If an action fails or is not
     done, None is returned, and the calling function should handle this.
     '''
-    dicom_file = os.path.basename(dicom.filename)
-    
+
     done = False
     result = None
 
@@ -204,9 +203,7 @@ def _perform_action(dicom,field,action,value=None,item=None):
             done = True
 
         if not done:            
-            bot.warning("%s %s not done for %s" %(action,
-                                                  field,
-                                                  dicom_file))
+            bot.warning("%s %s not done" %(action, field))
 
     elif action == "ADD":
         value = parse_value(item,value)
