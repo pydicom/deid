@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+ - Fixing bug with saving self.cleaned (0.1.15)
  - Allowing for datasets to be passed in functions (not necessary for files) (0.1.14)
  - index should be full path in header.py (0.1.13)
  - pydicom bumped to install latest (1.0.2) (0.1.12)

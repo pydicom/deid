@@ -178,7 +178,7 @@ class DicomCleaner():
         if hasattr(self, image_type):
             dicom_name = self._get_clean_name(output_folder)
             dicom = read_file(self.dicom_file,force=True)
-            dicom.PixelData = self.clean.tostring()
+            dicom.PixelData = self.cleaned.tostring()
             dicom.save_as(dicom_name)
             return dicom_name
         else:
