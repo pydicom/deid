@@ -14,6 +14,8 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+ - matplotlib must be less than or equal to 2.1.2 for install (0.1.16)
+ - fixing bug with clean coordinate flipping rectangle
  - Fixing bug with saving self.cleaned (0.1.15)
  - Allowing for datasets to be passed in functions (not necessary for files) (0.1.14)
  - index should be full path in header.py (0.1.13)

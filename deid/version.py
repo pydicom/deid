@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-__version__ = "0.1.15"
+__version__ = "0.1.16"
 AUTHOR = 'Vanessa Sochat'
 AUTHOR_EMAIL = 'vsochat@stanford.edu'
 NAME = 'deid'
@@ -31,7 +31,7 @@ LICENSE = "LICENSE"
 
 INSTALL_REQUIRES = (
 
-    ('matplotlib', {'min_version': None}),
+    ('matplotlib', {'max_version': '2.1.2'}),
     ('requests', {'min_version': '2.18.4'}),
     ('retrying', {'min_version': '1.3.3'}),
     ('simplejson', {'min_version': '3.10.0'}),
