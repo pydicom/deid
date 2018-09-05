@@ -46,7 +46,7 @@ def apply_filter(dicom,field,filter_name,value):
     if filter_name == "contains":
         return dicom.contains(field,value)
 
-    if filter_name == "contains":
+    if filter_name == "notcontains":
         return dicom.notContains(field,value)
 
     elif filter_name == "equals":

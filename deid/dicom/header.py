@@ -36,10 +36,7 @@ from deid.identifiers.utils import (
 )
 
 from deid.dicom.tags import get_private
-from deid.config import (
-    get_deid,
-    load_combined_deid
-)
+from deid.config import DeidRecipe
 
 from pydicom import read_file
 from pydicom.errors import InvalidDicomError
@@ -98,7 +95,6 @@ def get_shared_identifiers(dicom_files,
     # We will skip PixelData
     skip = config['skip']
     for dicom_file in dicom_files:
-        item_id = os.path.basename(dicom_file)
         dicom = read_file(dicom_file,force=True)
         fields = get_fields(dicom,
                             skip=skip,
@@ -170,13 +166,12 @@ def get_identifiers(dicom_files,
         skip = skip + skip_fields
  
     for dicom_file in dicom_files:
-        item_id = os.path.basename(dicom_file)
         dicom = read_file(dicom_file,force=True)
 
-        if item_id not in ids:
-            ids[item_id] = dict()
+        if dicom_file not in ids:
+            ids[dicom_file] = dict()
 
-        ids[item_id] = get_fields(dicom,
+        ids[dicom_file] = get_fields(dicom,
                                   skip=skip,
                                   expand_sequences=expand_sequences)
     return ids
@@ -232,12 +227,8 @@ def _prepare_replace_config(dicom_files, deid=None, config=None):
     if not os.path.exists(config):
         bot.error("Cannot find config %s, exiting" %(config))
     
-    # if the user has provided a custom deid, load it
-    if deid is not None:
-        deid = load_combined_deid([deid,'dicom'])
-    else:
-        deid = get_deid('dicom', load=True)
-
+    if not isinstance(deid, DeidRecipe):
+        deid = DeidRecipe(deid)
     config = read_json(config, ordered_dict=True)
 
     if not isinstance(dicom_files,list):
@@ -260,29 +251,30 @@ def replace_identifiers(dicom_files,
     '''replace identifiers using pydicom, can be slow when writing
     and saving new files'''
 
-    dicom_files, deid, config = _prepare_replace_config(dicom_files, 
-                                                        deid=deid,
-                                                        config=config)
+    dicom_files, recipe, config = _prepare_replace_config(dicom_files, 
+                                                          deid=deid,
+                                                          config=config)
 
     # Parse through dicom files, update headers, and save
     updated_files = []
     for d in range(len(dicom_files)):
         dicom_file = dicom_files[d]
         dicom = read_file(dicom_file,force=force)
-        idx = os.path.basename(dicom_file)
+        dicom_name = os.path.basename(dicom_file)
         fields = dicom.dir()
 
         # Remove sequences first, maintained in DataStore
         if strip_sequences is True:
             dicom = remove_sequences(dicom)
-        if deid is not None:
-            if idx in ids:
-                for action in deid['header']:
+
+        if recipe.deid is not None:
+            if dicom_file in ids:
+                for action in deid.get_actions():
                     dicom = perform_action(dicom=dicom,
-                                           item=ids[idx],
+                                           item=ids[dicom_file],
                                            action=action) 
             else:
-                bot.warning("%s is not in identifiers." %idx)
+                bot.warning("%s is not in identifiers." %dicom_name)
                 continue
         # Next perform actions in default config, only if not done
         for action in config['put']['actions']:
@@ -294,13 +286,14 @@ def replace_identifiers(dicom_files,
                 dicom.remove_private_tags()
             except:
                 bot.error('''Private tags for %s could not be completely removed, usually
-                             this is due to invalid data type. Removing others.''' % idx)
+                             this is due to invalid data type. Removing others.''' % dicom_name)
                 private_tags = get_private(dicom)
                 for ptag in private_tags:
                     del dicom[ptag.tag]
                 continue
         else:
             bot.warning("Private tags were not removed!")
+
         ds = Dataset()
         for field in dicom.dir():
             try:
@@ -313,6 +306,7 @@ def replace_identifiers(dicom_files,
                       'is_implicit_VR',
                       'preamble',
                       '_parent_encoding']
+
         for attribute in attributes:
             ds.__setattr__(attribute,
                            dicom.__getattribute__(attribute))
@@ -330,6 +324,7 @@ def replace_identifiers(dicom_files,
         attributes = ['TransferSyntaxUID',
                       'FileMetaInformationGroupLength',
                       'FileMetaInformationVersion']
+
         for attribute in attributes:
             file_metas.add(dicom.file_meta.data_element(attribute))        
 

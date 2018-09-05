@@ -23,19 +23,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+from deid.config import DeidRecipe
 from deid.logger import bot
 from pydicom import read_file
 from deid.dicom.filter import apply_filter
 
-from deid.config import (
-    get_deid,
-    load_combined_deid
-)
-
 import os
 import sys
 
-def has_burned_pixels(dicom_files,force=True,deid=None):
+def has_burned_pixels(dicom_files, force=True, deid=None):
     ''' has burned pixels is an entrypoint for has_burned_pixels_multi (for 
     multiple images) or has_burned_pixels_single (for one detailed repor)
     We will use the MIRCTP criteria (see ref folder with the
@@ -45,10 +41,10 @@ def has_burned_pixels(dicom_files,force=True,deid=None):
     detailed result (for single)
     '''
     # if the user has provided a custom deid, load it
-    if deid is not None:
-        deid = load_combined_deid([deid,'dicom'])
-    else:
-        deid = get_deid(tag=deid, load=True)
+    if not isinstance(deid, DeidRecipe):
+        if deid is None:
+            deid = 'dicom'
+        deid = DeidRecipe(deid)
 
     if isinstance(dicom_files,list):
         return _has_burned_pixels_multi(dicom_files, force, deid)
@@ -56,9 +52,11 @@ def has_burned_pixels(dicom_files,force=True,deid=None):
 
 
 
-def _has_burned_pixels_multi(dicom_files,force=True,deid=None):
+def _has_burned_pixels_multi(dicom_files, force, deid):
     '''return a summary dictionary with lists of clean, and then lookups
-       for flagged images with reasons.
+       for flagged images with reasons. The deid should be a deid recipe
+       instantiated from deid.config.DeidRecipe. This function should not
+       be called directly, but should be called from has_burned_pixels
     '''
 
     # Store decisions in lookup based on filter groups
@@ -80,7 +78,7 @@ def _has_burned_pixels_multi(dicom_files,force=True,deid=None):
     return decision
 
 
-def _has_burned_pixels_single(dicom_file,force=True, deid=None):
+def _has_burned_pixels_single(dicom_file, force, deid):
 
     '''has burned pixels single will evaluate one dicom file for burned in
     pixels based on 'filter' criteria in a deid. If deid is not provided,
@@ -130,7 +128,8 @@ def _has_burned_pixels_single(dicom_file,force=True, deid=None):
     dicom_name = os.path.basename(dicom_file)
         
     # Load criteria (actions) for flagging
-    if 'filter' not in deid:
+    filters = deid.get_filters()
+    if not filters:
         bot.error('Deid provided does not have %filter, exiting.')
         sys.exit(1)
 
@@ -138,7 +137,7 @@ def _has_burned_pixels_single(dicom_file,force=True, deid=None):
     results = []
     global_flagged = False
 
-    for name,items in deid['filter'].items():
+    for name,items in filters.items():
         for item in items:
             flags = []
 

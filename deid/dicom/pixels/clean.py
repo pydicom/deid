@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+from deid.config import DeidRecipe
 from deid.logger import bot
 from pydicom import read_file
 import matplotlib
@@ -47,7 +48,8 @@ class DicomCleaner():
                        add_padding=False,
                        margin=3,
                        deid=None,
-                       font=None):
+                       font=None,
+                       force=True):
 
         if output_folder is None:
             output_folder = tempfile.mkdtemp()
@@ -57,8 +59,9 @@ class DicomCleaner():
         self.font = font
         self.cmap = 'gray'
         self.output_folder = output_folder
-        self.deid = deid
+        self.recipe = DeidRecipe(deid)
         self.results = None
+        self.force = force
 
     def default_font(self):
         '''define the font style for saving png figures
@@ -73,7 +76,9 @@ class DicomCleaner():
         '''detect will initiate the cleaner for a new dicom file.
         '''
         from deid.dicom.pixels.detect import has_burned_pixels
-        self.results = has_burned_pixels(dicom_file)
+        self.results = has_burned_pixels(dicom_file, 
+                                         deid=self.recipe.deid,
+                                         force=self.force)
         self.dicom_file = dicom_file
         return self.results
         
@@ -97,7 +102,7 @@ class DicomCleaner():
             bot.info('Scrubbing %s.' %self.dicom_file)
 
             # Load in dicom file, and image data
-            dicom = read_file(self.dicom_file,force=True)
+            dicom = read_file(self.dicom_file, force=True)
 
             # We will set original image to image, cleaned to clean
             self.original = dicom._get_pixel_array()
@@ -143,6 +148,7 @@ class DicomCleaner():
 
         basename = re.sub('[.]dicom|[.]dcm', '', os.path.basename(self.dicom_file))
         return "%s/cleaned-%s.%s" %(output_folder, basename, extension)
+
         
     def save_png(self, output_folder=None, image_type="cleaned", title=None):
         '''save an original or cleaned dicom as png to disk.
@@ -161,6 +167,7 @@ class DicomCleaner():
         else:
             bot.warning('use detect() --> clean() before saving is possible.')
 
+
     def save_dicom(self, output_folder=None, image_type="cleaned"):
         '''save a cleaned dicom to disk. We expose an option to save
            an original (change image_type to "original" to be consistent,
@@ -171,7 +178,7 @@ class DicomCleaner():
         if hasattr(self, image_type):
             dicom_name = self._get_clean_name(output_folder)
             dicom = read_file(self.dicom_file,force=True)
-            dicom.PixelData = self.clean.tostring()
+            dicom.PixelData = self.cleaned.tostring()
             dicom.save_as(dicom_name)
             return dicom_name
         else:

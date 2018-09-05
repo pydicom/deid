@@ -43,7 +43,6 @@ def get_dataset(dataset=None):
     valid_datasets = {'dicom-cookies':'%s/data/dicom-cookies' %data_base}
 
     if dataset is not None:
-
         # In case the user gave an extension
         dataset = os.path.splitext(dataset)[0].lower()
         if dataset in valid_datasets:

@@ -86,7 +86,6 @@ def _perform_action(dicom,field,action,value=None,item=None):
     Both result in a call to this function. If an action fails or is not
     done, None is returned, and the calling function should handle this.
     '''
-    dicom_file = os.path.basename(dicom.filename)    
     if action not in valid_actions:
         bot.warning('%s in not a valid choice [%s]. Defaulting to blanked.' %(action,
                                                                               ".".join(valid_actions)))

@@ -65,7 +65,7 @@ def main(args,parser):
         bot.info("No input folder specified, will use demo dicom-cookies.")
         base = get_dataset('dicom-cookies')
 
-    dicom_files = get_files(base, pattern=args.pattern)
+    dicom_files = list(get_files(base, pattern=args.pattern)) # todo : consider using generator functionality
     result = has_burned_pixels(dicom_files, deid=deid)
 
     print('\nSUMMARY ================================\n')
@@ -85,10 +85,12 @@ def main(args,parser):
             filey.writelines('dicom_file\tpixels_flagged\tflag_list\treason\n')
             for clean in result['clean']:
                 filey.writelines('%s\tCLEAN\t\t\n' %clean)
-            for group,files in result['flagged'].items():
-                for flagged in files:
-                    reason = result['reason'][flagged]
-                    filey.writelines('%s\tFLAGGED\t%s\t%s\n' %(flagged,group,reason))
+            for flagged,details in result['flagged'].items():
+                if details['flagged'] is True:
+                    for result in details['results']:
+                        group = result['group']
+                        reason = result['reason']
+                        filey.writelines('%s\tFLAGGED\t%s\t%s\n' %(flagged,group,reason))
 
             print('Result written to %s' %outfile)
             
