@@ -119,7 +119,7 @@ class DicomCleaner():
 
             for coordinate in coordinates:
                 minr, minc, maxr, maxc = coordinate
-                self.cleaned[minr:maxr, minc:maxc] = 0  # should fill with black
+                self.cleaned[minc:maxc, minr:maxr] = 0  # should fill with black
                                            
 
     def get_figure(self, show=False, image_type="cleaned", title=None):
