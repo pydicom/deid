@@ -1,7 +1,7 @@
 '''
 clean.py: functions for pixel scrubbing
 
-Copyright (c) 2017 Vanessa Sochat
+Copyright (c) 2017-2018 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -178,6 +178,9 @@ class DicomCleaner():
         if hasattr(self, image_type):
             dicom_name = self._get_clean_name(output_folder)
             dicom = read_file(self.dicom_file,force=True)
+            # If going from compressed, change TransferSyntax
+            if dicom.file_meta.TransferSyntaxUID.is_compressed is True:
+                dicom.decompress()
             dicom.PixelData = self.cleaned.tostring()
             dicom.save_as(dicom_name)
             return dicom_name

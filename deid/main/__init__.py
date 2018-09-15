@@ -4,7 +4,7 @@
 
 The MIT License (MIT)
 
-Copyright (c) 2017 Vanessa Sochat
+Copyright (c) 2017-2018 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ SOFTWARE.
 '''
 
 from glob import glob
-import deid
+from deid.version import __version__
 import tempfile
 import argparse
 import sys
@@ -39,10 +39,6 @@ def get_parser():
     description="Deid (de-identification, anonymization) command line tool.")
 
     # Global Variables
-    parser.add_argument("--version","-v", dest='version', 
-                        help="show deid software version", 
-                        default=False, action='store_true')
-
     parser.add_argument('--quiet',"-q", dest="quiet", 
                         help="Quiet the verbose output", 
                         default=False, action='store_true')
@@ -69,6 +65,9 @@ def get_parser():
                                        dest="command")
 
 
+    version = subparsers.add_parser("version",
+                                    help="print version and exit")
+ 
     # Checks (checks / tests for various services)
     inspect = subparsers.add_parser("inspect",
                                     help="various checks for PHI and quality")
@@ -139,8 +138,8 @@ def main():
     except:
         sys.exit(0)
 
-    if args.version is True:
-        print(deid.__version__)
+    if args.command == "version" or args.version is True:
+        print(__version__)
         sys.exit(0)
 
     # if environment logging variable not set, make silent
