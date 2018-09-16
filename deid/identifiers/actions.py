@@ -2,7 +2,7 @@
 actions.py: perform general actions with an input data structure, and
             return a new output.
 
-Copyright (c) 2017 Vanessa Sochat
+Copyright (c) 2017-2018 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
