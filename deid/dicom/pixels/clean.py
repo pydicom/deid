@@ -28,6 +28,7 @@ from pydicom import read_file
 import matplotlib
 matplotlib.use('pdf')
 import tempfile
+import shutil
 import os
 import re
 
@@ -52,7 +53,9 @@ class DicomCleaner():
                        force=True):
 
         if output_folder is None:
+            # Generate only for name, will be created when save called
             output_folder = tempfile.mkdtemp()
+            shutil.rmtree(output_folder)
 
         if font is None:
             font = self.default_font()
@@ -141,15 +144,25 @@ class DicomCleaner():
 
     def _get_clean_name(self, output_folder, extension='dcm'):
         '''return a full path to an output file, with custom folder and
-           extension
+           extension. If the output folder isn't yet created, make it.
+ 
+           Parameters
+           ==========
+           output_folder: the output folder to create, will be created if doesn't
+           exist.
+           extension: the extension of the file to create a name for, should
+           not start with "."
         '''
         if output_folder is None:
             output_folder = self.output_folder
 
+        if not os.path.exists(output_folder):
+            bot.debug('Creating output folder %s' % output_folder)
+            os.mkdir(output_folder)
+
         basename = re.sub('[.]dicom|[.]dcm', '', os.path.basename(self.dicom_file))
         return "%s/cleaned-%s.%s" %(output_folder, basename, extension)
 
-        
     def save_png(self, output_folder=None, image_type="cleaned", title=None):
         '''save an original or cleaned dicom as png to disk.
            Default image_format is "cleaned" and can be set 
@@ -157,8 +170,8 @@ class DicomCleaner():
            flagged) the cleaned image is just a copy of original
         '''
         from matplotlib import pyplot as plt
-        
-        if hasattr(self,image_type):
+
+        if hasattr(self, image_type):
             png_file = self._get_clean_name(output_folder, 'png')
             plt = self.get_figure(image_type=image_type, title=title)
             plt.savefig(png_file)
