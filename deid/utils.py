@@ -29,7 +29,7 @@ import json
 import os
 import re
 import requests
-import json
+import tempfile
 from deid.logger import bot
 from collections import OrderedDict
 import sys
@@ -40,9 +40,9 @@ if sys.version_info[0] < 3:
     from exceptions import OSError
 
 
-######################################################################################
+################################################################################
 # Local commands and requests
-######################################################################################
+################################################################################
 
 def get_installdir():
     '''get_installdir returns the installation directory of the application
@@ -50,10 +50,30 @@ def get_installdir():
     return os.path.abspath(os.path.dirname(__file__))
 
 
+def get_temporary_name(prefix=None, ext=None):
+    '''get a temporary name, can be used for a directory or file. This does so
+       without creating the file, and adds an optional prefix
+  
+       Parameters
+       ==========
+       prefix: if defined, add the prefix after deid
+       ext: if defined, return the file extension appended. Do not specify "."
+    '''
+    deid_prefix = 'deid-'
+    if prefix:
+        deid_prefix = 'deid-%s-' % prefix
 
-############################################################################
-## FILE OPERATIONS #########################################################
-############################################################################
+    tmpname = os.path.join(tempfile.gettempdir(), 
+                           '%s%s' % (deid_prefix,
+                                     next(tempfile._get_candidate_names())))
+    if ext:
+        tmpname = '%s.%s' % (tmpname, ext)
+    return tmpname
+
+
+################################################################################
+## FILE OPERATIONS #############################################################
+################################################################################
 
 def write_file(filename,content,mode="w"):
     '''write_file will open a file, "filename" and write content, "content"

@@ -24,11 +24,10 @@ SOFTWARE.
 
 from deid.config import DeidRecipe
 from deid.logger import bot
+from deid.utils import get_temporary_name
 from pydicom import read_file
 import matplotlib
 matplotlib.use('pdf')
-import tempfile
-import shutil
 import os
 import re
 
@@ -53,9 +52,7 @@ class DicomCleaner():
                        force=True):
 
         if output_folder is None:
-            # Generate only for name, will be created when save called
-            output_folder = tempfile.mkdtemp()
-            shutil.rmtree(output_folder)
+            output_folder = get_temporary_name(prefix="clean")
 
         if font is None:
             font = self.default_font()
