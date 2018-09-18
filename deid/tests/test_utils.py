@@ -27,7 +27,7 @@ SOFTWARE.
 
 '''
 
-from deid.utils import get_installdir,
+from deid.utils import get_installdir
  
 from numpy.testing import (
     assert_array_equal, 
