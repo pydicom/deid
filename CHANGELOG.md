@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+ - need to clean up temporary directory (mkdtemp), issue #68 (0.1.18)
  - fixing issue #65, save for compressed data (0.1.17)
  - matplotlib must be less than or equal to 2.1.2 for install (0.1.16)
  - fixing bug with clean coordinate flipping rectangle

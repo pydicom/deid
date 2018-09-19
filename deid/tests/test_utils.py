@@ -28,6 +28,7 @@ SOFTWARE.
 '''
 
 from deid.utils import get_installdir
+ 
 from numpy.testing import (
     assert_array_equal, 
     assert_almost_equal, 
@@ -52,6 +53,19 @@ class TestUtils(unittest.TestCase):
         shutil.rmtree(self.tmpdir)
         print("\n######################END########################")
 
+    def test_get_temporary_name(self):
+        '''test_get_temporary_name will test the generation of a temporary 
+           file name.
+        '''
+        from deid.utils import get_temporary_name
+        print("Testing utils.get_temporary_name...")
+        tmpname = get_temporary_name()
+        self.assertTrue(not os.path.exists(tmpname))
+        self.assertTrue('deid' in tmpname)
+        tmpname = get_temporary_name(prefix='clean')
+        self.assertTrue('deid-clean' in tmpname)
+        tmpname = get_temporary_name(ext='.dcm')
+        self.assertTrue(tmpname.endswith('.dcm'))
 
     def test_write_read_files(self):
         '''test_write_read_files will test the functions 
