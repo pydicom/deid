@@ -1,5 +1,4 @@
 '''
-utils.py: util functions for working with deid configuration files
 
 Copyright (c) 2017-2018 Vanessa Sochat
 
@@ -42,12 +41,11 @@ from collections import OrderedDict
 
 
 def load_combined_deid(deids):
-    '''
-    load one or more deids, either based on a path or a tag
+    '''load one or more deids, either based on a path or a tag
     
-    Parameters
-    ==========
-    deids: should be a custom list of deids
+       Parameters
+       ==========
+       deids: should be a custom list of deids
 
     '''
     if not isinstance(deids,list):
@@ -105,23 +103,23 @@ def load_combined_deid(deids):
 
 def load_deid(path=None):
     '''load_deid will return a loaded in (user) deid configuration file
-    that can be used to update a default config.json. If a file path is
-    specified, it is loaded directly. If a folder is specified, we look
-    for a deid file in the folder. If nothing is specified, we assume
-    the user wants to load a deid file in the present working directory.
-    If the user wants to have multiple deid files in a directory, this
-    can be done with an extension that specifies the module, eg;
+       that can be used to update a default config.json. If a file path is
+       specified, it is loaded directly. If a folder is specified, we look
+       for a deid file in the folder. If nothing is specified, we assume
+       the user wants to load a deid file in the present working directory.
+       If the user wants to have multiple deid files in a directory, this
+       can be done with an extension that specifies the module, eg;
    
              deid.dicom
              deid.nifti
 
-    Parameters
-    ==========
-    path: a path to a deid file
+       Parameters
+       ==========
+       path: a path to a deid file
 
-    Returns
-    =======
-    config: a parsed deid (dictionary) with valid sections
+       Returns
+       =======
+       config: a parsed deid (dictionary) with valid sections
 
     '''
     path = find_deid(path)
@@ -211,11 +209,12 @@ def load_deid(path=None):
 
 def find_deid(path=None):
     '''find_deid is a helper function to load_deid to find a deid file in
-    a folder, or return the path provided if it is the file.
+       a folder, or return the path provided if it is the file.
 
-    Parameters
-    ==========
-    path: a path on the filesystem. If not provided, will assume PWD.
+       Parameters
+       ==========
+       path: a path on the filesystem. If not provided, will assume PWD.
+
     '''
     if path is None:
         path = os.getcwd()
@@ -246,14 +245,15 @@ def find_deid(path=None):
 
 def parse_label(section,config,section_name,members,label=None):
     '''parse label will add a (optionally named) label to the filter
-    section, including one or more criteria
-    Parameters
-    ==========
-    section: the section name (e.g., header) must be one in sections
-    config: the config (dictionary) parsed thus far
-    section_name: an optional name for a section
-    members: the lines beloning to the section/section_name
-    label: an optional name for the group of commands
+       section, including one or more criteria
+   
+       Parameters
+       ==========
+       section: the section name (e.g., header) must be one in sections
+       config: the config (dictionary) parsed thus far
+       section_name: an optional name for a section
+       members: the lines beloning to the section/section_name
+       label: an optional name for the group of commands
     '''
     criteria = {'filters':[],
                 'coordinates':[]}
@@ -376,13 +376,14 @@ def parse_member(members, operator=None):
 
 def add_section(config,section,section_name=None):
     '''add section will add a section (and optionally)
-    section name to a config
+       section name to a config
 
-    Parameters
-    ==========
-    config: the config (dict) parsed thus far
-    section: the section name to add
-    section_name: an optional name, added as a level
+       Parameters
+       ==========
+       config: the config (dict) parsed thus far
+       section: the section name to add
+       section_name: an optional name, added as a level
+
     '''
 
     if section is None:
@@ -418,15 +419,15 @@ def add_section(config,section,section_name=None):
 
 def parse_action(section, line, config, section_name=None):
     '''add action will take a line from a deid config file, a config (dictionary), and
-    an active section name (eg header) and add an entry to the config file to perform
-    the action.
+       an active section name (eg header) and add an entry to the config file to perform
+       the action.
 
-    Parameters
-    =========
-    section: a valid section name from the deid config file
-    line: the line content to parse for the section/action
-    config: the growing/current config dictionary
-    section_name: optionally, a section name
+       Parameters
+       =========
+       section: a valid section name from the deid config file
+       line: the line content to parse for the section/action
+       config: the growing/current config dictionary
+       section_name: optionally, a section name
 
     '''
             
@@ -468,16 +469,17 @@ def parse_action(section, line, config, section_name=None):
 
 def get_deid(tag=None, exit_on_fail=True, quiet=False, load=False):
     '''get deid is intended to retrieve the full path of a deid file provided with
-    the software, based on a tag. For example, under deid/data if a file is called
-    "deid.dicom", the tag would be "dicom". 
+       the software, based on a tag. For example, under deid/data if a file is called
+       "deid.dicom", the tag would be "dicom". 
 
-    Parameters
-    ==========
-    tag: the text that comes after deid to indicate the tag of the file in deid/data
-    exit_on_fail: if None is an acceptable return value, this should be set to False
-                  (default is True).
-    quiet: Default False. If None is acceptable, quiet can be set to True
-    load: also load the deid, if resulting path (from path or tag) is not None
+       Parameters
+       ==========
+       tag: the text that comes after deid to indicate the tag of the file in deid/data
+       exit_on_fail: if None is an acceptable return value, this should be set to False
+                     (default is True).
+       quiet: Default False. If None is acceptable, quiet can be set to True
+       load: also load the deid, if resulting path (from path or tag) is not None
+
     '''
     # no tag/path means load default
     if tag is None:

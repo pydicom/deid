@@ -1,4 +1,5 @@
 '''
+
 header.py: functions to extract identifiers from dicom headers
 
 Copyright (c) 2017-2018 Vanessa Sochat
@@ -20,6 +21,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 '''
 
 
@@ -57,9 +59,9 @@ import os
 here = os.path.dirname(os.path.abspath(__file__))
 
 
-######################################################################
+################################################################################
 # MAIN GET FUNCTIONS
-######################################################################
+################################################################################
 
 def get_shared_identifiers(dicom_files,
                            force=True,
@@ -136,13 +138,17 @@ def get_identifiers(dicom_files,
                     config=None,
                     expand_sequences=True,
                     skip_fields=None):
-    '''extract all identifiers from a dicom image.
-    This function returns a lookup by file name
-    :param dicom_files: the dicom file(s) to extract from
-    :param force: force reading the file (default True)
-    :param config: if None, uses default in provided module folder
-    :param expand_sequences: if True, expand sequences. otherwise, skips
-    :param skip_fields: if not None, added fields to skip
+    ''' extract all identifiers from a dicom image.
+        This function returns a lookup by file name
+
+        Parameters
+        ==========
+        dicom_files: the dicom file(s) to extract from
+        force: force reading the file (default True)
+        config: if None, uses default in provided module folder
+        expand_sequences: if True, expand sequences. otherwise, skips
+        skip_fields: if not None, added fields to skip
+
     '''
     bot.debug('Extracting identifiers for %s dicom' %(len(dicom_files)))
 
@@ -209,16 +215,16 @@ def remove_private_identifiers(dicom_files,
 
 
 def _prepare_replace_config(dicom_files, deid=None, config=None):
-    '''replace identifiers will replace dicom_files with data from ids based
-    on a combination of a config (default is remove all) and a user deid spec
+    ''' replace identifiers will replace dicom_files with data from ids based
+        on a combination of a config (default is remove all) and a user deid
 
-    Parameters
-    ==========
-    dicom_files: the dicom file(s) to extract from
-    force: force reading the file (default True)
-    save: if True, save to file. Otherwise, return dicom objects
-    config: if None, uses default in provided module folder
-    overwrite: if False, save updated files to temporary directory
+        Parameters
+        ==========
+        dicom_files: the dicom file(s) to extract from
+        force: force reading the file (default True)
+        save: if True, save to file. Otherwise, return dicom objects
+        config: if None, uses default in provided module folder
+        overwrite: if False, save updated files to temporary directory
     
     '''
 
@@ -276,6 +282,7 @@ def replace_identifiers(dicom_files,
             else:
                 bot.warning("%s is not in identifiers." %dicom_name)
                 continue
+
         # Next perform actions in default config, only if not done
         for action in config['put']['actions']:
             if action['field'] in fields:
@@ -301,38 +308,33 @@ def replace_identifiers(dicom_files,
             except:
                 pass
 
-        # Copy original data types
+        # Copy original data attributes
         attributes = ['is_little_endian',
                       'is_implicit_VR',
-                      'preamble',
+                      'is_decompressed',
+                      'read_encoding',
+                      'read_implicit_vr',
+                      'read_little_endian',
                       '_parent_encoding']
 
-        for attribute in attributes:
-            ds.__setattr__(attribute,
-                           dicom.__getattribute__(attribute))
+        # We aren't including preamble, we will reset to be empty 128 bytes
+        ds.preamble = b"\0" * 128
 
-        # Retain required meta data
+        for attribute in attributes:
+            if hasattr(dicom, attribute):
+                ds.__setattr__(attribute, dicom.__getattribute__(attribute))
+
+        # Original meta data                     # or default empty dataset
         file_metas = getattr(dicom, 'file_meta', Dataset())
         
-        # Retain required meta data - not identifying
-        # file_metas.MediaStorageSOPClassUID
-        # file_metas.MediaStorageSOPInstanceUID
-        # file_metas.ImplementationVersionName 
-        # file_metas.ImplementationClassUID
+        # Media Storage SOP Instance UID can be identifying
+        if hasattr(file_metas, 'MediaStorageSOPInstanceUID'):
+            file_metas.MediaStorageSOPInstanceUID = ''
 
-        # File attributes for meta
-        attributes = ['TransferSyntaxUID',
-                      'FileMetaInformationGroupLength',
-                      'FileMetaInformationVersion']
-
-        for attribute in attributes:
-            file_metas.add(dicom.file_meta.data_element(attribute))        
-
-        # Preamble is required
-        ds.file_meta=file_metas
-        ds.preamble = vars(dicom)['preamble']
-
-        # Save to file?
+        # Save meta data
+        ds.file_meta = file_metas
+       
+       # Save to file?
         if save is True:
             ds = save_dicom(dicom=ds,
                             dicom_file=dicom_file,

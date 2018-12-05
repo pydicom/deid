@@ -1,5 +1,4 @@
 '''
-base.py: base filters for any kind of test
 
 Copyright (c) 2017-2018 Vanessa Sochat
 
@@ -20,6 +19,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 '''
 
 from pydicom.dataset import Dataset
@@ -37,9 +37,16 @@ import re
 # we apply them to the dataset, with the tag as an argument:
 # dicom.contains("ImageType","SECONDARY")
 
-def apply_filter(dicom,field,filter_name,value):
-    '''essentially a switch statement to apply a filter to
-    a dicom file.
+def apply_filter(dicom, field, filter_name, value):
+    '''essentially a switch statement to apply a filter to a dicom file.
+
+       Parameters
+       ==========
+       dicom: the pydicom.dataset Dataset (pydicom.read_file)
+       field: the name of the field to apply the filter to
+       filer_name: the name of the filter to apply (e.g., contains)
+       value: the value to set, if filter_name is valid
+
     '''
     filter_name = filter_name.lower().strip()
 
@@ -69,13 +76,15 @@ def apply_filter(dicom,field,filter_name,value):
 
 
 
-######################################################################
+################################################################################
 # Equals
-######################################################################
+################################################################################
 
 
-def equalsBase(self,field,term,ignore_case=True,not_equals=False):
-    '''base of equals, with variable for ignore case (default True)'''
+def equalsBase(self, field, term, ignore_case=True, not_equals=False):
+    '''base of equals, with variable for ignore case (default True)
+    '''
+
     is_equal = False
 
     contenders = self.get(field)
@@ -121,17 +130,17 @@ Dataset.equalsBase = equalsBase
 Dataset.equals = equals
 Dataset.notEquals = notEquals
 
-######################################################################
+################################################################################
 # Empty and Null
 #
 # missing: means the field is not present (None)
 # empty: means the field is present and empty
-######################################################################
+################################################################################
 
 
-def missing(self,field):
+def missing(self, field):
     '''missing returns True if the dicom is missing the field entirely
-    This means that the entire field is None
+       This means that the entire field is None
     '''
     content = self.get(field)
     if content == None:
@@ -152,18 +161,19 @@ Dataset.empty = empty
 Dataset.missing = missing
 
 
-######################################################################
+################################################################################
 # Matches and Contains
 # 
 # contains: searches across entire field
 # matches: looks for exact match
-######################################################################
+################################################################################
 
 
 def compareBase(self,field,expression,func,ignore_case=True):
     '''compareBase takes either re.search (for contains) or
-    re.match (for matches) and returns True if the given regular
-    expression is contained or matched'''
+       re.match (for matches) and returns True if the given regular
+       expression is contained or matched
+    '''
     is_match = False
 
     contenders = self.get(field)
@@ -191,8 +201,9 @@ def compareBase(self,field,expression,func,ignore_case=True):
 
 def matches(self,field,expression):
     '''matches returns true if the value of the identifier matches 
-    the regular expression specified in the string argument; 
-    otherwise, it returns false.'''
+       the regular expression specified in the string argument; 
+       otherwise, it returns false.
+    '''
     return self.compareBase(field=field,
                             expression=expression,
                             func=re.match)
@@ -200,15 +211,16 @@ def matches(self,field,expression):
 
 def contains(self,field,expression):
     '''contains returns true if the value of the identifier 
-    contains the the string argument anywhere within it; 
-    otherwise, it returns false.'''
+       contains the the string argument anywhere within it; 
+       otherwise, it returns false.
+    '''
     return self.compareBase(field=field,
                             expression=expression,
                             func=re.search)
 
 def notContains(self,field,expression):
     '''notContains returns true if the value of the identifier 
-    does not contain the the string argument anywhere within it; 
+       does not contain the the string argument anywhere within it; 
     '''
     return not self.compareBase(field=field,
                                 expression=expression,
@@ -220,14 +232,15 @@ Dataset.matches = matches
 Dataset.contains = contains
 Dataset.notContains = notContains
 
-######################################################################
+################################################################################
 # Starts and Endswith
-######################################################################
+################################################################################
 
 
 def startsWith(self,field,term):
     '''startsWith returns true if the value of the identifier 
-    starts with the string argument; otherwise, it returns false.'''
+       starts with the string argument; otherwise, it returns false.
+    '''
     expression = "^%s" %term
     return self.compareBase(field=field,
                             expression=expression,
@@ -235,7 +248,8 @@ def startsWith(self,field,term):
     
 def endsWith(self,field,term):
     '''endsWith returns true if the value of the identifier ends with 
-    the string argument; otherwise, it returns false.'''
+       the string argument; otherwise, it returns false.
+    '''
     expression = "%s$" %term
     return self.compareBase(field=field,
                             expression=expression,

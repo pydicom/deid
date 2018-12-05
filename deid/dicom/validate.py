@@ -1,5 +1,4 @@
 '''
-utils.py: helper functions for working with dicom module
 
 Copyright (c) 2017-2018 Vanessa Sochat
 
@@ -20,6 +19,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 '''
 
 from deid.logger import bot
@@ -28,8 +28,13 @@ import sys
 
 def validate_dicoms(dcm_files,force=False):
     '''validate dicoms will test opening one or more dicom files, and return a list
-    of valid files.
-    :param dcm_files: one or more dicom files to test'''
+       of valid files.
+
+       Parameters
+       ==========
+       dcm_files: one or more dicom files to test
+    
+    '''
     if not isinstance(dcm_files,list):
         dcm_files = [dcm_files]
 

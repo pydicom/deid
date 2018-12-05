@@ -1,5 +1,4 @@
 '''
-tags.py: working with header field tags
 
 Copyright (c) 2017-2018 Vanessa Sochat
 
@@ -20,8 +19,8 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
 
+'''
 
 from deid.logger import bot
 from pydicom import read_file
@@ -36,14 +35,18 @@ import os
 import re
 import sys
 
-#########################################################################
+################################################################################
 # Functions for Finding / Getting Tags
-#########################################################################
+################################################################################
 
 def get_tag(field):
     '''get_tag will return a dictionary with tag indexed by field. For each entry,
-    a dictionary lookup is included with VR,  
-    :name: the keyword to get tag for, eg "PatientIdentityRemoved"
+       a dictionary lookup is included with VR,  
+    
+       Parameters
+       ==========
+       field: the keyword to get tag for, eg "PatientIdentityRemoved"
+
     '''
     found = [{key:value} for key,value in DicomDictionary.items() if value[4] == field]
     tags = dict()
@@ -64,9 +67,9 @@ def get_tag(field):
     return tags
 
 
-def find_tag(term,VR=None,VM=None,retired=False):
+def find_tag(term, VR=None, VM=None, retired=False):
     '''find_tag will search over tags in the DicomDictionary and return the tags found
-    to match some term.
+       to match some term.
     '''
     searchin = DicomDictionary
     if retired:
@@ -82,11 +85,11 @@ def find_tag(term,VR=None,VM=None,retired=False):
     return found
 
 
-def _filter_tags(tags,idx,fields=None):
+def _filter_tags(tags, idx, fields=None):
     '''filter tags is a helper function to take some list of tags in the format
-    [ (VR, VM, longname, retired, keyword).. ]
-    where each of the items above has some index, idx, and filter that index
-    down to what is provided in fields.
+       [ (VR, VM, longname, retired, keyword).. ]
+       where each of the items above has some index, idx, and filter that index
+       down to what is provided in fields.
     '''
     if not isinstance(fields,list):
         fields = [fields]
@@ -94,10 +97,9 @@ def _filter_tags(tags,idx,fields=None):
 
 
 
-#########################################################################
+################################################################################
 # Manipulating Tags in Data
-#########################################################################
-
+################################################################################
 
 def remove_sequences(dicom):
     for field in dicom.dir():
@@ -106,11 +108,15 @@ def remove_sequences(dicom):
     return dicom
 
 
-def add_tag(dicom,field,value, quiet=False):
+def add_tag(dicom, field, value, quiet=False):
     '''add tag will add a tag only if it's in the (active) DicomDictionary
-    :param dicom: the pydicom.dataset Dataset (pydicom.read_file)
-    :param field: the name of the field to add
-    :param value: the value to set, if name is a valid tag
+
+       Parameters
+       ==========
+       dicom: the pydicom.dataset Dataset (pydicom.read_file)
+       field: the name of the field to add
+       value: the value to set, if name is a valid tag
+
     '''
     if quiet is False:
         bot.debug("Attempting ADDITION of %s." %(field))
@@ -122,10 +128,17 @@ def add_tag(dicom,field,value, quiet=False):
     return dicom
 
 
-def change_tag(dicom,field,value):
+def change_tag(dicom, field, value):
     '''change tag is a general function that can be used by 
-    update_tag or add_tag. The only difference is the print output,
-    and determining to call the function based on different conditions
+       update_tag or add_tag. The only difference is the print output,
+       and determining to call the function based on different conditions
+
+       Parameters
+       ==========
+       dicom: the pydicom.dataset Dataset (pydicom.read_file)
+       field: the name of the field to add
+       value: the value to set, if name is a valid tag
+
     '''
     tag = get_tag(field)
 
@@ -137,36 +150,53 @@ def change_tag(dicom,field,value):
     return dicom
 
 
-def update_tag(dicom,field,value):
+def update_tag(dicom, field, value):
     '''update tag will update a value in the header, if it exists
-    if not, nothing is added. This check is the only difference
-    between this function and change_tag. 
-    If the user wants to add a value (that might not exist) 
-    the function add_tag should be used
+       if not, nothing is added. This check is the only difference
+       between this function and change_tag. 
+       If the user wants to add a value (that might not exist) 
+       the function add_tag should be used
+
+       Parameters
+       ==========
+       dicom: the pydicom.dataset Dataset (pydicom.read_file)
+       field: the name of the field to update
+       value: the value to set, if name is a valid tag
+
     '''
     if field in dicom:
-        dicom = change_tag(dicom,field,value)
+        dicom = change_tag(dicom, field, value)
     return dicom
 
 
-def blank_tag(dicom,field):
+def blank_tag(dicom, field):
     '''blank tag calls update_tag with value set to an
-    empty string. If the tag cannot be found, warns the user
-    and doesn't touch (in case of imaging data, or not found)
+       empty string. If the tag cannot be found, warns the user
+       and doesn't touch (in case of imaging data, or not found)
+
+       Parameters
+       ==========
+       dicom: the pydicom.dataset Dataset (pydicom.read_file)
+       field: the name of the field to blank
+
     '''
     # We cannot blank VR types of US or SS
     element = dicom.data_element(field)
     if element is not None:
         if element.VR not in ['US','SS']:
-            return update_tag(dicom,field,"")
+            return update_tag(dicom, field,"")
         bot.warning('Cannot determine tag for %s, skipping blank.' %field)
     return dicom
 
 
 def remove_tag(dicom,field):
     '''remove tag will remove a tag if it is present in the dataset
-    :param dicom: the pydicom.dataset Dataset (pydicom.read_file)
-    :param field: the name of the field to remove
+
+       Parameters
+       ==========
+       dicom: the pydicom.dataset Dataset (pydicom.read_file)
+       field: the name of the field to remove
+
     '''
     if field in dicom:
         tag = dicom.data_element(field).tag
@@ -182,6 +212,10 @@ def remove_tag(dicom,field):
 
 def get_private(dicom):
     '''get private tags
+
+       Parameters
+       ==========
+       dicom: the pydicom.dataset Dataset (pydicom.read_file)
     '''
     datasets = [dicom]
     private_tags = []
@@ -209,10 +243,14 @@ def get_private(dicom):
 
 def has_private(dicom):
     '''has_private will return True if the header has private tags
+
+       Parameters
+       ==========
+       dicom: the pydicom.dataset Dataset (pydicom.read_file)
+
     '''
     private_tags = len(get_private(dicom))
     print("Found %s private tags" %private_tags)
     if private_tags > 0:
         return True
     return False
-

@@ -1,7 +1,4 @@
-#!/usr/bin/env python
-
 '''
-utils.py: part of deid package
 
 Copyright (c) 2017-2018 Vanessa Sochat
 
@@ -22,6 +19,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 '''
 
 import fnmatch
@@ -75,22 +73,33 @@ def get_temporary_name(prefix=None, ext=None):
 ## FILE OPERATIONS #############################################################
 ################################################################################
 
-def write_file(filename,content,mode="w"):
+def write_file(filename, content, mode="w"):
     '''write_file will open a file, "filename" and write content, "content"
-    and properly close the file
+       and properly close the file
+
+       Parameters
+       ==========
+       filename: the name of the file to write to
+       content: the content to write to file
+       mode: the mode to open the file, defaults to write (w)
+
     '''
     with open(filename,mode) as filey:
         filey.writelines(content)
     return filename
 
 
-def write_json(json_obj,filename,mode="w",print_pretty=True):
+def write_json(json_obj, filename, mode="w", print_pretty=True):
     '''write_json will (optionally,pretty print) a json object to file
-    :param json_obj: the dict to print to json
-    :param filename: the output file to write to
-    :param pretty_print: if True, will use nicer formatting   
+
+       Parameters
+       ==========
+       json_obj: the dict to print to json
+       filename: the output file to write to
+       pretty_print: if True, will use nicer formatting   
+
     '''
-    with open(filename,mode) as filey:
+    with open(filename, mode) as filey:
         if print_pretty == True:
             filey.writelines(json.dumps(json_obj, indent=4, separators=(',', ': ')))
         else:
@@ -99,18 +108,31 @@ def write_json(json_obj,filename,mode="w",print_pretty=True):
 
 
 
-def read_file(filename,mode="r"):
+def read_file(filename, mode="r"):
     '''write_file will open a file, "filename" and write content, "content"
-    and properly close the file
+       and properly close the file
+
+       Parameters
+       ==========
+       filename: the name of the file to write to
+       mode: the mode to open the file, defaults to read (r)
+
     '''
-    with open(filename,mode) as filey:
+    with open(filename, mode) as filey:
         content = filey.readlines()
     return content
 
 
 
-def read_json(filename,mode="r", ordered_dict=False):
+def read_json(filename, mode="r", ordered_dict=False):
     '''read_json will open a file, "filename" and read the string as json
+
+       Parameters
+       ==========
+       filename: the name of the file to write to
+       mode: the mode to open the file, defaults to read (r)
+       ordered_dict: If true, return an OrderedDict (default is False)
+
     '''
     with open(filename,mode) as filey:
         if ordered_dict is False:
@@ -120,9 +142,15 @@ def read_json(filename,mode="r", ordered_dict=False):
     return content
 
 
-def recursive_find(base,pattern=None):
+def recursive_find(base, pattern=None):
     '''recursive find will yield dicom files in all directory levels
-    below a base path. It uses get_dcm_files to find the files in the bases.
+       below a base path. It uses get_dcm_files to find the files in the bases.
+
+       Parameters
+       ==========
+       base: the base directory to search
+       pattern: a pattern to match. If None, defaults to "*"
+
     '''
     if pattern is None:
         pattern = "*"

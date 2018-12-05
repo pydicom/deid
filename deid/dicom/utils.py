@@ -1,5 +1,4 @@
 '''
-utils.py: helper functions for working with dicom module
 
 Copyright (c) 2017-2018 Vanessa Sochat
 
@@ -20,6 +19,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 '''
 
 from deid.config.standards import (
@@ -41,16 +41,22 @@ import os
 import re
 import sys
 
-#########################################################################
+################################################################################
 # Functions for Dicom files
-#########################################################################
+################################################################################
 
-def get_files(contenders,check=True,pattern=None,force=False):
-    '''get_dcm_files will take a list of single dicom files or directories,
-    and return a generator that yields complete paths to all files
-    :param pattern: A pattern to use with fnmatch. If None, * is used
-    :param force: force reading of the files, if some headers invalid.
-    Not recommended, as many non-dicom will come through
+def get_files(contenders, check=True, pattern=None, force=False):
+    '''get_files will take a list of single dicom files or directories,
+       and return a generator that yields complete paths to all files
+    
+       Parameters
+       ==========
+       conteners: a list of files or directories (contenders!)
+       check: boolean to indicate if we should validate dicoms (default True)
+       pattern: A pattern to use with fnmatch. If None, * is used
+       force: force reading of the files, if some headers invalid.
+              Not recommended, as many non-dicom will come through
+
     '''
     if not isinstance(contenders,list):
         contenders = [contenders]
@@ -73,10 +79,19 @@ def get_files(contenders,check=True,pattern=None,force=False):
                     yield validated_file
 
 
-def save_dicom(dicom,dicom_file,output_folder=None,overwrite=False):
+def save_dicom(dicom, dicom_file, output_folder=None, overwrite=False):
     '''save_dicom will save a dicom file to an output folder,
-    making sure to not overwrite unless the user has enforced it
+       making sure to not overwrite unless the user has enforced it
+
+       Parameters
+       ==========
+       dicom: the pydicon Dataset to save
+       dicom_file: the path to the dicom file to save (we only use basename)
+       output_folder: the folder to save the file to
+       overwrite: overwrite any existing file? (default is False)
+
     '''
+
     if output_folder is None:
         if overwrite is False:
             output_folder = tempfile.mkdtemp()
@@ -96,14 +111,19 @@ def save_dicom(dicom,dicom_file,output_folder=None,overwrite=False):
     return output_dicom
 
 
-#########################################################################
+################################################################################
 # Config.json Helpers
-#########################################################################
+################################################################################
 
 
 def get_func(function_name):
     '''get_func will return a function that is defined from a string.
-    the function is assumed to be in this file
+       the function is assumed to be in this file
+
+       Parameters
+       ==========
+       return a function from globals based on a name string
+
     '''
     env = globals()
     if function_name in env:
@@ -112,15 +132,19 @@ def get_func(function_name):
 
 
 
-def perform_action(dicom,action,item=None,fields=None):
-    '''perform action takes  
-    :param dicom: a loaded dicom file (pydicom read_file)
-    :param item: a dictionary with keys as fields, values as values
-    :param fields: if provided, a filtered list of fields for expand
-    :param action: the action from the parsed deid to take
-        "dield" (eg, PatientID) the header field to process
-        "action" (eg, REPLACE) what to do with the field
-        "value": if needed, the field from the response to replace with
+def perform_action(dicom, action, item=None, fields=None):
+    '''perform an action on a dataset.
+
+       Parameters
+       ==========
+       dicom: a loaded dicom file (pydicom read_file)
+       item: a dictionary with keys as fields, values as values
+       fields: if provided, a filtered list of fields for expand
+       action: the action from the parsed deid to take
+           "died" (eg, PatientID) the header field to process
+           "action" (eg, REPLACE) what to do with the field
+           "value": if needed, the field from the response to replace with
+
     '''
     field = action.get('field')   # e.g: PatientID, endswith:ID
     value = action.get('value')   # "suid" or "var:field"
@@ -146,12 +170,12 @@ def perform_action(dicom,action,item=None,fields=None):
     return None
 
 
-def _perform_action(dicom,field,action,value=None,item=None):
+def _perform_action(dicom, field, action, value=None, item=None):
     '''_perform_action is the base function for performing an action.
-    perform_action (above) typically is called using a loaded deid,
-    and perform_addition is typically done via an addition in a config
-    Both result in a call to this function. If an action fails or is not
-    done, None is returned, and the calling function should handle this.
+        perform_action (above) typically is called using a loaded deid,
+        and perform_addition is typically done via an addition in a config
+        Both result in a call to this function. If an action fails or is not
+        done, None is returned, and the calling function should handle this.
     '''
 
     done = False
@@ -216,10 +240,10 @@ def _perform_action(dicom,field,action,value=None,item=None):
 
 # Values
 
-def parse_value(item,value):
+def parse_value(item, value):
     '''parse_value will parse the value field of an action,
-    either returning the string, or a variable looked up
-    in the case of var:FieldName
+       either returning the string, or a variable looked up
+       in the case of var:FieldName
     '''
     # Does the user want a custom value?
     if re.search('[:]',value):
@@ -237,10 +261,17 @@ def parse_value(item,value):
 
 
 # Timestamps
-def jitter_timestamp(dicom,field,value):
+def jitter_timestamp(dicom, field, value):
     '''if present, jitter a timestamp in dicom
-    field "field" by number of days specified by "value"
-    The value can be positive or negative.
+       field "field" by number of days specified by "value"
+       The value can be positive or negative.
+ 
+       Parameters
+       ==========
+       dicom: the pydicom Dataset
+       field: the field with the timestamp
+       value: number of days to jitter by. Jitter bug!
+
     '''
     if not isinstance(value, int):
         value = int(value)
@@ -251,10 +282,10 @@ def jitter_timestamp(dicom,field,value):
     return dicom
    
 
-def get_entity_timestamp(dicom,date_field=None):
+def get_entity_timestamp(dicom, date_field=None):
     '''get_entity_timestamp will return a timestamp from the dicom
-    header based on the PatientBirthDate (default) if a field is
-    not provided.'''
+       header based on the PatientBirthDate (default) if a field is
+       not provided.'''
     if date_field is None:
         date_field = "PatientBirthDate"
     item_date = dicom.get(date_field)
@@ -263,9 +294,12 @@ def get_entity_timestamp(dicom,date_field=None):
 
 def get_item_timestamp(dicom,date_field=None,time_field=None):
     '''get_dicom_timestamp will return the UTC time for an instance.
-    This is derived from the InstanceCreationDate and InstanceCreationTime
-    If the Time is not set, only the date is used.
-    # testing function https://gist.github.com/vsoch/23d6b313bd231cad855877dc544c98ed
+       This is derived from the InstanceCreationDate and InstanceCreationTime
+       If the Time is not set, only the date is used.
+       
+       ::notes 
+           testing function:
+           https://gist.github.com/vsoch/23d6b313bd231cad855877dc544c98ed
     '''
     if time_field is None:
         time_field = "InstanceCreationTime"

@@ -1,5 +1,4 @@
 '''
-actions.py: actions to take on dicom header fields
 
 Copyright (c) 2017-2018 Vanessa Sochat
 
@@ -48,13 +47,16 @@ import sys
 
 def perform_action(dicom,action,item=None,fields=None,return_seen=False):
     '''perform action takes  
-    :param dicom: a loaded dicom file (pydicom read_file)
-    :param item: a dictionary with keys as fields, values as values
-    :param fields: if provided, a filtered list of fields for expand
-    :param action: the action from the parsed deid to take
-        "dield" (eg, PatientID) the header field to process
-        "action" (eg, REPLACE) what to do with the field
-        "value": if needed, the field from the response to replace with
+
+       Parameters
+       ==========
+       dicom: a loaded dicom file (pydicom read_file)
+       item: a dictionary with keys as fields, values as values
+       fields: if provided, a filtered list of fields for expand
+       action: the action from the parsed deid to take
+          "deid" (eg, PatientID) the header field to process
+          "action" (eg, REPLACE) what to do with the field
+          "value": if needed, the field from the response to replace with
     '''
     field = action.get('field')   # e.g: PatientID, endswith:ID
     value = action.get('value')   # "suid" or "var:field"
@@ -81,10 +83,10 @@ def perform_action(dicom,action,item=None,fields=None,return_seen=False):
 
 def _perform_action(dicom,field,action,value=None,item=None):
     '''_perform_action is the base function for performing an action.
-    perform_action (above) typically is called using a loaded deid,
-    and perform_addition is typically done via an addition in a config
-    Both result in a call to this function. If an action fails or is not
-    done, None is returned, and the calling function should handle this.
+       perform_action (above) typically is called using a loaded deid,
+       and perform_addition is typically done via an addition in a config
+       Both result in a call to this function. If an action fails or is not
+       done, None is returned, and the calling function should handle this.
     '''
     if action not in valid_actions:
         bot.warning('%s in not a valid choice [%s]. Defaulting to blanked.' %(action,
@@ -136,8 +138,9 @@ def _perform_action(dicom,field,action,value=None,item=None):
 
 def get_entity_timestamp(dicom,date_field=None):
     '''get_entity_timestamp will return a timestamp from the dicom
-    header based on the PatientBirthDate (default) if a field is
-    not provided.'''
+       header based on the PatientBirthDate (default) if a field is
+       not provided.
+    '''
     if date_field is None:
         date_field = "PatientBirthDate"
     item_date = dicom.get(date_field)
@@ -146,9 +149,12 @@ def get_entity_timestamp(dicom,date_field=None):
 
 def get_item_timestamp(dicom,date_field=None,time_field=None):
     '''get_dicom_timestamp will return the UTC time for an instance.
-    This is derived from the InstanceCreationDate and InstanceCreationTime
-    If the Time is not set, only the date is used.
-    # testing function https://gist.github.com/vsoch/23d6b313bd231cad855877dc544c98ed
+       This is derived from the InstanceCreationDate and InstanceCreationTime
+       If the Time is not set, only the date is used.
+       
+       ::notes
+       testing function 
+          https://gist.github.com/vsoch/23d6b313bd231cad855877dc544c98ed
     '''
     if time_field is None:
         time_field = "InstanceCreationTime"

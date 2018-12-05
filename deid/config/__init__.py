@@ -46,8 +46,7 @@ import re
 bot.level = 3
 
 class DeidRecipe:
-    '''
-       Create and work with a deid recipe to filter and perform operations on
+    '''Create and work with a deid recipe to filter and perform operations on
        a dicom header. Usage typically looks like:
 
        deid = 'dicom.deid'
@@ -57,11 +56,12 @@ class DeidRecipe:
 
        Parameters
        ==========
-           deid: the deid recipe (or recipes) files to use. If more than one
-                 is provided, should be done in order of preference for load
-                 (later in the list overrides earlier loaded).
-           base: if True, load a default base (default_base) before custom
-           default_base: the default base to load if "base" is True
+       deid: the deid recipe (or recipes) files to use. If more than one
+             is provided, should be done in order of preference for load
+             (later in the list overrides earlier loaded).
+       base: if True, load a default base (default_base) before custom
+       default_base: the default base to load if "base" is True
+
     '''
     
     def __init__(self, deid=None, base=False, default_base='dicom'):
@@ -80,8 +80,7 @@ class DeidRecipe:
         return '[deid]'
 
     def load(self, deid):
-        '''
-           load a deid recipe into the object. If a deid configuration is
+        '''load a deid recipe into the object. If a deid configuration is
            already defined, append to that. 
         '''
         deid = get_deid(deid)
@@ -95,8 +94,7 @@ class DeidRecipe:
             self.deid = load_combined_deid([self.deid, deid])
 
     def _get_section(self, name):
-        '''
-           return a section (key) in the loaded deid, if it exists
+        '''return a section (key) in the loaded deid, if it exists
         '''
         section = None
         if self.deid is not None:
@@ -129,13 +127,13 @@ class DeidRecipe:
     def get_actions(self, action=None, field=None):
         '''get deid actions to perform on a header, or a subset based on a type
 
-        A header action is a list with the following:
-         {'action': 'REMOVE', 'field': 'AssignedLocation'},
+           A header action is a list with the following:
+           {'action': 'REMOVE', 'field': 'AssignedLocation'},
  
-        Parameters
-        ==========
-        action: if not None, filter to action specified
-        field: if not None, filter to field specified
+           Parameters
+           ==========
+           action: if not None, filter to action specified
+           field: if not None, filter to field specified
 
         '''
         header = self._get_section('header')
@@ -151,17 +149,17 @@ class DeidRecipe:
 
 
     def _init_deid(self, deid=None, base=False, default_base='dicom'):
-        '''
-        initalize the recipe with one or more deids, optionally including 
-        the default. This function is called at init time. If you need to add
-        or work with already loaded configurations, use add/remove 
+        '''initalize the recipe with one or more deids, optionally including 
+           the default. This function is called at init time. If you need to add
+           or work with already loaded configurations, use add/remove 
     
-        Parameters
-        ==========
-            deid: the deid recipe (or recipes) files to use. If more than one
-                  is provided, should be done in order of preference for load
-                  (later in the list overrides earlier loaded).
-            default_base: load the default base before the user customizations. 
+           Parameters
+           ==========
+           deid: the deid recipe (or recipes) files to use. If more than one
+                 is provided, should be done in order of preference for load
+                 (later in the list overrides earlier loaded).
+           default_base: load the default base before the user customizations. 
+
         '''
         if deid is None:
             deid = []
