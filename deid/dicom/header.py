@@ -333,12 +333,8 @@ def replace_identifiers(dicom_files,
 
         # Save meta data
         ds.file_meta = file_metas
-
-        
-
-        #ds.preamble = vars(dicom)['preamble']
-
-        # Save to file?
+       
+       # Save to file?
         if save is True:
             ds = save_dicom(dicom=ds,
                             dicom_file=dicom_file,
