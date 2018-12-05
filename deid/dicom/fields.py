@@ -1,5 +1,4 @@
 '''
-header.py: functions to extract identifiers from dicom headers
 
 Copyright (c) 2017-2018 Vanessa Sochat
 
@@ -20,8 +19,8 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
 
+'''
 
 from pydicom.sequence import Sequence
 from pydicom.dataset import RawDataElement
@@ -56,7 +55,7 @@ def extract_sequence(sequence,prefix=None):
 
 def expand_field_expression(field,dicom,contenders=None):
     '''Get a list of fields based on an expression. If 
-    no expression found, return single field.
+       no expression found, return single field.
     '''
     fields = field.split(':')
     if len(fields) == 1:
@@ -75,7 +74,7 @@ def expand_field_expression(field,dicom,contenders=None):
 
 def get_fields(dicom, skip=None, expand_sequences=True):
     '''get fields is a simple function to extract a dictionary of fields
-    (non empty) from a dicom file.
+       (non empty) from a dicom file.
     '''    
     if skip is None:
         skip = []
@@ -107,8 +106,9 @@ def get_fields(dicom, skip=None, expand_sequences=True):
 
 def get_fields_byVR(dicom,exclude_fields=None):
     '''filter a dicom's fields based on a list of value
-    representations (VR). If exclude_fields is not defined,
-    defaults to "US" and "SS"'''
+       representations (VR). If exclude_fields is not defined,
+       defaults to "US" and "SS"
+    '''
 
     if exclude_fields is None:
         exclude_fields = ['US','SS']
