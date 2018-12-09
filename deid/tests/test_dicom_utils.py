@@ -151,7 +151,7 @@ class TestDicomUtils(unittest.TestCase):
                    "value":"func:generate_uid"} 
 
         # Here is the function we define to replace
-        def generate_uid(field):
+        def generate_uid(item, value, field):
             return "pancakes"
 
         # The function must be in the item lookup
