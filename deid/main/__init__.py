@@ -138,7 +138,7 @@ def main():
     except:
         sys.exit(0)
 
-    if args.command == "version" or args.version is True:
+    if args.command == "version":
         print(__version__)
         sys.exit(0)
 
