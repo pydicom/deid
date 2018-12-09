@@ -1,0 +1,16 @@
+footer:
+- name: ChangeLog
+  url: changelog
+navigation:
+- name: Installation
+  url: install/
+- name: Getting Started
+  url: getting-started/
+- name: Examples
+  url: examples/
+- name: Tools
+  url: tools/
+- name: Development
+  url: development/
+- name: Contributing
+  url: contributing/

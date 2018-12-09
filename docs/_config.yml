@@ -1,1 +1,86 @@
-theme: jekyll-theme-cayman
+#----
+# Site
+
+title: Deid
+url: "https://pydicom.github.io/deid"
+baseurl: "/deid"
+google_analytics_key: "UA-100220676-1"
+show_full_navigation: false
+
+# Values for the jekyll-seo-tag gem (https://github.com/jekyll/jekyll-seo-tag)
+logo: /siteicon.png
+description: Documentation for Deid
+author:
+  name:
+  email: vsochat@stanford.edu
+  twitter: # twitter username without the @ symbol
+social:
+  name: vsoch
+  links:
+    - https://github.com/pydicom
+
+# The current hosting location of the docs
+repo: pydicom/deid
+reponame: deid
+
+# The current Docker container
+docker: pydicom/deid
+
+# -----
+# Build
+
+timezone: Etc/UTC
+
+permalink: pretty
+
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+  - jekyll-feed
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - LICENSE
+
+collections:
+  docs:
+    title: Documentation
+    permalink: /:path/
+    output: true
+
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      layout: default
+  -
+    scope:
+      path: ""
+      type: "docs"
+    values:
+      seo:
+        type: Article
+      _comments:
+        category: Group navigation links with this field
+        order: Used to sort links in the navigation
+      _options:
+        content:
+          width: 800
+          height: 2000
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      _comments:
+        type: Marks the impact of this release
+
+# ---------
+# ChangeLog
+
+types:
+  - minor
+  - major
