@@ -6,6 +6,9 @@ order: 3
 
 
 Let's walk through how to install {{ site.title }} locally. 
+
+## Install from Github
+
 First, clone the Github repository to your present working directory. If you
 are a developer, you might want to fork it first, and then clone your fork.
 
@@ -27,3 +30,16 @@ Then install with python!
 python setup.py install
 ```
 
+## Install from Pypi
+
+If you want to install a particular version, the package is [available on pypi](https://pypi.org/project/deid/).
+
+```bash
+pip install deid
+```
+
+Install a particular version
+
+```bash
+pip install deid==0.1.19
+```

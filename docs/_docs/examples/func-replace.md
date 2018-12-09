@@ -30,6 +30,8 @@ Here is a quick example to show using deid to update a frame of reference UID,
 and instance UIDs across a set of datasets. We aren't doing any filtering, we are just going to
 change field with a value derived from a function. This example
 was derived based on a prompt in [this pull request](https://github.com/pydicom/contrib-pydicom/pull/14).
+If you are interested in the code for this example, it's available
+[here](https://github.com/pydicom/deid/tree/master/examples/dicom/header-manipulation).
 Let's get started!
 
 ## Imports
@@ -200,4 +202,5 @@ cleaned_files = replace_identifiers(dicom_files=dicom_files,
 
 ```
 
-That's it! If you need any help, please open an issue.
+That's it! If you need any help, please open an issue. Full code for the
+example above is [available here](https://github.com/pydicom/deid/tree/master/examples/dicom/header-manipulation).

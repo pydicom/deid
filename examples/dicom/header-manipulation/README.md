@@ -1,4 +1,4 @@
-# Update Frame of Reference UID
+# Header Manipulation
 
 Here is a quick example to show using deid to update a frame of reference UID,
 and instance UIDs across a set of datasets. We aren't doing any filtering, we are just going to
