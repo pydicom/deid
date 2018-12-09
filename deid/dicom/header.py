@@ -32,10 +32,6 @@ from .tags import (
     remove_tag,
     remove_sequences
 )
-from deid.identifiers.utils import (
-    create_lookup,
-    load_identifiers
-)
 
 from deid.dicom.tags import get_private
 from deid.config import DeidRecipe
@@ -45,7 +41,7 @@ from pydicom.errors import InvalidDicomError
 import dateutil.parser
 import tempfile
 
-from .utils import get_func, save_dicom
+from .utils import save_dicom
 from .actions import perform_action
 from pydicom.dataset import Dataset
 
@@ -278,7 +274,7 @@ def replace_identifiers(dicom_files,
                 for action in deid.get_actions():
                     dicom = perform_action(dicom=dicom,
                                            item=ids[dicom_file],
-                                           action=action) 
+                                           action=action)
             else:
                 bot.warning("%s is not in identifiers." %dicom_name)
                 continue

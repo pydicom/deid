@@ -1,7 +1,7 @@
 ---
 title: 1. Loading Data
 category: Getting Started
-order: 2
+order: 3
 ---
 
 While they are different file organizations for dicom, we are going to take a simple 

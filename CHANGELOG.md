@@ -14,7 +14,8 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
- - fixing client bug, redoing docs to be better organized (0.0.20)
+ - adding "func" option for recipe to pass function (0.1.21)
+ - fixing client bug, redoing docs to be better organized (0.1.20)
  - Removing MediaStorageSOPInstanceUID from file_meta, issue #72 (0.1.19)
  - need to clean up temporary directory (mkdtemp), issue #68 (0.1.18)
  - fixing issue #65, save for compressed data (0.1.17)

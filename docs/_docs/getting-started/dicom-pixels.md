@@ -1,7 +1,7 @@
 ---
 title: 4. Cleaning Pixels
 category: Getting Started
-order: 5
+order: 6
 ---
 
 At this point, you've possibly obtained identifiers via a [get]({{ site.baseurl }}/getting-started/dicom-get) 

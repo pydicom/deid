@@ -1,7 +1,7 @@
 ---
 title: Tags
-category: Tools
-order: 2
+category: User Documentation
+order: 6
 ---
 
 It is sometimes helpful to be able to find a particular tag. [Pydicom](https://www.github.com/pydicom/pydicom) 

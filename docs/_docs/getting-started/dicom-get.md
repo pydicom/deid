@@ -1,7 +1,7 @@
 ---
 title: 3. Get Identifiers (GET)
 category: Getting Started
-order: 4
+order: 5
 ---
 
 A get request using the deid module will return the headers found in a particular dataset. 
