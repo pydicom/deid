@@ -88,7 +88,7 @@ class TestDicomUtils(unittest.TestCase):
 
     def test_parse_action(self):
         print("Test test_parse_action")
-        from deid.dicom.utils import perform_action
+        from deid.dicom.actions import perform_action
         dicom = get_dicom(self.dataset)
 
         print("Case 1: Testing ADD action")
@@ -97,7 +97,7 @@ class TestDicomUtils(unittest.TestCase):
                "field":"PatientIdentityRemoved",
                "value":"Yes"} 
 
-        dicom = perform_action(dicom=dicom,action=ADD)
+        dicom = perform_action(dicom=dicom, action=ADD)
         self.assertTrue("PatientIdentityRemoved" in dicom)  
         self.assertEqual(dicom.get("PatientIdentityRemoved"),"Yes")
 
@@ -123,8 +123,11 @@ class TestDicomUtils(unittest.TestCase):
         REPLACE = { "action":"REPLACE",
                     "field":"PatientIdentityRemoved",
                     "value":"var:gummybear"} 
-        updated = perform_action(dicom=dicom,action=REPLACE,item=item)
-        self.assertEqual(updated,None)  
+        before = dicom.get("PatientIdentityRemoved")
+        updated = perform_action(dicom=dicom, action=REPLACE, item=item)
+        self.assertEqual(updated, updated)
+        after = dicom.get("PatientIdentityRemoved")
+        self.assertEqual(before, after)
 
         print("Case 5: Testing REMOVE action")
         REMOVE = { "action":"REMOVE",
@@ -133,47 +136,12 @@ class TestDicomUtils(unittest.TestCase):
         dicom = perform_action(dicom=dicom,action=REMOVE)
         self.assertTrue("PatientIdentityRemoved" not in dicom)  
 
-
         print("Case 6: Testing invalid action")
         RUN = { "action":"RUN",
                 "field":"PatientIdentityRemoved"} 
 
         updated = perform_action(dicom=dicom,action=RUN)
-        self.assertEqual(updated,None)  
-
-
-    def test_entity_timestamp(self):        
-        from deid.dicom.utils import get_entity_timestamp
-        print("Test test_entity_timestamp")
- 
-        print("Case 1: field is empty returns None")
-        dicom = get_dicom(self.dataset)
-        ts = get_entity_timestamp(dicom)
-        self.assertEqual(ts,None)
-
-        print("Case 2: field not empty")
-        dicom.PatientBirthDate = "8/12/1962"
-        ts = get_entity_timestamp(dicom)        
-        self.assertEqual(ts,'1962-08-12T00:00:00Z')
-
-
-    def test_item_timestamp(self):
-        from deid.dicom.utils import get_item_timestamp
-        print("Test test_item_timestamp")
- 
-        print("Case 1: field is empty returns None")
-        dicom = get_dicom(self.dataset)
-        ts = get_item_timestamp(dicom)
-        self.assertEqual(ts,None)
-
-        print("Case 2: field not empty")
-        from deid.dicom.utils import perform_action
-        ADD = {"action":"ADD",
-               "field":"InstanceCreationDate",
-               "value":"1/1/2010"} 
-        dicom = perform_action(action=ADD,dicom=dicom)        
-        ts = get_item_timestamp(dicom)        
-        self.assertEqual(ts,'2010-01-01T00:00:00Z')
+        self.assertEqual(updated, updated)
 
 
 def get_dicom(dataset):

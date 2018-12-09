@@ -45,7 +45,7 @@ import sys
 
 # Actions
 
-def perform_action(dicom,action, item=None, fields=None, return_seen=False):
+def perform_action(dicom, action, item=None, fields=None, return_seen=False):
     '''perform action takes  
 
        Parameters
@@ -61,6 +61,7 @@ def perform_action(dicom,action, item=None, fields=None, return_seen=False):
     field = action.get('field')   # e.g: PatientID, endswith:ID
     value = action.get('value')   # "suid" or "var:field"
     action = action.get('action') # "REPLACE"
+
     # If there is an expander applied to field, we iterate over
     fields = expand_field_expression(field=field,
                                      dicom=dicom,
@@ -76,7 +77,7 @@ def perform_action(dicom,action, item=None, fields=None, return_seen=False):
                                 action=action,
                                 value=value)
     if return_seen:
-        return dicom,seen
+        return dicom, seen
     return dicom
 
 
@@ -100,6 +101,7 @@ def _perform_action(dicom, field, action, value=None, item=None):
 
         # Code the value with something in the response
         elif action == "REPLACE":
+
             value = parse_value(item, value)
             if value is not None:
                 # If we make it here, do the replacement
@@ -131,6 +133,7 @@ def _perform_action(dicom, field, action, value=None, item=None):
         value = parse_value(item, value)
         if value is not None:
             dicom = add_tag(dicom, field, value, quiet=True) 
+
     return dicom
 
 
@@ -155,34 +158,3 @@ def jitter_timestamp(dicom, field, value):
     if original is not None:
         dicom[field] = original + value
     return dicom
-   
-
-def get_entity_timestamp(dicom, date_field=None):
-    '''get_entity_timestamp will return a timestamp from the dicom
-       header based on the PatientBirthDate (default) if a field is
-       not provided.'''
-    if date_field is None:
-        date_field = "PatientBirthDate"
-    item_date = dicom.get(date_field)
-    return get_timestamp(item_date=item_date)
-
-
-def get_item_timestamp(dicom, date_field=None, time_field=None):
-    '''get_dicom_timestamp will return the UTC time for an instance.
-       This is derived from the InstanceCreationDate and InstanceCreationTime
-       If the Time is not set, only the date is used.
-       
-       ::notes 
-           testing function:
-           https://gist.github.com/vsoch/23d6b313bd231cad855877dc544c98ed
-    '''
-    if time_field is None:
-        time_field = "InstanceCreationTime"
-    if date_field is None:
-        date_field = "InstanceCreationDate"
-
-    item_time = dicom.get(time_field,"")
-    item_date = dicom.get(date_field)
-
-    return get_timestamp(item_date=item_date,
-                         item_time=item_time)

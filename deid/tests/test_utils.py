@@ -29,12 +29,6 @@ SOFTWARE.
 
 from deid.utils import get_installdir
  
-from numpy.testing import (
-    assert_array_equal, 
-    assert_almost_equal, 
-    assert_equal
-)
-
 import unittest
 import tempfile
 import shutil

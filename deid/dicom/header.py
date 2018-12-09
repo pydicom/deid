@@ -41,7 +41,8 @@ from pydicom.errors import InvalidDicomError
 import dateutil.parser
 import tempfile
 
-from .utils import ( save_dicom, perform_action )
+from .utils import save_dicom
+from .actions import perform_action
 from pydicom.dataset import Dataset
 
 from .fields import (
