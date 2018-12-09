@@ -26,26 +26,26 @@ from deid.config.standards import (
     actions as valid_actions
 )
 
-from deid.identifiers.actions import (
-    jitter_timestamp,
-    parse_value
-)
 from .fields import expand_field_expression
 
 from deid.logger import bot
 from pydicom import read_file
 from pydicom._dicom_dict import DicomDictionary
-from deid.utils import recursive_find
+from deid.utils import (
+    recursive_find,
+    get_timestamp,
+    parse_value
+)
 from .tags import *
-from deid.identifiers import get_timestamp
 import tempfile
 import os
 import re
 import sys
 
 
+# Actions
 
-def perform_action(dicom,action,item=None,fields=None,return_seen=False):
+def perform_action(dicom,action, item=None, fields=None, return_seen=False):
     '''perform action takes  
 
        Parameters
@@ -80,8 +80,7 @@ def perform_action(dicom,action,item=None,fields=None,return_seen=False):
     return dicom
 
 
-
-def _perform_action(dicom,field,action,value=None,item=None):
+def _perform_action(dicom, field, action, value=None, item=None):
     '''_perform_action is the base function for performing an action.
        perform_action (above) typically is called using a loaded deid,
        and perform_addition is typically done via an addition in a config
@@ -101,7 +100,7 @@ def _perform_action(dicom,field,action,value=None,item=None):
 
         # Code the value with something in the response
         elif action == "REPLACE":
-            value = parse_value(item,value)
+            value = parse_value(item, value)
             if value is not None:
                 # If we make it here, do the replacement
                 dicom = update_tag(dicom,
@@ -112,7 +111,7 @@ def _perform_action(dicom,field,action,value=None,item=None):
 
         # Code the value with something in the response
         elif action == "JITTER":
-            value = parse_value(item,value)
+            value = parse_value(item, value)
             if value is not None:
 
                 # Jitter the field by the supplied value
@@ -129,32 +128,53 @@ def _perform_action(dicom,field,action,value=None,item=None):
             dicom = remove_tag(dicom,field)
 
     elif action == "ADD":
-        value = parse_value(item,value)
+        value = parse_value(item, value)
         if value is not None:
-            dicom = add_tag(dicom,field,value,quiet=True) 
+            dicom = add_tag(dicom, field, value, quiet=True) 
     return dicom
 
 
+# Timestamps
 
-def get_entity_timestamp(dicom,date_field=None):
+def jitter_timestamp(dicom, field, value):
+    '''if present, jitter a timestamp in dicom
+       field "field" by number of days specified by "value"
+       The value can be positive or negative.
+ 
+       Parameters
+       ==========
+       dicom: the pydicom Dataset
+       field: the field with the timestamp
+       value: number of days to jitter by. Jitter bug!
+
+    '''
+    if not isinstance(value, int):
+        value = int(value)
+
+    original = dicom.get(field,None)
+    if original is not None:
+        dicom[field] = original + value
+    return dicom
+   
+
+def get_entity_timestamp(dicom, date_field=None):
     '''get_entity_timestamp will return a timestamp from the dicom
        header based on the PatientBirthDate (default) if a field is
-       not provided.
-    '''
+       not provided.'''
     if date_field is None:
         date_field = "PatientBirthDate"
     item_date = dicom.get(date_field)
     return get_timestamp(item_date=item_date)
 
 
-def get_item_timestamp(dicom,date_field=None,time_field=None):
+def get_item_timestamp(dicom, date_field=None, time_field=None):
     '''get_dicom_timestamp will return the UTC time for an instance.
        This is derived from the InstanceCreationDate and InstanceCreationTime
        If the Time is not set, only the date is used.
        
-       ::notes
-       testing function 
-          https://gist.github.com/vsoch/23d6b313bd231cad855877dc544c98ed
+       ::notes 
+           testing function:
+           https://gist.github.com/vsoch/23d6b313bd231cad855877dc544c98ed
     '''
     if time_field is None:
         time_field = "InstanceCreationTime"

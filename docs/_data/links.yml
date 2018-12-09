@@ -8,8 +8,8 @@ navigation:
   url: getting-started/
 - name: Examples
   url: examples/
-- name: Tools
-  url: tools/
+- name: User Documentation
+  url: user-docs/
 - name: Development
   url: development/
 - name: Contributing

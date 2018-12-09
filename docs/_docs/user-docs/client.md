@@ -1,7 +1,7 @@
 ---
 title: Deid Client
-category: Getting Started
-order: 7
+category: User Documentation
+order: 5
 ---
 
 After you [install deid]({{ site.baseurl }}/install/) you will notice a command line application has been placed in your bin:
@@ -523,7 +523,9 @@ DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
 7 dicom files at /tmp/tmp12lwhq7x
 ```
 
-This will mean that the majority of things will be removed. You can still specify a deid file to have additions, or blanks, but all variables must be present in the header already (eg, the fields returned in the ids that we had tweaked above) for it to work.
+This will mean that the majority of things will be removed. You can still specify a 
+deid file to have additions, or blanks, but all variables must be present in the 
+header already (eg, the fields returned in the ids that we had tweaked above) for it to work.
 
 
 ### Your own folder

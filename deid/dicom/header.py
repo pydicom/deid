@@ -32,10 +32,6 @@ from .tags import (
     remove_tag,
     remove_sequences
 )
-from deid.identifiers.utils import (
-    create_lookup,
-    load_identifiers
-)
 
 from deid.dicom.tags import get_private
 from deid.config import DeidRecipe
@@ -45,13 +41,13 @@ from pydicom.errors import InvalidDicomError
 import dateutil.parser
 import tempfile
 
-from .utils import get_func, save_dicom
-from .actions import perform_action
+from .utils import ( save_dicom, perform_action )
 from pydicom.dataset import Dataset
 
 from .fields import (
     get_fields,
-    get_fields_byVR
+    get_fields_byVR,
+    expand_field_expression
 )
 
 import os
@@ -278,7 +274,8 @@ def replace_identifiers(dicom_files,
                 for action in deid.get_actions():
                     dicom = perform_action(dicom=dicom,
                                            item=ids[dicom_file],
-                                           action=action) 
+                                           action=action,
+                                           expander=expand_field_expression)
             else:
                 bot.warning("%s is not in identifiers." %dicom_name)
                 continue
@@ -287,7 +284,8 @@ def replace_identifiers(dicom_files,
         for action in config['put']['actions']:
             if action['field'] in fields:
                  dicom = perform_action(dicom=dicom,
-                                        action=action)
+                                        action=action,
+                                        expander=expand_field_expression)
         if remove_private is True:
             try:
                 dicom.remove_private_tags()

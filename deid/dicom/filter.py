@@ -113,13 +113,13 @@ def equalsBase(self, field, term, ignore_case=True, not_equals=False):
     return is_equal
 
 
-def equals(self,field,term):
+def equals(self, field, term):
     '''returns true if the value of the identifier exactly 
        equals the string argument; otherwise, it returns false.'''
     return self.equalsBase(field,term)
 
 
-def notEquals(self,field,term):
+def notEquals(self, field, term):
     return self.equalsBase(field=field,
                            term=term,
                            not_equals=True)
@@ -148,7 +148,7 @@ def missing(self, field):
     return False
 
  
-def empty(self,field):
+def empty(self, field):
     '''empty returns True if the value is found to be ""
     '''
     content = self.get(field)
@@ -169,7 +169,7 @@ Dataset.missing = missing
 ################################################################################
 
 
-def compareBase(self,field,expression,func,ignore_case=True):
+def compareBase(self, field, expression, func, ignore_case=True):
     '''compareBase takes either re.search (for contains) or
        re.match (for matches) and returns True if the given regular
        expression is contained or matched
@@ -199,7 +199,7 @@ def compareBase(self,field,expression,func,ignore_case=True):
     return is_match
 
 
-def matches(self,field,expression):
+def matches(self, field, expression):
     '''matches returns true if the value of the identifier matches 
        the regular expression specified in the string argument; 
        otherwise, it returns false.
@@ -209,7 +209,7 @@ def matches(self,field,expression):
                             func=re.match)
 
 
-def contains(self,field,expression):
+def contains(self, field, expression):
     '''contains returns true if the value of the identifier 
        contains the the string argument anywhere within it; 
        otherwise, it returns false.
@@ -218,7 +218,7 @@ def contains(self,field,expression):
                             expression=expression,
                             func=re.search)
 
-def notContains(self,field,expression):
+def notContains(self, field, expression):
     '''notContains returns true if the value of the identifier 
        does not contain the the string argument anywhere within it; 
     '''
@@ -237,7 +237,7 @@ Dataset.notContains = notContains
 ################################################################################
 
 
-def startsWith(self,field,term):
+def startsWith(self, field, term):
     '''startsWith returns true if the value of the identifier 
        starts with the string argument; otherwise, it returns false.
     '''
@@ -246,7 +246,7 @@ def startsWith(self,field,term):
                             expression=expression,
                             func=re.match)
     
-def endsWith(self,field,term):
+def endsWith(self, field, term):
     '''endsWith returns true if the value of the identifier ends with 
        the string argument; otherwise, it returns false.
     '''
