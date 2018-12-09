@@ -4,28 +4,6 @@ category: Examples
 order: 4
 ---
 
-As we've discussed, the basic actions of using header filters to flag images, 
-and performing actions on headers (for replacement), are controlled by a text file called 
-a deid recipe. If you want a reminder about how to write this text file, 
-[read here]({{ site.baseurl }}/getting-started/dicom-config). In this example,
-we will walk through basic actions that might say something like:
-
- > Replace Field A with the output of a function called generate_uid
-
-Specifically, we can define a set of REPLACE and ADD actions:
-
-```
-FORMAT dicom
-
-%header
-
-REPLACE StudyInstanceUID func:generate_uid
-REPLACE SeriesInstanceUID func:generate_uid
-ADD FrameOfReferenceUID func:generate_uid
-```
-
-# Function Header Actions
-
 Here is a quick example to show using deid to update a frame of reference UID,
 and instance UIDs across a set of datasets. We aren't doing any filtering, we are just going to
 change field with a value derived from a function. This example
