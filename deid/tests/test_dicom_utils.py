@@ -36,6 +36,8 @@ import os
 from deid.utils import get_installdir
 from deid.data import get_dataset
 
+global generate_uid
+
 class TestDicomUtils(unittest.TestCase):
 
     def setUp(self):
@@ -142,6 +144,21 @@ class TestDicomUtils(unittest.TestCase):
 
         updated = perform_action(dicom=dicom,action=RUN)
         self.assertEqual(updated, updated)
+
+        print("Case 7: Testing function (func:) with action")
+        ACTION = { "action":"REPLACE",
+                   "field":"PatientID",
+                   "value":"func:generate_uid"} 
+
+        # Here is the function we define to replace
+        def generate_uid(field):
+            return "pancakes"
+
+        # The function must be in the item lookup
+        item['generate_uid'] = generate_uid
+
+        updated = perform_action(dicom=dicom, action=ACTION, item=item)
+        self.assertEqual(updated.PatientID, "pancakes")
 
 
 def get_dicom(dataset):

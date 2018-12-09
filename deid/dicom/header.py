@@ -47,8 +47,7 @@ from pydicom.dataset import Dataset
 
 from .fields import (
     get_fields,
-    get_fields_byVR,
-    expand_field_expression
+    get_fields_byVR
 )
 
 import os
@@ -275,8 +274,7 @@ def replace_identifiers(dicom_files,
                 for action in deid.get_actions():
                     dicom = perform_action(dicom=dicom,
                                            item=ids[dicom_file],
-                                           action=action,
-                                           expander=expand_field_expression)
+                                           action=action)
             else:
                 bot.warning("%s is not in identifiers." %dicom_name)
                 continue
@@ -285,8 +283,7 @@ def replace_identifiers(dicom_files,
         for action in config['put']['actions']:
             if action['field'] in fields:
                  dicom = perform_action(dicom=dicom,
-                                        action=action,
-                                        expander=expand_field_expression)
+                                        action=action)
         if remove_private is True:
             try:
                 dicom.remove_private_tags()

@@ -89,8 +89,9 @@ def _perform_action(dicom, field, action, value=None, item=None):
        done, None is returned, and the calling function should handle this.
     '''
     if action not in valid_actions:
-        bot.warning('%s in not a valid choice [%s]. Defaulting to blanked.' %(action,
-                                                                              ".".join(valid_actions)))
+        bot.warning('''%s in not a valid choice [%s]. 
+                       Defaulting to blanked.''' %(action,
+                                               ".".join(valid_actions)))
         action = "BLANK"
 
     if field in dicom and action != "ADD":
@@ -102,7 +103,7 @@ def _perform_action(dicom, field, action, value=None, item=None):
         # Code the value with something in the response
         elif action == "REPLACE":
 
-            value = parse_value(item, value)
+            value = parse_value(item, value, field)
             if value is not None:
                 # If we make it here, do the replacement
                 dicom = update_tag(dicom,
@@ -113,7 +114,7 @@ def _perform_action(dicom, field, action, value=None, item=None):
 
         # Code the value with something in the response
         elif action == "JITTER":
-            value = parse_value(item, value)
+            value = parse_value(item, value, field)
             if value is not None:
 
                 # Jitter the field by the supplied value
@@ -127,10 +128,10 @@ def _perform_action(dicom, field, action, value=None, item=None):
 
         # Remove the field entirely
         elif action == "REMOVE":
-            dicom = remove_tag(dicom,field)
+            dicom = remove_tag(dicom, field)
 
     elif action == "ADD":
-        value = parse_value(item, value)
+        value = parse_value(item, value, field)
         if value is not None:
             dicom = add_tag(dicom, field, value, quiet=True) 
 

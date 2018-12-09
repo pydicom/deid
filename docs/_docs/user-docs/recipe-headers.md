@@ -129,9 +129,9 @@ instead:
 REPLACE PatientID func:generate_suid
 ```
 
-Where the first argument is expected to be the PatientID, and the function
-is expected to be loaded into the global space at runtime. See the 
-[Frame of Reference]({{ site.baseurl }}/examples/frame-of-reference/) example
+When you do this, the function is expected to be defined in the customized
+item dictionary that you pass in (e.g., modified output from `get_identifiers`)
+See the [Frame of Reference]({{ site.baseurl }}/examples/header-manipulation/) example
 for a walkthrough of how to do this.
 
 

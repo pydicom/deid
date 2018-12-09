@@ -22,7 +22,7 @@ want a quick start overview of deid.
 
 ## Header Manipulation
 
- - [Frame of Reference]({{ site.baseurl }}/examples/frame-of-reference/) shows how to dynamically replace or update header values from a function.
+ - [Frame of Reference]({{ site.baseurl }}/examples/func-replace/) shows how to dynamically replace or update header values from a function.
 
 
 ## Cleaning Pixels
