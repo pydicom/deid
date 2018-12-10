@@ -135,6 +135,13 @@ LABEL CT Dose Series # (CTP)
   + contains ImageType DOSE
   coordinates 0,0,512,135
 
+LABEL SIEMMENS  # (CTP)
+  contains Modality US
+  + contains Manufacturer SIEMENS
+  + contains ManufacturerModelName S2000
+  + equals Rows 768
+  + equals Columns 1024
+  coordinates 0,0,1024,60
 
 LABEL Toshiba Aquilion One CT Dose Series # (CTP)
   contains Modality CT
@@ -164,6 +171,12 @@ LABEL Logiq US (LOGIQE9 or V830) # (CTP)
   + contains ManufacturerModelName LOGIQE9|V830
   coordinates 0,0,960,70
 
+LABEL Logiq US LOGIQE  # (AMBR)
+  contains Modality US
+  + contains Manufacturer GE
+  + equals Rows 614
+  + contains ManufacturerModelName LOGIQE
+  coordinates 0,0,1150,75
 
 LABEL Philips IU22 # (CTP)
   contains Modality US
@@ -186,14 +199,33 @@ LABEL Philips IU22 # (CTP)
   + contains ManufacturerModelName iU22
   coordinates 0,0,800,59
 
+LABEL Philips Affiniti # (AMB)
+  contains Modality US
+  + contains Manufacturer Philips
+  + equals Rows 768
+  + contains ManufacturerModelName Affiniti 70G
+  coordinates 0,0,1024,22
+
+LABEL Philips Affiniti # (AMB)
+  contains Modality US
+  + contains Manufacturer Philips
+  + equals Rows 600
+  + contains ManufacturerModelName ClearVue 650
+  coordinates 0,0,1150,22
+
+LABEL Philips Affiniti # (AMB)
+  contains Modality US
+  + contains Manufacturer Philips
+  + equals Rows 825
+  + contains ManufacturerModelName Affiniti 70G
+  coordinates 0,0,1140,70
 
 LABEL EPIQ 7G # (CTP)
   contains Modality US
   + contains Manufacturer Philips
   + equals Rows 600
   + contains ManufacturerModelName EPIQ
-  coordinates 0,0,800,59   ## CHECK THESE COORDINATES, same as last ones
-
+  coordinates 0,0,800,59
 
 LABEL EPIQ 7G # (CTP)
   contains Modality US
@@ -202,6 +234,12 @@ LABEL EPIQ 7G # (CTP)
   + contains ManufacturerModelName EPIQ
   coordinates 0,0,800,59
 
+LABEL EPIQ 7G # (FFUR)
+  contains Modality US
+  + contains Manufacturer Philips
+  + equals Rows 825
+  + contains ManufacturerModelName EPIQ
+  coordinates 0,0,800,59
 
 LABEL CX50 # (CTP)
   contains Modality US
@@ -209,13 +247,19 @@ LABEL CX50 # (CTP)
   + contains ManufacturerModelName CX50
   coordinates 0,0,800,59
 
-
 LABEL Z_ONE # (CTP)
   contains Modality US 
   + contains Manufacturer Zonare
   + equals Rows 600
   + contains ManufacturerModelName Z_ONE
   coordinates 0,0,800,65
+
+LABEL Z_ONE # (FFUR)
+  contains Modality US
+  + contains Manufacturer Zonare
+  + equals Rows 600
+  + contains ManufacturerModelName ZS3
+  coordinates 0,0,1150,55
 
 LABEL ATL HDI 5000 # (CTP)
   contains Modality US
@@ -225,6 +269,13 @@ LABEL ATL HDI 5000 # (CTP)
   + contains ManufacturerModelName HDI 5000
   coordinates 40,0,200,40
   coordinates 240,0,190,16
+
+LABEL ATL HDI4000 # (FFUR)
+  contains Modality US
+  + contains Manufacturer ATL
+  + equals Rows 480
+  + contains ManufacturerModelName HDI4000
+  coordinates 0,0,1140,62
 
 LABEL Siemens SC2000 # (CTP)
   contains Modality US
@@ -245,6 +296,42 @@ LABEL Siemens Antares # (CTP)
   coordinates 200,60,20,20
   coordinates 800,65,104,14
 
+LABEL Siemens Acuson # (FFUR)
+  contains Modality US
+  + contains Manufacturer Siemens
+  + equals Rows 600
+  + contains ManufacturerModelName G40
+  coordinates 0,0,980,45
+
+LABEL Siemens Acuson # (FFUR)
+  contains Modality US
+  + contains Manufacturer Siemens
+  + equals Rows 768
+  + contains ManufacturerModelName ACUSON NX3
+  coordinates 0,0,1150,58
+
+LABEL Siemens Acuson # (FFUR)
+  contains Modality US
+  + contains Manufacturer Siemens
+  + equals Rows 600
+  + contains ManufacturerModelName X150
+  coordinates 0,0,1145,50
+
+LABEL Siemens Acuson # (FFUR)
+  contains Modality US
+  + contains Manufacturer Siemens
+  + equals Rows 768
+  + contains ManufacturerModelName S3000
+  coordinates 0,0,1040,60
+
+LABEL Siemens Acuson # (FFUR)
+  contains Modality US
+  + contains Manufacturer Siemens
+  + equals Rows 600
+  + equals Columns 800
+  + contains ManufacturerModelName ACUSON
+  coordinates 0,0,800,43
+  coordinates 128,56,16,16
 
 LABEL Siemens Acuson # (CTP)
   contains Modality US
@@ -263,7 +350,6 @@ LABEL Acuson Sequoia # (CTP)
   + contains ManufacturerModelName SEQUOIA
   coordinates 0,0,640,30
 
-
 LABEL Aplio 400 or 500 # (CTP)
   contains Modality US
   + contains Manufacturer TOSHIBA
@@ -272,6 +358,33 @@ LABEL Aplio 400 or 500 # (CTP)
   + contains ManufacturerModelName A400|A500
   coordinates 0,0,960,60
 
+LABEL TOSHIBA # (FFUR)
+  contains Modality US
+  + contains Manufacturer TOSHIBA
+  + equals Rows 632
+  + contains ManufacturerModelName TUS-A300
+  coordinates 0,0,1150,72
+
+LABEL TOSHIBA # (FFUR)
+  contains Modality US
+  + contains Manufacturer TOSHIBA
+  + equals Rows 720
+  + contains ManufacturerModelName TUS-A300
+  coordinates 0,0,1150,68
+
+LABEL TOSHIBA # (FFUR)
+  contains Modality US
+  + contains Manufacturer TOSHIBA
+  + equals Rows 903
+  coordinates 0,0,930,50
+  + contains ManufacturerModelName TUS-A500
+
+LABEL TOSHIBA # (FFUR)
+  contains Modality US
+  + contains Manufacturer TOSHIBA
+  + equals Rows 632
+  + contains ManufacturerModelName TUS-A500
+  coordinates 0,0,1150,60
 
 LABEL Supersonic Imagine 5A # (CTP)
   contains Modality US
@@ -280,7 +393,6 @@ LABEL Supersonic Imagine 5A # (CTP)
   + equals Columns 1400
   + contains ManufacturerModelName Aixplorer
   coordinates 0,0,1400,89
-
 
 LABEL Canon CR/DR # (CTP)
   contains Modality MRI
@@ -309,7 +421,6 @@ LABEL ADAC # (CTP)
   coordinates 0,0,1024,60
   coordinates 0,762,1024,80
 
-
 LABEL MEDRAD Injection Profile # (CTP)
   contains Modality Other
   + contains Manufacture MEDRAD
@@ -317,6 +428,264 @@ LABEL MEDRAD Injection Profile # (CTP)
   + equals Columns 750
   + contains SeriesDescription MEDRAD
   coordinates 0,0,750,230
+
+LABEL ESAOTE # (FFUR)
+  contains Manufacturer ESAOTE
+  + contains Modality US
+  + contains ManufacturerModelName 6100
+  + equals Rows 608
+coordinates 0,0,790,52
+
+LABEL ESAOTE # (FFUR)
+  contains Manufacturer ESAOTE
+  + contains Modality US
+  + contains ManufacturerModelName 6150
+  + equals Rows 804
+coordinates 0,0,1030,45
+
+LABEL ESAOTE # (FFUR)
+  contains Manufacturer ESAOTE
+  + contains Modality US
+  + contains ManufacturerModelName 6150
+  + equals Rows 804
+coordinates 0,0,1030,45
+
+LABEL ESAOTE # (FFUR)
+  contains Manufacturer ESAOTE
+  + contains Modality US
+  + contains ManufacturerModelName 6150
+  + equals Rows 608
+coordinates 0,0,1140,72
+
+LABEL ESAOTE # (FFUR)
+  contains Manufacturer ESAOTE
+  + contains Modality US
+  + contains ManufacturerModelName 6150
+  + equals Rows 555
+coordinates 0,0,1140,72
+
+LABEL MEDISON # (FFUR)
+  contains Manufacturer MEDISON
+  + contains Modality US
+  + contains ManufacturerModelName Accuvix V20
+  + equals Rows 768
+coordinates 0,0,1010,65
+
+LABEL GE Healthcare # (FFUR)
+  contains Manufacturer GE Healthcare Austria
+  + contains Modality US
+  + contains ManufacturerModelName Voluson P8
+  + equals Rows 727
+coordinates 0,0,1150,65
+
+LABEL GE Healthcare # (FFUR)
+  contains Manufacturer GE Healthcare
+  + contains Modality US
+  + contains ManufacturerModelName Voluson P8
+  + equals Rows 727
+coordinates 0,0,1150,65
+
+LABEL GE Healthcare # (FFUR)
+  contains Manufacturer GE Healthcare
+  + contains Modality US
+  + contains ManufacturerModelName Voluson S
+  + equals Rows 743
+coordinates 0,0,925,62
+
+LABEL GE Healthcare # (FFUR)
+  contains Manufacturer GE Healthcare
+  + contains Modality US
+  + contains ManufacturerModelName Voluson S
+  + equals Rows 743
+coordinates 0,0,925,62
+
+LABEL GE Healthcare # (FFUR)
+  contains Manufacturer GE Healthcare
+  + contains Modality US
+  + contains ManufacturerModelName Voluson S10
+  + equals Rows 852
+coordinates 0,0,1040,62
+
+LABEL GE Healthcare # (FFUR)
+  contains Manufacturer GE Healthcare
+  + contains Modality US
+  + contains ManufacturerModelName Voluson S10
+  + equals Rows 600
+coordinates 0,0,1040,62
+
+LABEL GE Healthcare # (FFUR)
+  contains Manufacturer GE Healthcare
+  + contains Modality US
+  + contains ManufacturerModelName LOGIQS7
+  + equals Rows 720
+coordinates 0,0,1060,67
+
+LABEL GE Healthcare # (FFUR)
+  contains Manufacturer GE Healthcare
+  + contains Modality US
+  + contains ManufacturerModelName LOGIQS8
+  + equals Rows 873
+coordinates 0,0,1160,65
+
+LABEL GE Healthcare # (FFUR)
+  contains Manufacturer GE Healthcare
+  + contains Modality US
+  + contains ManufacturerModelName LOGIQS8
+  + equals Rows 768
+coordinates 0,0,1150,60
+
+LABEL GE Healthcare # (FFUR)
+  contains Manufacturer GE Healthcare
+  + contains Modality US
+  + contains ManufacturerModelName LOGIQS8
+  + equals Rows 819
+coordinates 0,0,937,57
+
+LABEL GE Healthcare # (FFUR)
+  contains Manufacturer GE Healthcare
+  + contains Modality US
+  + contains ManufacturerModelName LOGIQS8
+  + equals Rows 720
+coordinates 0,0,1140,50
+
+LABEL GE Healthcare # (FFUR)
+  contains Manufacturer GE Healthcare
+  + contains Modality US
+  + contains ManufacturerModelName LOGIQP
+  + equals Rows 614
+coordinates 0,0,1060,67
+
+LABEL GE Healthcare # (AMBR)
+  contains Manufacturer GE Healthcare
+  + contains Modality US
+  + contains ManufacturerModelName LOGIQ S6
+  + equals Rows 768
+coordinates 0,0,800,80
+
+LABEL GE Healthcare # (AMBR)
+  contains Manufacturer GE Healthcare
+  + contains Modality US
+  + contains ManufacturerModelName LOGIQ7
+  + equals Rows 989
+coordinates 0,0,1150,24
+
+LABEL MINDRAY # (AMBR)
+  contains Manufacturer MINDRAY
+  + contains Modality US
+  + contains ManufacturerModelName M6
+  + equals Rows 600
+coordinates 0,0,1050,75
+
+LABEL MINDRAY # (AMBR)
+  contains Manufacturer MINDRAY
+  + contains Modality US
+  + contains ManufacturerModelName M7
+  + equals Rows 600
+coordinates 0,0,800,50
+
+LABEL MINDRAY # (AMBR)
+  contains Manufacturer MINDRAY
+  + contains Modality US
+  + contains ManufacturerModelName M7
+  + equals Rows 768
+coordinates 0,0,1080,80
+
+LABEL MINDRAY # (AMBR)
+  contains Manufacturer MINDRAY
+  + contains Modality US
+  + contains ManufacturerModelName Z5
+  + equals Rows 600
+coordinates 0,0,1130,62
+
+LABEL MINDRAY # (AMBR)
+  contains Manufacturer MINDRAY
+  + contains Modality US
+  + contains ManufacturerModelName DC-8 PRO
+  + equals Rows 900
+coordinates 0,0,1150,60
+
+LABEL MINDRAY # (AMBR)
+  contains Manufacturer MINDRAY
+  + contains Modality US
+  + contains ManufacturerModelName M9
+  + equals Rows 910
+coordinates 0,0,1150,60
+
+LABEL SIUI # (AMBR)
+  contains Manufacturer SIUI
+  + contains Modality US
+  + contains ManufacturerModelName CTS-8800
+coordinates 0,0,1360,100
+
+LABEL Kretztechnik # (AMBR)
+  contains Manufacturer Kretztechnik
+  + contains Modality US
+  + contains ManufacturerModelName V730
+  + equals Rows 600
+coordinates 0,0,1140,80
+
+LABEL Hitachi # (AMBR)
+  contains Manufacturer Hitachi
+  + contains Modality US
+  + contains ManufacturerModelName HI VISION Preirus
+  + equals Rows 768
+coordinates 0,0,1150,60
+
+LABEL Hitachi # (AMBR)
+  contains Manufacturer Hitachi
+  + contains Modality US
+  + contains ManufacturerModelName HI VISION Avius
+  + equals Rows 768
+coordinates 0,0,1140,74
+
+LABEL Hitachi # (AMBR)
+  contains Manufacturer Hitachi
+  + contains Modality US
+  + contains ManufacturerModelName ProSound F75
+  + equals Rows 768
+coordinates 0,0,1025,50
+
+LABEL Samsung # (AMBR)
+  contains Manufacturer Samsung
+  + contains Modality US
+  + contains ManufacturerModelName UGEO H60
+  + equals Rows 720
+coordinates 0,0,1150,70
+
+LABEL Samsung # (AMBR)
+  contains Manufacturer Samsung
+  + contains Modality US
+  + contains ManufacturerModelName SonoAce R7
+  + equals Rows 768
+coordinates 0,0,1024,60
+
+LABEL MEDISON # (AMBR)
+  contains Manufacturer MEDISON
+  + contains Modality US
+  + contains ManufacturerModelName SonoAce R7
+  + equals Rows 768
+coordinates 0,0,1140,60
+
+LABEL Chison # (AMBR)
+  contains Manufacturer Chison
+  + contains Modality US
+  + contains ManufacturerModelName q9-new
+  + equals Rows 568
+coordinates 0,0,1250,80
+
+LABEL Ultrasonix # (AMBR)
+  contains Manufacturer Ultrasonix
+  + contains Modality US
+  + contains ManufacturerModelName SONIX
+  + equals Rows 768
+coordinates 0,0,970,60
+
+LABEL Ultrasonix # (AMBR)
+  contains Manufacturer Ultrasonix
+  + contains Modality US
+  + contains ManufacturerModelName SONIX
+  + equals Rows 600
+coordinates 0,0,970,60
 
 LABEL Stanford Medical Center LightSpeed VCT # (Roger Goldman)
   contains Manufacturer GE
@@ -337,6 +706,17 @@ LABEL Stanford Medicine Outpatient center
   + contains ImageType DERIVED|SECONDARY|SCREEN SAVE|VOLREN|VXTL STATE
 
 %filter blacklist
+
+LABEL Any Scanned Document or Secondary Save
+  contains ImageType Secondary
+  contains Modality OT
+
+LABEL Any REPORTDATA
+  contains ImageType REPORTDATA
+
+LABEL Any DEMOGRAPHICDATA, INVALID # (AMB)
+  contains ImageType DEMOGRAPHICDATA
+  contains ImageType INVALID
 
 LABEL Stanford Blacklist Missing ImageType  # Susan Weber, Vanessa Sochat
   missing ImageType || empty ImageType
