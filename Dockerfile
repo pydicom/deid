@@ -1,8 +1,8 @@
 FROM continuumio/miniconda3
 
 RUN apt-get update && apt-get install -y wget git pkg-config libfreetype6-dev
-RUN pip install pydicom
 RUN /opt/conda/bin/conda install matplotlib==2.1.2
+RUN pip install pydicom
 RUN mkdir /code
 ADD . /code
 WORKDIR /code
