@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+ - installation order of pydicom / matplotlib changes default python [#81](https://www.github.com/pydicom/deid/issues/81) (0.0.23)
  - updating deid.dicom with contribution from @fimafurman [#63](https://github.com/pydicom/deid/issues/63) (0.1.22)
  - adding "func" option for recipe to pass function (0.1.21)
  - fixing client bug, redoing docs to be better organized (0.1.20)
