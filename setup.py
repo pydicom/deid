@@ -66,7 +66,6 @@ AUTHOR_EMAIL = lookup['AUTHOR_EMAIL']
 PACKAGE_URL = lookup['PACKAGE_URL']
 KEYWORDS = lookup['KEYWORDS']
 DESCRIPTION = lookup['DESCRIPTION']
-DEPENDENCY_LINKS = lookup['DEPENDENCY_LINKS']
 LICENSE = lookup['LICENSE']
 with open('README.md') as filey:
     LONG_DESCRIPTION = filey.read()
@@ -91,7 +90,6 @@ setup(
     long_description=LONG_DESCRIPTION,
     keywords=KEYWORDS,
     install_requires=INSTALL_REQUIRES,
-    dependency_links = DEPENDENCY_LINKS,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
