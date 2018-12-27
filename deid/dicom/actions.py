@@ -41,6 +41,7 @@ import tempfile
 import os
 import re
 import sys
+import datetime
 
 
 # Actions
@@ -118,7 +119,7 @@ def _perform_action(dicom, field, action, value=None, item=None):
             if value is not None:
 
                 # Jitter the field by the supplied value
-                dicom = jitter_timestamp(item=dicom,
+                dicom = jitter_timestamp(dicom=dicom,
                                          field=field,
                                          value=value)
             else:
@@ -156,6 +157,12 @@ def jitter_timestamp(dicom, field, value):
         value = int(value)
 
     original = dicom.get(field,None)
+    original_date = datetime.datetime.strptime(original, "%Y%m%d")
+    date_added = original_date + datetime.timedelta(days=value)
+       
     if original is not None:
-        dicom[field] = original + value
+        value = "{:%Y%m%d}".format(date_added)
+        dicom = update_tag(dicom,
+                           field=field,
+                           value=value)
     return dicom
