@@ -157,12 +157,33 @@ def jitter_timestamp(dicom, field, value):
         value = int(value)
 
     original = dicom.get(field,None)
-    original_date = datetime.datetime.strptime(original, "%Y%m%d")
-    date_added = original_date + datetime.timedelta(days=value)
-       
+
     if original is not None:
-        value = "{:%Y%m%d}".format(date_added)
+        dcmvr = dicom.data_element(field).VR
+        '''
+        DICOM Value Representation can be either DA (Date) DT (Timestamp),
+        or something else, which is not supported.
+        '''
+        if (dcmvr == 'DA'):
+            '''
+             NEMA-compliant format for DICOM date is YYYYMMDD
+            '''
+            new_value = get_timestamp(original, jitter_days=value, 
+                                      format='%Y%m%d')
+
+        elif (dcmvr == 'DT'):
+            '''
+            NEMA-compliant format for DICOM timestamp is
+            YYYYMMDDHHMMSS.FFFFFF&ZZXX
+            '''
+            new_value = get_timestamp(original, jitter_days=value,
+                                      format='%Y%m%d%H%M%S.%f%z')
+        else:
+            # Do nothing and issue a warning.
+            new_value = original
+            bot.warning("JITTER not supported for %s with VR=%s" % (field, 
+                                                                    dcmvr))
         dicom = update_tag(dicom,
                            field=field,
-                           value=value)
+                           value=new_value)
     return dicom
