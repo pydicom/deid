@@ -160,6 +160,61 @@ class TestDicomUtils(unittest.TestCase):
         updated = perform_action(dicom=dicom, action=ACTION, item=item)
         self.assertEqual(updated.PatientID, "pancakes")
 
+    def test_jitter_timestamp(self):
+
+        from deid.dicom.actions import jitter_timestamp
+        dicom = get_dicom(self.dataset)
+
+        print("Testing test_jitter_timestamp")
+
+        print("Case 1: Testing jitter_timestamp with DICOM Date (DA)")
+        dicom.StudyDate = '20131210'
+        dicom.data_element("StudyDate").VR = 'DA'
+        jitter_timestamp(dicom, "StudyDate", 10) 
+        expected = '20131220'
+        self.assertEqual(dicom.StudyDate, expected)
+       
+        print("Case 2: Testing with DICOM timestamp (DT)")
+        dicom.AcquisitionDateTime = '20131210081530'
+        dicom.data_element("AcquisitionDateTime").VR = 'DT'
+        jitter_timestamp(dicom, "AcquisitionDateTime", 10) 
+        expected = '20131220081530.000000' 
+        self.assertEqual(dicom.AcquisitionDateTime, expected)
+
+        print("Case 3: Testing with non-standard DICOM date (DA)")
+        dicom.StudyDate = '2013/12/10'
+        dicom.data_element("StudyDate").VR = 'DA'
+        jitter_timestamp(dicom, "StudyDate", 10) 
+        expected = '20131220'
+        self.assertEqual(dicom.StudyDate, expected)
+
+        print("Case 4: Testing negative jitter value")
+        dicom.StudyDate = '20131210'
+        jitter_timestamp(dicom, "StudyDate", -5) 
+        expected = '20131205'
+        self.assertEqual(dicom.StudyDate, expected)
+
+        print("Case 5: Testing with empty field")
+        dicom.StudyDate = expected = ''
+        jitter_timestamp(dicom, "StudyDate", 10) 
+        self.assertEqual(dicom.StudyDate, expected)
+        
+        print('Case 6: Testing with nonexistent field')
+        del dicom.StudyDate
+        jitter_timestamp(dicom, "StudyDate", 10) 
+        self.assertTrue("StudyDate" not in dicom)  
+
+        print("Case 7: Testing JITTER recipe action")
+        from deid.dicom.actions import perform_action
+        dicom.StudyDate = '20131210'
+        dicom.data_element("StudyDate").VR = 'DA'
+        JITTER = { "action":"JITTER",
+                   "field":"StudyDate",
+                   "value":"-5" } 
+        expected = '20131205'
+        dicom = perform_action(dicom=dicom,action=JITTER)
+        self.assertTrue(dicom.StudyDate, expected)  
+        
 
 def get_dicom(dataset):
     '''helper function to load a dicom
