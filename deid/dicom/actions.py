@@ -41,6 +41,7 @@ import tempfile
 import os
 import re
 import sys
+import datetime
 
 
 # Actions
@@ -118,7 +119,7 @@ def _perform_action(dicom, field, action, value=None, item=None):
             if value is not None:
 
                 # Jitter the field by the supplied value
-                dicom = jitter_timestamp(item=dicom,
+                dicom = jitter_timestamp(dicom=dicom,
                                          field=field,
                                          value=value)
             else:
@@ -156,6 +157,35 @@ def jitter_timestamp(dicom, field, value):
         value = int(value)
 
     original = dicom.get(field,None)
+
     if original is not None:
-        dicom[field] = original + value
+        dcmvr = dicom.data_element(field).VR
+        '''
+        DICOM Value Representation can be either DA (Date) DT (Timestamp),
+        or something else, which is not supported.
+        '''
+        if (dcmvr == 'DA'):
+            '''
+            NEMA-compliant format for DICOM date is YYYYMMDD
+            '''
+            new_value = get_timestamp(original, jitter_days=value, 
+                                      format='%Y%m%d')
+
+        elif (dcmvr == 'DT'):
+            '''
+            NEMA-compliant format for DICOM timestamp is
+            YYYYMMDDHHMMSS.FFFFFF&ZZXX
+            '''
+            new_value = get_timestamp(original, jitter_days=value,
+                                      format='%Y%m%d%H%M%S.%f%z')
+        else:
+            # Do nothing and issue a warning.
+            new_value = None
+            bot.warning("JITTER not supported for %s with VR=%s" % (field, 
+                                                                    dcmvr))
+        if (new_value is not None and new_value != original):
+            # Only update if there's something to update AND there's been change
+            dicom = update_tag(dicom,
+                               field=field,
+                               value=new_value)
     return dicom
