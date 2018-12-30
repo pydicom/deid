@@ -105,7 +105,7 @@ Our recipe instance is ready to go. From the above we are saying we want to repl
 output from the generate_uid function, which is expected in the item dict. Let's write
 that next.
 
-## Write Your Funtion
+## Write Your Function
 
 ```python
 def generate_uid(item, value, field):
