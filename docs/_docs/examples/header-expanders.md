@@ -7,11 +7,9 @@ order: 5
 This example will walk through how to use header expansion
 to select more than one field from a dicom header to apply an action to. 
 Thanks to [@howardpchen](https://github.com/howardpchen) for contributing this idea in [this issue](https://github.com/pydicom/deid/issues/87). We will first show examples that you can write into [a deid recipe](https://pydicom.github.io/deid/examples/recipe/) to keep a record of your dicom header edits. We will then show the same
-(and more advanced) actions working with expanders directly in Python. Let's go!
+(and more advanced) actions working with expanders directly in Python. Let's go! Let's say I want to:
 
 ## Deid Recipes
-
-Let's say I want to:
 
 **Blank all fields that end with "Name"**
 
@@ -177,8 +175,6 @@ a single field. That would look like this:
 fields = expand_field_expression("PatientID", dicom)
 ['PatientID']
 ```
-
-## All Fields
 
 ### Apply your special function to ALL fields
 

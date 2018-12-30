@@ -1,0 +1,8 @@
+FORMAT dicom
+
+%header
+
+# Requires the function "pusheenize" to accept an item, value, field
+# in the python working environment when you load the recipe and run
+# replace_identifiers
+REPLACE all func:pusheenize
