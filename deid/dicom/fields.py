@@ -65,7 +65,7 @@ def expand_field_expression(field, dicom, contenders=None):
     
     '''
     # Expanders that don't have a : must be checked for
-    expanders = ['allfields']
+    expanders = ['all']
 
     # if no contenders provided, use all in dicom headers
     if contenders is None:
@@ -74,7 +74,7 @@ def expand_field_expression(field, dicom, contenders=None):
     # Case 1: field is an expander without an argument (e.g., no :)
     if field.lower() in expanders:
 
-        if field.lower() == "allfields":
+        if field.lower() == "all":
             fields = contenders
         return fields
 
@@ -93,7 +93,7 @@ def expand_field_expression(field, dicom, contenders=None):
         fields = [x for x in contenders if x.lower().endswith(expression)]
     elif expander.lower() == "startswith":
         fields = [x for x in contenders if x.lower().startswith(expression)]
-    elif expander.lower() == "exceptfields":
+    elif expander.lower() == "except":
         fields = [x for x in contenders if not re.search(expression, x.lower())]
     elif expander.lower() == "contains":
         fields = [x for x in contenders if re.search(expression, x.lower())]

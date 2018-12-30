@@ -246,25 +246,25 @@ BLANK contains:Name
 Notice how we get Name in uppercase (when our search string was lowercase) and
 it can appear anywhere in the field.
 
-**allfields**
+**all**
 
 All fields will allow you to apply a filter to all fields. In the example below,
 we have a function "remove_identifiers" defined in the python environment, and
 will run it over all fields, returning a value to update the field in question.
 
 ```
-ADD allfields func:remove_identifiers
+ADD ALL func:remove_identifiers
 ```
 
-**exceptfields**
+**except**
 
 Akin to all fields, except provide a list of fields that you want to disclude from
 a global selector. Here are some examples to include all fields except StudyDate 
 or StudyTime.
 
 ```
-BLANK exceptfields:StudyDate|StudyTime
-BLANK exceptfields:StudyTime
+BLANK except:StudyDate|StudyTime
+BLANK except:StudyTime
 ```
 
 If you are familiar with regular expressions, you'll notice the "|" which 
