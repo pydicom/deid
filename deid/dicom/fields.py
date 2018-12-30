@@ -90,9 +90,9 @@ def expand_field_expression(field, dicom, contenders=None):
 
     # Expanders here require an expression, and have <expander>:<expression>
     if expander.lower() == "endswith":
-        fields = [x for x in contenders if x.lower().endswith(expression)]
+        fields = [x for x in contenders if re.search('(%s)$' %expression, x.lower())]
     elif expander.lower() == "startswith":
-        fields = [x for x in contenders if x.lower().startswith(expression)]
+        fields = [x for x in contenders if re.search('^(%s)' %expression, x.lower())]
     elif expander.lower() == "except":
         fields = [x for x in contenders if not re.search(expression, x.lower())]
     elif expander.lower() == "contains":
