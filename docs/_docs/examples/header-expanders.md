@@ -13,7 +13,7 @@ Thanks to [@howardpchen](https://github.com/howardpchen) for contributing this i
 
 Let's say I want to:
 
-### Blank all fields that end with "Name"
+**Blank all fields that end with "Name"**
 
 I would write the following into my [deid recipe](https://pydicom.github.io/deid/examples/recipe/):
 
@@ -21,19 +21,19 @@ I would write the following into my [deid recipe](https://pydicom.github.io/deid
 BLANK endswith:Name
 ```
 
-### Blank all fields that start with Patient
+**Blank all fields that start with Patient**
 
 ```
 BLANK startswith:Patient
 ```
 
-### Blank all fields that contain Patient or Physician
+**Blank all fields that contain Patient or Physician**
 
 ```
 BLANK contains:Patient|Physician
 ```
 
-### Jitter the date for a specific field
+**Jitter the date for a specific field**
 
 Specifically, add 31 days to it.
 
@@ -41,19 +41,19 @@ Specifically, add 31 days to it.
 JITTER PatientBirthDate 31
 ```
 
-### Jitter the timestamp for all fields that contain the work date
+**Jitter the timestamp for all fields that contain the work date**
 
 ```
 JITTER contains:date 31
 ```
 
-### Apply your special function to ALL fields
+**Apply your special function to ALL fields**
 
 ```
 REPLACE all func:my_special_function
 ```
 
-### Apply your special function to ALL fields EXCEPT...
+**Apply your special function to ALL fields EXCEPT...**
 
 ```
 REPLACE except:LoserField func:my_special_function
@@ -120,6 +120,9 @@ with name. Capitalization of "Name" "name" "nAmE" does not matter.
 
 ### Select all fields that start with Patient
 
+Here we want fields that start with Patient. Again, the capitalization (or not)
+doesn't matter.
+
 ```python
 # startswith:Patient
 fields = expand_field_expression("startswith:Patient", dicom)
@@ -130,7 +133,14 @@ fields = expand_field_expression("startswith:Patient", dicom)
  'PatientSex']
 ```
 
+If you were using this to explore data, it would be useful to do to possibly
+discover fields relevant to the patient that you didn't know about.
+
 ### Select all fields that contain Physician or Patient
+
+A pro tip (do they still call them that these days?) Some of the expanders use regular
+expressions to select, contains being one of them. So if we use a pipe (|) to signify
+"or" we can find fields that contain Patient OR Physician.
 
 ```python
 # contains:Patient|Physician
@@ -144,6 +154,8 @@ fields = expand_field_expression("contains:Patient|Physician", dicom)
  'ReferringPhysicianName']
 ```
 
+You can also just select one field.
+
 ### Select all fields except PatientName or PatientSex
 
 We know there are a total of 34 fields, so this should select 32.
@@ -154,6 +166,7 @@ fields = expand_field_expression("except:PatientName|PatientSex", dicom)
 len(fields)
 # 32
 ```
+Indeed we've selected all but the two, leaving us with 32.
 
 ### Select a specific field
 
