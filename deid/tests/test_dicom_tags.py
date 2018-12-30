@@ -1,9 +1,4 @@
-#!/usr/bin/env python
-
 '''
-Test dicom tags
-
-The MIT License (MIT)
 
 Copyright (c) 2016-2018 Vanessa Sochat
 

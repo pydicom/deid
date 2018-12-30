@@ -28,7 +28,7 @@ from pydicom.dataset import RawDataElement
 from deid.logger import bot
 from pydicom import read_file
 import os
-
+import re
 
 def extract_sequence(sequence,prefix=None):
     '''return a pydicom.sequence.Sequence recursively
@@ -53,21 +53,51 @@ def extract_sequence(sequence,prefix=None):
 
 
 
-def expand_field_expression(field,dicom,contenders=None):
+def expand_field_expression(field, dicom, contenders=None):
     '''Get a list of fields based on an expression. If 
-       no expression found, return single field.
+       no expression found, return single field. Options for fields include:
+
+        endswith: filter to fields that end with the expression
+        startswith: filter to fields that start with the expression
+        contains: filter to fields that contain the expression
+        allfields: include all fields
+        exceptfields: filter to all fields except those listed ( | separated)
+    
     '''
+    # Expanders that don't have a : must be checked for
+    expanders = ['all']
+
+    # if no contenders provided, use all in dicom headers
+    if contenders is None:
+        contenders = dicom.dir()
+
+    # Case 1: field is an expander without an argument (e.g., no :)
+    if field.lower() in expanders:
+
+        if field.lower() == "all":
+            fields = contenders
+        return fields
+
+    # Case 2: The field is a specific field OR an axpander with argument (A:B)
     fields = field.split(':')
     if len(fields) == 1:
         return fields
-    expander,expression = fields
+
+    # if we get down here, we have an expander and expression
+    expander, expression = fields
+    expression = expression.lower()
     fields = []
-    if contenders is None:
-        contenders = dicom.dir()
+
+    # Expanders here require an expression, and have <expander>:<expression>
     if expander.lower() == "endswith":
-        fields = [x for x in contenders if x.endswith(expression)]
+        fields = [x for x in contenders if x.lower().endswith(expression)]
     elif expander.lower() == "startswith":
-        fields = [x for x in contenders if x.startswith(expression)]
+        fields = [x for x in contenders if x.lower().startswith(expression)]
+    elif expander.lower() == "except":
+        fields = [x for x in contenders if not re.search(expression, x.lower())]
+    elif expander.lower() == "contains":
+        fields = [x for x in contenders if re.search(expression, x.lower())]
+
     return fields
 
 
