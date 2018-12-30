@@ -166,7 +166,7 @@ FORMAT dicom
 %header
 
 ADD PatientIdentityRemoved Yes
-REMOVE *
+REMOVE ALL
 KEEP PixelData
 KEEP SamplesPerPixel
 KEEP Columns
