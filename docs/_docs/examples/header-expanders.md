@@ -180,7 +180,7 @@ fields = expand_field_expression("PatientID", dicom)
 
 This is a more complex (and fun!) example. We want to apply a function to
 ALL fields. For this example, we will work with a deid recipe. Here is what
-the recipe "deid.dicom-pusheen" looks like.
+the recipe [deid.dicom-pusheen](https://github.com/pydicom/deid/blob/master/examples/deid/deid.dicom-pusheen) looks like.
 
 ```
 %header
@@ -188,10 +188,20 @@ the recipe "deid.dicom-pusheen" looks like.
 REPLACE all func:pusheenize
 ```
 
+You can grab it to test out:
+
+```bash
+wget https://raw.githubusercontent.com/pydicom/deid/master/examples/deid/deid.dicom-pusheen
+```
+
+And then with it in your present working directory, now we are back in Python:
+
 ```python
 from deid.config import DeidRecipe
 recipe = DeidRecipe('deid.dicom-pusheen')
 ```
+
+You can see that the recipe is loaded, and the action is defined!
 
 ```python
 recipe.get_actions()
