@@ -5,9 +5,8 @@ order: 5
 ---
 
 This example will walk through how to use header expansion
-to select more than one field from a dicom header to apply an action to. We will
-first show examples that you can write into [a deid recipe](https://pydicom.github.io/deid/examples/recipe/)
-to keep a record of your dicom header edits. We will then show the same
+to select more than one field from a dicom header to apply an action to. 
+Thanks to [@howardpchen](https://github.com/howardpchen) for contributing this idea in [this issue](https://github.com/pydicom/deid/issues/87). We will first show examples that you can write into [a deid recipe](https://pydicom.github.io/deid/examples/recipe/) to keep a record of your dicom header edits. We will then show the same
 (and more advanced) actions working with expanders directly in Python. Let's go!
 
 ## Deid Recipes
@@ -93,7 +92,7 @@ dicom = read_file(dicom_files[0])
 ```
 
 Let's play with our expanders! Remember the examples above that we wrote into
-a deid recipe? Let me know you how those work. First, here is the function that
+a deid recipe? Let me tell you how those work. First, here is the function that
 we import:
 
 ```python
@@ -102,10 +101,10 @@ from deid.dicom.fields import expand_field_expression
 
 None of the actions (BLANK, JITTER, etc.) are relevant here; we just want to get back the list of
 fields that meet some criteria.  Given an action, these fields would be 
-passed on to the next step in deid to handle the blank action. 
+passed on to the next step in deid to handle the action. 
 You could also use this function to interactively explore the header data, or another purpose.
 
-**Select all fields that end with "Name"**
+### Select all fields that end with "Name"
 
 Let's get back the list of fields that end with name.
 
@@ -119,7 +118,7 @@ Notice that we are passing the dicom image, and the list returned in fact ends
 with name. Capitalization of "Name" "name" "nAmE" does not matter.
 
 
-**Select all fields that start with Patient**
+### Select all fields that start with Patient
 
 ```python
 # startswith:Patient
@@ -131,7 +130,7 @@ fields = expand_field_expression("startswith:Patient", dicom)
  'PatientSex']
 ```
 
-**Select all fields that contain Physician or Patient**
+### Select all fields that contain Physician or Patient
 
 ```python
 # contains:Patient|Physician
@@ -145,7 +144,7 @@ fields = expand_field_expression("contains:Patient|Physician", dicom)
  'ReferringPhysicianName']
 ```
 
-**Select all fields except PatientName or PatientSex**
+### Select all fields except PatientName or PatientSex
 
 We know there are a total of 34 fields, so this should select 32.
 
@@ -156,7 +155,7 @@ len(fields)
 # 32
 ```
 
-**Select a specific field**
+### Select a specific field
 
 This is a fairly silly example to show, but for many actions you may just choose
 a single field. That would look like this:
@@ -166,9 +165,9 @@ fields = expand_field_expression("PatientID", dicom)
 ['PatientID']
 ```
 
-### All Fields
+## All Fields
 
-**Apply your special function to ALL fields**
+### Apply your special function to ALL fields
 
 This is a more complex (and fun!) example. We want to apply a function to
 ALL fields. For this example, we will work with a deid recipe. Here is what
@@ -190,7 +189,7 @@ recipe.get_actions()
 Out[47]: [{'action': 'REPLACE', 'field': 'all', 'value': 'func:pusheenize'}]
 ```
 
-#### 1. Extract Identifiers
+### 1. Extract Identifiers
 
 We would first need to extract what is currently there. Identifiers are basically a dictionary
 of header values extracted from each dicom, indexed by the complete file path.
@@ -204,7 +203,7 @@ items = get_identifiers(dicom_files)
 The items is a lookup dictionary mapping dicom files to a dictionary of fields
 and corresponding values. Now let's write our function.
 
-#### 2. Write Our Function!
+### 2. Write Our Function!
 
 Notice the reference to a "func:pusheenize" in the recipe? We need that function
 in the Python environment before we replace identifiers. The function we write should have arguments:
@@ -240,7 +239,7 @@ for item in items:
     items[item]['pusheenize'] = pusheenize
 ```
 
-#### 3. Replace Identifiers
+### 3. Replace Identifiers
 given that our function is in the python working environment, we would
 have extracted identifiers like this. We don't want to save them
 so we set save to False. If we set save to True, they would be saved to a temporary directory. 
