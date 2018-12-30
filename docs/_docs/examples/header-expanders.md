@@ -4,7 +4,7 @@ category: Examples
 order: 5
 ---
 
-This example will walk through how to use <a href="https://pydicom.github.io/deid/user-docs/recipe-headers/#field-expansion" target="_blank">header expansion</a>
+This example will walk through how to use header expansion
 to select more than one field from a dicom header to apply an action to. We will
 first show examples that you can write into [a deid recipe](https://pydicom.github.io/deid/examples/recipe/)
 to keep a record of your dicom header edits. We will then show the same
@@ -14,7 +14,7 @@ to keep a record of your dicom header edits. We will then show the same
 
 Let's say I want to:
 
-**Blank all fields that end with "Name"**
+### Blank all fields that end with "Name"
 
 I would write the following into my [deid recipe](https://pydicom.github.io/deid/examples/recipe/):
 
@@ -22,19 +22,19 @@ I would write the following into my [deid recipe](https://pydicom.github.io/deid
 BLANK endswith:Name
 ```
 
-**Blank all fields that start with Patient**
+### Blank all fields that start with Patient
 
 ```
 BLANK startswith:Patient
 ```
 
-**Blank all fields that contain Patient or Physician**
+### Blank all fields that contain Patient or Physician
 
 ```
 BLANK contains:Patient|Physician
 ```
 
-**Jitter the date for a specific field**
+### Jitter the date for a specific field
 
 Specifically, add 31 days to it.
 
@@ -42,18 +42,23 @@ Specifically, add 31 days to it.
 JITTER PatientBirthDate 31
 ```
 
-**Jitter the timestamp for all fields that contain the work date**
+### Jitter the timestamp for all fields that contain the work date
 
 ```
 JITTER contains:date 31
 ```
 
-**Apply your special function to ALL fields**
+### Apply your special function to ALL fields
 
 ```
-def add_pusheen(field, value)
+REPLACE all func:my_special_function
 ```
 
+### Apply your special function to ALL fields EXCEPT...
+
+```
+REPLACE except:LoserField func:my_special_function
+```
 
 ## Python Examples
 
