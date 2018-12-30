@@ -14,7 +14,8 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
- - added all, allexcept, contains to field filters (0.1.24)
+ - added all, allexcept, contains to field filters [#87](https://github.com/pydicom/deid/pull/87) (0.1.26)
+ - fixing bug in jitter timestamp function [#85](https://github.com/pydicom/deid/pull/85) (0.1.25)
  - installation order of pydicom / matplotlib changes default python [#81](https://www.github.com/pydicom/deid/issues/81) (0.1.23)
  - updating deid.dicom with contribution from @fimafurman [#63](https://github.com/pydicom/deid/issues/63) (0.1.22)
  - adding "func" option for recipe to pass function (0.1.21)
