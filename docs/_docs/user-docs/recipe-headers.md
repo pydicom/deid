@@ -204,18 +204,72 @@ JITTER endswith:Date var:jitter
 
 and this is the idea of an `expander`. And expander is an optional filter 
 applied to a header field (the middle value) to select some subset of header 
-values. Currently, we support `startswith` and `endswith`. 
-The following examples show what fields are selected based on each filter:
+values. Currently, we support `startswith`, `endswith`, `contains`, `allexcept`,
+and `allfields`.
+ 
+The following examples show what fields are selected based on each filter. For
+all examples, the test is done making the values lowercase.
+
+**endswith**
+
+The endswith filter will look for header field names that end with a particular expression.
+Lower and upper casing does not matter, so writing `endswith:Date` is akin to writing
+`endswith:Date`.
 
 ```
 JITTER endswith:Date var:jitter
 ['AcquisitionDate', 'ContentDate', 'InstanceCreationDate', 'PatientBirthDate', 'PerformedProcedureStepStartDate', 'SeriesDate', 'StudyDate']
+```
 
+**startswith**
 
+The startswith filter will look for header field names that start with a particular expression.
+Casing also doesn't matter.
+
+```
 REMOVE startswith:Patient                  
 ['PatientAddress', 'PatientAge', 'PatientBirthDate', 'PatientID', 'PatientName', 'PatientPosition', 'PatientSex']
 ```
 
+**contains**
+
+The contains filter searches for a string of interest in the field. For example, if
+we ask for fields that contain "Name" will look for header field names that contain the string 
+"Name" in any casing.
+
+
+```
+BLANK contains:Name
+['InstitutionName', 'NameOfPhysiciansReadingStudy', 'OperatorsName', 'PatientName', 'ReferringPhysicianName']
+```
+
+Notice how we get Name in uppercase (when our search string was lowercase) and
+it can appear anywhere in the field.
+
+**allfields**
+
+All fields will allow you to apply a filter to all fields. In the example below,
+we have a function "remove_identifiers" defined in the python environment, and
+will run it over all fields, returning a value to update the field in question.
+
+```
+ADD allfields func:remove_identifiers
+```
+
+**exceptfields**
+
+Akin to all fields, except provide a list of fields that you want to disclude from
+a global selector. Here are some examples to include all fields except StudyDate 
+or StudyTime.
+
+```
+BLANK exceptfields:StudyDate|StudyTime
+BLANK exceptfields:StudyTime
+```
+
+If you are familiar with regular expressions, you'll notice the "|" which 
+means "or" in the regular expression. You are free to write whatever regular
+expression fits your needs to disclude particular fields here.
 
 ## Example
 
