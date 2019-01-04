@@ -1,6 +1,6 @@
 '''
 
-Copyright (c) 2017-2018 Vanessa Sochat
+Copyright (c) 2017-2019 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -34,10 +34,12 @@ from deid.config.standards import (
     sections,
     filters
 )
+
+from collections import OrderedDict
 import os
 import re
 import sys
-from collections import OrderedDict
+
 
 
 def load_combined_deid(deids):

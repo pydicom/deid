@@ -1,6 +1,6 @@
 '''
 
-Copyright (c) 2017-2018 Vanessa Sochat
+Copyright (c) 2017-2019 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,8 @@ from pydicom import read_file
 import sys
 
 def validate_dicoms(dcm_files,force=False):
-    '''validate dicoms will test opening one or more dicom files, and return a list
-       of valid files.
+    '''validate dicoms will test opening one or more dicom files, 
+       and return a list of valid files.
 
        Parameters
        ==========
@@ -51,5 +51,5 @@ def validate_dicoms(dcm_files,force=False):
             bot.warning('Cannot read input file {0!s}, skipping.'.format(dcm_file))
 
 
-    bot.info("Found %s valid dicom files" %(len(valids)))
+    bot.debug("Found %s valid dicom files" %(len(valids)))
     return valids
