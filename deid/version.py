@@ -22,7 +22,7 @@ SOFTWARE.
 
 '''
 
-__version__ = "0.1.27"
+__version__ = "0.1.28"
 AUTHOR = 'Vanessa Sochat'
 AUTHOR_EMAIL = 'vsochat@stanford.edu'
 NAME = 'deid'
@@ -39,7 +39,7 @@ INSTALL_REQUIRES = (
     ('simplejson', {'min_version': '3.10.0'}),
     ('six', {'min_version': '1.10'}),
     ('pygments', {'min_version': '2.1.3'}),
-    ('pydicom', {'exact_version': '1.1.0' }),
+    ('pydicom', {'exact_version': '1.2.1' }),
     ('python-dateutil',{'min_version': None }),
     ('urllib3',{'exact_version': "1.21.1" }),
     ('validator.py',{'min_version': None })
