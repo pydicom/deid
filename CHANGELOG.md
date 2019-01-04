@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+ - validation function should use debug verbository, bumping license year [#92](https://github.com/pydicom/deid/issues/92) (0.1.29)
  - bumping pydicom to 1.2.0 [#91](https://github.com/pydicom/deid/issues/91) (0.1.28)
  - header expansions starts with and ends with should support regular expression OR (|) [#89](https://github.com/pydicom/deid/issues/89) (0.1.27)
  - added all, allexcept, contains to field filters [#87](https://github.com/pydicom/deid/pull/87) (0.1.26)

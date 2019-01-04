@@ -2,7 +2,7 @@
 
 DeidRecipe
 
-Copyright (c) 2017-2018 Vanessa Sochat
+Copyright (c) 2017-2019 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -68,7 +68,7 @@ class DeidRecipe:
 
         # If deid is None, use the default
         if deid is None:
-            bot.warning('No specification, loading default base deid.%s' %default_base)
+            bot.warning('No specification, loading default base deid.%s' % default_base)
             base = True
 
         self._init_deid(deid, base=base, default_base=default_base)

@@ -2,7 +2,7 @@
 
 header.py: functions to extract identifiers from dicom headers
 
-Copyright (c) 2017-2018 Vanessa Sochat
+Copyright (c) 2017-2019 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
