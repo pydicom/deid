@@ -22,7 +22,7 @@ SOFTWARE.
 
 '''
 
-__version__ = "0.1.30"
+__version__ = "0.1.31"
 AUTHOR = 'Vanessa Sochat'
 AUTHOR_EMAIL = 'vsochat@stanford.edu'
 NAME = 'deid'
@@ -36,7 +36,6 @@ INSTALL_REQUIRES = (
     ('matplotlib', {'max_version': '2.1.2'}),
     ('requests', {'min_version': '2.18.4'}),
     ('retrying', {'min_version': '1.3.3'}),
-    ('simplejson', {'min_version': '3.10.0'}),
     ('six', {'min_version': '1.10'}),
     ('pygments', {'min_version': '2.1.3'}),
     ('pydicom', {'exact_version': '1.2.1' }),
