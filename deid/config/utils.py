@@ -347,16 +347,16 @@ def parse_member(members, operator=None):
         action, member = member.split(' ',1)
         action = action.lower().strip()
 
-        # Contains, equals, not equals expects FieldName Values
-        if action in ['contains','equals','notequals']:
+        # Contains, notcontains, equals, not equals expects FieldName Values
+        if action in ['contains', 'notcontains', 'equals','notequals']:
             try:
-                field,value = member.split(' ',1)
+                field, value = member.split(' ',1)
             except ValueError:
                 bot.error('%s for line %s must have field and values, exiting.' %(action,member))
                 sys.exit(1)
 
-        # Missing, empty, notcontains expect only a field
-        elif action in ['missing', 'empty','notcontains', 'present']:
+        # Missing, empty, expect only a field
+        elif action in ['missing', 'empty', 'present']:
             field = member.strip()
         else:
             bot.error('%s is not a valid filter action.' %action)
