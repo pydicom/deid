@@ -46,17 +46,17 @@ class ProgressBar(object):
                 self.hide = not STREAM.isatty()
             except AttributeError:  # output does not support isatty()
                 self.hide = True
-        self.empty_char =    empty_char
-        self.filled_char =   filled_char
+        self.empty_char = empty_char
+        self.filled_char = filled_char
         self.expected_size = expected_size
-        self.every =         every
-        self.start =         time.time()
-        self.ittimes =       []
-        self.eta =           0
-        self.etadelta =      time.time()
-        self.etadisp =       self.format_time(self.eta)
+        self.every = every
+        self.start = time.time()
+        self.ittimes = []
+        self.eta = 0
+        self.etadelta = time.time()
+        self.etadisp = self.format_time(self.eta)
         self.last_progress = 0
-        if (self.expected_size):
+        if self.expected_size:
             self.show(0)
 
     def show(self, progress, count=None):
@@ -106,9 +106,9 @@ def bar(it, label='', width=32, hide=None, empty_char=BAR_EMPTY_CHAR,
 
     count = len(it) if expected_size is None else expected_size
 
-    with Bar(label=label, width=width, hide=hide, empty_char=BAR_EMPTY_CHAR,
+    with ProgressBar(label=label, width=width, hide=hide, empty_char=BAR_EMPTY_CHAR,
              filled_char=BAR_FILLED_CHAR, expected_size=count, every=every) \
-            as bar:
+            as pbar:
         for i, item in enumerate(it):
             yield item
-            bar.show(i + 1)
+            pbar.show(i + 1)

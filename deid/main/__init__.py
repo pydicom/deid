@@ -37,7 +37,7 @@ def get_parser():
     description="Deid (de-identification, anonymization) command line tool.")
 
     # Global Variables
-    parser.add_argument('--quiet',"-q", dest="quiet", 
+    parser.add_argument('--quiet', "-q", dest="quiet", 
                         help="Quiet the verbose output", 
                         default=False, action='store_true')
 
@@ -45,11 +45,11 @@ def get_parser():
                         help="use verbose logging to debug.", 
                         default=False, action='store_true')
 
-    parser.add_argument("--outfolder","-o", dest='outfolder', 
+    parser.add_argument("--outfolder", "-o", dest='outfolder', 
                         help="full path to save output, will use temporary folder if not specified", 
                         type=str, default=None)
 
-    parser.add_argument("--format","-f", dest='format', 
+    parser.add_argument("--format", "-f", dest='format', 
                         help="format of images, default is dicom", 
                         default="dicom", choices=['dicom'])
 
@@ -63,7 +63,7 @@ def get_parser():
                                        dest="command")
 
 
-    version = subparsers.add_parser("version",
+    version = subparsers.add_parser("version", # pylint: disable=unused-variable
                                     help="print version and exit")
  
     # Checks (checks / tests for various services)
@@ -82,7 +82,7 @@ def get_parser():
                          help="A pattern to match files in input folder.", 
                          type=str, default=None)
 
-    inspect.add_argument('--save',"-s", dest="save", 
+    inspect.add_argument('--save', "-s", dest="save", 
                          help="save result to output tab separated file.", 
                          default=False, action='store_true')
 
@@ -103,34 +103,16 @@ def get_parser():
                      type=str, default=None)
 
     # Action
-    ids.add_argument("--action","-a", dest='action', 
+    ids.add_argument("--action", "-a", dest='action', 
                      help="specify to get, put (replace), or all. Default will get identifiers.", 
-                     default=None, choices=['get','put','all','inspect'],required=True)
+                     default=None, choices=['get', 'put', 'all', 'inspect'], required=True)
 
     return parser
-
-
-def get_subparsers(parser):
-    '''get_subparser will get a dictionary of subparsers, to help with printing help
-    '''
-    actions = [action for action in parser._actions 
-               if isinstance(action, argparse._SubParsersAction)]
-
-    subparsers = dict()
-    for action in actions:
-        # get all subparsers and print help
-        for choice, subparser in action.choices.items():
-            subparsers[choice] = subparser
-
-    return subparsers
-
 
 
 def main():
 
     parser = get_parser()
-    subparsers = get_subparsers(parser)
-
     try:
         args = parser.parse_args()
     except:
@@ -146,7 +128,7 @@ def main():
         os.environ['MESSAGELEVEL'] = "QUIET"
         
     # Initialize the message bot, with level above
-    from deid.logger import bot
+    from deid.logger import bot # pylint: disable=unused-import
 
     if args.command == "identifiers":
         from .identifiers import main
@@ -157,8 +139,7 @@ def main():
         sys.exit(1)
 
     # Run main for selection
-    return main(args,parser)
-
+    return main(args, parser)
 
 if __name__ == '__main__':
     main()

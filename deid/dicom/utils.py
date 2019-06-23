@@ -22,23 +22,12 @@ SOFTWARE.
 
 '''
 
-from deid.config.standards import (
-    actions as valid_actions
-)
-
-from .fields import expand_field_expression
-
 from deid.logger import bot
-from pydicom import read_file
-from pydicom._dicom_dict import DicomDictionary
-from pydicom.tag import Tag
-from .tags import *
+
 from .validate import validate_dicoms
 from deid.utils import recursive_find
 import tempfile
 import os
-import re
-import sys
 
 ################################################################################
 # Functions for Dicom files
@@ -57,7 +46,7 @@ def get_files(contenders, check=True, pattern=None, force=False):
               Not recommended, as many non-dicom will come through
 
     '''
-    if not isinstance(contenders,list):
+    if not isinstance(contenders, list):
         contenders = [contenders]
 
     for contender in contenders:
@@ -98,7 +87,7 @@ def save_dicom(dicom, dicom_file, output_folder=None, overwrite=False):
             output_folder = os.path.dirname(dicom_file)
 
     dicom_name = os.path.basename(dicom_file)
-    output_dicom = os.path.join(output_folder,dicom_name)
+    output_dicom = os.path.join(output_folder, dicom_name)
     dowrite = True
     if overwrite is False:
         if os.path.exists(output_dicom):

@@ -21,11 +21,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 '''
 
 import os
 import sys
-from .spinner import Spinner
 
 ABORT = -5
 FLAG = -4
@@ -67,14 +67,14 @@ class DeidMessage:
                        'RED':RED,
                        'DARKRED':DARKRED,
                        'YELLOW':YELLOW}
-                       
 
     # Colors --------------------------------------------
 
     def useColor(self):
         '''useColor will determine if color should be added
-        to a print. Will check if being run in a terminal, and
-        if has support for asci'''
+           to a print. Will check if being run in a terminal, and
+           if has support for asci
+        '''
         COLORIZE = get_user_color_preference()
         if COLORIZE is not None:
             return COLORIZE
@@ -88,7 +88,8 @@ class DeidMessage:
 
     def addColor(self, level, text):
         '''addColor to the prompt (usually prefix) if terminal
-        supports, and specified to do so'''
+           supports, and specified to do so
+        '''
         if self.colorize:
             if level in self.colors:
                 text = "%s%s%s" % (self.colors[level],
@@ -98,7 +99,8 @@ class DeidMessage:
 
     def emitError(self, level):
         '''determine if a level should print to
-        stderr, includes all levels but INFO and QUIET'''
+           stderr, includes all levels but INFO and QUIET
+        '''
         if level in [ABORT,
                      ERROR,
                      WARNING,
@@ -112,7 +114,8 @@ class DeidMessage:
 
     def emitOutput(self, level):
         '''determine if a level should print to stdout
-        only includes INFO'''
+           only includes INFO
+        '''
         if level in [LOG,
                      INFO,
                      CUSTOM]:
@@ -128,10 +131,13 @@ class DeidMessage:
 
     def emit(self, level, message, prefix=None, color=None):
         '''emit is the main function to print the message
-        optionally with a prefix
-        :param level: the level of the message
-        :param message: the message to print
-        :param prefix: a prefix for the message
+           optionally with a prefix
+        
+           Parameters
+           ==========
+           level: the level of the message
+           message: the message to print
+           prefix: a prefix for the message
         '''
         if color is None:
             color = level
@@ -164,7 +170,7 @@ class DeidMessage:
 
     def write(self, stream, message):
         '''write will write a message to a stream,
-        first checking the encoding
+           first checking the encoding
         '''
         if isinstance(message, bytes):
             message = message.decode('utf-8')
@@ -172,7 +178,7 @@ class DeidMessage:
 
     def get_logs(self, join_newline=True):
         ''''get_logs will return the complete history, joined by newline
-        (default) or as is.
+            (default) or as is.
         '''
         if join_newline:
             return '\n'.join(self.history)
@@ -222,7 +228,7 @@ class DeidMessage:
             percent = "%5s" % ("{0:.1f}").format(percent)
             output = '\r' + prefix + \
                 " |%s| %s%s %s" % (bar, percent, '%', suffix)
-            sys.stdout.write(output),
+            sys.stdout.write(output)
             if iteration == total and carriage_return:
                 sys.stdout.write('\n')
             sys.stdout.flush()
@@ -238,6 +244,10 @@ class DeidMessage:
 
     def error(self, message):
         self.emit(ERROR, message, 'ERROR')
+
+    def exit(self, message, return_code=1):
+        self.emit(ERROR, message, 'ERROR')
+        sys.exit(return_code)
 
     def warning(self, message):
         self.emit(WARNING, message, 'WARNING')
@@ -281,11 +291,11 @@ class DeidMessage:
 
     def table(self, rows, col_width=2):
         '''table will print a table of entries. If the rows is 
-        a dictionary, the keys are interpreted as column names. if
-        not, a numbered list is used.
+           a dictionary, the keys are interpreted as column names. if
+           not, a numbered list is used.
         '''
 
-        labels = [str(x) for x in range(1,len(rows)+1)]
+        labels = [str(x) for x in range(1, len(rows) + 1)]
         if isinstance(rows, dict):
             labels = list(rows.keys())
             rows = list(rows.values())
@@ -344,11 +354,11 @@ def get_user_color_preference():
 
 def convert2boolean(arg):
     '''convert2boolean is used for environmental variables that must be
-    returned as boolean'''
+       returned as boolean
+    '''
     if not isinstance(arg, bool):
         return arg.lower() in ("yes", "true", "t", "1", "y")
     return arg
 
 
-DeidMessage.spinner = Spinner()
 bot = DeidMessage()

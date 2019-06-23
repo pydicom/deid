@@ -1,5 +1,4 @@
 from setuptools import setup, find_packages
-import sys
 import os
 
 ################################################################################
@@ -23,7 +22,7 @@ def get_requirements(lookup=None):
     '''get_requirements reads in requirements and versions from
     the lookup obtained with get_lookup'''
 
-    if lookup == None:
+    if lookup is None:
         lookup = get_lookup()
 
     install_requires = []
@@ -33,21 +32,24 @@ def get_requirements(lookup=None):
 
         # Install exact version
         if "exact_version" in module_meta:
-            dependency = "%s==%s" %(module_name,module_meta['exact_version'])
+            dependency = "%s==%s" %(module_name,
+                                    module_meta['exact_version'])
 
         # Install min version
         elif "min_version" in module_meta:
-            if module_meta['min_version'] == None:
+            if module_meta['min_version'] is None:
                 dependency = module_name
             else:
-                dependency = "%s>=%s" %(module_name,module_meta['min_version'])
+                dependency = "%s>=%s" %(module_name,
+                                        module_meta['min_version'])
 
         # Install min version
         elif "max_version" in module_meta:
-            if module_meta['max_version'] == None:
+            if module_meta['max_version'] is None:
                 dependency = module_name
             else:
-                dependency = "%s<=%s" %(module_name, module_meta['max_version'])
+                dependency = "%s<=%s" %(module_name, 
+                                        module_meta['max_version'])
 
         install_requires.append(dependency)
     return install_requires
@@ -88,6 +90,7 @@ setup(
     packages=find_packages(), 
     include_package_data=True,
     long_description=LONG_DESCRIPTION,
+    long_description_content_type="text/markdown",
     keywords=KEYWORDS,
     install_requires=INSTALL_REQUIRES,
     classifiers=[
@@ -112,5 +115,5 @@ setup(
         'Topic :: Utilities'
     ],
 
-    entry_points = {'console_scripts': [ 'deid=deid.main:main' ] }
+    entry_points = {'console_scripts': ['deid=deid.main:main']}
 )

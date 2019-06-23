@@ -25,7 +25,6 @@ SOFTWARE.
 from pydicom.dataset import Dataset
 from pydicom.sequence import Sequence
 from deid.logger import bot
-import os
 import re
 
 # These filters are based off the the CTP Dicom Filter
@@ -51,13 +50,13 @@ def apply_filter(dicom, field, filter_name, value):
     filter_name = filter_name.lower().strip()
 
     if filter_name == "contains":
-        return dicom.contains(field,value)
+        return dicom.contains(field, value)
 
     if filter_name == "notcontains":
-        return dicom.notContains(field,value)
+        return dicom.notContains(field, value)
 
     elif filter_name == "equals":
-        return dicom.equals(field,value)
+        return dicom.equals(field, value)
 
     elif filter_name == "missing":
         return dicom.missing(field)
@@ -69,9 +68,9 @@ def apply_filter(dicom, field, filter_name, value):
         return dicom.empty(field)
 
     elif filter_name == "notequals":
-        return dicom.notEquals(field,value)
+        return dicom.notEquals(field, value)
 
-    bot.warning("%s is not a valid filter name, returning False" %filter_name)
+    bot.warning("%s is not a valid filter name, returning False" % filter_name)
     return False
 
 
@@ -89,14 +88,14 @@ def equalsBase(self, field, term, ignore_case=True, not_equals=False):
 
     contenders = self.get(field)
 
-    if not isinstance(contenders,list):
+    if not isinstance(contenders, list):
         contenders = [contenders]    
 
     # In this loop we can only switch to True
     for contender in contenders:
         if contender is not None:
             if ignore_case:
-                if not isinstance(contender,Sequence):                
+                if not isinstance(contender, Sequence):
                     try:
                         contender = str(contender).lower().strip()
                         term = str(term).lower().strip()
@@ -116,14 +115,13 @@ def equalsBase(self, field, term, ignore_case=True, not_equals=False):
 def equals(self, field, term):
     '''returns true if the value of the identifier exactly 
        equals the string argument; otherwise, it returns false.'''
-    return self.equalsBase(field,term)
+    return self.equalsBase(field, term)
 
 
 def notEquals(self, field, term):
     return self.equalsBase(field=field,
                            term=term,
                            not_equals=True)
-
 
 
 Dataset.equalsBase = equalsBase
@@ -143,7 +141,7 @@ def missing(self, field):
        This means that the entire field is None
     '''
     content = self.get(field)
-    if content == None:
+    if content is None:
         return True
     return False
 
@@ -178,13 +176,13 @@ def compareBase(self, field, expression, func, ignore_case=True):
 
     contenders = self.get(field)
 
-    if not isinstance(contenders,list):
+    if not isinstance(contenders, list):
         contenders = [contenders]    
 
     for contender in contenders:
         if contender is not None:
 
-            if not isinstance(contender,Sequence):                
+            if not isinstance(contender, Sequence):                
                 if ignore_case:
                     try:
                         contender = str(contender).lower().strip()
@@ -193,7 +191,7 @@ def compareBase(self, field, expression, func, ignore_case=True):
                         pass # we are dealing with number
                              # sequence, or other private tag
 
-                if func(expression,contender):
+                if func(expression, contender):
                     is_match = True
 
     return is_match

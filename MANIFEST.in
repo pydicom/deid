@@ -5,5 +5,4 @@ global-exclude *.pyc
 prune __pycache__
 prune *.pyc
 prune deid/tests
-prune deid/app
 prune *OLD

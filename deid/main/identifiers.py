@@ -29,20 +29,16 @@ from deid.dicom import get_files
 from deid.data import get_dataset  
 from deid.config import load_deid
 
-from deid.dicom import (
+from deid.dicom.header import (
     get_identifiers,
-    save_identifiers,
     replace_identifiers
 )
 
-from glob import glob
 import tempfile
-import argparse
-import sys
 import os
 
 
-def main(args,parser):
+def main(args, parser):
 
     # Global output folder
     output_folder = args.outfolder
@@ -80,29 +76,22 @@ def main(args,parser):
         bot.info("PUT identifiers from %s" %(basename))
         do_put = True
         if args.ids is None:
-            bot.error("To PUT without GET you must provide a json file with ids.")
-            sys.exit(1)
+            bot.exit("To PUT without GET you must provide a json file with ids.")
+
         ids = args.ids
 
     # GET identifiers
 
     if do_get is True:
         ids = get_identifiers(dicom_files)
-        if args.do_print is True:
-            print(ids)
-        else:
-            save_identifiers(ids,output_folder)
 
     if do_put is True:           
-       cleaned_files = replace_identifiers(dicom_files=dicom_files,
-                                           ids=ids,
-                                           deid=args.deid,
-                                           overwrite=args.overwrite,
-                                           output_folder=output_folder)
+        cleaned_files = replace_identifiers(dicom_files=dicom_files,
+                                            ids=ids,
+                                            deid=args.deid,
+                                            overwrite=args.overwrite,
+                                            output_folder=output_folder)
 
-       bot.info("%s %s files at %s" %(len(cleaned_files),
-                                      args.format,
-                                      output_folder))
-
-if __name__ == '__main__':
-    main()
+        bot.info("%s %s files at %s" %(len(cleaned_files),
+                                       args.format,
+                                       output_folder))

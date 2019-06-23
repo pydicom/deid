@@ -1,4 +1,4 @@
-from .general import (
+from .fileio import (
     get_installdir,
     get_temporary_name,
     write_file,

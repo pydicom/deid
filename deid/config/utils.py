@@ -25,6 +25,8 @@ user can specify a custom name.
 
 '''
 
+# pylint: skip-file
+
 from deid.logger import bot
 from deid.utils import read_file
 from deid.data import data_base
@@ -51,8 +53,7 @@ def load_combined_deid(deids):
 
     '''
     if not isinstance(deids,list):
-        bot.warning("load_combined_deids expects a list.")
-        sys.exit(1)
+        bot.exit("load_combined_deids expects a list.")
 
     found_format = None
     deid = None
@@ -72,9 +73,8 @@ def load_combined_deid(deids):
                 found_format = next_deid['format']
             else:
                 if found_format != next_deid['format']:
-                    bot.error('Mismatch in deid formats, %s and %s' %(found_format,
-                                                                      next_deid['format']))
-                    sys.exit(1)
+                    bot.exis('Mismatch in deid formats, %s and %s' %(found_format,
+                                                                     next_deid['format']))
 
             # If it's the first one, use as starter template
             if deid is None:
@@ -99,7 +99,7 @@ def load_combined_deid(deids):
                         deid['header'] = deid['header'] + next_deid['header']
 
         else:
-            bot.warning('Problem loading %s, skipping.' %single_deid)
+            bot.warning('Problem loading %s, skipping.' % single_deid)
     return deid
 
 
@@ -148,8 +148,8 @@ def load_deid(path=None):
         elif bool(re.match('format', line, re.I)):
             fmt = re.sub('FORMAT|(\s+)','',line).lower()
             if fmt not in formats:
-                bot.error("%s is not a valid format." %fmt)
-                sys.exit(1)
+                bot.exit("%s is not a valid format." %fmt)
+
             # Set format
             config['format'] = fmt
             bot.debug("FORMAT set to %s" %fmt)
@@ -167,8 +167,8 @@ def load_deid(path=None):
                 section_name = ' '.join(parts[1:])          
             section = re.sub('[%]|(\s+)','',parts[0]).lower()
             if section not in sections:
-                bot.error("%s is not a valid section." %section)
-                sys.exit(1)
+                bot.exit("%s is not a valid section." % section)
+
             config = add_section(config=config,
                                  section=section,
                                  section_name=section_name)
@@ -228,8 +228,7 @@ def find_deid(path=None):
                       if x.startswith('deid')]
 
         if len(contenders) == 0:
-            bot.error("No deid settings files found in %s, exiting." %(path))
-            sys.exit(1)
+            bot.exit("No deid settings files found in %s, exiting." %(path))
 
         elif len(contenders) > 1:   
             bot.warning("Multiple deid files found in %s, will use first." %(path))
@@ -239,8 +238,7 @@ def find_deid(path=None):
 
     # We have a file path at this point
     if not os.path.exists(path):
-        bot.error("Cannot find deid file %s, exiting." %(path))
-        sys.exit(1)
+        bot.exit("Cannot find deid file %s, exiting." %(path))
 
     return path
 
@@ -352,15 +350,13 @@ def parse_member(members, operator=None):
             try:
                 field, value = member.split(' ',1)
             except ValueError:
-                bot.error('%s for line %s must have field and values, exiting.' %(action,member))
-                sys.exit(1)
+                bot.exit('%s for line %s must have field and values, exiting.' %(action,member))
 
         # Missing, empty, expect only a field
         elif action in ['missing', 'empty', 'present']:
             field = member.strip()
         else:
-            bot.error('%s is not a valid filter action.' %action)
-            sys.exit(1)
+            bot.exit('%s is not a valid filter action.' %action)
 
         actions.append(action)
         fields.append(field.strip())
@@ -368,11 +364,11 @@ def parse_member(members, operator=None):
         if value is not None:
             values.append(value.strip())  
         
-    entry = {'action':actions,
-             'field':fields,
+    entry = {'action': actions,
+             'field': fields,
              'operator': main_operator,
-             'InnerOperators':operators,
-             'value': values }
+             'InnerOperators': operators,
+             'value': values}
     return entry
 
 
@@ -389,16 +385,13 @@ def add_section(config,section,section_name=None):
     '''
 
     if section is None:
-        bot.error('You must define a section (e.g. %header) before any action.')
-        sys.exit(1)
+        bot.exit('You must define a section (e.g. %header) before any action.')
 
     if section == 'filter' and section_name is None:
-        bot.error("You must provide a name for a filter section.")
-        sys.exit(1)
+        bot.exit("You must provide a name for a filter section.")
 
     if section not in sections:
-        bot.error("%s is not a valid section." %section)
-        sys.exit(1)
+        bot.exit("%s is not a valid section." %section)
             
     if section not in config:
 
@@ -434,8 +427,7 @@ def parse_action(section, line, config, section_name=None):
     '''
             
     if not line.upper().startswith(actions):
-        bot.error("%s is not a valid action line." %line)
-        sys.exit(1)
+        bot.exit("%s is not a valid action line." % line)
 
     # We may have to deal with cases of spaces
     parts = line.split(' ')
@@ -443,28 +435,27 @@ def parse_action(section, line, config, section_name=None):
 
     # What field is the action for?
     if len(parts) < 1:
-        bot.error("%s requires a FIELD value, but not found." %(action))        
-        sys.exit(1)
+        bot.exit("%s requires a FIELD value, but not found." % action) 
 
     field = parts.pop(0)
 
     # Actions that require a value
     if action in [ "ADD", "REPLACE", "JITTER" ]:
         if len(parts) == 0:
-            bot.error("%s requires a VALUE, but not found" %(action))        
-            sys.exit(1)
+            bot.exit("%s requires a VALUE, but not found" % action) 
+
         value = ' '.join(parts[0:])  # get remained of line
         value = value.split('#')[0]  # remove comments
         bot.debug("Adding %s" %line) #
-        config[section].append({ "action":action,
-                                 "field":field,
-                                 "value":value })
+        config[section].append({"action":action,
+                                "field":field,
+                                "value":value})
 
     # Actions that don't require a value
-    elif action in [ "BLANK", "KEEP", "REMOVE" ]:
+    elif action in ["BLANK", "KEEP", "REMOVE"]:
         bot.debug("%s: adding %s" %(section,line))
         config[section].append({ "action":action,
-                                 "field":field })
+                                 "field":field})
 
     return config
 

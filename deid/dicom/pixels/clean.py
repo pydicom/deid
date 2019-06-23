@@ -20,6 +20,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 '''
 
 from deid.config import DeidRecipe
@@ -27,9 +28,10 @@ from deid.logger import bot
 from deid.utils import get_temporary_name
 from pydicom import read_file
 import matplotlib
-matplotlib.use('pdf')
 import os
 import re
+
+matplotlib.use('pdf')
 
 bot.level = 3
 
@@ -130,7 +132,7 @@ class DicomCleaner():
         from matplotlib import pyplot as plt
         
         if hasattr(self, image_type):
-            fig, ax = plt.subplots(figsize=(10, 6))      
+            _, ax = plt.subplots(figsize=(10, 6))      
             ax.imshow(self.cleaned, cmap=self.cmap)
             if title is not None:
                 plt.title(title, fontdict=self.font)
@@ -187,7 +189,7 @@ class DicomCleaner():
         # Having clean also means has dicom image
         if hasattr(self, image_type):
             dicom_name = self._get_clean_name(output_folder)
-            dicom = read_file(self.dicom_file,force=True)
+            dicom = read_file(self.dicom_file, force=True)
             # If going from compressed, change TransferSyntax
             if dicom.file_meta.TransferSyntaxUID.is_compressed is True:
                 dicom.decompress()

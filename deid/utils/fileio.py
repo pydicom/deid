@@ -25,17 +25,8 @@ SOFTWARE.
 import fnmatch
 import json
 import os
-import re
-import requests
 import tempfile
-from deid.logger import bot
 from collections import OrderedDict
-import sys
-
-
-# Python less than version 3 must import OSError
-if sys.version_info[0] < 3:
-    from exceptions import OSError
 
 ################################################################################
 # Local commands and requests
@@ -83,7 +74,7 @@ def write_file(filename, content, mode="w"):
        mode: the mode to open the file, defaults to write (w)
 
     '''
-    with open(filename,mode) as filey:
+    with open(filename, mode) as filey:
         filey.writelines(content)
     return filename
 
@@ -99,7 +90,7 @@ def write_json(json_obj, filename, mode="w", print_pretty=True):
 
     '''
     with open(filename, mode) as filey:
-        if print_pretty == True:
+        if print_pretty:
             filey.writelines(json.dumps(json_obj, indent=4, separators=(',', ': ')))
         else:
             filey.writelines(json.dumps(json_obj))
@@ -133,7 +124,7 @@ def read_json(filename, mode="r", ordered_dict=False):
        ordered_dict: If true, return an OrderedDict (default is False)
 
     '''
-    with open(filename,mode) as filey:
+    with open(filename, mode) as filey:
         if ordered_dict is False:
             content = json.loads(filey.read())
         else:
@@ -154,7 +145,7 @@ def recursive_find(base, pattern=None):
     if pattern is None:
         pattern = "*"
 
-    for root, dirnames, filenames in os.walk(base):
+    for root, _, filenames in os.walk(base):
         for filename in fnmatch.filter(filenames, pattern):
             yield os.path.join(root, filename)
 
@@ -165,7 +156,9 @@ def recursive_find(base, pattern=None):
 
 
 def to_int(value):
-    if not isinstance(value,int):
+    '''convert a value (value) to int, if found to be otherwise
+    '''
+    if not isinstance(value, int):
         value = int(float(value))
     return value
 
@@ -173,8 +166,8 @@ def to_int(value):
 def is_number(value):
     '''is_number determines if the value for a field is numeric
     '''
-    if isinstance(value,int):
+    if isinstance(value, int):
         return True
-    if isinstance(value,float):
+    if isinstance(value, float):
         return True
     return False

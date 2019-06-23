@@ -23,7 +23,6 @@ SOFTWARE.
 '''
 
 from deid.logger import bot
-from pydicom import read_file
 from pydicom.tag import tag_in_exception
 from pydicom.sequence import Sequence
 from pydicom._dicom_dict import (
@@ -31,13 +30,12 @@ from pydicom._dicom_dict import (
     RepeatersDictionary
 )
 from pydicom.tag import Tag
-import os
 import re
-import sys
 
 ################################################################################
 # Functions for Finding / Getting Tags
 ################################################################################
+
 
 def get_tag(field):
     '''get_tag will return a dictionary with tag indexed by field. For each entry,
@@ -48,20 +46,20 @@ def get_tag(field):
        field: the keyword to get tag for, eg "PatientIdentityRemoved"
 
     '''
-    found = [{key:value} for key,value in DicomDictionary.items() if value[4] == field]
+    found = [{key:value} for key, value in DicomDictionary.items() if value[4] == field]
     tags = dict()
     if len(found) > 0:
 
         # (VR, VM, Name, Retired, Keyword
         found = found[0] # shouldn't ever have length > 1
         tag = Tag(list(found)[0])
-        VR, VM, longName, retired, keyword = found[tag]
+        VR, VM, longName, _, keyword = found[tag]
 
         manifest = {"tag": tag,
                     "VR": VR,
-                    "VM":VM,
-                    "keyword":keyword,
-                    "name":longName }
+                    "VM": VM,
+                    "keyword": keyword,
+                    "name": longName}
 
         tags[field] = manifest 
     return tags
@@ -75,13 +73,13 @@ def find_tag(term, VR=None, VM=None, retired=False):
     if retired:
         searchin = RepeatersDictionary
 
-    found = [value for key,value 
+    found = [value for key, value 
              in searchin.items() 
-             if re.search(term,value[4]) or re.search(term,value[2])]
+             if re.search(term, value[4]) or re.search(term, value[2])]
 
     # Filter by VR, VM, name, these are exact
-    if VR is not None: found = _filter_tags(found,0,VR)
-    if VM is not None: found = _filter_tags(found,1,VM)
+    if VR is not None: found = _filter_tags(found, 0, VR)
+    if VM is not None: found = _filter_tags(found, 1, VM)
     return found
 
 
@@ -91,7 +89,7 @@ def _filter_tags(tags, idx, fields=None):
        where each of the items above has some index, idx, and filter that index
        down to what is provided in fields.
     '''
-    if not isinstance(fields,list):
+    if not isinstance(fields, list):
         fields = [fields]
     return [x for x in tags if x[idx] in fields]
 
@@ -101,10 +99,11 @@ def _filter_tags(tags, idx, fields=None):
 # Manipulating Tags in Data
 ################################################################################
 
+
 def remove_sequences(dicom):
     for field in dicom.dir():
-        if isinstance(dicom.get(field),Sequence):
-            dicom = remove_tag(dicom,field)
+        if isinstance(dicom.get(field), Sequence):
+            dicom = remove_tag(dicom, field)
     return dicom
 
 
@@ -120,7 +119,7 @@ def add_tag(dicom, field, value, quiet=False):
     '''
     if quiet is False:
         bot.debug("Attempting ADDITION of %s." %(field))
-    dicom = change_tag(dicom,field,value)
+    dicom = change_tag(dicom, field, value)
  
     # dicom.data_element("PatientIdentityRemoved")
     # (0012, 0062) Patient Identity Removed            CS: 'Yes'
@@ -183,13 +182,13 @@ def blank_tag(dicom, field):
     # We cannot blank VR types of US or SS
     element = dicom.data_element(field)
     if element is not None:
-        if element.VR not in ['US','SS']:
-            return update_tag(dicom, field,"")
-        bot.warning('Cannot determine tag for %s, skipping blank.' %field)
+        if element.VR not in ['US', 'SS']:
+            return update_tag(dicom, field, "")
+        bot.warning('Cannot determine tag for %s, skipping blank.' % field)
     return dicom
 
 
-def remove_tag(dicom,field):
+def remove_tag(dicom, field):
     '''remove tag will remove a tag if it is present in the dataset
 
        Parameters
@@ -208,7 +207,6 @@ def remove_tag(dicom,field):
 #########################################################################
 # Private Tags
 #########################################################################
-
 
 def get_private(dicom):
     '''get private tags

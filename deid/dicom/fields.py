@@ -25,32 +25,28 @@ SOFTWARE.
 from pydicom.sequence import Sequence
 from pydicom.dataset import RawDataElement
 
-from deid.logger import bot
-from pydicom import read_file
-import os
 import re
 
-def extract_sequence(sequence,prefix=None):
+def extract_sequence(sequence, prefix=None):
     '''return a pydicom.sequence.Sequence recursively
        as a list of dictionary items
     '''
     items = []
     for item in sequence:
-        for key,val in item.items():
-            if not isinstance(val,RawDataElement):
+        for _, val in item.items():
+            if not isinstance(val, RawDataElement):
                 header = val.keyword
                 if prefix is not None:
-                    header = "%s__%s" %(prefix,header)  
+                    header = "%s__%s" %(prefix, header)  
                 value = val.value
-                if isinstance(value,bytes):
+                if isinstance(value, bytes):
                     value = value.decode('utf-8')
-                if isinstance (value,Sequence):
-                    items += extract_sequence(value,prefix=header)
+                if isinstance(value, Sequence):
+                    items += extract_sequence(value, prefix=header)
                     continue
                 entry = {"key": header, "value": value}
                 items.append(entry)
     return items
-
 
 
 def expand_field_expression(field, dicom, contenders=None):
@@ -101,14 +97,13 @@ def expand_field_expression(field, dicom, contenders=None):
     return fields
 
 
-
 def get_fields(dicom, skip=None, expand_sequences=True):
     '''get fields is a simple function to extract a dictionary of fields
        (non empty) from a dicom file.
     '''    
     if skip is None:
         skip = []
-    if not isinstance(skip,list):
+    if not isinstance(skip, list):
         skip = [skip]
     fields = dict()
     contenders = dicom.dir()
@@ -118,38 +113,17 @@ def get_fields(dicom, skip=None, expand_sequences=True):
 
         try:
             value = dicom.get(contender)
+
             # Adding expanded sequences
-            if isinstance(value,Sequence) and expand_sequences is True:
-                sequence_fields = extract_sequence(value,prefix=contender)
+            if isinstance(value, Sequence) and expand_sequences is True:
+                sequence_fields = extract_sequence(value, prefix=contender)
                 for sf in sequence_fields:
                     fields[sf['key']] = sf['value']
             else:
-                if value not in [None,""]:
-                    if isinstance(value,bytes):
+                if value not in [None, ""]:
+                    if isinstance(value, bytes):
                         value = value.decode('utf-8')
                     fields[contender] = str(value)
         except:
             pass # need to look into this bug
-    return fields
-
-
-
-def get_fields_byVR(dicom,exclude_fields=None):
-    '''filter a dicom's fields based on a list of value
-       representations (VR). If exclude_fields is not defined,
-       defaults to "US" and "SS"
-    '''
-
-    if exclude_fields is None:
-        exclude_fields = ['US','SS']
-
-    if not isinstance(exclude_fields,list):
-        exclude_fields = [exclude_fields]
-
-    fields = []
-    for field in dicom.dir():
-        if dicom.data_element(field) is not None:
-            if "VR" in dicom.data_element(field).__dict__:
-                if dicom.data_element(field) not in exclude_fields:
-                    fields.append(field)
     return fields

@@ -22,25 +22,19 @@ SOFTWARE.
 
 '''
 
-__version__ = "0.1.32"
+__version__ = "0.1.33"
 AUTHOR = 'Vanessa Sochat'
 AUTHOR_EMAIL = 'vsochat@stanford.edu'
 NAME = 'deid'
 PACKAGE_URL = "https://github.com/pydicom/deid"
-KEYWORDS = 'open source, stanford, python, deidentify, dicom'
+KEYWORDS = 'open source, python, anonymize, dicom'
 DESCRIPTION = "deidentify dicom and other images with python and pydicom"
 LICENSE = "LICENSE"
 
 INSTALL_REQUIRES = (
-
     ('matplotlib', {'max_version': '2.1.2'}),
-    ('requests', {'min_version': '2.18.4'}),
-    ('retrying', {'min_version': '1.3.3'}),
-    ('six', {'min_version': '1.10'}),
-    ('pygments', {'min_version': '2.1.3'}),
-    ('pydicom', {'exact_version': '1.2.1' }),
-    ('python-dateutil',{'min_version': None }),
-    ('urllib3',{'exact_version': "1.21.1" }),
-    ('validator.py',{'min_version': None })
-    
+    ('pydicom', {'exact_version': '1.2.1'}),
+    ('python-dateutil', {'min_version': None}),
+    ('urllib3', {'exact_version': "1.21.1"}),
+    ('validator.py', {'min_version': None})   
 )

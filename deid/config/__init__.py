@@ -164,7 +164,7 @@ class DeidRecipe:
         if deid is None:
             deid = []
 
-        if not isinstance(deid,list):
+        if not isinstance(deid, list):
             deid = [deid]
 
         if base is True:

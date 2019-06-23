@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+ - adding pylint to clean up code (0.1.32)
  - removing dependency that isn't used (simplejson) (0.1.31)
  - updating cleaner to use pixel array (0.1.30)
  - validation function should use debug verbository, bumping license year [#92](https://github.com/pydicom/deid/issues/92) (0.1.29)
