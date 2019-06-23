@@ -21,24 +21,23 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 '''
 
 from deid.config import DeidRecipe
 from deid.logger import bot
-from pydicom import read_file
 from deid.dicom.filter import apply_filter
+from pydicom import read_file
 
-import os
-import sys
 
 def has_burned_pixels(dicom_files, force=True, deid=None):
     ''' has burned pixels is an entrypoint for has_burned_pixels_multi (for 
-    multiple images) or has_burned_pixels_single (for one detailed repor)
-    We will use the MIRCTP criteria (see ref folder with the
-    original scripts used by CTP) to determine if an image is likely to have 
-    PHI, based on fields in the header alone. This script does NOT perform
-    pixel cleaning, but returns a dictionary of results (for multi) or one
-    detailed result (for single)
+        multiple images) or has_burned_pixels_single (for one detailed repor)
+        We will use the MIRCTP criteria (see ref folder with the
+        original scripts used by CTP) to determine if an image is likely to have 
+        PHI, based on fields in the header alone. This script does NOT perform
+        pixel cleaning, but returns a dictionary of results (for multi) or one
+        detailed result (for single)
     '''
     # if the user has provided a custom deid, load it
     if not isinstance(deid, DeidRecipe):
@@ -46,7 +45,7 @@ def has_burned_pixels(dicom_files, force=True, deid=None):
             deid = 'dicom'
         deid = DeidRecipe(deid)
 
-    if isinstance(dicom_files,list):
+    if isinstance(dicom_files, list):
         return _has_burned_pixels_multi(dicom_files, force, deid)
     return _has_burned_pixels_single(dicom_files, force, deid)
 
@@ -81,63 +80,59 @@ def _has_burned_pixels_multi(dicom_files, force, deid):
 def _has_burned_pixels_single(dicom_file, force, deid):
 
     '''has burned pixels single will evaluate one dicom file for burned in
-    pixels based on 'filter' criteria in a deid. If deid is not provided,
-    will use application default. The method proceeds as follows:
+       pixels based on 'filter' criteria in a deid. If deid is not provided,
+       will use application default. The method proceeds as follows:
 
-    1. deid is loaded, with criteria groups ordered from specific --> general
-    2. image is run down the criteria, stops when hits and reports FLAG
-    3. passing through the entire list gives status of pass
+       1. deid is loaded, with criteria groups ordered from specific --> general
+       2. image is run down the criteria, stops when hits and reports FLAG
+       3. passing through the entire list gives status of pass
     
-    The default deid has a greylist, whitelist, then blacklist
+       The default deid has a greylist, whitelist, then blacklist
 
-    Parameters
-    =========
-    dicom_file: the fullpath to the file to evaluate
-    force: force reading of a potentially erroneous file
-    deid: the full path to a deid specification. if not defined, only default used
+       Parameters
+       =========
+       dicom_file: the fullpath to the file to evaluate
+       force: force reading of a potentially erroneous file
+       deid: the full path to a deid specification. if not defined, only default used
 
-    deid['filter']['dangerouscookie'] <-- filter list "dangerouscookie"
+       deid['filter']['dangerouscookie'] <-- filter list "dangerouscookie"
 
-    --> This is what an item in the criteria looks like
-        [{'coordinates': ['0,0,512,110'],
-          'filters': [{'InnerOperators': [],
-          'action': ['notequals'],
-          'field': ['OperatorsName'],
-          'operator': 'and',
-          'value': ['bold bread']}],
-        'name': 'criteria for dangerous cookie'}]
+       --> This is what an item in the criteria looks like
+            [{'coordinates': ['0,0,512,110'],
+              'filters': [{'InnerOperators': [],
+              'action': ['notequals'],
+              'field': ['OperatorsName'],
+              'operator': 'and',
+              'value': ['bold bread']}],
+            'name': 'criteria for dangerous cookie'}]
 
     
-    Returns
-    =======
-    --> This is what a clean image looks like:
-        {'flagged': False, 'results': []}
+       Returns
+       =======
+       --> This is what a clean image looks like:
+           {'flagged': False, 'results': []}
 
-
-    --> This is what a flagged image looks like:
-       {'flagged': True,
-        'results': [
-                      {'reason': ' ImageType missing  or ImageType empty ',
-                       'group': 'blacklist',
-                       'coordinates': []}
-                   ]
-        }
+       --> This is what a flagged image looks like:
+          {'flagged': True,
+           'results': [
+                  {'reason': ' ImageType missing  or ImageType empty ',
+                   'group': 'blacklist',
+                   'coordinates': []}
+               ]
+           }
     '''
-
-    dicom = read_file(dicom_file,force=force)
-    dicom_name = os.path.basename(dicom_file)
+    dicom = read_file(dicom_file, force=force)
         
     # Load criteria (actions) for flagging
     filters = deid.get_filters()
     if not filters:
-        bot.error('Deid provided does not have %filter, exiting.')
-        sys.exit(1)
+        bot.exit('Deid provided does not have %filter, exiting.')
 
     # Return list with lookup as dicom_file
     results = []
     global_flagged = False
 
-    for name,items in filters.items():
+    for name, items in filters.items():
         for item in items:
             flags = []
 
@@ -152,18 +147,22 @@ def _has_burned_pixels_single(dicom_file, force, deid):
                     action = group['action'][a]
                     field = group['field'][a]
                     value = ''
+
                     if len(group['value']) > a:
                         value = group['value'][a]
+
                     flag = apply_filter(dicom=dicom,
                                         field=field,
                                         filter_name=action,
                                         value=value or None)
                     group_flags.append(flag)
-                    description = "%s %s %s" %(field,action,value)
+                    description = "%s %s %s" %(field, action, value)
+
                     if len(group['InnerOperators']) > a:
                         inner_operator = group['InnerOperators'][a]
                         group_flags.append(inner_operator)
-                        description = "%s %s" %(description,inner_operator)
+                        description = "%s %s" %(description, inner_operator)
+
                     group_descriptions.append(description)
 
                 # At the end of a group, evaluate the inner group   
@@ -177,12 +176,8 @@ def _has_burned_pixels_single(dicom_file, force, deid):
                         flags.append(operator)
 
                 flags.append(flag)
-                reason = ('%s %s' %(operator,' '.join(group_descriptions))).replace('\n',' ')
+                reason = ('%s %s' %(operator, ' '.join(group_descriptions))).replace('\n', ' ')
                 descriptions.append(reason)
-
-            group_name = ''
-            if "name" in item:
-                group_name = item['name']
 
             # When we parse through a group, we evaluate based on all flags
             flagged = evaluate_group(flags=flags)
@@ -193,12 +188,11 @@ def _has_burned_pixels_single(dicom_file, force, deid):
 
                 result = {'reason': reason,
                           'group': name,
-                          'coordinates': item['coordinates'] }
+                          'coordinates': item['coordinates']}
 
                 results.append(result)
 
-    results = {'flagged': global_flagged,
-               'results': results }
+    results = {'flagged': global_flagged, 'results': results}
     return results
 
 
@@ -207,9 +201,9 @@ def evaluate_group(flags):
 
         [True, and, False, or, True]
 
-    And read through the logic to determine if the image result
-    is to be flagged. This is how we combine a set of criteria in
-    a group to come to a final decision.
+       And read through the logic to determine if the image result
+       is to be flagged. This is how we combine a set of criteria in
+       a group to come to a final decision.
     '''
     flagged = False
     first_entry = True

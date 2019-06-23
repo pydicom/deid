@@ -28,27 +28,18 @@ SOFTWARE.
 from deid.logger import bot
 from deid.utils import read_json
 
-from .tags import (
-    remove_tag,
-    remove_sequences
-)
+from .tags import remove_sequences
 
 from deid.dicom.tags import get_private
 from deid.config import DeidRecipe
 
 from pydicom import read_file
-from pydicom.errors import InvalidDicomError
-import dateutil.parser
-import tempfile
 
 from .utils import save_dicom
 from .actions import perform_action
 from pydicom.dataset import Dataset
 
-from .fields import (
-    get_fields,
-    get_fields_byVR
-)
+from .fields import get_fields
 
 import os
 
@@ -86,18 +77,18 @@ def get_shared_identifiers(dicom_files,
         bot.error("Cannot find config %s, exiting" %(config))
     config = read_json(config, ordered_dict=True)['get']
 
-    if not isinstance(dicom_files,list):
+    if not isinstance(dicom_files, list):
         dicom_files = [dicom_files]
     ids = dict() # identifiers
 
     # We will skip PixelData
     skip = config['skip']
     for dicom_file in dicom_files:
-        dicom = read_file(dicom_file,force=True)
+        dicom = read_file(dicom_file, force=True)
         fields = get_fields(dicom,
                             skip=skip,
                             expand_sequences=expand_sequences)
-        for key,val in fields.items():
+        for key, val in fields.items():
 
             # If it's there, only keep if the same
             if key in ids:
@@ -122,7 +113,7 @@ def get_shared_identifiers(dicom_files,
     # For any aggregates that are one item, unwrap again
     for field in aggregate:
         if field in ids:
-            if len(ids[field])==1:
+            if len(ids[field]) == 1:
                 ids[field] = ids[field][0]
 
     return ids
@@ -155,7 +146,7 @@ def get_identifiers(dicom_files,
         bot.error("Cannot find config %s, exiting" %(config))
     config = read_json(config, ordered_dict=True)['get']
 
-    if not isinstance(dicom_files,list):
+    if not isinstance(dicom_files, list):
         dicom_files = [dicom_files]
 
     ids = dict() # identifiers
@@ -163,12 +154,12 @@ def get_identifiers(dicom_files,
     # We will skip PixelData
     skip = config['skip']
     if skip_fields is not None:
-        if not isinstance(skip_fields,list):
+        if not isinstance(skip_fields, list):
             skip_fields = [skip_fields]
         skip = skip + skip_fields
  
     for dicom_file in dicom_files:
-        dicom = read_file(dicom_file,force=True)
+        dicom = read_file(dicom_file, force=True)
 
         if dicom_file not in ids:
             ids[dicom_file] = dict()
@@ -190,14 +181,14 @@ def remove_private_identifiers(dicom_files,
     reads in the files for the user and saves accordingly
     '''
     updated_files = []
-    if not isinstance(dicom_files,list):
+    if not isinstance(dicom_files, list):
         dicom_files = [dicom_files]
 
     for dicom_file in dicom_files:
-        dicom = read_file(dicom_file,force=force)
+        dicom = read_file(dicom_file, force=force)
         dicom.remove_private_tags()
         dicom_name = os.path.basename(dicom_file)
-        bot.debug("Removed private identifiers for %s" %dicom_file)
+        bot.debug("Removed private identifiers for %s" % dicom_name)
 
         if save:
             dicom = save_dicom(dicom=dicom,
@@ -233,7 +224,7 @@ def _prepare_replace_config(dicom_files, deid=None, config=None):
         deid = DeidRecipe(deid)
     config = read_json(config, ordered_dict=True)
 
-    if not isinstance(dicom_files,list):
+    if not isinstance(dicom_files, list):
         dicom_files = [dicom_files]
 
     return dicom_files, deid, config
@@ -259,9 +250,8 @@ def replace_identifiers(dicom_files,
 
     # Parse through dicom files, update headers, and save
     updated_files = []
-    for d in range(len(dicom_files)):
-        dicom_file = dicom_files[d]
-        dicom = read_file(dicom_file,force=force)
+    for _, dicom_file in enumerate(dicom_files):
+        dicom = read_file(dicom_file, force=force)
         dicom_name = os.path.basename(dicom_file)
         fields = dicom.dir()
 
@@ -282,8 +272,8 @@ def replace_identifiers(dicom_files,
         # Next perform actions in default config, only if not done
         for action in config['put']['actions']:
             if action['field'] in fields:
-                 dicom = perform_action(dicom=dicom,
-                                        action=action)
+                dicom = perform_action(dicom=dicom,
+                                       action=action)
         if remove_private is True:
             try:
                 dicom.remove_private_tags()

@@ -25,9 +25,7 @@ SOFTWARE.
 from deid.logger import bot
 import dateutil.parser
 from datetime import timedelta
-import os
 import re
-import sys
 
 
 def parse_value(item, value, field=None):
@@ -37,7 +35,7 @@ def parse_value(item, value, field=None):
         2. a variable looked up (var:FieldName)
     '''
     # If item is passed as None
-    if item == None:
+    if item is None:
         item = dict()
 
     # Does the user want a custom value?
@@ -83,8 +81,8 @@ def get_func(function_name):
 
 def get_timestamp(item_date, item_time=None, jitter_days=None, format=None):
     '''get_timestamp will return (default) a UTC timestamp 
-    with some date and (optionall) time. A different format can be 
-    provided to change default behavior. eg: "%Y%m%d"
+       with some date and (optionall) time. A different format can be 
+       provided to change default behavior. eg: "%Y%m%d"
     '''
     if format is None:
         format = "%Y-%m-%dT%H:%M:%SZ"
@@ -96,7 +94,7 @@ def get_timestamp(item_date, item_time=None, jitter_days=None, format=None):
     if item_time is None:
         item_time = ""
 
-    timestamp = dateutil.parser.parse("%s%s" %(item_date,item_time))
+    timestamp = dateutil.parser.parse("%s%s" %(item_date, item_time))
     if jitter_days is not None:
         jitter_days = int(float(jitter_days))
         timestamp = timestamp + timedelta(days=jitter_days)

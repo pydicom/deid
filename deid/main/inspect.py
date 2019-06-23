@@ -27,28 +27,18 @@ SOFTWARE.
 from deid.logger import bot
 from deid.dicom import get_files
 from deid.data import get_dataset  
-from deid.config import load_deid, get_deid
+from deid.config import load_deid
 from deid.dicom import has_burned_pixels
 
-from glob import glob
 import datetime
-import tempfile
-import argparse
-import shutil
-import sys
 import os
 
 
-def main(args,parser):
+def main(args, parser):
     '''inspect currently serves to inspect the header fields of a set
-    of dicom files against a standard, and flag images that don't
-    pass the different levels of criteria
+       of dicom files against a standard, and flag images that don't
+       pass the different levels of criteria
     '''
-
-    # Global output folder
-    #output_folder = args.outfolder
-    #if output_folder is None:
-    #    output_folder = tempfile.mkdtemp()
 
     # If a deid is given, check against format
     deid = args.deid
@@ -67,31 +57,31 @@ def main(args,parser):
     result = has_burned_pixels(dicom_files, deid=deid)
 
     print('\nSUMMARY ================================\n')
-    if len(result['clean']) > 0:
+    if result['clean']:
         bot.custom(prefix='CLEAN',
                    message="%s files" %len(result['clean']),
                    color="CYAN")
 
-    if len(result['flagged']) > 0:
-        for group,files in result['flagged'].items():
+    if result['flagged']:
+        for group, files in result['flagged'].items():
             bot.flag("%s %s files" %(group, len(files)))
 
-    if args.save is True:
+    if args.save:
         folders = '-'.join([os.path.basename(folder) for folder in base])
-        outfile = "pixel-flag-results-%s-%s.tsv" %(folders,datetime.datetime.now().strftime('%y-%m-%d'))
-        with open(outfile,'w') as filey:
+        outfile = "pixel-flag-results-%s-%s.tsv" %(folders,
+                                                   datetime.datetime.now().strftime('%y-%m-%d'))
+
+        with open(outfile, 'w') as filey:
             filey.writelines('dicom_file\tpixels_flagged\tflag_list\treason\n')
+
             for clean in result['clean']:
                 filey.writelines('%s\tCLEAN\t\t\n' %clean)
-            for flagged,details in result['flagged'].items():
+
+            for flagged, details in result['flagged'].items():
                 if details['flagged'] is True:
                     for result in details['results']:
                         group = result['group']
                         reason = result['reason']
-                        filey.writelines('%s\tFLAGGED\t%s\t%s\n' %(flagged,group,reason))
+                        filey.writelines('%s\tFLAGGED\t%s\t%s\n' %(flagged, group, reason))
 
-            print('Result written to %s' %outfile)
-            
- 
-if __name__ == '__main__':
-    main()
+            print('Result written to %s' % outfile)

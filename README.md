@@ -1,6 +1,6 @@
 # Deidentify (deid)
 
-Deidentify medical images in Python.
+Best effort anonymization for medical images in Python.
 
 [![DOI](https://zenodo.org/badge/94163984.svg)](https://zenodo.org/badge/latestdoi/94163984)
 [![Build Status](https://travis-ci.org/pydicom/deid.svg?branch=master)](https://travis-ci.org/pydicom/deid)
@@ -17,19 +17,19 @@ locations. We are looking for collaborators to develop and validate an OCR clean
 ### Local
 For the stable release, install via pip:
 
-```
+```bash
 pip install deid
 ```
 
 For the development version, install from Github:
 
-```
+```bash
 pip install git+git://github.com/pydicom/deid
 ```
 
 ### Docker
 
-```
+```bash
 docker build -t pydicom/deid .
 docker run pydicom/deid --help
 ```

@@ -24,9 +24,9 @@ SOFTWARE.
 
 from deid.logger import bot
 from pydicom import read_file
-import sys
 
-def validate_dicoms(dcm_files,force=False):
+
+def validate_dicoms(dcm_files, force=False):
     '''validate dicoms will test opening one or more dicom files, 
        and return a list of valid files.
 
@@ -35,7 +35,7 @@ def validate_dicoms(dcm_files,force=False):
        dcm_files: one or more dicom files to test
     
     '''
-    if not isinstance(dcm_files,list):
+    if not isinstance(dcm_files, list):
         dcm_files = [dcm_files]
 
     valids = []
@@ -45,7 +45,7 @@ def validate_dicoms(dcm_files,force=False):
 
         try:
             with open(dcm_file, 'rb') as filey:
-                dataset = read_file(filey, force=force)
+                read_file(filey, force=force)
             valids.append(dcm_file)
         except:
             bot.warning('Cannot read input file {0!s}, skipping.'.format(dcm_file))
