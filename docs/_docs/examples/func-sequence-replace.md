@@ -89,7 +89,7 @@ recipe.get_actions(action='REPLACE')
 # or we can filter to a field
 recipe.get_actions(field='InstanceCreationDate')
 [{'action': 'REPLACE',
-  'field': 'FrameOfReferenceUID',
+  'field': 'InstanceCreationDate',
   'value': 'func:generate_uid'}]
 
 # and logically, both (not useful here)
