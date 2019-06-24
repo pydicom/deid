@@ -37,11 +37,32 @@ from deid.dicom import get_identifiers
 items = get_identifiers(dicom_files)
 ```
 
-The function performs an action to generate a uid, but you can also use
-it to communicate with databases, APIs, or do something like 
+If you want to expand sequences, ask for it:
+
+```python
+items = get_identifiers(dicom_files, expand_sequences=True)
+```
+
+When you expand sequences, they are flattened out in the data structure.
+For example:
+
+
+```python
+ 'ReferencedImageSequence__ReferencedSOPClassUID': '111111111111111111',
+ 'ReferencedImageSequence__ReferencedSOPInstanceUID': '111111111111111',
+ 'ReferencedPerformedProcedureStepSequence__InstanceCreationDate': '22222222',
+ 'ReferencedPerformedProcedureStepSequence__InstanceCreationTime': '22222222',
+ 'ReferencedPerformedProcedureStepSequence__InstanceCreatorUID': 'xxxxxxx',
+ 'ReferencedPerformedProcedureStepSequence__ReferencedSOPClassUID': 'xxxxxxxxxx',
+ 'ReferencedPerformedProcedureStepSequence__ReferencedSOPInstanceUID': 'xxxxxxxx',
+```
+
+The function we will use for the example will perform an action to generate a uid, 
+but you can also use it to communicate with databases, APIs, or do something like 
 save the original (and newly generated one) in some (IRB approvied) place
 
 ## The Deid Recipe
+
 The process of updating header values means writing a series of actions
 in the deid recipe, in this folder the file [deid.dicom](deid.dicom) has the
 following content:
@@ -141,16 +162,27 @@ for item in items:
 
 ## Replace identifiers
 We are ready to go! Now let's generate the cleaned files! It will output to a 
-temporary directory.
+temporary directory. 
 
 ```python
 cleaned_files = replace_identifiers(dicom_files=dicom_files,
                                     deid=recipe,
                                     ids=items)
-
 ```
 
-You can load in a cleaned file to see what was done
+If your data was extracted with sequences expanded, those
+same sequences will be checked for cleaning, but only if you set `strip_sequences`
+to False.
+
+```python
+cleaned_files = replace_identifiers(dicom_files=dicom_files,
+                                    deid=recipe,
+                                    ids=items,
+                                    strip_sequences=False)
+```
+
+See [here](https://github.com/pydicom/deid/tree/master/examples/dicom/header-manipulation/func-sequence-replace) for the code for the sequences replacement example. Note that expansion of sequences is not currently supported for operations that remove or add a value (ADD, REMOVE, JITTER).
+You can load in a cleaned file to see what was done.
 
 ```python
 from pydicom import read_file

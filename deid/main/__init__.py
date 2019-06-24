@@ -45,6 +45,10 @@ def get_parser():
                         help="use verbose logging to debug.", 
                         default=False, action='store_true')
 
+    parser.add_argument('--version', dest="version", 
+                        help="print version and exit.", 
+                        default=False, action='store_true')
+
     parser.add_argument("--outfolder", "-o", dest='outfolder', 
                         help="full path to save output, will use temporary folder if not specified", 
                         type=str, default=None)
@@ -118,7 +122,7 @@ def main():
     except:
         sys.exit(0)
 
-    if args.command == "version":
+    if args.command == "version" or args.version:
         print(__version__)
         sys.exit(0)
 

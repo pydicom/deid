@@ -101,6 +101,12 @@ def _filter_tags(tags, idx, fields=None):
 
 
 def remove_sequences(dicom):
+    '''remove sequences from a dicom by removing the associated tag.
+ 
+       Parameters
+       ==========
+       dicom: the loaded dicom to remove sequences
+    '''
     for field in dicom.dir():
         if isinstance(dicom.get(field), Sequence):
             dicom = remove_tag(dicom, field)
