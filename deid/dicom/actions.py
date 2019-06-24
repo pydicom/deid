@@ -34,6 +34,8 @@ from deid.utils import (
     parse_value
 )
 
+from pydicom.dataset import Dataset
+from pydicom.sequence import Sequence
 from .tags import (
     add_tag,
     update_tag,
@@ -41,6 +43,7 @@ from .tags import (
     remove_tag
 )
 
+import re
 
 # Actions
 
@@ -61,6 +64,11 @@ def perform_action(dicom, action, item=None, fields=None, return_seen=False):
     value = action.get('value')   # "suid" or "var:field"
     action = action.get('action') # "REPLACE"
 
+    # Validate the action
+    if action not in valid_actions:
+        bot.warning('%s in not a valid choice. Defaulting to blanked.' % action)
+        action = "BLANK"
+
     # If there is an expander applied to field, we iterate over
     fields = expand_field_expression(field=field,
                                      dicom=dicom,
@@ -68,13 +76,33 @@ def perform_action(dicom, action, item=None, fields=None, return_seen=False):
 
     # Keep track of fields we have seen
     seen = []    
+
+    # An expanded field must END with that field
+    expanded_regexp = "__%s$" % field
+    
     for field in fields:
         seen.append(field)
-        dicom = _perform_action(dicom=dicom,
-                                field=field,
-                                item=item,
-                                action=action,
-                                value=value)
+
+        # Handle top level field
+        _perform_action(dicom=dicom,
+                        field=field,
+                        item=item,
+                        action=action,
+                        value=value)
+
+
+    # Expand sequences
+    if item:
+        expanded_fields = [x for x in item if re.search(expanded_regexp, x)]
+
+        # FieldA__FieldB
+        for expanded_field in expanded_fields:
+            _perform_expanded_action(dicom=dicom,
+                                     expanded_field=expanded_field,
+                                     item=item,
+                                     action=action,
+                                     value=value)
+
     if return_seen:
         return dicom, seen
     return dicom
@@ -86,13 +114,7 @@ def _perform_action(dicom, field, action, value=None, item=None):
        and perform_addition is typically done via an addition in a config
        Both result in a call to this function. If an action fails or is not
        done, None is returned, and the calling function should handle this.
-    '''
-    if action not in valid_actions:
-        bot.warning('''%s in not a valid choice [%s]. 
-                       Defaulting to blanked.''' %(action,
-                                               ".".join(valid_actions)))
-        action = "BLANK"
-       
+    '''    
     if field in dicom and action != "ADD":
 
         # Blank the value
@@ -109,7 +131,7 @@ def _perform_action(dicom, field, action, value=None, item=None):
                                    field=field,
                                    value=value)
             else:
-                bot.warning("REPLACE %s unsuccessful" %field)
+                bot.warning("REPLACE %s unsuccessful" % field)
 
         # Code the value with something in the response
         elif action == "JITTER":
@@ -134,8 +156,68 @@ def _perform_action(dicom, field, action, value=None, item=None):
         if value is not None:
             dicom = add_tag(dicom, field, value, quiet=True) 
 
-    return dicom
 
+def _perform_expanded_action(dicom, expanded_field, action, value=None, item=None):
+    '''akin to _perform_action, but we expect to be dealing with an expanded
+       sequence, and need to step into the Dicom data structure. 
+
+       Add, jitter, and delete are currently not supported.
+
+       The field is expected to have the format FieldA__FieldB where the
+       last one is where we want to do the replacement.
+    '''
+    field = expanded_field.split('__')[-1]
+
+    while field != expanded_field:
+        next_field, expanded_field = expanded_field.split('__', 1)
+
+        # Case 1: we have a Dataset
+        if isinstance(dicom, Dataset):
+            dicom = dicom.get(next_field)
+
+        elif isinstance(dicom, Sequence):
+            for sequence in dicom:
+                for subitem in sequence:
+                    if subitem.keyword == next_field:
+                        dicom = subitem
+                        break
+
+    # Field should be equal to expanded_field, and in dicom
+    if isinstance(dicom, Dataset):
+        return _perform_action(dicom=dicom,
+                               field=field,
+                               item=item,
+                               action=action,
+                               value=value)
+
+    elif isinstance(dicom, Sequence):
+        for sequence in dicom:
+            for subitem in sequence:
+                if subitem.keyword == field:
+                    dicom = subitem
+                    break
+
+    if not dicom:
+        return
+
+    # Not sure if this is possible
+    if dicom.keyword != field:
+        bot.warning('Early return, looking for %s, found %s' %(field, dicom.keyword))
+        return
+
+    # Blank the value
+    if action == "BLANK":
+        if dicom.VR not in ['US', 'SS']:
+            dicom.value = ''
+
+    # Code the value with something in the response
+    elif action == "REPLACE":
+
+        value = parse_value(item, value, field)
+        if value is not None:
+            dicom.value = value
+
+    # elif "KEEP" --> Do nothing. Keep the original
 
 # Timestamps
 

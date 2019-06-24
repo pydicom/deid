@@ -22,30 +22,67 @@ SOFTWARE.
 
 '''
 
+from deid.logger import bot
 from pydicom.sequence import Sequence
-from pydicom.dataset import RawDataElement
-
+from pydicom.dataset import (
+    RawDataElement, 
+    Dataset
+)
 import re
+
+def extract_item(item, prefix=None, entry=None):
+    '''a helper function to extract sequence, will extract values from 
+       a dicom sequence depending on the type.
+
+       Parameters
+       ==========
+       item: an item from a sequence.
+    '''
+    # First call, we define entry to be a lookup dictionary
+    if entry is None:
+        entry = {}
+
+    # Skip raw data elements
+    if not isinstance(item, RawDataElement):
+        header = item.keyword
+
+        # If there is no header or field, we can't evaluate
+        if header in [None, '']:
+            return entry
+
+        if prefix is not None:
+            header = "%s__%s" %(prefix, header)  
+
+        value = item.value
+        if isinstance(value, bytes):
+            value = value.decode('utf-8')
+        if isinstance(value, Sequence):
+            return extract_sequence(value, prefix=header)
+
+        entry[header] = value
+    return entry
 
 def extract_sequence(sequence, prefix=None):
     '''return a pydicom.sequence.Sequence recursively
-       as a list of dictionary items
+       as a flattened list of items. For example, a nested FieldA and FieldB
+       would return as:
+
+       {'FieldA__FieldB': '111111'}
+
+       Parameters
+       ==========
+       sequence: the sequence to extract, should be pydicom.sequence.Sequence
+       prefix: the parent name
     '''
-    items = []
+    items = {}
     for item in sequence:
-        for _, val in item.items():
-            if not isinstance(val, RawDataElement):
-                header = val.keyword
-                if prefix is not None:
-                    header = "%s__%s" %(prefix, header)  
-                value = val.value
-                if isinstance(value, bytes):
-                    value = value.decode('utf-8')
-                if isinstance(value, Sequence):
-                    items += extract_sequence(value, prefix=header)
-                    continue
-                entry = {"key": header, "value": value}
-                items.append(entry)
+
+        # If it's a Dataset, we need to further unwrap it
+        if isinstance(item, Dataset):
+            for subitem in item:
+                items.update(extract_item(subitem, prefix=prefix))          
+        else:
+            bot.warning("Unrecognized type %s in extract sequences, skipping." % type(item))
     return items
 
 
@@ -100,11 +137,18 @@ def expand_field_expression(field, dicom, contenders=None):
 def get_fields(dicom, skip=None, expand_sequences=True):
     '''get fields is a simple function to extract a dictionary of fields
        (non empty) from a dicom file.
+
+       Parameters
+       ==========
+       dicom: the dicom file to get fields for.
+       skip: an optional list of fields to skip
+       expand_sequences: if True, expand values that are sequences.
     '''    
     if skip is None:
         skip = []
     if not isinstance(skip, list):
         skip = [skip]
+
     fields = dict()
     contenders = dicom.dir()
     for contender in contenders:
@@ -116,9 +160,7 @@ def get_fields(dicom, skip=None, expand_sequences=True):
 
             # Adding expanded sequences
             if isinstance(value, Sequence) and expand_sequences is True:
-                sequence_fields = extract_sequence(value, prefix=contender)
-                for sf in sequence_fields:
-                    fields[sf['key']] = sf['value']
+                fields.update(extract_sequence(value, prefix=contender))
             else:
                 if value not in [None, ""]:
                     if isinstance(value, bytes):

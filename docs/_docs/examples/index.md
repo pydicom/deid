@@ -22,9 +22,9 @@ want a quick start overview of deid.
 
 ## Header Manipulation
 
- - [Frame of Reference]({{ site.baseurl }}/examples/func-replace/) shows how to dynamically replace or update header values from a function.
+ - [Replace with Function]({{ site.baseurl }}/examples/func-replace/) shows how to dynamically replace or update header values from a function.
+ - [Replace Sequences]({{ site.baseurl }}/examples/func-sequence-replace/) similar, but replacement of nested sequences.
  - [Header Expanders]({{ site.baseurl }}/examples/header-expanders/) can be used to select one or more header fields to apply an action to
-
 
 ## Cleaning Pixels
 

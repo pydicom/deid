@@ -84,10 +84,14 @@ def get_shared_identifiers(dicom_files,
     # We will skip PixelData
     skip = config['skip']
     for dicom_file in dicom_files:
+
         dicom = read_file(dicom_file, force=True)
+
+        # Get list of fields, expanded sequences are flattened
         fields = get_fields(dicom,
                             skip=skip,
                             expand_sequences=expand_sequences)
+
         for key, val in fields.items():
 
             # If it's there, only keep if the same
@@ -125,6 +129,7 @@ def get_identifiers(dicom_files,
                     config=None,
                     expand_sequences=True,
                     skip_fields=None):
+
     ''' extract all identifiers from a dicom image.
         This function returns a lookup by file name
 
@@ -133,14 +138,14 @@ def get_identifiers(dicom_files,
         dicom_files: the dicom file(s) to extract from
         force: force reading the file (default True)
         config: if None, uses default in provided module folder
-        expand_sequences: if True, expand sequences. otherwise, skips
+        expand_sequences: if True, expand sequences. Otherwise, skips
         skip_fields: if not None, added fields to skip
 
     '''
     bot.debug('Extracting identifiers for %s dicom' %(len(dicom_files)))
 
     if config is None:
-        config = "%s/config.json" %(here)
+        config = "%s/config.json" % here
 
     if not os.path.exists(config):
         bot.error("Cannot find config %s, exiting" %(config))
@@ -165,8 +170,8 @@ def get_identifiers(dicom_files,
             ids[dicom_file] = dict()
 
         ids[dicom_file] = get_fields(dicom,
-                                  skip=skip,
-                                  expand_sequences=expand_sequences)
+                                     skip=skip,
+                                     expand_sequences=expand_sequences)
     return ids
 
 
@@ -242,8 +247,9 @@ def replace_identifiers(dicom_files,
                         remove_private=True):
 
     '''replace identifiers using pydicom, can be slow when writing
-    and saving new files'''
-
+       and saving new files. If you want to replace sequences, they need
+       to be extracted with get_identifiers and expand_sequences to True.
+    '''
     dicom_files, recipe, config = _prepare_replace_config(dicom_files, 
                                                           deid=deid,
                                                           config=config)
