@@ -42,6 +42,7 @@ from pydicom.dataset import Dataset
 from .fields import get_fields
 
 import os
+from copy import copy
 
 here = os.path.dirname(os.path.abspath(__file__))
 
@@ -292,14 +293,18 @@ def replace_identifiers(dicom_files,
                 continue
         else:
             bot.warning("Private tags were not removed!")
-
-        ds = Dataset()
-        for field in dicom.dir():
-            try:
-                ds.add(dicom.data_element(field))
-            except:
-                pass
-
+        
+        ''' This code always results in removal of private tags, rendering the remove_private option useless
+        It appears a separate copy is desired here because returning an updated_files list... recommend copy
+        Shallow copy should suffice.
+        '''
+        #ds = Dataset()
+        #for field in dicom.dir():
+        #    try:
+        #        ds.add(dicom.data_element(field))
+        #    except:
+        #        pass
+        
         # Copy original data attributes
         attributes = ['is_little_endian',
                       'is_implicit_VR',
