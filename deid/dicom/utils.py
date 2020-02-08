@@ -1,6 +1,6 @@
-'''
+"""
 
-Copyright (c) 2017-2019 Vanessa Sochat
+Copyright (c) 2017-2020 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-'''
+"""
 
 from deid.logger import bot
 
@@ -33,8 +33,9 @@ import os
 # Functions for Dicom files
 ################################################################################
 
+
 def get_files(contenders, check=True, pattern=None, force=False):
-    '''get_files will take a list of single dicom files or directories,
+    """get_files will take a list of single dicom files or directories,
        and return a generator that yields complete paths to all files
     
        Parameters
@@ -45,7 +46,7 @@ def get_files(contenders, check=True, pattern=None, force=False):
        force: force reading of the files, if some headers invalid.
               Not recommended, as many non-dicom will come through
 
-    '''
+    """
     if not isinstance(contenders, list):
         contenders = [contenders]
 
@@ -63,12 +64,12 @@ def get_files(contenders, check=True, pattern=None, force=False):
                     validated_files = [dicom_file]
 
                 for validated_file in validated_files:
-                    bot.debug("Found contender file %s" %(validated_file))
+                    bot.debug("Found contender file %s" % (validated_file))
                     yield validated_file
 
 
 def save_dicom(dicom, dicom_file, output_folder=None, overwrite=False):
-    '''save_dicom will save a dicom file to an output folder,
+    """save_dicom will save a dicom file to an output folder,
        making sure to not overwrite unless the user has enforced it
 
        Parameters
@@ -78,7 +79,7 @@ def save_dicom(dicom, dicom_file, output_folder=None, overwrite=False):
        output_folder: the folder to save the file to
        overwrite: overwrite any existing file? (default is False)
 
-    '''
+    """
 
     if output_folder is None:
         if overwrite is False:
@@ -91,7 +92,9 @@ def save_dicom(dicom, dicom_file, output_folder=None, overwrite=False):
     dowrite = True
     if overwrite is False:
         if os.path.exists(output_dicom):
-            bot.error("%s already exists, overwrite set to False. Not writing." %dicom_name)
+            bot.error(
+                "%s already exists, overwrite set to False. Not writing." % dicom_name
+            )
             dowrite = False
 
     if dowrite:

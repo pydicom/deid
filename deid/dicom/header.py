@@ -1,8 +1,8 @@
-'''
+"""
 
 header.py: functions to extract identifiers from dicom headers
 
-Copyright (c) 2017-2019 Vanessa Sochat
+Copyright (c) 2017-2020 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-'''
+"""
 
 
 from deid.logger import bot
@@ -50,12 +50,11 @@ here = os.path.dirname(os.path.abspath(__file__))
 # MAIN GET FUNCTIONS
 ################################################################################
 
-def get_shared_identifiers(dicom_files,
-                           force=True,
-                           config=None,
-                           aggregate=None,
-                           expand_sequences=True):
-    '''
+
+def get_shared_identifiers(
+    dicom_files, force=True, config=None, aggregate=None, expand_sequences=True
+):
+    """
 
     extract shared identifiers across a set of dicom files, intended for
     cases when a set of images (dicom) are being compressed into one file
@@ -63,34 +62,32 @@ def get_shared_identifiers(dicom_files,
     we remove fields that differ between files. To aggregate unique, define
     a list of aggregate fields (aggregate).
 
-    '''
+    """
 
-    bot.debug('Extracting shared identifiers for %s dicom' %(len(dicom_files)))
+    bot.debug("Extracting shared identifiers for %s dicom" % (len(dicom_files)))
 
     if aggregate is None:
         aggregate = []
 
     if config is None:
-        config = "%s/config.json" %(here)
+        config = "%s/config.json" % (here)
 
     if not os.path.exists(config):
-        bot.error("Cannot find config %s, exiting" %(config))
-    config = read_json(config, ordered_dict=True)['get']
+        bot.error("Cannot find config %s, exiting" % (config))
+    config = read_json(config, ordered_dict=True)["get"]
 
     if not isinstance(dicom_files, list):
         dicom_files = [dicom_files]
-    ids = dict() # identifiers
+    ids = dict()  # identifiers
 
     # We will skip PixelData
-    skip = config['skip']
+    skip = config["skip"]
     for dicom_file in dicom_files:
 
         dicom = read_file(dicom_file, force=True)
 
         # Get list of fields, expanded sequences are flattened
-        fields = get_fields(dicom,
-                            skip=skip,
-                            expand_sequences=expand_sequences)
+        fields = get_fields(dicom, skip=skip, expand_sequences=expand_sequences)
 
         for key, val in fields.items():
 
@@ -123,14 +120,11 @@ def get_shared_identifiers(dicom_files,
     return ids
 
 
+def get_identifiers(
+    dicom_files, force=True, config=None, expand_sequences=True, skip_fields=None
+):
 
-def get_identifiers(dicom_files,
-                    force=True,
-                    config=None,
-                    expand_sequences=True,
-                    skip_fields=None):
-
-    ''' extract all identifiers from a dicom image.
+    """ extract all identifiers from a dicom image.
         This function returns a lookup by file name
 
         Parameters
@@ -141,50 +135,48 @@ def get_identifiers(dicom_files,
         expand_sequences: if True, expand sequences. Otherwise, skips
         skip_fields: if not None, added fields to skip
 
-    '''
-    bot.debug('Extracting identifiers for %s dicom' %(len(dicom_files)))
+    """
+    bot.debug("Extracting identifiers for %s dicom" % (len(dicom_files)))
 
     if config is None:
         config = "%s/config.json" % here
 
     if not os.path.exists(config):
-        bot.error("Cannot find config %s, exiting" %(config))
-    config = read_json(config, ordered_dict=True)['get']
+        bot.error("Cannot find config %s, exiting" % (config))
+    config = read_json(config, ordered_dict=True)["get"]
 
     if not isinstance(dicom_files, list):
         dicom_files = [dicom_files]
 
-    ids = dict() # identifiers
+    ids = dict()  # identifiers
 
     # We will skip PixelData
-    skip = config['skip']
+    skip = config["skip"]
     if skip_fields is not None:
         if not isinstance(skip_fields, list):
             skip_fields = [skip_fields]
         skip = skip + skip_fields
- 
+
     for dicom_file in dicom_files:
         dicom = read_file(dicom_file, force=True)
 
         if dicom_file not in ids:
             ids[dicom_file] = dict()
 
-        ids[dicom_file] = get_fields(dicom,
-                                     skip=skip,
-                                     expand_sequences=expand_sequences)
+        ids[dicom_file] = get_fields(
+            dicom, skip=skip, expand_sequences=expand_sequences
+        )
     return ids
 
 
-def remove_private_identifiers(dicom_files,
-                               save=True,
-                               overwrite=False,
-                               output_folder=None,
-                               force=True):
+def remove_private_identifiers(
+    dicom_files, save=True, overwrite=False, output_folder=None, force=True
+):
 
-    '''remove_private_identifiers is a wrapper for the 
+    """remove_private_identifiers is a wrapper for the 
     simple call to dicom.remove_private_tags, it simply
     reads in the files for the user and saves accordingly
-    '''
+    """
     updated_files = []
     if not isinstance(dicom_files, list):
         dicom_files = [dicom_files]
@@ -196,18 +188,19 @@ def remove_private_identifiers(dicom_files,
         bot.debug("Removed private identifiers for %s" % dicom_name)
 
         if save:
-            dicom = save_dicom(dicom=dicom,
-                               dicom_file=dicom_file,
-                               output_folder=output_folder,
-                               overwrite=overwrite)
+            dicom = save_dicom(
+                dicom=dicom,
+                dicom_file=dicom_file,
+                output_folder=output_folder,
+                overwrite=overwrite,
+            )
 
         updated_files.append(dicom)
     return updated_files
 
 
-
 def _prepare_replace_config(dicom_files, deid=None, config=None):
-    ''' replace identifiers will replace dicom_files with data from ids based
+    """ replace identifiers will replace dicom_files with data from ids based
         on a combination of a config (default is remove all) and a user deid
 
         Parameters
@@ -218,13 +211,13 @@ def _prepare_replace_config(dicom_files, deid=None, config=None):
         config: if None, uses default in provided module folder
         overwrite: if False, save updated files to temporary directory
     
-    '''
+    """
 
     if config is None:
-        config = "%s/config.json" %(here)
+        config = "%s/config.json" % (here)
     if not os.path.exists(config):
-        bot.error("Cannot find config %s, exiting" %(config))
-    
+        bot.error("Cannot find config %s, exiting" % (config))
+
     if not isinstance(deid, DeidRecipe):
         deid = DeidRecipe(deid)
     config = read_json(config, ordered_dict=True)
@@ -235,24 +228,26 @@ def _prepare_replace_config(dicom_files, deid=None, config=None):
     return dicom_files, deid, config
 
 
-def replace_identifiers(dicom_files,
-                        ids,
-                        deid=None,
-                        save=True,
-                        overwrite=False,
-                        output_folder=None,
-                        force=True,
-                        config=None,
-                        strip_sequences=True,
-                        remove_private=True):
+def replace_identifiers(
+    dicom_files,
+    ids,
+    deid=None,
+    save=True,
+    overwrite=False,
+    output_folder=None,
+    force=True,
+    config=None,
+    strip_sequences=True,
+    remove_private=True,
+):
 
-    '''replace identifiers using pydicom, can be slow when writing
+    """replace identifiers using pydicom, can be slow when writing
        and saving new files. If you want to replace sequences, they need
        to be extracted with get_identifiers and expand_sequences to True.
-    '''
-    dicom_files, recipe, config = _prepare_replace_config(dicom_files, 
-                                                          deid=deid,
-                                                          config=config)
+    """
+    dicom_files, recipe, config = _prepare_replace_config(
+        dicom_files, deid=deid, config=config
+    )
 
     # Parse through dicom files, update headers, and save
     updated_files = []
@@ -268,24 +263,26 @@ def replace_identifiers(dicom_files,
         if recipe.deid is not None:
             if dicom_file in ids:
                 for action in deid.get_actions():
-                    dicom = perform_action(dicom=dicom,
-                                           item=ids[dicom_file],
-                                           action=action)
+                    dicom = perform_action(
+                        dicom=dicom, item=ids[dicom_file], action=action
+                    )
             else:
-                bot.warning("%s is not in identifiers." %dicom_name)
+                bot.warning("%s is not in identifiers." % dicom_name)
                 continue
 
         # Next perform actions in default config, only if not done
-        for action in config['put']['actions']:
-            if action['field'] in fields:
-                dicom = perform_action(dicom=dicom,
-                                       action=action)
+        for action in config["put"]["actions"]:
+            if action["field"] in fields:
+                dicom = perform_action(dicom=dicom, action=action)
         if remove_private is True:
             try:
                 dicom.remove_private_tags()
             except:
-                bot.error('''Private tags for %s could not be completely removed, usually
-                             this is due to invalid data type. Removing others.''' % dicom_name)
+                bot.error(
+                    """Private tags for %s could not be completely removed, usually
+                             this is due to invalid data type. Removing others."""
+                    % dicom_name
+                )
                 private_tags = get_private(dicom)
                 for ptag in private_tags:
                     del dicom[ptag.tag]
@@ -301,13 +298,15 @@ def replace_identifiers(dicom_files,
                 pass
 
         # Copy original data attributes
-        attributes = ['is_little_endian',
-                      'is_implicit_VR',
-                      'is_decompressed',
-                      'read_encoding',
-                      'read_implicit_vr',
-                      'read_little_endian',
-                      '_parent_encoding']
+        attributes = [
+            "is_little_endian",
+            "is_implicit_VR",
+            "is_decompressed",
+            "read_encoding",
+            "read_implicit_vr",
+            "read_little_endian",
+            "_parent_encoding",
+        ]
 
         # We aren't including preamble, we will reset to be empty 128 bytes
         ds.preamble = b"\0" * 128
@@ -317,21 +316,23 @@ def replace_identifiers(dicom_files,
                 ds.__setattr__(attribute, dicom.__getattribute__(attribute))
 
         # Original meta data                     # or default empty dataset
-        file_metas = getattr(dicom, 'file_meta', Dataset())
-        
+        file_metas = getattr(dicom, "file_meta", Dataset())
+
         # Media Storage SOP Instance UID can be identifying
-        if hasattr(file_metas, 'MediaStorageSOPInstanceUID'):
-            file_metas.MediaStorageSOPInstanceUID = ''
+        if hasattr(file_metas, "MediaStorageSOPInstanceUID"):
+            file_metas.MediaStorageSOPInstanceUID = ""
 
         # Save meta data
         ds.file_meta = file_metas
-       
-       # Save to file?
+
+        # Save to file?
         if save is True:
-            ds = save_dicom(dicom=ds,
-                            dicom_file=dicom_file,
-                            output_folder=output_folder,
-                            overwrite=overwrite)
+            ds = save_dicom(
+                dicom=ds,
+                dicom_file=dicom_file,
+                output_folder=output_folder,
+                overwrite=overwrite,
+            )
         updated_files.append(ds)
 
     return updated_files

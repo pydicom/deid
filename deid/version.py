@@ -1,6 +1,6 @@
-'''
+"""
 
-Copyright (c) 2017-2019 Vanessa Sochat
+Copyright (c) 2017-2020 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,19 +20,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-'''
+"""
 
-__version__ = "0.1.34"
-AUTHOR = 'Vanessa Sochat'
-AUTHOR_EMAIL = 'vsochat@stanford.edu'
-NAME = 'deid'
+__version__ = "0.1.35"
+AUTHOR = "Vanessa Sochat"
+AUTHOR_EMAIL = "vsochat@stanford.edu"
+NAME = "deid"
 PACKAGE_URL = "https://github.com/pydicom/deid"
-KEYWORDS = 'open source, python, anonymize, dicom'
+KEYWORDS = "open source, python, anonymize, dicom"
 DESCRIPTION = "deidentify dicom and other images with python and pydicom"
 LICENSE = "LICENSE"
 
 INSTALL_REQUIRES = (
-    ('matplotlib', {'max_version': '2.1.2'}),
-    ('pydicom', {'exact_version': '1.2.1'}),
-    ('python-dateutil', {'min_version': None})
+    ("matplotlib", {"max_version": "2.1.2"}),
+    ("pydicom", {"exact_version": "1.2.1"}),
+    ("python-dateutil", {"min_version": None}),
 )

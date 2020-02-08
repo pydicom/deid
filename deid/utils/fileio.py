@@ -1,6 +1,6 @@
-'''
+"""
 
-Copyright (c) 2017-2019 Vanessa Sochat
+Copyright (c) 2017-2020 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-'''
+"""
 
 import fnmatch
 import json
@@ -32,30 +32,32 @@ from collections import OrderedDict
 # Local commands and requests
 ################################################################################
 
+
 def get_installdir():
-    '''get_installdir returns the installation directory of the application
-    '''
+    """get_installdir returns the installation directory of the application
+    """
     return os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 
 def get_temporary_name(prefix=None, ext=None):
-    '''get a temporary name, can be used for a directory or file. This does so
+    """get a temporary name, can be used for a directory or file. This does so
        without creating the file, and adds an optional prefix
   
        Parameters
        ==========
        prefix: if defined, add the prefix after deid
        ext: if defined, return the file extension appended. Do not specify "."
-    '''
-    deid_prefix = 'deid-'
+    """
+    deid_prefix = "deid-"
     if prefix:
-        deid_prefix = 'deid-%s-' % prefix
+        deid_prefix = "deid-%s-" % prefix
 
-    tmpname = os.path.join(tempfile.gettempdir(), 
-                           '%s%s' % (deid_prefix,
-                                     next(tempfile._get_candidate_names())))
+    tmpname = os.path.join(
+        tempfile.gettempdir(),
+        "%s%s" % (deid_prefix, next(tempfile._get_candidate_names())),
+    )
     if ext:
-        tmpname = '%s.%s' % (tmpname, ext)
+        tmpname = "%s.%s" % (tmpname, ext)
     return tmpname
 
 
@@ -63,8 +65,9 @@ def get_temporary_name(prefix=None, ext=None):
 ## FILE OPERATIONS #############################################################
 ################################################################################
 
+
 def write_file(filename, content, mode="w"):
-    '''write_file will open a file, "filename" and write content, "content"
+    """write_file will open a file, "filename" and write content, "content"
        and properly close the file
 
        Parameters
@@ -73,14 +76,14 @@ def write_file(filename, content, mode="w"):
        content: the content to write to file
        mode: the mode to open the file, defaults to write (w)
 
-    '''
+    """
     with open(filename, mode) as filey:
         filey.writelines(content)
     return filename
 
 
 def write_json(json_obj, filename, mode="w", print_pretty=True):
-    '''write_json will (optionally,pretty print) a json object to file
+    """write_json will (optionally,pretty print) a json object to file
 
        Parameters
        ==========
@@ -88,18 +91,17 @@ def write_json(json_obj, filename, mode="w", print_pretty=True):
        filename: the output file to write to
        pretty_print: if True, will use nicer formatting   
 
-    '''
+    """
     with open(filename, mode) as filey:
         if print_pretty:
-            filey.writelines(json.dumps(json_obj, indent=4, separators=(',', ': ')))
+            filey.writelines(json.dumps(json_obj, indent=4, separators=(",", ": ")))
         else:
             filey.writelines(json.dumps(json_obj))
     return filename
 
 
-
 def read_file(filename, mode="r"):
-    '''write_file will open a file, "filename" and write content, "content"
+    """write_file will open a file, "filename" and write content, "content"
        and properly close the file
 
        Parameters
@@ -107,15 +109,14 @@ def read_file(filename, mode="r"):
        filename: the name of the file to write to
        mode: the mode to open the file, defaults to read (r)
 
-    '''
+    """
     with open(filename, mode) as filey:
         content = filey.readlines()
     return content
 
 
-
 def read_json(filename, mode="r", ordered_dict=False):
-    '''read_json will open a file, "filename" and read the string as json
+    """read_json will open a file, "filename" and read the string as json
 
        Parameters
        ==========
@@ -123,7 +124,7 @@ def read_json(filename, mode="r", ordered_dict=False):
        mode: the mode to open the file, defaults to read (r)
        ordered_dict: If true, return an OrderedDict (default is False)
 
-    '''
+    """
     with open(filename, mode) as filey:
         if ordered_dict is False:
             content = json.loads(filey.read())
@@ -133,7 +134,7 @@ def read_json(filename, mode="r", ordered_dict=False):
 
 
 def recursive_find(base, pattern=None):
-    '''recursive find will yield dicom files in all directory levels
+    """recursive find will yield dicom files in all directory levels
        below a base path. It uses get_dcm_files to find the files in the bases.
 
        Parameters
@@ -141,7 +142,7 @@ def recursive_find(base, pattern=None):
        base: the base directory to search
        pattern: a pattern to match. If None, defaults to "*"
 
-    '''
+    """
     if pattern is None:
         pattern = "*"
 
@@ -156,16 +157,16 @@ def recursive_find(base, pattern=None):
 
 
 def to_int(value):
-    '''convert a value (value) to int, if found to be otherwise
-    '''
+    """convert a value (value) to int, if found to be otherwise
+    """
     if not isinstance(value, int):
         value = int(float(value))
     return value
 
 
 def is_number(value):
-    '''is_number determines if the value for a field is numeric
-    '''
+    """is_number determines if the value for a field is numeric
+    """
     if isinstance(value, int):
         return True
     if isinstance(value, float):

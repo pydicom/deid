@@ -1,10 +1,10 @@
-'''
+"""
 
 Simple loading functions for datasets
 
    from deid.data import get_dataset
 
-Copyright (c) 2017 Vanessa Sochat
+Copyright (c) 2017-2020 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
+"""
 
 
 from deid.utils import get_installdir
@@ -35,12 +35,12 @@ data_base = os.path.dirname(os.path.abspath(__file__))
 
 
 def get_dataset(dataset=None):
-    '''get_dataset will return some data provided by the application,
+    """get_dataset will return some data provided by the application,
     based on a user-provided label. In the future, we can add https endpoints
     to retrieve online datasets.
-    '''
+    """
     data_base = get_installdir()
-    valid_datasets = {'dicom-cookies':'%s/data/dicom-cookies' %data_base}
+    valid_datasets = {"dicom-cookies": "%s/data/dicom-cookies" % data_base}
 
     if dataset is not None:
         # In case the user gave an extension
@@ -48,4 +48,4 @@ def get_dataset(dataset=None):
         if dataset in valid_datasets:
             return valid_datasets[dataset]
 
-    bot.info("Valid datasets include: %s" %(','.join(list(valid_datasets.keys()))))
+    bot.info("Valid datasets include: %s" % (",".join(list(valid_datasets.keys()))))

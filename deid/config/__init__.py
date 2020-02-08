@@ -1,8 +1,8 @@
-'''
+"""
 
 DeidRecipe
 
-Copyright (c) 2017-2019 Vanessa Sochat
+Copyright (c) 2017-2020 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,18 +26,10 @@ The functions below assume a configuration file called deid, although the
 user can specify a custom name.
 
 
-'''
+"""
 
-from deid.config.utils import (
-    load_deid,
-    get_deid,
-    load_combined_deid
-)
-from deid.config.standards import (
-    actions,
-    sections,
-    formats
-)
+from deid.config.utils import load_deid, get_deid, load_combined_deid
+from deid.config.standards import actions, sections, formats
 
 from deid.logger import bot
 import os
@@ -45,8 +37,9 @@ import re
 
 bot.level = 3
 
+
 class DeidRecipe:
-    '''Create and work with a deid recipe to filter and perform operations on
+    """Create and work with a deid recipe to filter and perform operations on
        a dicom header. Usage typically looks like:
 
        deid = 'dicom.deid'
@@ -62,30 +55,30 @@ class DeidRecipe:
        base: if True, load a default base (default_base) before custom
        default_base: the default base to load if "base" is True
 
-    '''
-    
-    def __init__(self, deid=None, base=False, default_base='dicom'):
+    """
+
+    def __init__(self, deid=None, base=False, default_base="dicom"):
 
         # If deid is None, use the default
         if deid is None:
-            bot.warning('No specification, loading default base deid.%s' % default_base)
+            bot.warning("No specification, loading default base deid.%s" % default_base)
             base = True
 
         self._init_deid(deid, base=base, default_base=default_base)
 
     def __str__(self):
-        return '[deid]'
+        return "[deid]"
 
     def __repr__(self):
-        return '[deid]'
+        return "[deid]"
 
     def load(self, deid):
-        '''load a deid recipe into the object. If a deid configuration is
+        """load a deid recipe into the object. If a deid configuration is
            already defined, append to that. 
-        '''
+        """
         deid = get_deid(deid)
         if deid is not None:
- 
+
             # Update our list of files
             self._files.append(deid)
             self.files = list(set(self.files))
@@ -94,38 +87,35 @@ class DeidRecipe:
             self.deid = load_combined_deid([self.deid, deid])
 
     def _get_section(self, name):
-        '''return a section (key) in the loaded deid, if it exists
-        '''
+        """return a section (key) in the loaded deid, if it exists
+        """
         section = None
         if self.deid is not None:
             if name in self.deid:
                 section = self.deid[name]
         return section
 
-
     def get_format(self):
-        '''return the format of the loaded deid, if one exists
-        '''
-        return self._get_section('format')
-
+        """return the format of the loaded deid, if one exists
+        """
+        return self._get_section("format")
 
     def get_filters(self, name=None):
-        '''return all filters for a deid recipe, or a set based on a name
-        '''
-        filters = self._get_section('filter')
+        """return all filters for a deid recipe, or a set based on a name
+        """
+        filters = self._get_section("filter")
         if name is not None and filters is not None:
-            filters = filters[name]        
+            filters = filters[name]
         return filters
 
-
     def ls_filters(self):
-        '''list names of filter groups
-        '''
-        filters = self._get_section('filter')
+        """list names of filter groups
+        """
+        filters = self._get_section("filter")
         return list(filters.keys())
 
     def get_actions(self, action=None, field=None):
-        '''get deid actions to perform on a header, or a subset based on a type
+        """get deid actions to perform on a header, or a subset based on a type
 
            A header action is a list with the following:
            {'action': 'REMOVE', 'field': 'AssignedLocation'},
@@ -135,21 +125,20 @@ class DeidRecipe:
            action: if not None, filter to action specified
            field: if not None, filter to field specified
 
-        '''
-        header = self._get_section('header')
+        """
+        header = self._get_section("header")
         if header is not None:
             if action is not None:
                 action = action.upper()
-                header = [x for x in header if x['action'].upper() == action]      
+                header = [x for x in header if x["action"].upper() == action]
             if field is not None:
                 field = field.upper()
-                header = [x for x in header if x['field'].upper() == field]  
+                header = [x for x in header if x["field"].upper() == field]
 
         return header
 
-
-    def _init_deid(self, deid=None, base=False, default_base='dicom'):
-        '''initalize the recipe with one or more deids, optionally including 
+    def _init_deid(self, deid=None, base=False, default_base="dicom"):
+        """initalize the recipe with one or more deids, optionally including 
            the default. This function is called at init time. If you need to add
            or work with already loaded configurations, use add/remove 
     
@@ -160,7 +149,7 @@ class DeidRecipe:
                  (later in the list overrides earlier loaded).
            default_base: load the default base before the user customizations. 
 
-        '''
+        """
         if deid is None:
             deid = []
 
@@ -173,5 +162,5 @@ class DeidRecipe:
         self._files = deid
 
         if len(deid) == 0:
-            bot.info('You can add custom deid files with .load().')
+            bot.info("You can add custom deid files with .load().")
         self.deid = load_combined_deid(deid)

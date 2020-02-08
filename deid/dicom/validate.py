@@ -1,6 +1,6 @@
-'''
+"""
 
-Copyright (c) 2017-2019 Vanessa Sochat
+Copyright (c) 2017-2020 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,36 +20,35 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-'''
+"""
 
 from deid.logger import bot
 from pydicom import read_file
 
 
 def validate_dicoms(dcm_files, force=False):
-    '''validate dicoms will test opening one or more dicom files, 
+    """validate dicoms will test opening one or more dicom files, 
        and return a list of valid files.
 
        Parameters
        ==========
        dcm_files: one or more dicom files to test
     
-    '''
+    """
     if not isinstance(dcm_files, list):
         dcm_files = [dcm_files]
 
     valids = []
 
-    bot.debug("Checking %s dicom files for validation." %(len(dcm_files)))
+    bot.debug("Checking %s dicom files for validation." % (len(dcm_files)))
     for dcm_file in dcm_files:
 
         try:
-            with open(dcm_file, 'rb') as filey:
+            with open(dcm_file, "rb") as filey:
                 read_file(filey, force=force)
             valids.append(dcm_file)
         except:
-            bot.warning('Cannot read input file {0!s}, skipping.'.format(dcm_file))
+            bot.warning("Cannot read input file {0!s}, skipping.".format(dcm_file))
 
-
-    bot.debug("Found %s valid dicom files" %(len(valids)))
+    bot.debug("Found %s valid dicom files" % (len(valids)))
     return valids
