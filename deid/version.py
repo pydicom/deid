@@ -22,7 +22,7 @@ SOFTWARE.
 
 """
 
-__version__ = "0.1.34"
+__version__ = "0.1.35"
 AUTHOR = "Vanessa Sochat"
 AUTHOR_EMAIL = "vsochat@stanford.edu"
 NAME = "deid"

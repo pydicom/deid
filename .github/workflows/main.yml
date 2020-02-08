@@ -27,10 +27,13 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - name: Setup black environment
-        run: conda create --quiet --name testing pydicom
+      - name: Setup conda environment
+        run: | 
+          conda create --quiet --name testing
+          source activate testing
+          python setup.py install
 
-      - name: Test dedid
+      - name: Test deid
         run: |
           export PATH="/usr/share/miniconda/bin:$PATH"
           source activate testing
