@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-'''
+"""
 Test data functions
 
 The MIT License (MIT)
 
-Copyright (c) 2016-2019 Vanessa Sochat
+Copyright (c) 2016-2020 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-'''
+"""
 
 import unittest
 import tempfile
@@ -33,27 +33,27 @@ import shutil
 import json
 import os
 
-class TestUtils(unittest.TestCase):
 
+class TestUtils(unittest.TestCase):
     def setUp(self):
         print("\n######################START######################")
-        
+
     def tearDown(self):
         print("\n######################END########################")
 
-
     def test_get_dataset(self):
-        '''test_get_dataset will make sure we can load provided datasets
-        '''
+        """test_get_dataset will make sure we can load provided datasets
+        """
         print("Case 1: Ask for existing dataset.")
         from deid.data import get_dataset
-        dataset = get_dataset('dicom-cookies')        
-        self.assertTrue(os.path.exists(dataset))        
+
+        dataset = get_dataset("dicom-cookies")
+        self.assertTrue(os.path.exists(dataset))
 
         print("Case 2: Ask for non existing dataset")
-        dataset = get_dataset('other-cookies')        
-        self.assertEqual(dataset,None)        
+        dataset = get_dataset("other-cookies")
+        self.assertEqual(dataset, None)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-'''
+"""
 Test utils
 
-Copyright (c) 2016-2019 Vanessa Sochat
+Copyright (c) 2016-2020 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,109 +23,114 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-'''
+"""
 
 from deid.utils import get_installdir
- 
+
 import unittest
 import tempfile
 import shutil
 import json
 import os
 
-class TestUtils(unittest.TestCase):
 
+class TestUtils(unittest.TestCase):
     def setUp(self):
         self.pwd = get_installdir()
         self.tmpdir = tempfile.mkdtemp()
         print("\n######################START######################")
-        
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir)
         print("\n######################END########################")
 
     def test_get_temporary_name(self):
-        '''test_get_temporary_name will test the generation of a temporary 
+        """test_get_temporary_name will test the generation of a temporary 
            file name.
-        '''
+        """
         from deid.utils import get_temporary_name
+
         print("Testing utils.get_temporary_name...")
         tmpname = get_temporary_name()
         self.assertTrue(not os.path.exists(tmpname))
-        self.assertTrue('deid' in tmpname)
-        tmpname = get_temporary_name(prefix='clean')
-        self.assertTrue('deid-clean' in tmpname)
-        tmpname = get_temporary_name(ext='.dcm')
-        self.assertTrue(tmpname.endswith('.dcm'))
+        self.assertTrue("deid" in tmpname)
+        tmpname = get_temporary_name(prefix="clean")
+        self.assertTrue("deid-clean" in tmpname)
+        tmpname = get_temporary_name(ext=".dcm")
+        self.assertTrue(tmpname.endswith(".dcm"))
 
     def test_write_read_files(self):
-        '''test_write_read_files will test the functions 
+        """test_write_read_files will test the functions 
            write_file and read_file
-        '''
+        """
         print("Testing utils.write_file...")
         from deid.utils import write_file
+
         tmpfile = tempfile.mkstemp()[1]
         os.remove(tmpfile)
-        write_file(tmpfile,"blaaahumbug")
-        self.assertTrue(os.path.exists(tmpfile))        
+        write_file(tmpfile, "blaaahumbug")
+        self.assertTrue(os.path.exists(tmpfile))
 
         print("Testing utils.read_file...")
         from deid.utils import read_file
+
         content = read_file(tmpfile)[0]
-        self.assertEqual("blaaahumbug",content)
+        self.assertEqual("blaaahumbug", content)
 
         from deid.utils import write_json
+
         print("Testing utils.write_json...")
         print("Case 1: Providing bad json")
-        bad_json = {"Wakkawakkawakka'}":[{True},"2",3]}
-        tmpfile = tempfile.mkstemp()[1]
-        os.remove(tmpfile)        
-        with self.assertRaises(TypeError) as cm:
-            write_json(bad_json,tmpfile)
-
-        print("Case 2: Providing good json")        
-        good_json = {"Wakkawakkawakka":[True,"2",3]}
+        bad_json = {"Wakkawakkawakka'}": [{True}, "2", 3]}
         tmpfile = tempfile.mkstemp()[1]
         os.remove(tmpfile)
-        write_json(good_json,tmpfile)
-        content = json.load(open(tmpfile,'r'))
-        self.assertTrue(isinstance(content,dict))
+        with self.assertRaises(TypeError) as cm:
+            write_json(bad_json, tmpfile)
+
+        print("Case 2: Providing good json")
+        good_json = {"Wakkawakkawakka": [True, "2", 3]}
+        tmpfile = tempfile.mkstemp()[1]
+        os.remove(tmpfile)
+        write_json(good_json, tmpfile)
+        content = json.load(open(tmpfile, "r"))
+        self.assertTrue(isinstance(content, dict))
         self.assertTrue("Wakkawakkawakka" in content)
 
-
     def test_get_installdir(self):
-        '''get install directory should return the base of where singularity
+        """get install directory should return the base of where singularity
         is installed
-        '''
+        """
         print("Testing finding the installation directory.")
         from deid.utils import get_installdir
+
         whereami = get_installdir()
-        self.assertTrue(whereami.endswith('deid'))
+        self.assertTrue(whereami.endswith("deid"))
 
     def test_recursive_find(self):
-        '''test_recursive_find should detect 7 dicoms
-        '''
+        """test_recursive_find should detect 7 dicoms
+        """
         print("Testing recursive find.")
         from deid.utils import recursive_find
+
         found = 0
         expected = 7
-        for file in recursive_find(self.pwd,pattern='*.dcm'):
+        for file in recursive_find(self.pwd, pattern="*.dcm"):
             found += 1
-        print("Found %s files" %(found))
-        self.assertTrue(found==expected)
+        print("Found %s files" % (found))
+        self.assertTrue(found == expected)
 
     def test_recursive_find_as_list(self):
-        '''test_recursive_find_as_list should detect 7 dicoms
-        '''
+        """test_recursive_find_as_list should detect 7 dicoms
+        """
         print("Testing recursive find as lit.")
         from deid.utils import recursive_find
+
         expected = 7
-        files = list(recursive_find(self.pwd,pattern='*.dcm'))
+        files = list(recursive_find(self.pwd, pattern="*.dcm"))
         found = len(files)
-        print("Found %s files" %(len(files)))
-        self.assertTrue(found==expected)
+        print("Found %s files" % (len(files)))
+        self.assertTrue(found == expected)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

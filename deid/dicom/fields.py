@@ -1,6 +1,6 @@
-'''
+"""
 
-Copyright (c) 2017-2019 Vanessa Sochat
+Copyright (c) 2017-2020 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,24 +20,22 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-'''
+"""
 
 from deid.logger import bot
 from pydicom.sequence import Sequence
-from pydicom.dataset import (
-    RawDataElement, 
-    Dataset
-)
+from pydicom.dataset import RawDataElement, Dataset
 import re
 
+
 def extract_item(item, prefix=None, entry=None):
-    '''a helper function to extract sequence, will extract values from 
+    """a helper function to extract sequence, will extract values from 
        a dicom sequence depending on the type.
 
        Parameters
        ==========
        item: an item from a sequence.
-    '''
+    """
     # First call, we define entry to be a lookup dictionary
     if entry is None:
         entry = {}
@@ -47,23 +45,24 @@ def extract_item(item, prefix=None, entry=None):
         header = item.keyword
 
         # If there is no header or field, we can't evaluate
-        if header in [None, '']:
+        if header in [None, ""]:
             return entry
 
         if prefix is not None:
-            header = "%s__%s" %(prefix, header)  
+            header = "%s__%s" % (prefix, header)
 
         value = item.value
         if isinstance(value, bytes):
-            value = value.decode('utf-8')
+            value = value.decode("utf-8")
         if isinstance(value, Sequence):
             return extract_sequence(value, prefix=header)
 
         entry[header] = value
     return entry
 
+
 def extract_sequence(sequence, prefix=None):
-    '''return a pydicom.sequence.Sequence recursively
+    """return a pydicom.sequence.Sequence recursively
        as a flattened list of items. For example, a nested FieldA and FieldB
        would return as:
 
@@ -73,21 +72,23 @@ def extract_sequence(sequence, prefix=None):
        ==========
        sequence: the sequence to extract, should be pydicom.sequence.Sequence
        prefix: the parent name
-    '''
+    """
     items = {}
     for item in sequence:
 
         # If it's a Dataset, we need to further unwrap it
         if isinstance(item, Dataset):
             for subitem in item:
-                items.update(extract_item(subitem, prefix=prefix))          
+                items.update(extract_item(subitem, prefix=prefix))
         else:
-            bot.warning("Unrecognized type %s in extract sequences, skipping." % type(item))
+            bot.warning(
+                "Unrecognized type %s in extract sequences, skipping." % type(item)
+            )
     return items
 
 
 def expand_field_expression(field, dicom, contenders=None):
-    '''Get a list of fields based on an expression. If 
+    """Get a list of fields based on an expression. If 
        no expression found, return single field. Options for fields include:
 
         endswith: filter to fields that end with the expression
@@ -96,9 +97,9 @@ def expand_field_expression(field, dicom, contenders=None):
         allfields: include all fields
         exceptfields: filter to all fields except those listed ( | separated)
     
-    '''
+    """
     # Expanders that don't have a : must be checked for
-    expanders = ['all']
+    expanders = ["all"]
 
     # if no contenders provided, use all in dicom headers
     if contenders is None:
@@ -112,7 +113,7 @@ def expand_field_expression(field, dicom, contenders=None):
         return fields
 
     # Case 2: The field is a specific field OR an axpander with argument (A:B)
-    fields = field.split(':')
+    fields = field.split(":")
     if len(fields) == 1:
         return fields
 
@@ -123,9 +124,9 @@ def expand_field_expression(field, dicom, contenders=None):
 
     # Expanders here require an expression, and have <expander>:<expression>
     if expander.lower() == "endswith":
-        fields = [x for x in contenders if re.search('(%s)$' %expression, x.lower())]
+        fields = [x for x in contenders if re.search("(%s)$" % expression, x.lower())]
     elif expander.lower() == "startswith":
-        fields = [x for x in contenders if re.search('^(%s)' %expression, x.lower())]
+        fields = [x for x in contenders if re.search("^(%s)" % expression, x.lower())]
     elif expander.lower() == "except":
         fields = [x for x in contenders if not re.search(expression, x.lower())]
     elif expander.lower() == "contains":
@@ -135,7 +136,7 @@ def expand_field_expression(field, dicom, contenders=None):
 
 
 def get_fields(dicom, skip=None, expand_sequences=True):
-    '''get fields is a simple function to extract a dictionary of fields
+    """get fields is a simple function to extract a dictionary of fields
        (non empty) from a dicom file.
 
        Parameters
@@ -143,7 +144,7 @@ def get_fields(dicom, skip=None, expand_sequences=True):
        dicom: the dicom file to get fields for.
        skip: an optional list of fields to skip
        expand_sequences: if True, expand values that are sequences.
-    '''    
+    """
     if skip is None:
         skip = []
     if not isinstance(skip, list):
@@ -164,8 +165,8 @@ def get_fields(dicom, skip=None, expand_sequences=True):
             else:
                 if value not in [None, ""]:
                     if isinstance(value, bytes):
-                        value = value.decode('utf-8')
+                        value = value.decode("utf-8")
                     fields[contender] = str(value)
         except:
-            pass # need to look into this bug
+            pass  # need to look into this bug
     return fields

@@ -10,18 +10,14 @@ matrix:
   include:
   - name: "Python 3.5"
     python: "3.5"
-    env: RUN_PYLINT=yes
   - name: "Python 2.7"
     python: "2.7"
-    env: RUN_PYLINT=no
 
 install:
-  - pip install pylint pydicom
+  - pip install pydicom
   - cd $TRAVIS_BUILD_DIR/
   - python setup.py sdist
   - python setup.py install
-  - pylint --version
 
 script:
-  - if [ "${RUN_PYLINT}" == "yes" ]; then pylint deid; fi;
   - python -m unittest discover -s $TRAVIS_BUILD_DIR/deid/tests/ -p '[t|T]est*.py'

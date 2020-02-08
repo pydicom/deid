@@ -1,8 +1,8 @@
-'''
+"""
 
 detect.py: functions for pixel scrubbing
 
-Copyright (c) 2017 Vanessa Sochat
+Copyright (c) 2017-2020 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-'''
+"""
 
 from deid.config import DeidRecipe
 from deid.logger import bot
@@ -31,18 +31,18 @@ from pydicom import read_file
 
 
 def has_burned_pixels(dicom_files, force=True, deid=None):
-    ''' has burned pixels is an entrypoint for has_burned_pixels_multi (for 
+    """ has burned pixels is an entrypoint for has_burned_pixels_multi (for 
         multiple images) or has_burned_pixels_single (for one detailed repor)
         We will use the MIRCTP criteria (see ref folder with the
         original scripts used by CTP) to determine if an image is likely to have 
         PHI, based on fields in the header alone. This script does NOT perform
         pixel cleaning, but returns a dictionary of results (for multi) or one
         detailed result (for single)
-    '''
+    """
     # if the user has provided a custom deid, load it
     if not isinstance(deid, DeidRecipe):
         if deid is None:
-            deid = 'dicom'
+            deid = "dicom"
         deid = DeidRecipe(deid)
 
     if isinstance(dicom_files, list):
@@ -50,36 +50,33 @@ def has_burned_pixels(dicom_files, force=True, deid=None):
     return _has_burned_pixels_single(dicom_files, force, deid)
 
 
-
 def _has_burned_pixels_multi(dicom_files, force, deid):
-    '''return a summary dictionary with lists of clean, and then lookups
+    """return a summary dictionary with lists of clean, and then lookups
        for flagged images with reasons. The deid should be a deid recipe
        instantiated from deid.config.DeidRecipe. This function should not
        be called directly, but should be called from has_burned_pixels
-    '''
+    """
 
     # Store decisions in lookup based on filter groups
-    decision = {'clean':[],
-                'flagged':{}}
+    decision = {"clean": [], "flagged": {}}
 
     for dicom_file in dicom_files:
-        result = _has_burned_pixels_single(dicom_file=dicom_file,
-                                           force=force,
-                                           deid=deid)
+        result = _has_burned_pixels_single(
+            dicom_file=dicom_file, force=force, deid=deid
+        )
 
-
-        if result['flagged'] is False:
+        if result["flagged"] is False:
             # In this case, group is None
-            decision['clean'].append(dicom_file)
+            decision["clean"].append(dicom_file)
         else:
-            decision['flagged'][dicom_file] = result
+            decision["flagged"][dicom_file] = result
 
     return decision
 
 
 def _has_burned_pixels_single(dicom_file, force, deid):
 
-    '''has burned pixels single will evaluate one dicom file for burned in
+    """has burned pixels single will evaluate one dicom file for burned in
        pixels based on 'filter' criteria in a deid. If deid is not provided,
        will use application default. The method proceeds as follows:
 
@@ -120,13 +117,13 @@ def _has_burned_pixels_single(dicom_file, force, deid):
                    'coordinates': []}
                ]
            }
-    '''
+    """
     dicom = read_file(dicom_file, force=force)
-        
+
     # Load criteria (actions) for flagging
     filters = deid.get_filters()
     if not filters:
-        bot.exit('Deid provided does not have %filter, exiting.')
+        bot.exit("Deid provided does not have %filter, exiting.")
 
     # Return list with lookup as dicom_file
     results = []
@@ -136,47 +133,51 @@ def _has_burned_pixels_single(dicom_file, force, deid):
         for item in items:
             flags = []
 
-            descriptions = [] # description for each group across items
+            descriptions = []  # description for each group across items
 
-            for group in item['filters']:
-                group_flags = []         # evaluation for a single line
+            for group in item["filters"]:
+                group_flags = []  # evaluation for a single line
                 group_descriptions = []
 
                 # You cannot pop from the list
-                for a in range(len(group['action'])):
-                    action = group['action'][a]
-                    field = group['field'][a]
-                    value = ''
+                for a in range(len(group["action"])):
+                    action = group["action"][a]
+                    field = group["field"][a]
+                    value = ""
 
-                    if len(group['value']) > a:
-                        value = group['value'][a]
+                    if len(group["value"]) > a:
+                        value = group["value"][a]
 
-                    flag = apply_filter(dicom=dicom,
-                                        field=field,
-                                        filter_name=action,
-                                        value=value or None)
+                    flag = apply_filter(
+                        dicom=dicom,
+                        field=field,
+                        filter_name=action,
+                        value=value or None,
+                    )
                     group_flags.append(flag)
-                    description = "%s %s %s" %(field, action, value)
+                    description = "%s %s %s" % (field, action, value)
 
-                    if len(group['InnerOperators']) > a:
-                        inner_operator = group['InnerOperators'][a]
+                    if len(group["InnerOperators"]) > a:
+                        inner_operator = group["InnerOperators"][a]
                         group_flags.append(inner_operator)
-                        description = "%s %s" %(description, inner_operator)
+                        description = "%s %s" % (description, inner_operator)
 
                     group_descriptions.append(description)
 
-                # At the end of a group, evaluate the inner group   
+                # At the end of a group, evaluate the inner group
                 flag = evaluate_group(group_flags)
 
-                # "Operator" is relevant for the outcome of the list of actions 
-                operator = ''
-                if 'operator' in group:
-                    if group['operator'] is not None:
-                        operator = group['operator']
+                # "Operator" is relevant for the outcome of the list of actions
+                operator = ""
+                if "operator" in group:
+                    if group["operator"] is not None:
+                        operator = group["operator"]
                         flags.append(operator)
 
                 flags.append(flag)
-                reason = ('%s %s' %(operator, ' '.join(group_descriptions))).replace('\n', ' ')
+                reason = ("%s %s" % (operator, " ".join(group_descriptions))).replace(
+                    "\n", " "
+                )
                 descriptions.append(reason)
 
             # When we parse through a group, we evaluate based on all flags
@@ -184,27 +185,29 @@ def _has_burned_pixels_single(dicom_file, force, deid):
 
             if flagged is True:
                 global_flagged = True
-                reason = ' '.join(descriptions)
+                reason = " ".join(descriptions)
 
-                result = {'reason': reason,
-                          'group': name,
-                          'coordinates': item['coordinates']}
+                result = {
+                    "reason": reason,
+                    "group": name,
+                    "coordinates": item["coordinates"],
+                }
 
                 results.append(result)
 
-    results = {'flagged': global_flagged, 'results': results}
+    results = {"flagged": global_flagged, "results": results}
     return results
 
 
 def evaluate_group(flags):
-    '''evaluate group will take a list of flags (eg:
+    """evaluate group will take a list of flags (eg:
 
         [True, and, False, or, True]
 
        And read through the logic to determine if the image result
        is to be flagged. This is how we combine a set of criteria in
        a group to come to a final decision.
-    '''
+    """
     flagged = False
     first_entry = True
 

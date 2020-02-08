@@ -1,6 +1,6 @@
-'''
+"""
 
-Copyright (c) 2017-2019 Vanessa Sochat
+Copyright (c) 2017-2020 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-'''
+"""
 
 from pydicom.dataset import Dataset
 from pydicom.sequence import Sequence
@@ -36,8 +36,9 @@ import re
 # we apply them to the dataset, with the tag as an argument:
 # dicom.contains("ImageType","SECONDARY")
 
+
 def apply_filter(dicom, field, filter_name, value):
-    '''essentially a switch statement to apply a filter to a dicom file.
+    """essentially a switch statement to apply a filter to a dicom file.
 
        Parameters
        ==========
@@ -46,7 +47,7 @@ def apply_filter(dicom, field, filter_name, value):
        filer_name: the name of the filter to apply (e.g., contains)
        value: the value to set, if filter_name is valid
 
-    '''
+    """
     filter_name = filter_name.lower().strip()
 
     if filter_name == "contains":
@@ -74,22 +75,21 @@ def apply_filter(dicom, field, filter_name, value):
     return False
 
 
-
 ################################################################################
 # Equals
 ################################################################################
 
 
 def equalsBase(self, field, term, ignore_case=True, not_equals=False):
-    '''base of equals, with variable for ignore case (default True)
-    '''
+    """base of equals, with variable for ignore case (default True)
+    """
 
     is_equal = False
 
     contenders = self.get(field)
 
     if not isinstance(contenders, list):
-        contenders = [contenders]    
+        contenders = [contenders]
 
     # In this loop we can only switch to True
     for contender in contenders:
@@ -100,7 +100,7 @@ def equalsBase(self, field, term, ignore_case=True, not_equals=False):
                         contender = str(contender).lower().strip()
                         term = str(term).lower().strip()
                     except AttributeError:
-                        pass # we are dealing with number
+                        pass  # we are dealing with number
 
                 if contender == term:
                     is_equal = True
@@ -113,15 +113,13 @@ def equalsBase(self, field, term, ignore_case=True, not_equals=False):
 
 
 def equals(self, field, term):
-    '''returns true if the value of the identifier exactly 
-       equals the string argument; otherwise, it returns false.'''
+    """returns true if the value of the identifier exactly 
+       equals the string argument; otherwise, it returns false."""
     return self.equalsBase(field, term)
 
 
 def notEquals(self, field, term):
-    return self.equalsBase(field=field,
-                           term=term,
-                           not_equals=True)
+    return self.equalsBase(field=field, term=term, not_equals=True)
 
 
 Dataset.equalsBase = equalsBase
@@ -137,18 +135,18 @@ Dataset.notEquals = notEquals
 
 
 def missing(self, field):
-    '''missing returns True if the dicom is missing the field entirely
+    """missing returns True if the dicom is missing the field entirely
        This means that the entire field is None
-    '''
+    """
     content = self.get(field)
     if content is None:
         return True
     return False
 
- 
+
 def empty(self, field):
-    '''empty returns True if the value is found to be ""
-    '''
+    """empty returns True if the value is found to be ""
+    """
     content = self.get(field)
     if content == "":
         return True
@@ -161,35 +159,35 @@ Dataset.missing = missing
 
 ################################################################################
 # Matches and Contains
-# 
+#
 # contains: searches across entire field
 # matches: looks for exact match
 ################################################################################
 
 
 def compareBase(self, field, expression, func, ignore_case=True):
-    '''compareBase takes either re.search (for contains) or
+    """compareBase takes either re.search (for contains) or
        re.match (for matches) and returns True if the given regular
        expression is contained or matched
-    '''
+    """
     is_match = False
 
     contenders = self.get(field)
 
     if not isinstance(contenders, list):
-        contenders = [contenders]    
+        contenders = [contenders]
 
     for contender in contenders:
         if contender is not None:
 
-            if not isinstance(contender, Sequence):                
+            if not isinstance(contender, Sequence):
                 if ignore_case:
                     try:
                         contender = str(contender).lower().strip()
                         expression = str(expression).lower().strip()
                     except AttributeError:
-                        pass # we are dealing with number
-                             # sequence, or other private tag
+                        pass  # we are dealing with number
+                        # sequence, or other private tag
 
                 if func(expression, contender):
                     is_match = True
@@ -198,31 +196,26 @@ def compareBase(self, field, expression, func, ignore_case=True):
 
 
 def matches(self, field, expression):
-    '''matches returns true if the value of the identifier matches 
+    """matches returns true if the value of the identifier matches 
        the regular expression specified in the string argument; 
        otherwise, it returns false.
-    '''
-    return self.compareBase(field=field,
-                            expression=expression,
-                            func=re.match)
+    """
+    return self.compareBase(field=field, expression=expression, func=re.match)
 
 
 def contains(self, field, expression):
-    '''contains returns true if the value of the identifier 
+    """contains returns true if the value of the identifier 
        contains the the string argument anywhere within it; 
        otherwise, it returns false.
-    '''
-    return self.compareBase(field=field,
-                            expression=expression,
-                            func=re.search)
+    """
+    return self.compareBase(field=field, expression=expression, func=re.search)
+
 
 def notContains(self, field, expression):
-    '''notContains returns true if the value of the identifier 
+    """notContains returns true if the value of the identifier 
        does not contain the the string argument anywhere within it; 
-    '''
-    return not self.compareBase(field=field,
-                                expression=expression,
-                                func=re.search)
+    """
+    return not self.compareBase(field=field, expression=expression, func=re.search)
 
 
 Dataset.compareBase = compareBase
@@ -236,22 +229,20 @@ Dataset.notContains = notContains
 
 
 def startsWith(self, field, term):
-    '''startsWith returns true if the value of the identifier 
+    """startsWith returns true if the value of the identifier 
        starts with the string argument; otherwise, it returns false.
-    '''
-    expression = "^%s" %term
-    return self.compareBase(field=field,
-                            expression=expression,
-                            func=re.match)
-    
+    """
+    expression = "^%s" % term
+    return self.compareBase(field=field, expression=expression, func=re.match)
+
+
 def endsWith(self, field, term):
-    '''endsWith returns true if the value of the identifier ends with 
+    """endsWith returns true if the value of the identifier ends with 
        the string argument; otherwise, it returns false.
-    '''
-    expression = "%s$" %term
-    return self.compareBase(field=field,
-                            expression=expression,
-                            func=re.match)
-    
+    """
+    expression = "%s$" % term
+    return self.compareBase(field=field, expression=expression, func=re.match)
+
+
 Dataset.startsWith = startsWith
 Dataset.endsWith = endsWith
