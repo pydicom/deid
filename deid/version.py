@@ -22,7 +22,7 @@ SOFTWARE.
 
 """
 
-__version__ = "0.1.35"
+__version__ = "0.1.36"
 AUTHOR = "Vanessa Sochat"
 AUTHOR_EMAIL = "vsochat@stanford.edu"
 NAME = "deid"
@@ -32,7 +32,7 @@ DESCRIPTION = "deidentify dicom and other images with python and pydicom"
 LICENSE = "LICENSE"
 
 INSTALL_REQUIRES = (
-    ("matplotlib", {"max_version": "2.1.2"}),
+    ("matplotlib", {"min_version": "2.1.2"}),
     ("pydicom", {"exact_version": "1.2.1"}),
     ("python-dateutil", {"min_version": None}),
 )

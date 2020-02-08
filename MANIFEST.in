@@ -1,7 +1,6 @@
 include README.md LICENSE
 recursive-include deid *
-prune __pycache__
-prune *.pyc
+global-exclude __pycache__
 prune *.pyc
 prune deid/tests
 prune *OLD
