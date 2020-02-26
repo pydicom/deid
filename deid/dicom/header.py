@@ -42,6 +42,8 @@ from pydicom.dataset import Dataset
 from .fields import get_fields
 
 import os
+import re
+from copy import copy
 
 here = os.path.dirname(os.path.abspath(__file__))
 
@@ -239,6 +241,8 @@ def replace_identifiers(
     config=None,
     strip_sequences=True,
     remove_private=True,
+    screen_private=False,
+    screen_values=[]
 ):
 
     """replace identifiers using pydicom, can be slow when writing
@@ -255,6 +259,29 @@ def replace_identifiers(
         dicom = read_file(dicom_file, force=force)
         dicom_name = os.path.basename(dicom_file)
         fields = dicom.dir()
+
+        # Build the lists of PHI values and regex patterns to use when screening private tags.
+        phi_values = []
+        patterns = []
+        if screen_private is True and remove_private is False:
+            for value in screen_values:
+                # Values: retrieve the values from specified tags and create a dictionary of 
+                # phi values that should be trigger removal of private tags 
+                if value.type.lower() == 'value': 
+                    current_tagval = dicom.get(value.tag)
+                    if (current_tagval is not None and str(current_tagval) != ''):
+                        if value.split:
+                            splitvalues = str(current_tagval).split(value.separator)
+                            for splitvalue in splitvalues:
+                                if (splitvalue != '' and len(splitvalue) > value.minvaluelen):
+                                    phi_values.append(splitvalue)
+                        else:
+                            phi_values.append(str(current_tagval))
+                
+                # Patterns: Regex patters which when matched should trigger the removal of a private tag
+                elif value.type.lower() == 'pattern':
+                    compiledpattern = re.compile(value.pattern)
+                    patterns.append(compiledpattern)
 
         # Remove sequences first, maintained in DataStore
         if strip_sequences is True:
@@ -287,15 +314,31 @@ def replace_identifiers(
                 for ptag in private_tags:
                     del dicom[ptag.tag]
                 continue
+        elif screen_private is True:
+            # Loop through private tags, compare to list of phi values and regex patters 
+            # specified in screen values and remove tags. 
+            private_tags = get_private(dicom)
+            remove_list = []
+
+            for ptag in private_tags:
+                tag_val = str(ptag.value).lower()
+                for phi in phi_values:                    
+                    if phi.lower() in tag_val:
+                        if ptag.tag not in remove_list:
+                            remove_list.append(ptag.tag)
+                        
+                for pattern in patterns:
+                    if pattern.match(tag_val):
+                        if ptag.tag not in remove_list:
+                            remove_list.append(ptag.tag)
+                        
+            for remove_tag in remove_list:
+                del dicom[remove_tag]
         else:
-            bot.warning("Private tags were not removed!")
+            bot.warning("Private tags were not removed and have not been screened!")
 
         ds = Dataset()
-        for field in dicom.dir():
-            try:
-                ds.add(dicom.data_element(field))
-            except:
-                pass
+        ds = copy(dicom)
 
         # Copy original data attributes
         attributes = [
