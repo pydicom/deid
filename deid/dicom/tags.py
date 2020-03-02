@@ -205,7 +205,6 @@ def remove_tag(dicom, field):
        ==========
        dicom: the pydicom.dataset Dataset (pydicom.read_file)
        field: the name of the field to remove
-
     """
     if field in dicom:
         tag = dicom.data_element(field).tag

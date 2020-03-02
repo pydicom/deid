@@ -132,8 +132,42 @@ REPLACE PatientID func:generate_suid
 When you do this, the function is expected to be defined in the customized
 item dictionary that you pass in (e.g., modified output from `get_identifiers`)
 See the [Frame of Reference]({{ site.baseurl }}/examples/func-replace/) example
-for a walkthrough of how to do this.
+for a walkthrough of how to do this. Note that you can equivalently do this with
+`ADD` to add a value based on a function:
 
+```
+#<ACTION> <FIELD> <VALUE>
+ADD MyNewField func:generate_field
+```
+
+For both of the above, the function should return a value that you want replaced
+or added. In the case of wanting to remove something based on conditional logic
+that you define in a function, you can use a function with `REMOVE`:
+
+```
+#<ACTION> <FIELD> <VALUE>
+REMOVE ALL func:is_name
+```
+
+The function should return a boolean (True or False) to indicate if you want 
+the field in question removed. For the above, all fields would be checked
+against your function to determine removal status. Here is an example
+function that grabs a patient name, and then checks fields to see
+if the name is present. Fields where it is present will be removed (return True).
+
+```python
+def is_name(dicom, value, field):
+    name = dicom.get('PatientName')
+    splitvalues = name.split('^')
+    for phi in splitvalues:
+        if len(phi) > 4 and phi in value:
+            return True 
+    return False
+```
+
+The dicom is the dicom file (read in with Pydicom) that you can use to interact
+with (in the example above we grab the `PatientName`) and the value is the current
+value of the field named "field."
 
 #### Header
 We know that we are dealing with functions relevant to the header of the image 
