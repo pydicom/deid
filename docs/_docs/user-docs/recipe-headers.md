@@ -158,16 +158,19 @@ if the name is present. Fields where it is present will be removed (return True)
 ```python
 def is_name(dicom, value, field):
     name = dicom.get('PatientName')
+    currentvalue = dicom.get(field)
     splitvalues = name.split('^')
     for phi in splitvalues:
-        if len(phi) > 4 and phi in value:
+        if len(phi) > 4 and phi in currentvalue:
             return True 
     return False
 ```
 
-The dicom is the dicom file (read in with Pydicom) that you can use to interact
-with (in the example above we grab the `PatientName`) and the value is the current
-value of the field named "field."
+Note that "value" refers to the value from the recipe, in this case, the full `func:is_name`.
+Thus, we retrieve the current value by getting the field from the dicom, and then
+check if any portion of the name is represented in the current value. We return
+True if this is the case. The dicom is the dicom file (read in with Pydicom) that you can use to interact
+with (in the example above we grab the `PatientName`).
 
 #### Header
 We know that we are dealing with functions relevant to the header of the image 

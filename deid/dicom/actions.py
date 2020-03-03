@@ -215,19 +215,26 @@ def _remove_tag(dicom, item, field, value=None):
         value_type, value_option = value.split(":")
         if value_type.lower() == "func":
 
+            # An item must be provided
+            if item == None:
+                bot.exit(
+                    "The item parameter (dict) with values must be provided for a REMOVE func:%s"
+                    % value_option
+                )
+
             # The function must be included in the item
             if value_option not in item:
-                sys.exit("%s not found as key included with item." % value_option)
+                bot.exit("%s not found as key included with item." % value_option)
 
             # To the removal, this should return True/False
             do_removal = item[value_option](dicom, value, field)
             if not isinstance(do_removal, bool):
-                sys.exit(
+                bot.exit(
                     "function %s returned an invalid type %s. Must be bool."
                     % (value_option, type(do_removal))
                 )
         else:
-            sys.exit("%s is an invalid variable type for REMOVE." % value_type)
+            bot.exit("%s is an invalid variable type for REMOVE." % value_type)
 
     if do_removal:
         dicom = remove_tag(dicom, field)
