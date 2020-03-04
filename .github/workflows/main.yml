@@ -32,6 +32,7 @@ jobs:
           conda create --quiet --name testing
           export PATH="/usr/share/miniconda/bin:$PATH"
           source activate testing
+          pip install matplotlib
           python setup.py install
 
       - name: Test deid
