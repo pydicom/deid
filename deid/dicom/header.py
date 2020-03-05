@@ -242,7 +242,7 @@ def replace_identifiers(
     strip_sequences=True,
     remove_private=True,
     screen_private=False,
-    screen_values=None
+    screen_values=[]
 ):
 
     """replace identifiers using pydicom, can be slow when writing
@@ -263,7 +263,7 @@ def replace_identifiers(
         # Build the lists of PHI values and regex patterns to use when screening private tags.
         phi_values = []
         patterns = []
-        if (screen_private is True and remove_private is False and screen_values is not None):
+        if screen_private is True and remove_private is False:
             for value in screen_values:
                 # Values: retrieve the values from specified tags and create a dictionary of 
                 # phi values that should be trigger removal of private tags 
