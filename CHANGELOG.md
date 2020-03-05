@@ -14,6 +14,8 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+ - removing matplotlib version requirement (0.1.37)
+ - Matplotlib dependency >= 2.1.2 (0.1.36)
  - Adding black formatting, tests run in GitHub actions (0.1.35)
  - Adding option to recursively replace sequences (0.1.34)
  - adding pylint to clean up code (0.1.33)
