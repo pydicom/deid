@@ -258,56 +258,6 @@ private_tags = get_private(dicom)
 
 Although in this case, the list is empty.
 
-### Screening Private Tags
-Sometimes it is necessary to deidentify the contents of private tags.  While there are no standards regarding the contents of private tags, screening functionality enables the caller to define rules to apply when scanning the values within private tags. 
-
-To screen private tags, the `replace_identifiers` method should be instructed to retain private tags, but screen the tags using the specified screening rules.
-
-```python
-screen_rules = []
-ScreenValue = collections.namedtuple('ScreenValue', 'type tag split separator minvaluelen pattern')
-screen_rules.append(ScreenValue(type='value', tag='PatientName', 
-     split=True, separator='^', minvaluelen=4, pattern=None))
-screen_rules.append(ScreenValue(type='pattern', tag=None, 
-     split=False, separator=None, minvaluelen=None, pattern=r'^(Q\d+)'))
-     
-# Clean the files, set remove_private to False, and screen the private tags for PHI.
-cleaned_files = replace_identifiers(dicom_files=dicom_files,
-                                    remove_private=False,
-                                    screen_private=True,
-                                    screen_values=screen_rules)
-```
-
-#### Configuring Screening Rules
-Screening rules are defined by a namedtuple describing the rule to be applied when evaluating the values of the private tag.  
-
-`value` type screening rules instruct the screening to use the value in the specified tag as a value to find within private tags and remove.  The `split` property instructs the parser to split the value retrieved by the tag by the specified character and use the returned values as the screening value.  `minvaluelength` sets the minimum required length of each returned split component for the split value to be scanned.
-
-```python
-screen_rules = []
-ScreenValue = collections.namedtuple('ScreenValue', 'type tag split separator minvaluelen pattern')
-
-# Instructs the parser to grab the value from the PatientName tag, split it by '^', 
-# and scan for and remove tags containing the value if the value is 4 or more characters in length.
-screen_rules.append(ScreenValue(type='value', tag='PatientName', 
-      split=True, separator='^', minvaluelen=4, pattern=None))
-# Example: PatientName = Simpson^Homer^Jay^^^
-# Resulting Scanned Values: [Simpson|Homer]
-#     Jay is not included as it is less than the specified minvaluelen, 4.
-```
-
-`pattern` type screening rules instruct the screening functionality to use the specified regex pattern to determine when private tags should be removed. The actual regex pattern to utilized is specified within the `pattern` property.
-
-```python
-# Instructs the parser to remove private tags containing values that begin 
-# with a Q followed by numbers. 
-screen_rules.append(ScreenValue(type='pattern', tag=None, 
-     split=False, separator=None, minvaluelen=None, pattern=r'^(Q\d+)'))
-     
-# Instructs the parser to remove private tags with values containing ^ characters.
-screen_rules.append(ScreenValue(type='pattern', tag=None, 
-     split=False, separator=None, minvaluelen=None, pattern=r'.*\^+.*'))
-```
 
 ## Customize Replacement
 As we mentioned earlier, if you have a [deid settings]({{ site.baseurl}}/getting-started/dicom-config/) file, 
