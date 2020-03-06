@@ -109,7 +109,6 @@ def _perform_action(dicom, field, action, value=None, item=None):
 
         # Code the value with something in the response
         elif action == "REPLACE":
-
             value = parse_value(item, value, field)
             if value is not None:
                 # If we make it here, do the replacement
@@ -131,7 +130,7 @@ def _perform_action(dicom, field, action, value=None, item=None):
 
         # Remove the field entirely
         elif action == "REMOVE":
-            dicom = remove_tag(dicom, field)
+            dicom = _remove_tag(dicom, item, field, value)
 
     elif action == "ADD":
         value = parse_value(item, value, field)
@@ -198,6 +197,48 @@ def _perform_expanded_action(dicom, expanded_field, action, value=None, item=Non
             dicom.value = value
 
     # elif "KEEP" --> Do nothing. Keep the original
+
+
+# Remove tags
+
+
+def _remove_tag(dicom, item, field, value=None):
+    """A wrapper to handle removal of a tag by calling tags.remove_tag.
+       The user can optionally provide a value with a function
+       to determine if a tag should be removed (returns True or False)
+    """
+    value = value or ""
+    do_removal = True
+
+    # The user can optionally provide a function to return a boolean
+    if re.search("[:]", value):
+        value_type, value_option = value.split(":")
+        if value_type.lower() == "func":
+
+            # An item must be provided
+            if item == None:
+                bot.warning(
+                    "The item parameter (dict) with values must be provided for a REMOVE func:%s"
+                    % value_option
+                )
+
+            # The function must be included in the item
+            if value_option not in item:
+                bot.warning("%s not found as key included with item." % value_option)
+
+            # To the removal, this should return True/False
+            do_removal = item[value_option](dicom, value, field)
+            if not isinstance(do_removal, bool):
+                bot.warning(
+                    "function %s returned an invalid type %s. Must be bool."
+                    % (value_option, type(do_removal))
+                )
+        else:
+            bot.exit("%s is an invalid variable type for REMOVE." % value_type)
+
+    if do_removal:
+        dicom = remove_tag(dicom, field)
+    return dicom
 
 
 # Timestamps

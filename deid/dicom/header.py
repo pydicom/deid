@@ -274,7 +274,9 @@ def replace_identifiers(
         for action in config["put"]["actions"]:
             if action["field"] in fields:
                 dicom = perform_action(dicom=dicom, action=action)
-        if remove_private is True:
+
+        # Remove private tags if requested.
+        if remove_private:
             try:
                 dicom.remove_private_tags()
             except:

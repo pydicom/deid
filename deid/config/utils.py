@@ -197,7 +197,7 @@ def load_deid(path=None):
                 )
             # Parse the action
             else:
-                config = parse_action(
+                config = parse_config_action(
                     section=section, section_name=section_name, line=line, config=config
                 )
         else:
@@ -407,7 +407,15 @@ def add_section(config, section, section_name=None):
     return config
 
 
-def parse_action(section, line, config, section_name=None):
+def _remove_comments(parts):
+    """given a list of parts, and that the action and field are removed,
+       get the remainder of the line and clean up any trailing comments. 
+    """
+    value = " ".join(parts[0:])  # get remained of line
+    return value.split("#")[0]  # remove comments
+
+
+def parse_config_action(section, line, config, section_name=None):
     """add action will take a line from a deid config file, a config (dictionary), and
        an active section name (eg header) and add an entry to the config file to perform
        the action.
@@ -439,13 +447,25 @@ def parse_action(section, line, config, section_name=None):
         if len(parts) == 0:
             bot.exit("%s requires a VALUE, but not found" % action)
 
-        value = " ".join(parts[0:])  # get remained of line
-        value = value.split("#")[0]  # remove comments
-        bot.debug("Adding %s" % line)  #
+        value = _remove_comments(parts)
+        bot.debug("%s: adding %s" % (section, line))
         config[section].append({"action": action, "field": field, "value": value})
 
+    # Actions that can optionally have a value
+    elif action in ["REMOVE"]:
+        bot.debug("%s: adding %s" % (section, line))
+
+        # Case 1: removing without any criteria
+        if len(parts) == 0:
+            config[section].append({"action": action, "field": field})
+
+        # Case 2: REMOVE can have a func:is_thing to return boolean
+        else:
+            value = _remove_comments(parts)
+            config[section].append({"action": action, "field": field, "value": value})
+
     # Actions that don't require a value
-    elif action in ["BLANK", "KEEP", "REMOVE"]:
+    elif action in ["BLANK", "KEEP"]:
         bot.debug("%s: adding %s" % (section, line))
         config[section].append({"action": action, "field": field})
 
