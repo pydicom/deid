@@ -30,8 +30,14 @@ user can specify a custom name.
 from deid.logger import bot
 from deid.utils import read_file
 from deid.data import data_base
-from deid.config.standards import formats, actions, sections, filters
-
+from deid.config.standards import (
+    formats,
+    actions,
+    sections,
+    filters,
+    fields_actions,
+    values_actions,
+)
 from collections import OrderedDict
 import os
 import re
@@ -130,7 +136,7 @@ def load_deid(path=None):
     config = OrderedDict()
     section = None
 
-    while len(spec) > 0:
+    while spec:
 
         # Clean up white trailing/leading space
         line = spec.pop(0).strip()

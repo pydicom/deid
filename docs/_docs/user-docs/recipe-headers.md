@@ -362,7 +362,8 @@ REPLACE InstanceSOPUID var:source_id
 ```
 
 Now that you know how configuration works, you have a few options.
-If you want to write a text file and get going with cleaning your files, you should 
-look at some examples for generating a basic [get]({{ sitebase.url }}/getting-started/dicom-get/), 
-which is will get a set of fields and values from your dicom files. For a full walk through
+You can learn how to define groups of tags based on fields or values in [groups]({{ site.baseurl }}/user-docs/recipe-groups/),
+or if you want to write a text file and get going with cleaning your files, you should 
+look at some examples for generating a basic [get]({{ sitebase.url }}/getting-started/dicom-get/).
+This is the action to get a set of fields and values from your dicom files. For a full walk through
 example with a recipe, see the [recipe example]({{ sitebase.url }}/examples/recipe)

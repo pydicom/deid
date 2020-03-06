@@ -26,9 +26,14 @@ SOFTWARE.
 formats = ["dicom"]
 
 # Supported Sections
-sections = ["header", "labels", "filter"]
+sections = ["header", "labels", "filter", "values", "fields"]
 
+# Supported Header Actions
 actions = ("ADD", "BLANK", "JITTER", "KEEP", "REPLACE", "REMOVE", "LABEL")
+
+# Supported Group actions
+fields_actions = ["FIELD"]
+values_actions = ["FIELD", "SPLIT"]
 
 # Valid actions for a filter action
 filters = (
