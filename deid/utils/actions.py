@@ -54,6 +54,8 @@ def parse_value(item, value, field=None):
             if value_option not in item:
                 bot.warning("%s not found in item lookup %s" % (value_option))
                 return None
+
+            # item is the lookup, value from the recipe, and field
             return item[value_option](item, value, field)
 
         bot.warning("%s is not a valid value type, skipping." % (value_type))

@@ -141,6 +141,17 @@ class TestDicomUtils(unittest.TestCase):
         dicom = perform_action(dicom=dicom, action=REMOVE)
         self.assertTrue("PatientIdentityRemoved" not in dicom)
 
+        # Test a boolean remove, contains field stanford
+        REMOVE = {"action": "REMOVE", "field": "ALL", "value": "func:is_stanford"}
+
+        # Here is the function that returns a boolean to indicate if replace
+        def is_stanford(item, value, field):
+            return item.get(field) == "STANFORD"
+
+        item = {"is_stanford": is_stanford}
+        dicom = perform_action(dicom=dicom, action=REMOVE, item=item)
+        self.assertTrue("InstitutionName" not in dicom)
+
         print("Case 6: Testing invalid action")
         RUN = {"action": "RUN", "field": "PatientIdentityRemoved"}
 
