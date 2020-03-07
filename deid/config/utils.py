@@ -35,8 +35,8 @@ from deid.config.standards import (
     actions,
     sections,
     filters,
-    fields_actions,
-    values_actions,
+    groups,
+    group_actions,
 )
 from collections import OrderedDict
 import os
@@ -145,15 +145,9 @@ def load_deid(path=None):
         if line.startswith("#"):
             continue
 
-        # Starts with Format?
-        elif bool(re.match("format", line, re.I)):
-            fmt = re.sub("FORMAT|(\s+)", "", line).lower()
-            if fmt not in formats:
-                bot.exit("%s is not a valid format." % fmt)
-
-            # Set format
-            config["format"] = fmt
-            bot.debug("FORMAT set to %s" % fmt)
+        # Set format
+        elif bool(re.match("^format", line, re.I)):
+            config["format"] = parse_format(line)
 
         # A new section?
         elif line.startswith("%"):
@@ -174,24 +168,18 @@ def load_deid(path=None):
                 config=config, section=section, section_name=section_name
             )
 
-        # An action (replace, blank, remove, keep, jitter)
+        # A %fields action (only field allowed), %values allows split
+        elif line.upper().startswith(group_actions) and section in groups:
+            config = parse_group_action(
+                section=section, section_name=section_name, line=line, config=config
+            )
+
+        # An action (ADD, BLANK, JITTER, KEEP, REPLACE, REMOVE, LABEL)
         elif line.upper().startswith(actions):
 
             # Start of a filter group
             if line.upper().startswith("LABEL") and section == "filter":
-                members = []
-                keep_going = True
-                while keep_going is True:
-                    next_line = spec[0]
-                    if next_line.upper().strip().startswith("LABEL"):
-                        keep_going = False
-                    elif next_line.upper().strip().startswith("%"):
-                        keep_going = False
-                    else:
-                        new_member = spec.pop(0)
-                        members.append(new_member)
-                    if len(spec) == 0:
-                        keep_going = False
+                members = parse_filter_group(spec)
 
                 # Add the filter label to the config
                 config = parse_label(
@@ -242,6 +230,48 @@ def find_deid(path=None):
         bot.exit("Cannot find deid file %s, exiting." % (path))
 
     return path
+
+
+def parse_format(line):
+    """given a line that starts with FORMAT, parse the format of the
+       file and check that it is supported. If not, exit on error. If yes,
+       return the format.
+
+       Parameters
+       ==========
+       line: the line that starts with format.
+    """
+    fmt = re.sub("FORMAT|(\s+)", "", line).lower()
+    if fmt not in formats:
+        bot.exit("%s is not a valid format." % fmt)
+    bot.debug("FORMAT set to %s" % fmt)
+    return fmt
+
+
+def parse_filter_group(spec):
+    """given the specification (a list of lines) continue parsing lines
+       until the filter group ends, as indicated by the start of a new LABEL,
+       (case 1), the start of a new section (case 2) or the end of the spec
+       file (case 3). Returns a list of members (lines) that belong to the
+       filter group. The list (by way of using pop) is updated in the calling
+       function.
+
+       Parameters
+       ==========
+       spec: unparsed lines of the deid recipe file
+    """
+    members = []
+    keep_going = True
+    while keep_going and spec:
+        next_line = spec[0]
+        if next_line.upper().strip().startswith("LABEL"):
+            keep_going = False
+        elif next_line.upper().strip().startswith("%"):
+            keep_going = False
+        else:
+            new_member = spec.pop(0)
+            members.append(new_member)
+    return members
 
 
 def parse_label(section, config, section_name, members, label=None):
@@ -295,7 +325,10 @@ def parse_label(section, config, section_name, members, label=None):
 
 
 def parse_member(members, operator=None):
-
+    """a parsing function for a filter member. Will return a single member
+       with fields, values, and an operator. In the case of multiple and/or
+       statements that are chained, will instead return a list.
+    """
     main_operator = operator
 
     actions = []
@@ -388,7 +421,7 @@ def add_section(config, section, section_name=None):
     if section is None:
         bot.exit("You must define a section (e.g. %header) before any action.")
 
-    if section == "filter" and section_name is None:
+    if section in ["filter", "values", "fields"] and section_name is None:
         bot.exit("You must provide a name for a filter section.")
 
     if section not in sections:
@@ -421,6 +454,54 @@ def _remove_comments(parts):
     return value.split("#")[0]  # remove comments
 
 
+def parse_group_action(section, line, config, section_name):
+    """parse a group action, either FIELD or SPLIT, which must belong to
+       either a fields or values section.
+
+       Parameters
+       =========
+       section: a valid section name from the deid config file
+       line: the line content to parse for the section/action
+       config: the growing/current config dictionary
+       section_name: optionally, a section name
+    """
+    if not line.upper().startswith(group_actions):
+        bot.exit("%s is not a valid group action." % line)
+
+    if not line.upper().startswith("FIELD") and section == "fields":
+        bot.exit("%fields only supports FIELD actions.")
+
+    # We may have to deal with cases of spaces
+    bot.debug("%s: adding %s" % (section, line))
+    parts = line.split(" ")
+    action = parts.pop(0).replace(" ", "")
+
+    # Both require some parts
+    if not parts:
+        bot.exit("%s action %s requires additional arguments" % (section, action))
+
+    # For both, the second is always a field or field expander
+    field = parts.pop(0)
+
+    # Fields supports one or more fields with expanders (no third arguments)
+    if section == "fields":
+        config[section][section_name].append({"action": action, "field": field})
+
+    # Values supports FIELD or SPLIT
+    elif section == "values":
+
+        # If we have a third set of arguments
+        if parts:
+            value = _remove_comments(parts)
+            config[section][section_name].append(
+                {"action": action, "field": field, "value": value}
+            )
+        else:
+            config[section][section_name].append({"action": action, "field": field})
+
+    return config
+
+
 def parse_config_action(section, line, config, section_name=None):
     """add action will take a line from a deid config file, a config (dictionary), and
        an active section name (eg header) and add an entry to the config file to perform
@@ -434,7 +515,6 @@ def parse_config_action(section, line, config, section_name=None):
        section_name: optionally, a section name
 
     """
-
     if not line.upper().startswith(actions):
         bot.exit("%s is not a valid action line." % line)
 

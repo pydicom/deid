@@ -87,6 +87,22 @@ def extract_sequence(sequence, prefix=None):
     return items
 
 
+def find_by_values(values, dicom):
+    """Given a list of values, find fields in the dicom that contain any
+       of those values, as determined by a regular expression search.
+    """
+    fields = []
+    contenders = get_fields(dicom)
+
+    # Create single regular expression to search by
+    regexp = "(%s)" % "|".join(values)
+    for field, value in contenders.items():
+        if re.search(regexp, value):
+            fields.append(field)
+
+    return fields
+
+
 def expand_field_expression(field, dicom, contenders=None):
     """Get a list of fields based on an expression. If 
        no expression found, return single field. Options for fields include:
@@ -95,8 +111,7 @@ def expand_field_expression(field, dicom, contenders=None):
         startswith: filter to fields that start with the expression
         contains: filter to fields that contain the expression
         allfields: include all fields
-        exceptfields: filter to all fields except those listed ( | separated)
-    
+        exceptfields: filter to all fields except those listed ( | separated)   
     """
     # Expanders that don't have a : must be checked for
     expanders = ["all"]

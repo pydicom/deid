@@ -92,7 +92,8 @@ class TestUtils(unittest.TestCase):
         tmpfile = tempfile.mkstemp()[1]
         os.remove(tmpfile)
         write_json(good_json, tmpfile)
-        content = json.load(open(tmpfile, "r"))
+        with open(tmpfile, "r") as fd:
+            content = json.loads(fd.read())
         self.assertTrue(isinstance(content, dict))
         self.assertTrue("Wakkawakkawakka" in content)
 

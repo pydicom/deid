@@ -31,9 +31,9 @@ sections = ["header", "labels", "filter", "values", "fields"]
 # Supported Header Actions
 actions = ("ADD", "BLANK", "JITTER", "KEEP", "REPLACE", "REMOVE", "LABEL")
 
-# Supported Group actions
-fields_actions = ["FIELD"]
-values_actions = ["FIELD", "SPLIT"]
+# Supported Group actions (SPLIT only supported for values)
+groups = ["values", "fields"]
+group_actions = ("FIELD", "SPLIT")
 
 # Valid actions for a filter action
 filters = (

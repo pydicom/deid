@@ -25,7 +25,7 @@ SOFTWARE.
 from deid.logger import bot
 from deid.config.standards import actions as valid_actions
 
-from .fields import expand_field_expression
+from .fields import expand_field_expression, find_by_values
 
 from deid.utils import get_timestamp, parse_value
 
@@ -51,7 +51,7 @@ def perform_action(dicom, action, item=None, fields=None, return_seen=False):
           "action" (eg, REPLACE) what to do with the field
           "value": if needed, the field from the response to replace with
     """
-    field = action.get("field")  # e.g: PatientID, endswith:ID
+    field = action.get("field")  # e.g: PatientID, endswith:ID, values:name, fields:name
     value = action.get("value")  # "suid" or "var:field"
     action = action.get("action")  # "REPLACE"
 
@@ -60,8 +60,30 @@ def perform_action(dicom, action, item=None, fields=None, return_seen=False):
         bot.warning("%s in not a valid choice. Defaulting to blanked." % action)
         action = "BLANK"
 
-    # If there is an expander applied to field, we iterate over
-    fields = expand_field_expression(field=field, dicom=dicom, contenders=fields)
+    # If values or fields is provided, ids is required
+    if re.search("^(values|fields)", field):
+        if not item:
+            bot.exit(
+                "An item lookup must be provided to reference a list of values or fields."
+            )
+
+        # A values list returns fields with the value
+        if re.search("^values", field):
+            values = item.get(re.sub("^values:", "", field), [])
+            fields = find_by_values(values=values, dicom=dicom)
+
+        # A fields list is used vertabim
+        elif re.search("^fields", field):
+            listing = []
+            for contender in item.get(re.sub("^fields:", "", field), []):
+                listing += expand_field_expression(
+                    field=contender, dicom=dicom, contenders=fields
+                )
+            fields = listing
+
+    else:
+        # If there is an expander applied to field, we iterate over
+        fields = expand_field_expression(field=field, dicom=dicom, contenders=fields)
 
     # Keep track of fields we have seen
     seen = []

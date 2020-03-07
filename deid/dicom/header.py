@@ -29,6 +29,7 @@ from deid.logger import bot
 from deid.utils import read_json
 
 from .tags import remove_sequences
+from .groups import extract_values_list, extract_fields_list
 
 from deid.dicom.tags import get_private
 from deid.config import DeidRecipe
@@ -261,7 +262,22 @@ def replace_identifiers(
             dicom = remove_sequences(dicom)
 
         if recipe.deid is not None:
+
             if dicom_file in ids:
+
+                # Prepare additional lists of values and fields (updates item)
+                if deid.has_values_lists():
+                    for group, actions in deid.get_values_lists().items():
+                        ids[dicom_file][group] = extract_values_list(
+                            dicom=dicom, actions=actions
+                        )
+
+                if deid.has_fields_lists():
+                    for group, actions in deid.get_fields_lists().items():
+                        ids[dicom_file][group] = extract_fields_list(
+                            dicom=dicom, actions=actions
+                        )
+
                 for action in deid.get_actions():
                     dicom = perform_action(
                         dicom=dicom, item=ids[dicom_file], action=action

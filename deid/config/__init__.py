@@ -91,28 +91,40 @@ class DeidRecipe:
         """
         section = None
         if self.deid is not None:
-            if name in self.deid:
-                section = self.deid[name]
+            section = self.deid.get(name)
         return section
+
+    # Get Sections
 
     def get_format(self):
         """return the format of the loaded deid, if one exists
         """
         return self._get_section("format")
 
+    def _get_named_section(self, section_name, name=None):
+        """a helper function to return an entire section, or if a name is
+           provided, a named section under it. If the section is not
+           defined, we appropriately return None.
+        """
+        section = self._get_section(section_name)
+        if name is not None and section is not None:
+            section = section.get(name, [])
+        return section
+
     def get_filters(self, name=None):
         """return all filters for a deid recipe, or a set based on a name
         """
-        filters = self._get_section("filter")
-        if name is not None and filters is not None:
-            filters = filters[name]
-        return filters
+        return self._get_named_section("filter", name)
 
-    def ls_filters(self):
-        """list names of filter groups
+    def get_values_lists(self, name=None):
+        """return a values list by name
         """
-        filters = self._get_section("filter")
-        return list(filters.keys())
+        return self._get_named_section("values", name)
+
+    def get_fields_lists(self, name=None):
+        """return a values list by name
+        """
+        return self._get_named_section("fields", name)
 
     def get_actions(self, action=None, field=None):
         """get deid actions to perform on a header, or a subset based on a type
@@ -136,6 +148,38 @@ class DeidRecipe:
                 header = [x for x in header if x["field"].upper() == field]
 
         return header
+
+    # Boolean properties
+
+    def _has_list_content(self, name):
+        return len(self.deid.get(name, [])) > 0
+
+    def has_fields_lists(self):
+        return self._has_list_content("fields")
+
+    def has_values_lists(self):
+        return self._has_list_content("values")
+
+    def has_actions(self):
+        return self._has_list_content("header")
+
+    # Listing
+
+    def listof(self, section):
+        """return a list of keys for a section"""
+        listing = self._get_section(section)
+        return list(listing.keys())
+
+    def ls_filters(self):
+        return self.listof("filter")
+
+    def ls_valuelists(self):
+        return self.listof("values")
+
+    def ls_fieldlists(self):
+        return self.listof("fields")
+
+    # Init
 
     def _init_deid(self, deid=None, base=False, default_base="dicom"):
         """initalize the recipe with one or more deids, optionally including 

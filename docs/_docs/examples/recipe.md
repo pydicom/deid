@@ -9,10 +9,11 @@ and performing actions on headers (for replacement), are controlled by a text fi
 a deid recipe. If you want a reminder about how to write this text file, 
 [read here]({{ site.baseurl }}/getting-started/dicom-config), and we hope to at some 
 point have an interactive way as well (let us know your feedback!). 
-The basic gist of the file is that we have sections. In the `%header` 
-section we have a list of actions to take on header fields, and in each 
-`filter` section we have lists of criteria to check image headers against, 
-and given a match, we flag the image as belonging to the group.
+The basic gist of the file is that we have different sections. 
+
+ - In the `%header` section we have a list of actions to take on header fields
+ - We can define groups, either field names `%fields` or values from fields `%values` to reference in header actions
+ - In the `%filter` section we have lists of criteria to check image headers against, and given a match, we flag the image as belonging to the group.
 
 In this small tutorial, we will walk through the basic steps of loading a recipe, 
 interacting with it, and then using it to replace identifiers. If you want to 
@@ -20,6 +21,7 @@ jump in, then go straight to the [script](https://github.com/pydicom/deid/blob/m
 that describes this example.
 
 ## Recipe Management
+
 The following sections will describe creating and combining recipes.
 
 ### Create a DeidRecipe
@@ -72,7 +74,7 @@ recipe = DeidRecipe(deid=deid_file)
 
 I would strongly recommended starting with an example, and building your custom
 recipe from it. If you have an example that you think others would find useful, 
-please contribute it to the repository.
+please contribute it to the repository in the examples folder.
 
 ### Combine Recipes
 
@@ -117,10 +119,12 @@ that others might use, please [contribute it](https://github.com/pydicom/deid/bl
 
 ## Sections
 
-Now let's discuss the sections that a recipe can include, including a header, labels, and filters.
+Now let's discuss the sections that a recipe can include, including a header, labels, filters, and
+groups for lists of values or fields.
 
 
-## Recipe Filters
+## Filters
+
 The process of flagging images comes down to writing a set of filters to
 check if each image meets some criteria of interest. For example, I might
 create a filter called "xray" that is triggered when the Modality is CT or XR.
@@ -141,6 +145,7 @@ recipe.get_filters('blacklist')
 ```
 
 ## Header Actions
+
 A header action is a step (e.g., replace, remove, blank) to be applied to
 a dicom image header. The headers are also part of the deid recipe. You
 don't need to necessarily use header actions and filters at the same time, but since
@@ -185,6 +190,22 @@ recipe.get_actions(field='PatientID')
 # and logically, both
 recipe.get_actions(field='PatientID', action="REMOVE")
 #  [{'action': 'REMOVE', 'field': 'PatientID'}]
+
+# If you have lists of fields or values defined, you can retrieve them too
+recipe.get_fields_lists()                                                                                                              
+# OrderedDict([('instance_fields',
+#              [{'action': 'FIELD', 'field': 'contains:Instance'}])])
+
+recipe.get_values_lists()                                                                                                              
+# OrderedDict([('cookie_names',
+#              [{'action': 'SPLIT',
+#                'field': 'PatientID',
+#                'value': 'by="^";minlength=4'}]),
+#             ('operator_names',
+#              [{'action': 'FIELD', 'field': 'startswith:Operator'}])])
+
+recipe.get_values_lists("cookie_names")                                                                                                
+# [{'action': 'SPLIT', 'field': 'PatientID', 'value': 'by="^";minlength=4'}]
 ```
 
 If you have need for more advanced functions, please [file an issue](https://www.github.com/pydicom/deid/issues).
@@ -308,4 +329,77 @@ cleaned_files = replace_identifiers(dicom_files=dicom_files,
                                     ids=updated_ids,
                                     output_folder='/home/vanessa/Desktop',
                                     overwrite=True)
+```
+
+## Groups
+
+More advanced usage of header actions would be to define a group of values (the content of the 
+header fields) or field names (the names themselves) to use in an action. This corresponds
+to `%fields` (a list of fields) and `%values` (a list of values from fields) to parse
+at the onset of the dicom load, and use later in a recipe. Here is how that might look
+in a recipe:
+
+```
+FORMAT dicom
+
+%values cookie_names
+SPLIT PatientID by=" ";minlength=4
+
+%values operator_names
+FIELD startswith:Operator
+
+%fields instance_fields
+FIELD contains:Instance
+
+%header
+
+ADD PatientIdentityRemoved Yes
+REPLACE values:cookie_names var:id
+REPLACE values:operator_names var:source_id
+REMOVE fields:instance_fields
+```
+
+In the above, we define two lists of values (operator_names and cookie_names)
+and a list of fields (instance_fields). The sections read as follows:
+
+ - create a list of values called `cookie_names` that are from the PatientID field that is split by a space with a minimum length of 3
+ - create a list of values called `operator_names` that includes any values from fields that start with "Operator"
+ - create a list of field names, `instance_fields` that includes any field that contains "Instance"
+
+And then in our `%header` section we take the following actions:
+
+ - replace all fields that have any of the cookie names as a value with the variable defined by "id"
+ - replace all fields that have any of the operator_names as a value with the variable defined by source_id
+ - remove all fields defined in the list of instance_fields
+
+Let's give this a try with an example. We'll load a recipe, and then look
+at the loaded deid (recipe.deid).
+
+```python
+from deid.config import DeidRecipe
+recipe = DeidRecipe("examples/deid/deid.dicom-group")
+recipe.deid
+OrderedDict([('format', 'dicom'),
+             ('values',
+              OrderedDict([('cookie_names',
+                            [{'action': 'SPLIT',
+                              'field': 'PatientID',
+                              'value': 'by="^";minlength=4'}]),
+                           ('operator_names',
+                            [{'action': 'FIELD',
+                              'field': 'startswith:Operator'}])])),
+             ('fields',
+              OrderedDict([('instance_fields',
+                            [{'action': 'FIELD',
+                              'field': 'contains:Instance'}])])),
+             ('header',
+              [{'action': 'ADD',
+                'field': 'PatientIdentityRemoved',
+                'value': 'Yes'},
+               {'action': 'REPLACE',
+                'field': 'values:cookie_names',
+                'value': 'var:id'},
+               {'action': 'REPLACE',
+                'field': 'values:operator_names',
+                'value': 'var:source_id'}])])
 ```
