@@ -89,7 +89,7 @@ This of course means that the actions supported for the `%fields` section includ
 
 It could be that you want to generate a list of _values_ extracted from the dicom
 to use as flags for checking other fields. For example, if I know that the Patient's ID
-is in PatiendID, I would want to extract the patient's name from that field,
+is in PatientID, I would want to extract the patient's name from that field,
 and then search across fields looking for any instance of a first or last name.
 This is the purpose of the `%values` group. Instead of defining rules to create
 a list of fields, we write rules to extract values. Let's take a look at an

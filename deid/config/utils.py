@@ -28,7 +28,7 @@ user can specify a custom name.
 # pylint: skip-file
 
 from deid.logger import bot
-from deid.utils import read_file
+from deid.utils import read_file, get_installdir
 from deid.data import data_base
 from deid.config.standards import (
     formats,
@@ -195,7 +195,7 @@ def load_deid(path=None):
                     section=section, section_name=section_name, line=line, config=config
                 )
         else:
-            bot.debug("%s not recognized to be in valid format, skipping." % line)
+            bot.warning("%s not recognized to be in valid format, skipping." % line)
     return config
 
 
@@ -208,6 +208,9 @@ def find_deid(path=None):
        path: a path on the filesystem. If not provided, will assume PWD.
 
     """
+    # A default deid will be loaded if all else fails
+    default_deid = os.path.join(get_installdir(), "data", "deid.dicom")
+
     if path is None:
         path = os.getcwd()
 
@@ -218,7 +221,11 @@ def find_deid(path=None):
         ]
 
         if len(contenders) == 0:
-            bot.exit("No deid settings files found in %s, exiting." % (path))
+            bot.warning(
+                "No deid settings files found in %s, will use default dicom.deid."
+                % path
+            )
+            contenders.append(default_deid)
 
         elif len(contenders) > 1:
             bot.warning("Multiple deid files found in %s, will use first." % (path))

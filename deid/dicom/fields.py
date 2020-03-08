@@ -91,13 +91,16 @@ def find_by_values(values, dicom):
     """Given a list of values, find fields in the dicom that contain any
        of those values, as determined by a regular expression search.
     """
+    # Values must be strings
+    values = [str(x) for x in values]
+
     fields = []
     contenders = get_fields(dicom)
 
     # Create single regular expression to search by
     regexp = "(%s)" % "|".join(values)
     for field, value in contenders.items():
-        if re.search(regexp, value):
+        if re.search(regexp, value, re.IGNORECASE):
             fields.append(field)
 
     return fields
@@ -127,7 +130,7 @@ def expand_field_expression(field, dicom, contenders=None):
             fields = contenders
         return fields
 
-    # Case 2: The field is a specific field OR an axpander with argument (A:B)
+    # Case 2: The field is a specific field OR an expander with argument (A:B)
     fields = field.split(":")
     if len(fields) == 1:
         return fields

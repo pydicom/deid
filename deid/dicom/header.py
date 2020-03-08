@@ -28,19 +28,17 @@ SOFTWARE.
 from deid.logger import bot
 from deid.utils import read_json
 
-from .tags import remove_sequences
-from .groups import extract_values_list, extract_fields_list
-
-from deid.dicom.tags import get_private
 from deid.config import DeidRecipe
 
 from pydicom import read_file
 
-from .utils import save_dicom
-from .actions import perform_action
-from pydicom.dataset import Dataset
+from deid.dicom.utils import save_dicom
+from deid.dicom.actions import perform_action
+from deid.dicom.tags import remove_sequences, get_private
+from deid.dicom.groups import extract_values_list, extract_fields_list
+from deid.dicom.fields import get_fields
 
-from .fields import get_fields
+from pydicom.dataset import Dataset
 
 import os
 
@@ -137,8 +135,6 @@ def get_identifiers(
         skip_fields: if not None, added fields to skip
 
     """
-    bot.debug("Extracting identifiers for %s dicom" % (len(dicom_files)))
-
     if config is None:
         config = "%s/config.json" % here
 
@@ -149,6 +145,7 @@ def get_identifiers(
     if not isinstance(dicom_files, list):
         dicom_files = [dicom_files]
 
+    bot.debug("Extracting identifiers for %s dicom" % len(dicom_files))
     ids = dict()  # identifiers
 
     # We will skip PixelData
@@ -159,7 +156,13 @@ def get_identifiers(
         skip = skip + skip_fields
 
     for dicom_file in dicom_files:
-        dicom = read_file(dicom_file, force=True)
+
+        # TODO: this should have shared reader class to hold dicom, ids, etc.
+        if isinstance(dicom_file, Dataset):
+            dicom = dicom_file
+            dicom_file = dicom.filename
+        else:
+            dicom = read_file(dicom_file, force=force)
 
         if dicom_file not in ids:
             ids[dicom_file] = dict()
@@ -253,7 +256,12 @@ def replace_identifiers(
     # Parse through dicom files, update headers, and save
     updated_files = []
     for _, dicom_file in enumerate(dicom_files):
-        dicom = read_file(dicom_file, force=force)
+
+        if isinstance(dicom_file, Dataset):
+            dicom = dicom_file
+            dicom_file = dicom.filename
+        else:
+            dicom = read_file(dicom_file, force=force)
         dicom_name = os.path.basename(dicom_file)
         fields = dicom.dir()
 
@@ -266,19 +274,19 @@ def replace_identifiers(
             if dicom_file in ids:
 
                 # Prepare additional lists of values and fields (updates item)
-                if deid.has_values_lists():
-                    for group, actions in deid.get_values_lists().items():
+                if recipe.has_values_lists():
+                    for group, actions in recipe.get_values_lists().items():
                         ids[dicom_file][group] = extract_values_list(
                             dicom=dicom, actions=actions
                         )
 
-                if deid.has_fields_lists():
-                    for group, actions in deid.get_fields_lists().items():
+                if recipe.has_fields_lists():
+                    for group, actions in recipe.get_fields_lists().items():
                         ids[dicom_file][group] = extract_fields_list(
                             dicom=dicom, actions=actions
                         )
 
-                for action in deid.get_actions():
+                for action in recipe.get_actions():
                     dicom = perform_action(
                         dicom=dicom, item=ids[dicom_file], action=action
                     )

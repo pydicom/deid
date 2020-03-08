@@ -343,7 +343,7 @@ in a recipe:
 FORMAT dicom
 
 %values cookie_names
-SPLIT PatientID by=" ";minlength=4
+SPLIT PatientID by=" ";minlength=3
 
 %values operator_names
 FIELD startswith:Operator

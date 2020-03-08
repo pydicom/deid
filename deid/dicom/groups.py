@@ -38,7 +38,7 @@ def extract_values_list(dicom, actions):
        always returns a list intended to update some lookup to be used
        to further process the dicom.
     """
-    values = []
+    values = set()
     fields = get_fields(dicom)
     for action in actions:
 
@@ -47,7 +47,7 @@ def extract_values_list(dicom, actions):
             subset = expand_field_expression(
                 field=action["field"], dicom=dicom, contenders=fields
             )
-            [values.append(dicom.get(field)) for field in subset]
+            [values.add(dicom.get(field)) for field in subset if field in dicom]
 
         # Split action, can optionally have a "by" and/or minlength parameter
         elif action["action"] == "SPLIT":
@@ -63,6 +63,8 @@ def extract_values_list(dicom, actions):
             if "value" in action:
                 for param in action["value"].split(";"):
                     param_name, param_val = param.split("=")
+                    param_name = param_name.strip()
+                    param_val = param_val.strip()
 
                     # Set a custom parameter legnth
                     if param_name == "minlength":
@@ -73,17 +75,17 @@ def extract_values_list(dicom, actions):
                         bot.debug("Splitting value set to %s" % split_by)
 
             for field in subset:
-                new_values = dicom.get(field, "").split(split_by)
+                new_values = str(dicom.get(field, "")).split(split_by)
                 for new_value in new_values:
-                    if len(new_value) > minlength:
-                        values.append(new_value)
+                    if len(new_value) >= minlength:
+                        values.add(new_value)
 
         else:
             bot.warning(
                 "Unrecognized action %s for values list extraction." % action["action"]
             )
 
-    return values
+    return list(values)
 
 
 def extract_fields_list(dicom, actions):

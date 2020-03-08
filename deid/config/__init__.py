@@ -167,7 +167,7 @@ class DeidRecipe:
 
     def listof(self, section):
         """return a list of keys for a section"""
-        listing = self._get_section(section)
+        listing = self._get_section(section) or {}
         return list(listing.keys())
 
     def ls_filters(self):
