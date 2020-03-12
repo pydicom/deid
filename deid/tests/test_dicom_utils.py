@@ -175,6 +175,25 @@ class TestDicomUtils(unittest.TestCase):
         updated = perform_action(dicom=dicom, action=ACTION, item=item)
         self.assertEqual(updated.PatientID, "pancakes")
 
+        # Test each of filters for contains, not contains, equals, etc.
+        dicom = get_dicom(self.dataset)
+
+        print("Testing contains, equals, and empty action with REMOVE")
+        self.assertTrue("ReferringPhysicianName" in dicom)
+        REMOVE = {"action": "REMOVE", "field": "ALL", "value": "contains:Dr."}
+        dicom = perform_action(dicom=dicom, action=REMOVE)
+        self.assertTrue("ReferringPhysicianName" not in dicom)
+
+        self.assertTrue("InstitutionName" in dicom)
+        REMOVE = {"action": "REMOVE", "field": "ALL", "value": "equals:STANFORD"}
+        dicom = perform_action(dicom=dicom, action=REMOVE)
+        self.assertTrue("InstitutionName" not in dicom)
+
+        self.assertTrue("StudyID" in dicom)
+        REMOVE = {"action": "REMOVE", "field": "ALL", "value": "empty"}
+        dicom = perform_action(dicom=dicom, action=REMOVE)
+        self.assertTrue("StudyID" not in dicom)
+
     def test_jitter_timestamp(self):
 
         from deid.dicom.actions import jitter_timestamp

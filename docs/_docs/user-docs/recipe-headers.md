@@ -173,6 +173,7 @@ True if this is the case. The dicom is the dicom file (read in with Pydicom) tha
 with (in the example above we grab the `PatientName`).
 
 #### Header
+
 We know that we are dealing with functions relevant to the header of the image 
 by way of the `%header` section. This section can have a series of commands called 
 actions that tell the software how to deal with different fields. For the header 
@@ -224,6 +225,7 @@ JITTER PatientBirthDate -31
 ```
 
 ##### Field Expansion
+
 In some cases, it might be extremely tenuous to list every field ending in the same thing, 
 to perform the same action for. For example:
 
@@ -360,6 +362,34 @@ ADD PatientIdentityRemoved Yes
 REPLACE PatientID var:id
 REPLACE InstanceSOPUID var:source_id
 ```
+
+
+##### Value Expansion
+
+These same filters can also be used with any action that is considered a boolean,
+for example, the `REMOVE` tag. As we showed previously, you can remove using
+a filter like "contains" to select some subset of fields:
+
+```
+REMOVE contains:Patient
+```
+
+which would remove all fields that contain "Patient." What if we want to perform
+this same kind of check, but with a value? For example, let's say that we have
+a regular expression to describe a number, and we want to remove any field
+that matches. We could do:
+
+```
+REMOVE ALL contains:(\d{7,0})
+```
+
+Would parse through ALL fields, and remove those that contain a match to the regular
+expression. All supported expanders include:
+
+ - contains
+ - notcontains
+ - equals
+ - notequals 
 
 Now that you know how configuration works, you have a few options.
 You can learn how to define groups of tags based on fields or values in [groups]({{ site.baseurl }}/user-docs/recipe-groups/),
