@@ -19,7 +19,6 @@ want a quick start overview of deid.
  - [Tutorial]({{ site.baseurl }}/examples/recipe)
  - Recipes Files provided as [examples](https://github.com/pydicom/deid/tree/master/examples/deid) or [installed with deid](https://github.com/pydicom/deid/tree/master/deid/data).
 
-
 ## Header Manipulation
 
  - [Replace with Function]({{ site.baseurl }}/examples/func-replace/) shows how to dynamically replace or update header values from a function.

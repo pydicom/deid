@@ -6,7 +6,5 @@ from .header import (
 )
 
 from .utils import get_files
-
 from .fields import extract_sequence
-
 from .pixels import has_burned_pixels, DicomCleaner
