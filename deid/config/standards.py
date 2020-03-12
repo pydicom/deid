@@ -35,7 +35,7 @@ actions = ("ADD", "BLANK", "JITTER", "KEEP", "REPLACE", "REMOVE", "LABEL")
 groups = ["values", "fields"]
 group_actions = ("FIELD", "SPLIT")
 
-# Valid actions for a filter action
+# Valid actions for a field filter action
 filters = (
     "contains",
     "notcontains",
@@ -44,4 +44,12 @@ filters = (
     "missing",
     "present",
     "empty",
+)
+
+# valid actions for a value filter
+value_filters = (
+    "contains",
+    "notcontains",
+    "equals",
+    "notequals",
 )

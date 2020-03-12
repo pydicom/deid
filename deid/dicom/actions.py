@@ -23,15 +23,16 @@ SOFTWARE.
 """
 
 from deid.logger import bot
-from deid.config.standards import actions as valid_actions
+from deid.config.standards import actions as valid_actions, value_filters
 
-from .fields import expand_field_expression, find_by_values
+from deid.dicom.fields import expand_field_expression, find_by_values
+from deid.dicom.filter import apply_filter
+from deid.dicom.tags import add_tag, update_tag, blank_tag, remove_tag
 
 from deid.utils import get_timestamp, parse_value
 
 from pydicom.dataset import Dataset
 from pydicom.sequence import Sequence
-from .tags import add_tag, update_tag, blank_tag, remove_tag
 
 import re
 
@@ -234,7 +235,7 @@ def _remove_tag(dicom, item, field, value=None):
 
     # The user can optionally provide a function to return a boolean
     if re.search("[:]", value):
-        value_type, value_option = value.split(":")
+        value_type, value_option = value.split(":", 1)
         if value_type.lower() == "func":
 
             # An item must be provided
@@ -255,6 +256,18 @@ def _remove_tag(dicom, item, field, value=None):
                     "function %s returned an invalid type %s. Must be bool."
                     % (value_option, type(do_removal))
                 )
+
+        # A filter such as contains, notcontains, equals, etc.
+        elif value_type.lower() in value_filters:
+
+            # These functions are known to return boolean
+            do_removal = apply_filter(
+                dicom=dicom,
+                field=field,
+                filter_name=value_type,
+                value=value_option or None,
+            )
+
         else:
             bot.exit("%s is an invalid variable type for REMOVE." % value_type)
 
