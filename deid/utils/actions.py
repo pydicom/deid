@@ -40,7 +40,7 @@ def parse_value(item, value, field=None):
 
     # Does the user want a custom value?
     if re.search("[:]", value):
-        value_type, value_option = value.split(":")
+        value_type, value_option = value.split(":", 1)
         if value_type.lower() == "var":
 
             # If selected variable not provided, skip
@@ -56,6 +56,8 @@ def parse_value(item, value, field=None):
                 return None
 
             # item is the lookup, value from the recipe, and field
+            # If the user writes a custom function for private, will need
+            # to convert field to str() in the function.
             return item[value_option](item, value, field)
 
         bot.warning("%s is not a valid value type, skipping." % (value_type))
@@ -93,8 +95,7 @@ def get_timestamp(item_date, item_time=None, jitter_days=None, format=None):
         bot.warning("No date in header, cannot create timestamp.")
         return None
 
-    if item_time is None:
-        item_time = ""
+    item_time = item_time or ""
 
     timestamp = dateutil.parser.parse("%s%s" % (item_date, item_time))
     if jitter_days is not None:

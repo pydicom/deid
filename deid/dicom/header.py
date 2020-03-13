@@ -36,7 +36,7 @@ from deid.dicom.utils import save_dicom
 from deid.dicom.actions import perform_action
 from deid.dicom.tags import remove_sequences, get_private
 from deid.dicom.groups import extract_values_list, extract_fields_list
-from deid.dicom.fields import get_fields
+from deid.dicom.fields import get_fields, dicom_dir
 
 from pydicom.dataset import Dataset
 
@@ -124,7 +124,8 @@ def get_identifiers(
 ):
 
     """ extract all identifiers from a dicom image.
-        This function returns a lookup by file name
+        This function returns a lookup by file name, and does not include
+        private tags.
 
         Parameters
         ==========
@@ -157,7 +158,6 @@ def get_identifiers(
 
     for dicom_file in dicom_files:
 
-        # TODO: this should have shared reader class to hold dicom, ids, etc.
         if isinstance(dicom_file, Dataset):
             dicom = dicom_file
             dicom_file = dicom.filename
@@ -266,17 +266,28 @@ def replace_identifiers(
         else:
             dicom = read_file(dicom_file, force=force)
         dicom_name = os.path.basename(dicom_file)
-        fields = dicom.dir()
 
         # Remove sequences first, maintained in DataStore
         if strip_sequences is True:
             dicom = remove_sequences(dicom)
 
-        # If not requested to remove private, include private fields
-        if not remove_private:
- 
-            # This becomes a list of strings and tags to be used as keys
-            fields += [t.tag for t in get_private(dicom)]
+        # Remove private tags at the onset, if requested
+        if remove_private:
+            try:
+                dicom.remove_private_tags()
+            except:
+                bot.error(
+                    """Private tags for %s could not be completely removed, usually
+                             this is due to invalid data type. Removing others."""
+                    % dicom_name
+                )
+                private_tags = get_private(dicom)
+                for ptag in private_tags:
+                    del dicom[ptag.tag]
+                continue
+
+        # Include private tags (if not removed) plus dicom.dir
+        fields = dicom_dir(dicom)
 
         if recipe.deid is not None:
 
@@ -297,36 +308,25 @@ def replace_identifiers(
                     )
 
             for action in recipe.get_actions():
-                dicom = perform_action(
-                    dicom=dicom, item=ids[dicom_file], action=action
-                )
+                dicom = perform_action(dicom=dicom, item=ids[dicom_file], action=action)
 
         # Next perform actions in default config, only if not done
         for action in config["put"]["actions"]:
             if action["field"] in fields:
                 dicom = perform_action(dicom=dicom, action=action)
 
-        # Remove private tags if requested.
-        if remove_private:
-            try:
-                dicom.remove_private_tags()
-            except:
-                bot.error(
-                    """Private tags for %s could not be completely removed, usually
-                             this is due to invalid data type. Removing others."""
-                    % dicom_name
-                )
-                private_tags = get_private(dicom)
-                for ptag in private_tags:
-                    del dicom[ptag.tag]
-                continue
-        else:
-            bot.warning("Private tags were not removed!")
-
+        # Assemble a new dataset, again accounting for private tags
         ds = Dataset()
-        for field in dicom.dir():
+        for field in dicom_dir(dicom):
+
             try:
-                ds.add(dicom.data_element(field))
+                # Most fields are strings
+                if isinstance(field, str):
+                    ds.add(dicom.data_element(field))
+
+                # Remainder are tags
+                else:
+                    ds.add(dicom.get(field))
             except:
                 pass
 
