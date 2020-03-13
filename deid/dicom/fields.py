@@ -131,7 +131,7 @@ def expand_field_expression(field, dicom, contenders=None):
         return fields
 
     # Case 2: The field is a specific field OR an expander with argument (A:B)
-    fields = field.split(":")
+    fields = field.split(":", 1)
     if len(fields) == 1:
         return fields
 
@@ -140,22 +140,36 @@ def expand_field_expression(field, dicom, contenders=None):
     expression = expression.lower()
     fields = []
 
-    # Expanders here require an expression, and have <expander>:<expression>
+    # Derive expression based on field expander
     if expander.lower() == "endswith":
-        fields = [x for x in contenders if re.search("(%s)$" % expression, x.lower())]
+        expression = "(%s)$" % expression
     elif expander.lower() == "startswith":
-        fields = [x for x in contenders if re.search("^(%s)" % expression, x.lower())]
-    elif expander.lower() == "except":
-        fields = [x for x in contenders if not re.search(expression, x.lower())]
-    elif expander.lower() == "contains":
-        fields = [x for x in contenders if re.search(expression, x.lower())]
+        expression = "^(%s)" % expression
+
+    # Loop through fields, have special handling for private tags
+    for field in contenders:
+        field_name = field
+        if not isinstance(field, str):
+            field_name = str(field)
+
+        # Apply expander to string for name, but add field to return (could be a tag)
+        if expander.lower() in ["endswith", "startswith", "contains"]:
+            if re.search(expression, field_name.lower()):
+                fields.append(field)
+
+        elif expander.lower() == "except":
+            if not re.search(expression, field_name.lower()):
+                fields.append(field)
 
     return fields
 
 
+
 def get_fields(dicom, skip=None, expand_sequences=True):
     """get fields is a simple function to extract a dictionary of fields
-       (non empty) from a dicom file.
+       (non empty) from a dicom file. For all fields (including those
+       that are empty) you should use dicom.dir(). This function does
+       not return private tags.
 
        Parameters
        ==========
@@ -187,4 +201,5 @@ def get_fields(dicom, skip=None, expand_sequences=True):
                     fields[contender] = str(value)
         except:
             pass  # need to look into this bug
+
     return fields
