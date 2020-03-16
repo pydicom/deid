@@ -26,11 +26,16 @@ SOFTWARE.
 formats = ["dicom"]
 
 # Supported Sections
-sections = ["header", "labels", "filter"]
+sections = ["header", "labels", "filter", "values", "fields"]
 
+# Supported Header Actions
 actions = ("ADD", "BLANK", "JITTER", "KEEP", "REPLACE", "REMOVE", "LABEL")
 
-# Valid actions for a filter action
+# Supported Group actions (SPLIT only supported for values)
+groups = ["values", "fields"]
+group_actions = ("FIELD", "SPLIT")
+
+# Valid actions for a field filter action
 filters = (
     "contains",
     "notcontains",
@@ -39,4 +44,12 @@ filters = (
     "missing",
     "present",
     "empty",
+)
+
+# valid actions for a value filter
+value_filters = (
+    "contains",
+    "notcontains",
+    "equals",
+    "notequals",
 )

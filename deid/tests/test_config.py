@@ -56,10 +56,13 @@ class TestConfig(unittest.TestCase):
         config = load_deid(os.path.dirname(self.deid))
         self.assertTrue("format" in config)
 
-        print("Case 3: Testing error on non-existing load")
+        print("Case 3: Testing error on non-existing load of file")
         with self.assertRaises(SystemExit) as cm:
-            config = load_deid(self.tmpdir)
+            config = load_deid(os.path.join(self.tmpdir, "deid.doesnt-exist"))
         self.assertEqual(cm.exception.code, 1)
+
+        print("Case 4: Testing load of default deid.")
+        config = load_deid(self.tmpdir)
 
     def test_find_deid(self):
 
@@ -95,7 +98,7 @@ class TestConfig(unittest.TestCase):
         self.assertEqual(len(unknown), 0)
 
         print("Testing standards: allowed sections")
-        default_sections = ["header", "labels", "filter"]
+        default_sections = ["header", "labels", "filter", "fields", "values"]
         [self.assertTrue(x in sections) for x in default_sections]
         unknown = [x for x in sections if x not in default_sections]
         self.assertEqual(len(unknown), 0)

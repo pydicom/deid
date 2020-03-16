@@ -1,0 +1,17 @@
+FORMAT dicom
+
+%values cookie_names
+SPLIT PatientID by="^";minlength=4
+
+%values operator_names
+FIELD startswith:Operator
+
+%fields instance_fields
+FIELD contains:Instance
+
+%header
+
+ADD PatientIdentityRemoved Yes
+REPLACE values:cookie_names var:id
+REPLACE values:operator_names var:source_id
+REMOVE fields:instance_fields

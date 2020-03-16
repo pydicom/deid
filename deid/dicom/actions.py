@@ -23,15 +23,16 @@ SOFTWARE.
 """
 
 from deid.logger import bot
-from deid.config.standards import actions as valid_actions
+from deid.config.standards import actions as valid_actions, value_filters
 
-from .fields import expand_field_expression
+from deid.dicom.fields import expand_field_expression, find_by_values
+from deid.dicom.filter import apply_filter
+from deid.dicom.tags import add_tag, update_tag, blank_tag, remove_tag
 
 from deid.utils import get_timestamp, parse_value
 
 from pydicom.dataset import Dataset
 from pydicom.sequence import Sequence
-from .tags import add_tag, update_tag, blank_tag, remove_tag
 
 import re
 
@@ -51,7 +52,7 @@ def perform_action(dicom, action, item=None, fields=None, return_seen=False):
           "action" (eg, REPLACE) what to do with the field
           "value": if needed, the field from the response to replace with
     """
-    field = action.get("field")  # e.g: PatientID, endswith:ID
+    field = action.get("field")  # e.g: PatientID, endswith:ID, values:name, fields:name
     value = action.get("value")  # "suid" or "var:field"
     action = action.get("action")  # "REPLACE"
 
@@ -60,8 +61,30 @@ def perform_action(dicom, action, item=None, fields=None, return_seen=False):
         bot.warning("%s in not a valid choice. Defaulting to blanked." % action)
         action = "BLANK"
 
-    # If there is an expander applied to field, we iterate over
-    fields = expand_field_expression(field=field, dicom=dicom, contenders=fields)
+    # If values or fields is provided, ids is required
+    if re.search("^(values|fields)", field):
+        if not item:
+            bot.exit(
+                "An item lookup must be provided to reference a list of values or fields."
+            )
+
+        # A values list returns fields with the value
+        if re.search("^values", field):
+            values = item.get(re.sub("^values:", "", field), [])
+            fields = find_by_values(values=values, dicom=dicom)
+
+        # A fields list is used vertabim
+        elif re.search("^fields", field):
+            listing = []
+            for contender in item.get(re.sub("^fields:", "", field), []):
+                listing += expand_field_expression(
+                    field=contender, dicom=dicom, contenders=fields
+                )
+            fields = listing
+
+    else:
+        # If there is an expander applied to field, we iterate over
+        fields = expand_field_expression(field=field, dicom=dicom, contenders=fields)
 
     # Keep track of fields we have seen
     seen = []
@@ -212,7 +235,7 @@ def _remove_tag(dicom, item, field, value=None):
 
     # The user can optionally provide a function to return a boolean
     if re.search("[:]", value):
-        value_type, value_option = value.split(":")
+        value_type, value_option = value.split(":", 1)
         if value_type.lower() == "func":
 
             # An item must be provided
@@ -233,6 +256,18 @@ def _remove_tag(dicom, item, field, value=None):
                     "function %s returned an invalid type %s. Must be bool."
                     % (value_option, type(do_removal))
                 )
+
+        # A filter such as contains, notcontains, equals, etc.
+        elif value_type.lower() in value_filters:
+
+            # These functions are known to return boolean
+            do_removal = apply_filter(
+                dicom=dicom,
+                field=field,
+                filter_name=value_type,
+                value=value_option or None,
+            )
+
         else:
             bot.exit("%s is an invalid variable type for REMOVE." % value_type)
 
