@@ -102,7 +102,7 @@ def perform_action(dicom, action, item=None, fields=None, return_seen=False):
 
     # Expand sequences
     if item:
-        expanded_fields = [x for x in item if re.search(expanded_regexp, x)]
+        expanded_fields = [x for x in item if re.search(expanded_regexp, str(x))]
 
         # FieldA__FieldB
         for expanded_field in expanded_fields:
