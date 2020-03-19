@@ -219,7 +219,10 @@ def get_fields(dicom, skip=None, expand_sequences=True):
     contenders = dicom_dir(dicom)
 
     for contender in contenders:
-        if contender in skip:
+
+        # BaseTags need to be strings
+        contender_name = str(contender)
+        if contender_name in skip:
             continue
 
         try:
@@ -229,8 +232,14 @@ def get_fields(dicom, skip=None, expand_sequences=True):
             if isinstance(value, DataElement):
                 fields[contender] = value.value
 
+            # TODO: dicom_dir doesn't include sequences because dicom.dir()
+            # and get_private don't include them either. Thus we don't
+            # parse any sequences that have private tags. How should
+            # this be handled?
+
             # Adding expanded sequences
             elif isinstance(value, Sequence) and expand_sequences is True:
+                print(contender)
                 fields.update(extract_sequence(value, prefix=contender))
             else:
                 if value not in [None, ""]:

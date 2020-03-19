@@ -34,6 +34,7 @@ import os
 from deid.utils import get_installdir
 from deid.data import get_dataset
 from deid.dicom.tags import get_private
+from deid.dicom.fields import get_fields
 from pydicom.tag import BaseTag
 
 
@@ -74,6 +75,13 @@ class TestDicomFields(unittest.TestCase):
 
         # We should have a tag object in the list now!
         assert isinstance(fields[0], BaseTag)
+
+        print("Testing nested private tags")
+        dataset = get_dataset("animals")  # includes nested private tags
+        dicom = get_dicom(dataset)
+
+        # TODO: need to figure out how to handle reading sequuences for
+        # private tags
 
 
 def get_dicom(dataset):
