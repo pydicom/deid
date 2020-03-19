@@ -43,6 +43,7 @@ def get_dataset(dataset=None):
     valid_datasets = {
         "dicom-cookies": "%s/data/dicom-cookies" % data_base,
         "animals": "%s/data/animals" % data_base,
+        "medical": "%s/data/medical" % data_base,
     }
 
     if dataset is not None:
