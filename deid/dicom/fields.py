@@ -23,8 +23,10 @@ SOFTWARE.
 """
 
 from deid.logger import bot
+from deid.dicom.tags import get_private
 from pydicom.sequence import Sequence
 from pydicom.dataset import RawDataElement, Dataset
+from pydicom.dataelem import DataElement
 import re
 
 
@@ -80,6 +82,11 @@ def extract_sequence(sequence, prefix=None):
         if isinstance(item, Dataset):
             for subitem in item:
                 items.update(extract_item(subitem, prefix=prefix))
+
+        # Private tags are DataElements
+        elif isinstance(item, DataElement):
+            items[item.tag] = extract_item(item, prefix=prefix)
+
         else:
             bot.warning(
                 "Unrecognized type %s in extract sequences, skipping." % type(item)
@@ -95,6 +102,8 @@ def find_by_values(values, dicom):
     values = [str(x) for x in values]
 
     fields = []
+
+    # Includes private tags and values, if still part of dicom
     contenders = get_fields(dicom)
 
     # Create single regular expression to search by
@@ -131,7 +140,7 @@ def expand_field_expression(field, dicom, contenders=None):
         return fields
 
     # Case 2: The field is a specific field OR an expander with argument (A:B)
-    fields = field.split(":")
+    fields = field.split(":", 1)
     if len(fields) == 1:
         return fields
 
@@ -140,22 +149,57 @@ def expand_field_expression(field, dicom, contenders=None):
     expression = expression.lower()
     fields = []
 
-    # Expanders here require an expression, and have <expander>:<expression>
+    # Derive expression based on field expander
     if expander.lower() == "endswith":
-        fields = [x for x in contenders if re.search("(%s)$" % expression, x.lower())]
+        expression = "(%s)$" % expression
     elif expander.lower() == "startswith":
-        fields = [x for x in contenders if re.search("^(%s)" % expression, x.lower())]
-    elif expander.lower() == "except":
-        fields = [x for x in contenders if not re.search(expression, x.lower())]
-    elif expander.lower() == "contains":
-        fields = [x for x in contenders if re.search(expression, x.lower())]
+        expression = "^(%s)" % expression
+
+    # Loop through fields, have special handling for private tags
+    for field in contenders:
+        field_name = field
+        if not isinstance(field, str):
+            field_name = str(field)
+
+        # Apply expander to string for name, but add field to return (could be a tag)
+        if expander.lower() in ["endswith", "startswith", "contains"]:
+            if re.search(expression, field_name.lower()):
+                fields.append(field)
+
+        elif expander.lower() == "except":
+            if not re.search(expression, field_name.lower()):
+                fields.append(field)
 
     return fields
 
 
+def dicom_dir(dicom):
+    """Given a dicom file, return all fields (including private) if they
+       are not removed. With private this might look like:
+
+       ...
+      'WindowCenterWidthExplanation',
+      'WindowWidth',
+      (0011, 0003),
+      (0019, 0010),
+
+      and both can be used as indices into the dicom (dicom.get(x))
+    """
+    # This becomes a list of strings and tags to be used as keys
+    return dicom.dir() + [t.tag for t in get_private(dicom)]
+
+
 def get_fields(dicom, skip=None, expand_sequences=True):
     """get fields is a simple function to extract a dictionary of fields
-       (non empty) from a dicom file.
+       (non empty) from a dicom file. This includes expanded sequenced,
+       and parses private tag values as well, example below:
+
+       'ViewPosition': 'AP',
+       'WindowCenter': '2048',
+       'WindowWidth': '4096',
+       (0011, 0003): 'Agfa DR',      # private tags start here
+       (0019, 0010): 'Agfa ADC NX',
+       (0019, 1007): 'YES',
 
        Parameters
        ==========
@@ -165,11 +209,15 @@ def get_fields(dicom, skip=None, expand_sequences=True):
     """
     if skip is None:
         skip = []
+
     if not isinstance(skip, list):
         skip = [skip]
 
     fields = dict()
-    contenders = dicom.dir()
+
+    # Includes private tags, if they are not removed
+    contenders = dicom_dir(dicom)
+
     for contender in contenders:
         if contender in skip:
             continue
@@ -177,8 +225,12 @@ def get_fields(dicom, skip=None, expand_sequences=True):
         try:
             value = dicom.get(contender)
 
+            # Private tags will be DataElement types
+            if isinstance(value, DataElement):
+                fields[contender] = value.value
+
             # Adding expanded sequences
-            if isinstance(value, Sequence) and expand_sequences is True:
+            elif isinstance(value, Sequence) and expand_sequences is True:
                 fields.update(extract_sequence(value, prefix=contender))
             else:
                 if value not in [None, ""]:
@@ -186,5 +238,7 @@ def get_fields(dicom, skip=None, expand_sequences=True):
                         value = value.decode("utf-8")
                     fields[contender] = str(value)
         except:
-            pass  # need to look into this bug
+            # This gets triggered for PixelData
+            pass
+
     return fields

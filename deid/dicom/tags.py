@@ -25,6 +25,7 @@ SOFTWARE.
 from deid.logger import bot
 from pydicom.tag import tag_in_exception
 from pydicom.sequence import Sequence
+from pydicom.dataelem import DataElement
 from pydicom._dicom_dict import DicomDictionary, RepeatersDictionary
 from pydicom.tag import Tag
 import re
@@ -36,7 +37,7 @@ import re
 
 def get_tag(field):
     """get_tag will return a dictionary with tag indexed by field. For each entry,
-       a dictionary lookup is included with VR,  
+       a dictionary lookup is included with VR.
     
        Parameters
        ==========
@@ -47,6 +48,7 @@ def get_tag(field):
         {key: value} for key, value in DicomDictionary.items() if value[4] == field
     ]
     tags = dict()
+
     if len(found) > 0:
 
         # (VR, VM, Name, Retired, Keyword
@@ -149,12 +151,19 @@ def change_tag(dicom, field, value):
        value: the value to set, if name is a valid tag
 
     """
-    tag = get_tag(field)
+    # Case 1: Dealing with a string tag (field name)
+    if isinstance(field, str):
+        tag = get_tag(field)
 
-    if field in tag:
-        dicom.add_new(tag[field]["tag"], tag[field]["VR"], value)
+        if field in tag:
+            dicom.add_new(tag[field]["tag"], tag[field]["VR"], value)
+        else:
+            bot.error("%s is not a valid field to add. Skipping." % (field))
+
+    # Case 2: we already have a tag for the field name (type BaseTag)
     else:
-        bot.error("%s is not a valid field to add. Skipping." % (field))
+        tag = dicom.get(field)
+        dicom.add_new(field, tag.VR, value)
 
     return dicom
 
@@ -189,9 +198,20 @@ def blank_tag(dicom, field):
        field: the name of the field to blank
 
     """
-    # We cannot blank VR types of US or SS
-    element = dicom.data_element(field)
+    # Case 1: We are provided a field that is a string, retrieve data element
+    if isinstance(field, str):
+        element = dicom.data_element(field)
+    else:
+        element = dicom.get(field)
+
     if element is not None:
+
+        # Assert we have a data element
+        if not isinstance(element, DataElement):
+            bot.warning("Issue parsing %s as a DataElement, not blanked." % field)
+            return dicom
+
+        # We cannot blank VR types of US or SS
         if element.VR not in ["US", "SS"]:
             return update_tag(dicom, field, "")
         bot.warning("Cannot determine tag for %s, skipping blank." % field)

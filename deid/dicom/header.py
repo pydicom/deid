@@ -36,7 +36,7 @@ from deid.dicom.utils import save_dicom
 from deid.dicom.actions import perform_action
 from deid.dicom.tags import remove_sequences, get_private
 from deid.dicom.groups import extract_values_list, extract_fields_list
-from deid.dicom.fields import get_fields
+from deid.dicom.fields import get_fields, dicom_dir
 
 from pydicom.dataset import Dataset
 
@@ -124,7 +124,8 @@ def get_identifiers(
 ):
 
     """ extract all identifiers from a dicom image.
-        This function returns a lookup by file name
+        This function returns a lookup by file name, and does not include
+        private tags.
 
         Parameters
         ==========
@@ -157,7 +158,6 @@ def get_identifiers(
 
     for dicom_file in dicom_files:
 
-        # TODO: this should have shared reader class to hold dicom, ids, etc.
         if isinstance(dicom_file, Dataset):
             dicom = dicom_file
             dicom_file = dicom.filename
@@ -234,7 +234,7 @@ def _prepare_replace_config(dicom_files, deid=None, config=None):
 
 def replace_identifiers(
     dicom_files,
-    ids,
+    ids=None,
     deid=None,
     save=True,
     overwrite=False,
@@ -253,6 +253,9 @@ def replace_identifiers(
         dicom_files, deid=deid, config=config
     )
 
+    # ids (a lookup) is not required
+    ids = ids or {}
+
     # Parse through dicom files, update headers, and save
     updated_files = []
     for _, dicom_file in enumerate(dicom_files):
@@ -263,43 +266,12 @@ def replace_identifiers(
         else:
             dicom = read_file(dicom_file, force=force)
         dicom_name = os.path.basename(dicom_file)
-        fields = dicom.dir()
 
         # Remove sequences first, maintained in DataStore
         if strip_sequences is True:
             dicom = remove_sequences(dicom)
 
-        if recipe.deid is not None:
-
-            if dicom_file in ids:
-
-                # Prepare additional lists of values and fields (updates item)
-                if recipe.has_values_lists():
-                    for group, actions in recipe.get_values_lists().items():
-                        ids[dicom_file][group] = extract_values_list(
-                            dicom=dicom, actions=actions
-                        )
-
-                if recipe.has_fields_lists():
-                    for group, actions in recipe.get_fields_lists().items():
-                        ids[dicom_file][group] = extract_fields_list(
-                            dicom=dicom, actions=actions
-                        )
-
-                for action in recipe.get_actions():
-                    dicom = perform_action(
-                        dicom=dicom, item=ids[dicom_file], action=action
-                    )
-            else:
-                bot.warning("%s is not in identifiers." % dicom_name)
-                continue
-
-        # Next perform actions in default config, only if not done
-        for action in config["put"]["actions"]:
-            if action["field"] in fields:
-                dicom = perform_action(dicom=dicom, action=action)
-
-        # Remove private tags if requested.
+        # Remove private tags at the onset, if requested
         if remove_private:
             try:
                 dicom.remove_private_tags()
@@ -313,13 +285,48 @@ def replace_identifiers(
                 for ptag in private_tags:
                     del dicom[ptag.tag]
                 continue
-        else:
-            bot.warning("Private tags were not removed!")
 
+        # Include private tags (if not removed) plus dicom.dir
+        fields = dicom_dir(dicom)
+
+        if recipe.deid is not None:
+
+            if dicom_file not in ids:
+                ids[dicom_file] = {}
+
+            # Prepare additional lists of values and fields (updates item)
+            if recipe.has_values_lists():
+                for group, actions in recipe.get_values_lists().items():
+                    ids[dicom_file][group] = extract_values_list(
+                        dicom=dicom, actions=actions
+                    )
+
+            if recipe.has_fields_lists():
+                for group, actions in recipe.get_fields_lists().items():
+                    ids[dicom_file][group] = extract_fields_list(
+                        dicom=dicom, actions=actions
+                    )
+
+            for action in recipe.get_actions():
+                dicom = perform_action(dicom=dicom, item=ids[dicom_file], action=action)
+
+        # Next perform actions in default config, only if not done
+        for action in config["put"]["actions"]:
+            if action["field"] in fields:
+                dicom = perform_action(dicom=dicom, action=action)
+
+        # Assemble a new dataset, again accounting for private tags
         ds = Dataset()
-        for field in dicom.dir():
+        for field in dicom_dir(dicom):
+
             try:
-                ds.add(dicom.data_element(field))
+                # Most fields are strings
+                if isinstance(field, str):
+                    ds.add(dicom.data_element(field))
+
+                # Remainder are tags
+                else:
+                    ds.add(dicom.get(field))
             except:
                 pass
 
