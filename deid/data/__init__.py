@@ -40,7 +40,11 @@ def get_dataset(dataset=None):
     to retrieve online datasets.
     """
     data_base = get_installdir()
-    valid_datasets = {"dicom-cookies": "%s/data/dicom-cookies" % data_base}
+    valid_datasets = {
+        "dicom-cookies": "%s/data/dicom-cookies" % data_base,
+        "animals": "%s/data/animals" % data_base,
+        "humans": "%s/data/humans" % data_base,
+    }
 
     if dataset is not None:
         # In case the user gave an extension

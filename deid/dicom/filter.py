@@ -94,16 +94,21 @@ def equalsBase(self, field, term, ignore_case=True, not_equals=False):
     # In this loop we can only switch to True
     for contender in contenders:
         if contender is not None:
-            if ignore_case:
-                if not isinstance(contender, Sequence):
-                    try:
-                        contender = str(contender).lower().strip()
-                        term = str(term).lower().strip()
-                    except AttributeError:
-                        pass  # we are dealing with number
+
+            try:
+                # both converted to string (handles tags)
+                contender = str(contender)
+                term = str(term)
+
+                if ignore_case:
+                    contender = contender.lower().strip()
+                    term = term.lower().strip()
 
                 if contender == term:
                     is_equal = True
+
+            except AttributeError:
+                pass  # we are dealing with number or sequence
 
     # If we want to know not_equals, reverse
     if not_equals is True:
@@ -148,6 +153,11 @@ def empty(self, field):
     """empty returns True if the value is found to be ""
     """
     content = self.get(field)
+
+    # This is the case of a data element
+    if not isinstance(content, str):
+        content = content.value
+
     if content == "":
         return True
     return False
@@ -180,17 +190,19 @@ def compareBase(self, field, expression, func, ignore_case=True):
     for contender in contenders:
         if contender is not None:
 
-            if not isinstance(contender, Sequence):
+            try:
+                contender = str(contender)
+                expression = str(expression)
+
                 if ignore_case:
-                    try:
-                        contender = str(contender).lower().strip()
-                        expression = str(expression).lower().strip()
-                    except AttributeError:
-                        pass  # we are dealing with number
-                        # sequence, or other private tag
+                    contender = contender.lower().strip()
+                    expression = expression.lower().strip()
 
                 if func(expression, contender):
                     is_match = True
+
+            except AttributeError:
+                pass  # we are dealing with number or sequence
 
     return is_match
 

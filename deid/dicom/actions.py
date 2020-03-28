@@ -68,7 +68,7 @@ def perform_action(dicom, action, item=None, fields=None, return_seen=False):
                 "An item lookup must be provided to reference a list of values or fields."
             )
 
-        # A values list returns fields with the value
+        # A values list returns fields with the value (can be private tags if not removed)
         if re.search("^values", field):
             values = item.get(re.sub("^values:", "", field), [])
             fields = find_by_values(values=values, dicom=dicom)
@@ -93,14 +93,16 @@ def perform_action(dicom, action, item=None, fields=None, return_seen=False):
     expanded_regexp = "__%s$" % field
 
     for field in fields:
+
+        # This key can be for a string or tag
         seen.append(field)
 
-        # Handle top level field
+        # Handle top level field, this can be a key (string) or tag
         _perform_action(dicom=dicom, field=field, item=item, action=action, value=value)
 
     # Expand sequences
     if item:
-        expanded_fields = [x for x in item if re.search(expanded_regexp, x)]
+        expanded_fields = [x for x in item if re.search(expanded_regexp, str(x))]
 
         # FieldA__FieldB
         for expanded_field in expanded_fields:
@@ -134,6 +136,7 @@ def _perform_action(dicom, field, action, value=None, item=None):
         elif action == "REPLACE":
             value = parse_value(item, value, field)
             if value is not None:
+
                 # If we make it here, do the replacement
                 dicom = update_tag(dicom, field=field, value=value)
             else:
@@ -250,6 +253,8 @@ def _remove_tag(dicom, item, field, value=None):
                 bot.warning("%s not found as key included with item." % value_option)
 
             # To the removal, this should return True/False
+            # The calling function (currently) is required to handle parsing fields
+            # that are tags.
             do_removal = item[value_option](dicom, value, field)
             if not isinstance(do_removal, bool):
                 bot.warning(
@@ -294,10 +299,19 @@ def jitter_timestamp(dicom, field, value):
     if not isinstance(value, int):
         value = int(value)
 
-    original = dicom.get(field, None)
+    original = dicom.get(field)
 
     if original is not None:
-        dcmvr = dicom.data_element(field).VR
+
+        # Create default for new value
+        new_value = None
+
+        # If we have a string, we need to create a DataElement
+        if isinstance(field, str):
+            dcmvr = dicom.data_element(field).VR
+        else:
+            dcmvr = dicom.get(field).VR
+            original = dicom.get(field).value
 
         # DICOM Value Representation can be either DA (Date) DT (Timestamp),
         # or something else, which is not supported.
@@ -314,9 +328,10 @@ def jitter_timestamp(dicom, field, value):
             )
         else:
             # Do nothing and issue a warning.
-            new_value = None
             bot.warning("JITTER not supported for %s with VR=%s" % (field, dcmvr))
+
         if new_value is not None and new_value != original:
             # Only update if there's something to update AND there's been change
             dicom = update_tag(dicom, field=field, value=new_value)
+
     return dicom
