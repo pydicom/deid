@@ -108,14 +108,15 @@ def _filter_tags(tags, idx, fields=None):
 
 def remove_sequences(dicom):
     """remove sequences from a dicom by removing the associated tag.
- 
+       We use dicom.iterall() to get all nested sequences.
+
        Parameters
        ==========
        dicom: the loaded dicom to remove sequences
     """
-    for field in dicom.dir():
-        if isinstance(dicom.get(field), Sequence):
-            dicom = remove_tag(dicom, field)
+    for elem in dicom.iterall():
+        if isinstance(elem.value, Sequence):
+            del dicom[elem.tag]
     return dicom
 
 

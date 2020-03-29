@@ -30,6 +30,7 @@ import re
 
 def parse_value(item, value, field=None):
     """parse_value will parse the value field of an action,
+    TODO: can we remove this?
     either returning: 
         1. the string (string or from function)
         2. a variable looked up (var:FieldName)
