@@ -106,7 +106,7 @@ class TestDicomGroups(unittest.TestCase):
 
         # Instance fields should be removed based on recipe
         for uid, field in parser.lookup["instance_fields"].items():
-            self.assertTrue(field not in parser.dicom)
+            self.assertTrue(field.element.keyword not in parser.dicom)
 
         # Start over
         dicom = get_dicom(self.dataset)
