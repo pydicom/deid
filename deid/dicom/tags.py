@@ -120,38 +120,23 @@ def remove_sequences(dicom):
     return dicom
 
 
-def add_tag(dicom, field, value, quiet=False):
-    """add tag will add a tag only if it's in the (active) DicomDictionary
-
-       Parameters
-       ==========
-       dicom: the pydicom.dataset Dataset (pydicom.read_file)
-       field: the name of the field to add
-       value: the value to set, if name is a valid tag
-
-    """
-    if quiet is False:
-        bot.debug("Attempting ADDITION of %s." % (field))
-    dicom = change_tag(dicom, field, value)
-
-    # dicom.data_element("PatientIdentityRemoved")
-    # (0012, 0062) Patient Identity Removed            CS: 'Yes'
-
-    return dicom
-
-
 def change_tag(dicom, field, value):
-    """change tag is a general function that can be used by 
-       update_tag or add_tag. The only difference is the print output,
-       and determining to call the function based on different conditions
+    """update tag will update a value in the header, if it exists
+       if not, nothing is added. This check is the only difference
+       between this function and change_tag. 
+       If the user wants to add a value (that might not exist) 
+       the function add_tag should be used
 
        Parameters
        ==========
        dicom: the pydicom.dataset Dataset (pydicom.read_file)
-       field: the name of the field to add
+       field: the name of the field to update
        value: the value to set, if name is a valid tag
 
     """
+    if field not in dicom:
+        return dicom
+
     # Case 1: Dealing with a string tag (field name)
     if isinstance(field, str):
         tag = get_tag(field)
@@ -166,70 +151,6 @@ def change_tag(dicom, field, value):
         tag = dicom.get(field)
         dicom.add_new(field, tag.VR, value)
 
-    return dicom
-
-
-def update_tag(dicom, field, value):
-    """update tag will update a value in the header, if it exists
-       if not, nothing is added. This check is the only difference
-       between this function and change_tag. 
-       If the user wants to add a value (that might not exist) 
-       the function add_tag should be used
-
-       Parameters
-       ==========
-       dicom: the pydicom.dataset Dataset (pydicom.read_file)
-       field: the name of the field to update
-       value: the value to set, if name is a valid tag
-
-    """
-    if field in dicom:
-        dicom = change_tag(dicom, field, value)
-    return dicom
-
-
-def blank_tag(dicom, field):
-    """blank tag calls update_tag with value set to an
-       empty string. If the tag cannot be found, warns the user
-       and doesn't touch (in case of imaging data, or not found)
-
-       Parameters
-       ==========
-       dicom: the pydicom.dataset Dataset (pydicom.read_file)
-       field: the name of the field to blank
-
-    """
-    # Case 1: We are provided a field that is a string, retrieve data element
-    if isinstance(field, str):
-        element = dicom.data_element(field)
-    else:
-        element = dicom.get(field)
-
-    if element is not None:
-
-        # Assert we have a data element
-        if not isinstance(element, DataElement):
-            bot.warning("Issue parsing %s as a DataElement, not blanked." % field)
-            return dicom
-
-        # We cannot blank VR types of US or SS
-        if element.VR not in ["US", "SS"]:
-            return update_tag(dicom, field, "")
-        bot.warning("Cannot determine tag for %s, skipping blank." % field)
-    return dicom
-
-
-def remove_tag(dicom, field):
-    """remove tag will remove a tag if it is present in the dataset
-
-       Parameters
-       ==========
-       dicom: the pydicom.dataset Dataset (pydicom.read_file)
-       field: the name of the field to remove
-    """
-    if field in dicom:
-        tag = dicom.data_element(field).tag
-        del dicom[tag]
     return dicom
 
 

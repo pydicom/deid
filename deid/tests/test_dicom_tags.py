@@ -44,15 +44,6 @@ class TestDicomTags(unittest.TestCase):
         shutil.rmtree(self.tmpdir)
         print("\n######################END########################")
 
-    def test_add_tag(self):
-        print("Test deid.dicom.tags add_tag")
-        from deid.dicom.tags import add_tag
-
-        dicom = get_dicom(self.dataset)
-        self.assertTrue("PatientIdentityRemoved" not in dicom)
-        updated = add_tag(dicom=dicom, field="PatientIdentityRemoved", value="Yes")
-        self.assertEqual(updated.get("PatientIdentityRemoved"), "Yes")
-
     def test_get_tag(self):
         print("Test deid.dicom.tags get_tag")
         from deid.dicom.tags import get_tag
@@ -70,43 +61,6 @@ class TestDicomTags(unittest.TestCase):
         print("Case 2: Ask for unknown tag")
         tag = get_tag("KleenexTissue")
         self.assertTrue(len(tag) == 0)
-
-    def test_change_tag(self):
-        # Note, update_tag only exists to show different print output
-        #       so we will not test again.
-        print("Test deid.dicom.tags change_tag")
-        from deid.dicom.tags import change_tag
-
-        dicom = get_dicom(self.dataset)
-
-        print("Case 1: Change known tag")
-        updated = change_tag(dicom, field="PatientID", value="shiny-ham")
-        self.assertEqual(updated.get("PatientID"), "shiny-ham")
-
-        print("Case 2: Change unknown tag")
-        updated = change_tag(dicom, field="PatientWazaa", value="shiny-ham")
-        self.assertEqual(updated.get("PatientWazaa"), None)
-
-    def test_blank_tag(self):
-        # Note that outside of the controlled action
-        # functions, user is limited on blanking
-        # (eg could produce invalid dicom)
-        print("Test deid.dicom.tags blank_tag")
-        from deid.dicom.tags import blank_tag
-
-        dicom = get_dicom(self.dataset)
-
-        updated = blank_tag(dicom, field="PatientID")
-        self.assertEqual(updated.get("PatientID"), "")
-
-    def test_remove_tag(self):
-        print("Test deid.dicom.tags remove_tag")
-        from deid.dicom.tags import remove_tag
-
-        dicom = get_dicom(self.dataset)
-        self.assertTrue("PatientID" in dicom)
-        updated = remove_tag(dicom, field="PatientID")
-        self.assertTrue("PatientID" not in updated)
 
 
 def get_dicom(dataset):

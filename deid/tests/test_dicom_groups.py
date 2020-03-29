@@ -38,6 +38,7 @@ from deid.dicom.fields import get_fields
 from deid.dicom import get_identifiers, replace_identifiers
 from deid.dicom.parser import DicomParser
 
+
 class TestDicomGroups(unittest.TestCase):
     def setUp(self):
         self.pwd = get_installdir()
@@ -90,28 +91,28 @@ class TestDicomGroups(unittest.TestCase):
 
         # Add keys to be used for replace to ids - these first are for values
         parser = DicomParser(dicom, recipe=self.deid)
-        parser.define('cookie_names', expected_names)
-        parser.define('operator_names', expected_operator)
+        parser.define("cookie_names", expected_names)
+        parser.define("operator_names", expected_operator)
 
         # This is for fields
-        parser.define('instance_fields', expected)
-        parser.define('id', "new-cookie-id")
-        parser.define('source_id', "new-operator-id")
+        parser.define("instance_fields", expected)
+        parser.define("id", "new-cookie-id")
+        parser.define("source_id", "new-operator-id")
         parser.parse()
 
         # Were the changes made?
-        assert parser.dicom.get('PatientID') == 'new-cookie-id'
-        assert parser.dicom.get('OperatorsName') == 'new-operator-id'
+        assert parser.dicom.get("PatientID") == "new-cookie-id"
+        assert parser.dicom.get("OperatorsName") == "new-operator-id"
 
         # Instance fields should be removed based on recipe
-        for uid, field in parser.lookup['instance_fields'].items():
+        for uid, field in parser.lookup["instance_fields"].items():
             self.assertTrue(field not in parser.dicom)
 
         # Start over
         dicom = get_dicom(self.dataset)
 
         # We need to provide ids with variables "id" and "source_id"
-        ids = {dicom.filename: {"id": 'new-cookie-id', 'source_id': "new-operator-id"}}
+        ids = {dicom.filename: {"id": "new-cookie-id", "source_id": "new-operator-id"}}
 
         # Returns list of updated dicom, since save is False
         replaced = replace_identifiers(dicom, save=False, deid=self.deid, ids=ids)
@@ -119,7 +120,6 @@ class TestDicomGroups(unittest.TestCase):
 
         self.assertEqual(cleaned.get("PatientID"), "new-cookie-id")
         self.assertEqual(cleaned.get("OperatorsName"), "new-operator-id")
-
 
 
 def get_dicom(dataset):

@@ -296,12 +296,16 @@ class DicomParser:
         # A fields list is used vertabim
         elif re.search("^fields", field):
             listing = {}
-            for uid, contender in self.lookup.get(re.sub("^fields:", "", field), {}).items():
-                listing.update(expand_field_expression(
-                    field=contender.element.keyword,
-                    dicom=self.dicom,
-                    contenders=self.fields,
-                ))
+            for uid, contender in self.lookup.get(
+                re.sub("^fields:", "", field), {}
+            ).items():
+                listing.update(
+                    expand_field_expression(
+                        field=contender.element.keyword,
+                        dicom=self.dicom,
+                        contenders=self.fields,
+                    )
+                )
             fields = listing
 
         else:
@@ -316,7 +320,7 @@ class DicomParser:
 
         # Otherwise, these are operations on existing fields
         else:
-            for uid,field in fields.items():
+            for uid, field in fields.items():
                 self._run_action(field=field, action=action, value=value)
 
     def add_field(self, field, value):
@@ -341,7 +345,6 @@ class DicomParser:
                 self.fields[uid] = DicomField(element, name, uid)
             else:
                 bot.warning("Cannot find tag for field %s, skipping." % name)
-
 
     def _run_action(self, field, action, value=None):
         """perform_action (above) typically is called using a loaded deid,

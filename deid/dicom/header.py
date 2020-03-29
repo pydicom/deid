@@ -144,7 +144,7 @@ def replace_identifiers(
             parser.lookup.update(ids[parser.dicom_file])
 
         parser.parse(strip_sequences=strip_sequences, remove_private=remove_private)
- 
+
         # Save to file, otherwise return updated objects
         if save is True:
             ds = save_dicom(
