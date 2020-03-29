@@ -42,13 +42,16 @@ from deid.dicom.fields import get_fields, expand_field_expression, DicomField
 from deid.utils import parse_value, read_json
 
 import os
+import re
 
 here = os.path.dirname(os.path.abspath(__file__))
+
 
 class DicomParser:
     """A dicom header serves as a cache to read in all fields from a dicom
        file. For each, we store the element and child elements
     """
+
     def __init__(self, dicom_file, recipe=None, config=None, force=True):
 
         # Lookup for the dicom
@@ -96,10 +99,11 @@ class DicomParser:
         self.dicom_file = os.path.abspath(self.dicom.filename)
         self.dicom_name = os.path.basename(self.dicom_file)
 
-    def add_function(self, name, func):
-        """Add a function to the lookup for later usage.
+    def define(self, name, value):
+        """Add a function or variable to the lookup for later usage.
+           This can be used for functions, lists, or variables.
         """
-        self.lookup[name] = func
+        self.lookup[name] = value
 
     def reset_preamble(self):
         """reset the preamble"""
@@ -112,10 +116,10 @@ class DicomParser:
         """
         # The field provided will be last in the list, the one we want
         # It is not be nested because fields are stored flat
-        uids = field.uid.split('__')
+        uids = field.uid.split("__")
 
         # Keep a reference to where we are in dicom (can nest)
-        parent = parent or self.dicom  # dicom is of type Dataset
+        parent = self.dicom  # dicom is of type Dataset
         desired = field.element.tag
 
         while uids:
@@ -123,13 +127,15 @@ class DicomParser:
 
             # If if's a uid for a tag, has parens
             if re.search("[(]|[)]", uid):
-                group, element = [x.strip() for x in re.sub("[(]|[)]", "", uid).split(',')]
+                group, element = [
+                    x.strip() for x in re.sub("[(]|[)]", "", uid).split(",")
+                ]
                 group = int(group, 16)
                 element = int(element, 16)
                 tag = Tag(group, element)
 
                 # We keep going until we find the desired tag
-                if tag != desired:   
+                if tag != desired:
                     parent = parent[tag]
 
             # Otherwise it's an index into a sequence
@@ -137,7 +143,7 @@ class DicomParser:
                 parent = parent[int(uid)]
 
         if return_parent:
-            return parent, parent[desired]
+            return parent, desired
         return desired
 
     def delete_field(self, field):
@@ -146,8 +152,9 @@ class DicomParser:
            and deleting the child node.
         """
         # Returns the parent, and a DataElement (indexes into parent by tag)
-        parent, field = self.get_nested_field(field, return_parent=True)
-        del parent[desired.tag]
+        parent, desired = self.get_nested_field(field, return_parent=True)
+        if desired in parent:
+            del parent[desired]
 
     def blank_field(self, field):
         """Blank a field"""
@@ -162,15 +169,13 @@ class DicomParser:
             else:
                 bot.warning("Unrecognized VR for %s, skipping blank." % field)
 
-
     def replace_field(self, field, value):
         """Replace a value in a field. This uses the same function as ADD,
            except we know that it's likely that the dicom has the value.
         """
         self.add_field(field, value)
 
-
-    def parse(self, strip_sequences=False, remove_private=True):
+    def parse(self, strip_sequences=False, remove_private=False):
         """The parse action corresponds to iterating through fields, and
            for each one, saving a data structure with the full element,
            the string (with nested representation of the keywords)
@@ -206,27 +211,33 @@ class DicomParser:
                     )
 
             for action in self.recipe.get_actions():
-                self.perform_action(**action)
+                self.perform_action(
+                    field=action.get("field"),
+                    value=action.get("value"),
+                    action=action.get("action"),
+                )
 
         # Next perform actions in default config, only if not done
-        for action in config["put"]["actions"]:
-            if action["field"] in fields:
-                self.perform_action(**action)
+        for action in self.config["put"]["actions"]:
+            self.perform_action(
+                field=action.get("field"),
+                value=action.get("value"),
+                action=action.get("action"),
+            )
 
         # At this point the self.dicom should be updated fully
         # The user can save, or take other action
 
-    def save(self, filename, output_folder=None, overwrite=False):
+    def save(self, filename, overwrite=False):
         """After a parse action, the user can choose to save the dicom to file.
         """
-        # Save to file?
-        if save is True:
-            ds = save_dicom(
-                dicom=self.dicom,
-                dicom_file=filename or self.dicom_name,
-                output_folder=output_folder,
-                overwrite=overwrite,
-            )
+        filename = filename or self.dicom_file
+        ds = save_dicom(
+            dicom=self.dicom,
+            dicom_file=os.path.basename(filename),
+            output_folder=os.path.dirname(filename),
+            overwrite=overwrite,
+        )
         return ds
 
     def get_fields(self, expand_sequences=True):
@@ -236,33 +247,28 @@ class DicomParser:
         """
         if not self.fields:
             self.fields = get_fields(
-                dicom=self.dicom,
-                expand_sequences=expand_sequences,
-                seen=self.seen,
+                dicom=self.dicom, expand_sequences=expand_sequences, seen=self.seen,
             )
         return self.fields
 
-
-    def find_by_values(self, values, ignore_case=True):
+    def find_by_values(self, values):
         """Given a list of values, find fields in the dicom that contain any
            of those values, as determined by a regular expression search.
         """
         # Values must be strings
         values = [str(x) for x in values]
 
-        fields = []
+        fields = {}
 
         # Create single regular expression to search by
         regexp = "(%s)" % "|".join(values)
-        for field in self.fields:
-            if field.value_contains(regexp, ignore_case=ignore_case):
-                fields.append(field)
+        for uid, field in self.fields.items():
+            if field.value_contains(regexp):
+                fields[uid] = field
 
         return fields
 
-
-# Actions
-
+    # Actions
 
     def perform_action(self, field, value, action):
         """perform action takes an action (dictionary with field, action, value)
@@ -289,16 +295,20 @@ class DicomParser:
 
         # A fields list is used vertabim
         elif re.search("^fields", field):
-            listing = []
-            for contender in self.lookup.get(re.sub("^fields:", "", field), []):
-                listing += expand_field_expression(
-                    field=contender.element.keyword, dicom=self.dicom, contenders=self.fields
-                )
+            listing = {}
+            for uid, contender in self.lookup.get(re.sub("^fields:", "", field), {}).items():
+                listing.update(expand_field_expression(
+                    field=contender.element.keyword,
+                    dicom=self.dicom,
+                    contenders=self.fields,
+                ))
             fields = listing
 
         else:
             # If there is an expander applied to field, we iterate over
-            fields = expand_field_expression(field=field, dicom=self.dicom, contenders=self.fields)
+            fields = expand_field_expression(
+                field=field, dicom=self.dicom, contenders=self.fields
+            )
 
         # If it's an addition, we might not have fields
         if action == "ADD":
@@ -306,9 +316,8 @@ class DicomParser:
 
         # Otherwise, these are operations on existing fields
         else:
-            for field in fields:
+            for uid,field in fields.items():
                 self._run_action(field=field, action=action, value=value)
-            
 
     def add_field(self, field, value):
         """add a field to the dicom. If it's already present, update the value.
@@ -318,13 +327,20 @@ class DicomParser:
         # Assume we don't want to add an empty value
         if value is not None:
 
+            # If provided a field object, create based on keyword
+            name = field
+            if isinstance(field, DicomField):
+                name = field.element.keyword
+
             # Generate a tag item, add if it's found in the dicom dictionary
-            tag = get_tag(field).get(field)            
+            tag = get_tag(name).get(name)
             if tag:
-               uid = str(tag['tag'])
-               element = DataElement(tag['tag'], tag['VR'], value)
-               self.dicom.add(element)
-               self.fields[uid] = element
+                uid = str(tag["tag"])
+                element = DataElement(tag["tag"], tag["VR"], value)
+                self.dicom.add(element)
+                self.fields[uid] = DicomField(element, name, uid)
+            else:
+                bot.warning("Cannot find tag for field %s, skipping." % name)
 
 
     def _run_action(self, field, action, value=None):

@@ -53,7 +53,7 @@ def extract_values_list(dicom, actions, fields=None):
 
         # Just grab the entire value string for a field, no parsing
         if action["action"] == "FIELD":
-            [values.add(field.element.value) for uid,field in subset.items()];
+            [values.add(field.element.value) for uid, field in subset.items()]
 
         # Split action, can optionally have a "by" and/or minlength parameter
         elif action["action"] == "SPLIT":
@@ -105,9 +105,11 @@ def extract_fields_list(dicom, actions, fields=None):
     for action in actions:
 
         if action["action"] == "FIELD":
-            subset.update(expand_field_expression(
-                field=action["field"], dicom=dicom, contenders=fields
-            ))
+            subset.update(
+                expand_field_expression(
+                    field=action["field"], dicom=dicom, contenders=fields
+                )
+            )
 
         else:
             bot.warning(

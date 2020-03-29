@@ -33,9 +33,7 @@ import os
 
 from deid.utils import get_installdir
 from deid.data import get_dataset
-from deid.dicom.tags import get_private
 from deid.dicom.fields import get_fields
-from pydicom.tag import BaseTag
 
 
 class TestDicomFields(unittest.TestCase):
@@ -55,33 +53,30 @@ class TestDicomFields(unittest.TestCase):
         from deid.dicom.fields import expand_field_expression
 
         dicom = get_dicom(self.dataset)
-        contenders = dicom.dir()
+
+        contenders = get_fields(dicom)
 
         print("Testing that field expansion works for basic tags")
-        expand_field_expression(
+        fields = expand_field_expression(
             dicom=dicom, field="endswith:Time", contenders=contenders
         )
 
-        print("Testing that field expansion works including private tags")
-        contenders += [e.tag for e in get_private(dicom)]
-        expand_field_expression(
-            dicom=dicom, field="endswith:Time", contenders=contenders
-        )
+        # The fields returned should end in time
+        for uid, field in fields.items():
+            assert field.name.endswith("Time")
 
         print("Testing that we can also search private tags based on numbers.")
         fields = expand_field_expression(
             dicom=dicom, field="contains:0019", contenders=contenders
         )
 
-        # We should have a tag object in the list now!
-        assert isinstance(fields[0], BaseTag)
+        # The fields returned should include tag group or element 0019
+        for uid, field in fields.items():
+            assert "0019" in uid
 
         print("Testing nested private tags")
         dataset = get_dataset("animals")  # includes nested private tags
         dicom = get_dicom(dataset)
-
-        # TODO: need to figure out how to handle reading sequuences for
-        # private tags
 
 
 def get_dicom(dataset):

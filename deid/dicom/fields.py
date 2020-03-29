@@ -29,7 +29,6 @@ from pydicom.dataelem import DataElement
 import re
 
 
-
 class DicomField:
     """A dicom field holds the element, and a string that represents the entire
        nested structure (e.g., SequenceName__CodeValue).
@@ -52,8 +51,7 @@ class DicomField:
         """
         return str(self.element.tag)
 
-
-# Contains
+    # Contains
 
     def name_contains(self, expression):
         """use re to search a field for a regular expression, meaning
@@ -73,20 +71,19 @@ class DicomField:
             return True
         return False
 
-    def value_contains(self, expression, ignore_case=True):
+    def value_contains(self, expression):
         """use re to search a field value for a regular expression
         """
-        flag = None
         values = self.element.value
-        if ignore_case:
-            flag = re.IGNORECASE
 
         # If we are not dealing with a list
         if not isinstance(values, list):
-            values = [values]       
+            values = [values]
+
+        values = [str(x) for x in values]
 
         for value in values:
-            if re.search(expression, value, flag):
+            if re.search(expression, value, re.IGNORECASE):
                 return True
         return False
 
@@ -172,7 +169,7 @@ def expand_field_expression(field, dicom, contenders=None):
 
     # if no contenders provided, use top level of dicom headers
     if contenders is None:
-        contenders = get_fields()
+        contenders = get_fields(dicom)
 
     # Case 1: field is an expander without an argument (e.g., no :)
     if field.lower() in expanders:
@@ -183,7 +180,11 @@ def expand_field_expression(field, dicom, contenders=None):
     # Case 2: The field is a specific field OR an expander with argument (A:B)
     fields = field.split(":", 1)
     if len(fields) == 1:
-        return {uid:field for uid,field in contenders.items() if field.name_contains(fields[0])}
+        return {
+            uid: field
+            for uid, field in contenders.items()
+            if field.name_contains(fields[0])
+        }
 
     # if we get down here, we have an expander and expression
     expander, expression = fields
@@ -218,7 +219,7 @@ def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
     """
     skip = skip or []
     seen = seen or []
-    fields = {}           # indexed by nested tag
+    fields = {}  # indexed by nested tag
 
     if not isinstance(skip, list):
         skip = [skip]
@@ -265,7 +266,7 @@ def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
             if isinstance(contender.value, Sequence) and expand_sequences is True:
 
                 # A nested dataset can be parsed as such
-                for idx, item in enumerate(sequence):
+                for idx, item in enumerate(contender.value):
                     if isinstance(item, Dataset):
                         item.prefix = name
                         item.uid = uid + "__%s" % idx
