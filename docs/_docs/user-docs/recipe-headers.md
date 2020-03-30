@@ -266,7 +266,7 @@ The startswith filter will look for header field names that start with a particu
 Casing also doesn't matter.
 
 ```
-REMOVE startswith:Patient                  
+REMOVE startswith:Patient
 ['PatientAddress', 'PatientAge', 'PatientBirthDate', 'PatientID', 'PatientName', 'PatientPosition', 'PatientSex']
 ```
 
@@ -309,6 +309,84 @@ BLANK except:StudyTime
 If you are familiar with regular expressions, you'll notice the "|" which 
 means "or" in the regular expression. You are free to write whatever regular
 expression fits your needs to disclude particular fields here.
+
+> Does this include private tags?
+
+If you choose to not remove private tags, as of version 0.0.41 of deid, you can also search
+private tag identifiers based on a number. Here is an example of private tags defined
+for a dicom file:
+
+```
+[(0011, 0003) Private Creator                     AE: 'Agfa DR',
+ (0019, 0010) Private Creator                     LO: 'Agfa ADC NX',
+ (0019, 1007) Private tag data                    CS: 'YES',
+ (0019, 1021) Private tag data                    FL: 6.039999961853027,
+ (0019, 1028) Private tag data                    CS: 'NO',
+ (0019, 1030) Private tag data                    LT: '',
+ (0019, 10f5) [Cassette Orientation]              CS: 'LANDSCAPE',
+ (0019, 10fa) Private tag data                    IS: "297",
+ (0019, 10fb) Private tag data                    FL: 2.4000000953674316,
+ (0019, 10fc) Private tag data                    IS: "171",
+ (0019, 10fd) Private tag data                    CS: 'NO',
+ (0019, 10fe) [Unknown]                           CS: 'MED']
+```
+
+If we wanted to selected those that included 0019, we could do the following:
+
+```
+REMOVE contains:0019
+```
+
+The underlying function that expands the expression would return a subset of
+these tags - these are just the tag keys that are used to index the dicom
+structure:
+
+```python
+from deid.dicom.fields import expand_field_expression
+
+# contenders should include all fields plus private tag names as keys
+contenders = dicom.dir() + [e.tag for e in get_private(dicom)]
+
+fields = expand_field_expression(dicom=dicom, field="contains:0019", contenders=contenders)
+```
+
+The result would be the following:
+
+```
+[(0019, 0010),
+ (0019, 1007),
+ (0019, 1021),
+ (0019, 1028),
+ (0019, 1030),
+ (0019, 10f5),
+ (0019, 10fa),
+ (0019, 10fb),
+ (0019, 10fc),
+ (0019, 10fd),
+ (0019, 10fe)]
+```
+
+Which then can be used as indices to the dicom to get the full private tag.
+
+```python
+[dicom.get(tag) for tag in fields]
+[(0019, 0010) Private Creator                     LO: 'Agfa ADC NX',
+ (0019, 1007) Private tag data                    CS: 'YES',
+ (0019, 1021) Private tag data                    FL: 6.039999961853027,
+ (0019, 1028) Private tag data                    CS: 'NO',
+ (0019, 1030) Private tag data                    LT: '',
+ (0019, 10f5) [Cassette Orientation]              CS: 'LANDSCAPE',
+ (0019, 10fa) Private tag data                    IS: "297",
+ (0019, 10fb) Private tag data                    FL: 2.4000000953674316,
+ (0019, 10fc) Private tag data                    IS: "171",
+ (0019, 10fd) Private tag data                    CS: 'NO',
+ (0019, 10fe) [Unknown]                           CS: 'MED']
+```
+
+These notes are provided to give detail about the implementation - you do not need
+to worry about using these underlying functions to do expansion, only that they
+are working to expose even private tags for parsing.
+
 
 ## Example
 
