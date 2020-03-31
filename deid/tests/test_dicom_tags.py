@@ -51,16 +51,15 @@ class TestDicomTags(unittest.TestCase):
 
         print("Case 1: Ask for known tag")
         tag = get_tag("Modality")
-        self.assertTrue("Modality" in tag)
-        self.assertEqual(tag["Modality"]["VM"], "1")
-        self.assertEqual(tag["Modality"]["VR"], "CS")
-        self.assertEqual(tag["Modality"]["keyword"], "Modality")
-        self.assertEqual(tag["Modality"]["name"], "Modality")
-        self.assertTrue(isinstance(tag["Modality"]["tag"], BaseTag))
+        self.assertEqual(tag["VM"], "1")
+        self.assertEqual(tag["VR"], "CS")
+        self.assertEqual(tag["keyword"], "Modality")
+        self.assertEqual(tag["name"], "Modality")
+        self.assertTrue(isinstance(tag["tag"], BaseTag))
 
         print("Case 2: Ask for unknown tag")
         tag = get_tag("KleenexTissue")
-        self.assertTrue(len(tag) == 0)
+        self.assertTrue(not tag)
 
 
 def get_dicom(dataset):
