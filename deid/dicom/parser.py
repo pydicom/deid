@@ -36,7 +36,7 @@ from deid.config import DeidRecipe
 from deid.config.standards import actions as valid_actions
 from deid.dicom.utils import save_dicom
 from deid.dicom.actions import jitter_timestamp
-from deid.dicom.tags import remove_sequences, get_private, get_tag
+from deid.dicom.tags import remove_sequences, get_private, get_tag, add_tag
 from deid.dicom.groups import extract_values_list, extract_fields_list
 from deid.dicom.fields import get_fields, expand_field_expression, DicomField
 from deid.utils import parse_value, read_json
@@ -136,10 +136,19 @@ class DicomParser:
 
                 # We keep going until we find the desired tag
                 if tag != desired:
+
+                    # If the parent has been removed, we can't continue
+                    if tag not in parent:
+                        return None, desired
+
                     parent = parent[tag]
 
             # Otherwise it's an index into a sequence
             else:
+
+                # If the parent has been removed, we can't continue
+                if not int(uid) in parent:
+                    return None, desired
                 parent = parent[int(uid)]
 
         if return_parent:
@@ -153,7 +162,7 @@ class DicomParser:
         """
         # Returns the parent, and a DataElement (indexes into parent by tag)
         parent, desired = self.get_nested_field(field, return_parent=True)
-        if desired in parent:
+        if parent and desired in parent:
             del parent[desired]
 
     def blank_field(self, field):
@@ -268,6 +277,22 @@ class DicomParser:
 
         return fields
 
+    def find_by_name(self, name):
+        """Given a string, find all field objects that contain the name.
+           Name can correspond to:
+            - a string of the tag, with or without the parens and comma/space
+            - a keyword
+            - a field name
+        """
+        fields = {}
+
+        # Create single regular expression to search by
+        for uid, field in self.fields.items():
+            if field.name_contains(name):
+                fields[uid] = field
+
+        return fields
+
     # Actions
 
     def perform_action(self, field, value, action):
@@ -326,18 +351,25 @@ class DicomParser:
     def add_field(self, field, value):
         """add a field to the dicom. If it's already present, update the value.
         """
-        value = parse_value(item=self.lookup, value=value, field=field)
+        value = parse_value(
+            item=self.lookup, value=value, field=field, dicom=self.dicom
+        )
 
         # Assume we don't want to add an empty value
         if value is not None:
 
-            # If provided a field object, create based on keyword
+            # If provided a field object, create based on keyword or tag identifer
             name = field
             if isinstance(field, DicomField):
-                name = field.element.keyword
+                name = field.element.keyword or field.stripped_tag
 
-            # Generate a tag item, add if it's found in the dicom dictionary
-            tag = get_tag(name).get(name)
+            # Generate a tag item, add if it's a name found in the dicom dictionary
+            tag = get_tag(name)
+
+            # Second try, it might be a private (or other numerical) string identifier
+            if not tag:
+                tag = add_tag(name)
+
             if tag:
                 uid = str(tag["tag"])
                 element = DataElement(tag["tag"], tag["VR"], value)
@@ -366,11 +398,15 @@ class DicomParser:
 
         # Code the value with something in the response
         elif action == "JITTER":
-            value = parse_value(item=self.lookup, value=value, field=field)
+            value = parse_value(
+                item=self.lookup, dicom=self.dicom, value=value, field=field
+            )
             if value is not None:
 
                 # Jitter the field by the supplied value
-                jitter_timestamp(dicom=self.dicom, field=field, value=value)
+                jitter_timestamp(
+                    dicom=self.dicom, field=field.element.keyword, value=value
+                )
             else:
                 bot.warning("JITTER %s unsuccessful" % field)
 
@@ -378,7 +414,16 @@ class DicomParser:
 
         # Remove the field entirely
         elif action == "REMOVE":
-            self.delete_field(field)
+
+            # If a value is defined, parse it (could be filter)
+            do_removal = True
+            if value != None:
+                do_removal = parse_value(
+                    item=self.lookup, dicom=self.dicom, value=value, field=field
+                )
+
+            if do_removal == True:
+                self.delete_field(field)
 
     def remove_private(self):
         """Remove private tags from the loaded dicom

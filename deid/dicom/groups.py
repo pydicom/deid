@@ -78,7 +78,7 @@ def extract_values_list(dicom, actions, fields=None):
                         bot.debug("Splitting value set to %s" % split_by)
 
             for uid, field in subset.items():
-                new_values = (field.element.value or "").split(split_by)
+                new_values = (str(field.element.value) or "").split(split_by)
                 for new_value in new_values:
                     if len(new_value) >= minlength:
                         values.add(new_value)

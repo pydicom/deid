@@ -35,6 +35,21 @@ import re
 ################################################################################
 
 
+def add_tag(identifier, VR="UN", VM=None, name=None, keyword=None):
+    """Add tag will take a string for a tag (e.g., ) and define a new tag for it.
+       By default, we give the type "unknown."
+    """
+    tag = Tag("0x" + identifier)
+    manifest = {
+        "tag": tag,
+        "VR": VR,
+        "VM": VM,
+        "keyword": keyword,
+        "name": name,
+    }
+    return manifest
+
+
 def get_tag(field):
     """get_tag will return a dictionary with tag indexed by field. For each entry,
        a dictionary lookup is included with VR.
@@ -47,7 +62,7 @@ def get_tag(field):
     found = [
         {key: value} for key, value in DicomDictionary.items() if value[4] == field
     ]
-    tags = dict()
+    manifest = None
 
     if len(found) > 0:
 
@@ -64,8 +79,7 @@ def get_tag(field):
             "name": longName,
         }
 
-        tags[field] = manifest
-    return tags
+    return manifest
 
 
 def find_tag(term, VR=None, VM=None, retired=False):
@@ -125,7 +139,8 @@ def update_tag(dicom, field, value):
        if not, nothing is added. This check is the only difference
        between this function and change_tag. 
        If the user wants to add a value (that might not exist) 
-       the function add_tag should be used
+       the function add_tag should be used with a private identifier
+       as a string.
 
        Parameters
        ==========
@@ -140,9 +155,8 @@ def update_tag(dicom, field, value):
     # Case 1: Dealing with a string tag (field name)
     if isinstance(field, str):
         tag = get_tag(field)
-
-        if field in tag:
-            dicom.add_new(tag[field]["tag"], tag[field]["VR"], value)
+        if tag:
+            dicom.add_new(tag["tag"], tag["VR"], value)
         else:
             bot.error("%s is not a valid field to add. Skipping." % (field))
 

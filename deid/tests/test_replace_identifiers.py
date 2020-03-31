@@ -1,0 +1,613 @@
+#!/usr/bin/env python
+
+"""
+Test replace_identifiers
+
+Copyright (c) 2016-2020 Vanessa Sochat
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+"""
+
+import unittest
+import tempfile
+import shutil
+import json
+import os
+
+from deid.utils import get_installdir
+from deid.data import get_dataset
+from deid.dicom.parser import DicomParser
+from deid.dicom import get_identifiers, replace_identifiers
+from pydicom import read_file
+
+from collections import OrderedDict
+
+global generate_uid
+
+
+class TestDicom(unittest.TestCase):
+    def setUp(self):
+        self.pwd = get_installdir()
+        self.deid = os.path.abspath("%s/../examples/deid/deid.dicom" % self.pwd)
+        self.dataset = get_dataset("humans")
+        self.tmpdir = tempfile.mkdtemp()
+        print("\n######################START######################")
+
+    def tearDown(self):
+        shutil.rmtree(self.tmpdir)
+        print("\n######################END########################")
+
+    def test_add_private_constant(self):
+        """ RECIPE RULE
+        ADD 11112221 SIMPSON
+        """
+        print("Test add private tag constant value")
+        dicom_file = get_file(self.dataset)
+
+        actions = [{"action": "ADD", "field": "11112221", "value": "SIMPSON"}]
+        recipe = create_recipe(actions)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        self.assertEqual(1, len(result))
+        self.assertEqual("SIMPSON", result[0]["11112221"].value)
+
+    def test_add_public_constant(self):
+        """ RECIPE RULE
+        ADD PatientIdentityRemoved Yeppers!
+        """
+
+        print("Test add public tag constant value")
+        dicom_file = get_file(self.dataset)
+
+        actions = [
+            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yeppers!"}
+        ]
+        recipe = create_recipe(actions)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        self.assertEqual(1, len(result))
+        self.assertEqual("Yeppers!", result[0].PatientIdentityRemoved)
+
+    def test_replace_with_constant(self):
+        """ RECIPE RULE
+        REPLACE AccessionNumber 987654321
+        REPLACE 00190010 NEWVALUE!
+        """
+
+        print("Test replace tags with constant values")
+        dicom_file = get_file(self.dataset)
+
+        newfield1 = "AccessionNumber"
+        newvalue1 = "987654321"
+        newfield2 = "00190010"
+        newvalue2 = "NEWVALUE!"
+
+        actions = [
+            {"action": "REPLACE", "field": newfield1, "value": newvalue1},
+            {"action": "REPLACE", "field": newfield2, "value": newvalue2},
+        ]
+        recipe = create_recipe(actions)
+
+        # Create a DicomParser to easily find fields
+        parser = DicomParser(dicom_file)
+        parser.parse()
+
+        # The first in the list is the highest level
+        field1 = list(parser.find_by_name(newfield1).values())[0]
+        field2 = list(parser.find_by_name(newfield2).values())[0]
+
+        self.assertNotEqual(newvalue1, field1.element.value)
+        self.assertNotEqual(newvalue2, field2.element.value)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+
+        self.assertEqual(1, len(result))
+        self.assertEqual(newvalue1, result[0][newfield1].value)
+        self.assertEqual(newvalue2, result[0][newfield2].value)
+
+    def test_remove(self):
+        """ RECIPE RULE
+        REMOVE InstitutionName
+        REMOVE 00190010
+        """
+
+        print("Test remove of public and private tags")
+        dicom_file = get_file(self.dataset)
+
+        field1name = "InstitutionName"
+        field2name = "00190010"
+
+        actions = [
+            {"action": "REMOVE", "field": field1name},
+            {"action": "REMOVE", "field": field2name},
+        ]
+        recipe = create_recipe(actions)
+        dicom = read_file(dicom_file)
+
+        # Create a DicomParser to easily find fields
+        parser = DicomParser(dicom_file)
+        parser.parse()
+
+        # The first in the list is the highest level
+        field1 = list(parser.find_by_name(field1name).values())[0]
+        field2 = list(parser.find_by_name(field2name).values())[0]
+
+        self.assertIsNotNone(field1.element.value)
+        self.assertIsNotNone(field2.element.value)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+
+        # Create a DicomParser to easily find fields
+        parser = DicomParser(result[0])
+        parser.parse()
+
+        # Removed means we don't find them
+        assert not parser.find_by_name(field1name)
+        assert not parser.find_by_name(field2name)
+
+        self.assertEqual(1, len(result))
+        with self.assertRaises(KeyError):
+            check1 = result[0][field1name].value
+        with self.assertRaises(KeyError):
+            check2 = result[0][field2name].value
+
+    def test_add_tag_variable(self):
+        """ RECIPE RULE
+        ADD 11112221 var:myVar
+        ADD PatientIdentityRemoved var:myVar
+        """
+
+        print("Test add tag constant value from variable")
+        dicom_file = get_file(self.dataset)
+
+        actions = [
+            {"action": "ADD", "field": "11112221", "value": "var:myVar"},
+            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "var:myVar"},
+        ]
+        recipe = create_recipe(actions)
+
+        # Method 1, define ids manually
+        ids = {dicom_file: {"myVar": "SIMPSON"}}
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            ids=ids,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        self.assertEqual(1, len(result))
+        self.assertEqual("SIMPSON", result[0]["11112221"].value)
+        self.assertEqual("SIMPSON", result[0]["PatientIdentityRemoved"].value)
+
+    def test_jitter_date(self):
+        # DICOM datatype DA
+        """ RECIPE RULE
+        JITTER StudyDate 1
+        """
+
+        print("Test date jitter")
+        dicom_file = get_file(self.dataset)
+
+        actions = [{"action": "JITTER", "field": "StudyDate", "value": "1"}]
+        recipe = create_recipe(actions)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        self.assertEqual(1, len(result))
+        self.assertEqual("20230102", result[0]["StudyDate"].value)
+
+    def test_jitter_timestamp(self):
+        # DICOM datatype DT
+        """ RECIPE RULE
+        JITTER AcquisitionDateTime 1
+        """
+
+        print("Test timestamp jitter")
+        dicom_file = get_file(self.dataset)
+
+        actions = [{"action": "JITTER", "field": "AcquisitionDateTime", "value": "1"}]
+        recipe = create_recipe(actions)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        self.assertEqual(1, len(result))
+        self.assertEqual(
+            "20230102011721.621000", result[0]["AcquisitionDateTime"].value
+        )
+
+    def test_expanders(self):
+        """ RECIPE RULES
+        REMOVE contains:Collimation
+        REMOVE endswith:Diameter
+        REMOVE startswith:Exposure
+        """
+
+        print("Test contains, endswith, and startswith expanders")
+        dicom_file = get_file(self.dataset)
+
+        actions = [
+            {"action": "REMOVE", "field": "contains:Collimation"},
+            {"action": "REMOVE", "field": "endswith:Diameter"},
+            {"action": "REMOVE", "field": "startswith:Exposure"},
+        ]
+        recipe = create_recipe(actions)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        self.assertEqual(1, len(result))
+        self.assertEqual(153, len(result[0]))
+        with self.assertRaises(KeyError):
+            check1 = result[0]["ExposureTime"].value
+        with self.assertRaises(KeyError):
+            check2 = result[0]["TotalCollimationWidth"].value
+        with self.assertRaises(KeyError):
+            check3 = result[0]["DataCollectionDiameter"].value
+
+    def test_expander_except(self):
+        # Remove all fields except Manufacturer
+        """ RECIPE RULE
+        REMOVE except:Manufacturer
+        """
+
+        print("Test except expander")
+        dicom_file = get_file(self.dataset)
+
+        actions = [{"action": "REMOVE", "field": "except:Manufacturer"}]
+        recipe = create_recipe(actions)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        self.assertEqual(1, len(result))
+        self.assertEqual(2, len(result[0]))
+
+        self.assertEqual("SIEMENS", result[0]["Manufacturer"].value)
+        with self.assertRaises(KeyError):
+            check1 = result[0]["ExposureTime"].value
+        with self.assertRaises(KeyError):
+            check2 = result[0]["TotalCollimationWidth"].value
+        with self.assertRaises(KeyError):
+            check3 = result[0]["DataCollectionDiameter"].value
+
+    def test_fieldset_remove(self):
+        """  RECIPE
+        %fields field_set1
+        FIELD Manufacturer
+        FIELD contains:Time
+        %header
+        REMOVE fields:field_set1
+        """
+
+        print("Test public tag fieldset")
+        dicom_file = get_file(self.dataset)
+
+        actions = [{"action": "REMOVE", "field": "fields:field_set1"}]
+        fields = OrderedDict()
+        fields["field_set1"] = [
+            {"field": "Manufacturer", "action": "FIELD"},
+            {"field": "contains:Collimation", "action": "FIELD"},
+        ]
+
+        recipe = create_recipe(actions, fields)
+
+        # Method 1: Use DicomParser
+        parser = DicomParser(dicom_file, recipe=recipe)
+        number_fields = len(parser.dicom)  # 160
+        parser.parse()
+
+        # The number of fields to be removed
+        to_remove = len(parser.lookup["field_set1"])
+
+        expected_number = number_fields - to_remove
+
+        # {'field_set1': {'(0008, 0070)': (0008, 0070) Manufacturer                        LO: 'SIEMENS'  [Manufacturer],
+        # '(0018, 9306)': (0018, 9306) Single Collimation Width            FD: 1.2  [SingleCollimationWidth],
+        # '(0018, 9307)': (0018, 9307) Total Collimation Width             FD: 14.399999999999999  [TotalCollimationWidth]}}
+
+        # Method 1: use replace_identifiers
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        self.assertEqual(1, len(result))
+        print(len(result[0]))
+        self.assertEqual(expected_number, len(result[0]))
+        with self.assertRaises(KeyError):
+            check1 = result[0]["Manufacturer"].value
+        with self.assertRaises(KeyError):
+            check2 = result[0]["TotalCollimationWidth"].value
+        with self.assertRaises(KeyError):
+            check3 = result[0]["SingleCollimationWidth"].value
+
+    def test_valueset_remove(self):
+        """
+        %values value_set1
+        FIELD contains:Manufacturer
+        SPLIT contains:Physician by="^";minlength=3
+        %header REMOVE values:value_set1
+        """
+
+        print("Test public tag valueset")
+        dicom_file = get_file(self.dataset)
+
+        actions = [{"action": "REMOVE", "field": "values:value_set1"}]
+        values = OrderedDict()
+        values["value_set1"] = [
+            {"field": "contains:Manufacturer", "action": "FIELD"},
+            {
+                "value": 'by="^";minlength=3',
+                "field": "contains:Physician",
+                "action": "SPLIT",
+            },
+        ]
+        recipe = create_recipe(actions, values=values)
+
+        # Check that values we want are present using DicomParser
+        parser = DicomParser(dicom_file, recipe=recipe)
+        parser.parse()
+        self.assertTrue("SIEMENS" in parser.lookup["value_set1"])
+        self.assertTrue("HIBBARD" in parser.lookup["value_set1"])
+
+        # Perform action
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        self.assertEqual(1, len(result))
+        with self.assertRaises(KeyError):
+            check1 = result[0]["00090010"].value
+        with self.assertRaises(KeyError):
+            check2 = result[0]["Manufacturer"].value
+        with self.assertRaises(KeyError):
+            check3 = result[0]["PhysiciansOfRecord"].value
+
+    def test_fieldset_remove_private(self):
+        """
+        %fields field_set2_private
+        FIELD 00090010
+        FIELD PatientID
+        %header
+        REMOVE fields:field_set2_private
+        """
+
+        print("Test private tag fieldset")
+        dicom_file = get_file(self.dataset)
+
+        actions = [{"action": "REMOVE", "field": "fields:field_set2_private"}]
+        fields = OrderedDict()
+        fields["field_set2_private"] = [
+            {"field": "00090010", "action": "FIELD"},
+            {"field": "PatientID", "action": "FIELD"},
+        ]
+        recipe = create_recipe(actions, fields)
+
+        parser = DicomParser(dicom_file, recipe=recipe)
+        parser.parse()
+        self.assertTrue("(0009, 0010)" in parser.lookup["field_set2_private"])
+        self.assertTrue("(0010, 0020)" in parser.lookup["field_set2_private"])
+
+        with self.assertRaises(KeyError):
+            check1 = parser.dicom["00090010"].value
+        with self.assertRaises(KeyError):
+            check2 = parser.dicom["PatientID"].value
+
+    def test_valueset_private(self):
+        """
+        %values value_set2_private
+        FIELD 00311020
+        SPLIT 00090010 by=" ";minlength=4
+        %header
+        REMOVE values:value_set2_private
+        """
+
+        print("Test private tag valueset")
+        dicom_file = get_file(self.dataset)
+
+        actions = [{"action": "REMOVE", "field": "values:value_set2_private"}]
+        values = OrderedDict()
+        values["value_set2_private"] = [
+            {"field": "00311020", "action": "FIELD"},
+            {"value": 'by=" ";minlength=4', "field": "00090010", "action": "SPLIT"},
+        ]
+        recipe = create_recipe(actions, values=values)
+
+        parser = DicomParser(dicom_file, recipe=recipe)
+        parser.parse()
+        for entry in ["SIEMENS", "M1212121", "DUMMY"]:
+            assert entry in parser.lookup["value_set2_private"]
+
+        with self.assertRaises(KeyError):
+            check1 = parser.dicom["OtherPatientIDs"].value
+        with self.assertRaises(KeyError):
+            check2 = parser.dicom["Manufacturer"].value
+        with self.assertRaises(KeyError):
+            check3 = parser.dicom["00190010"].value
+
+    def test_tag_expanders_taggroup(self):
+        # This tests targets the group portion of a tag identifier - 0009 in (0009, 0001)
+        """
+        %header
+        REMOVE contains:0009
+        """
+        print("Test expanding tag by tag number part (matches group numbers only)")
+        dicom_file = get_file(self.dataset)
+
+        actions = [{"action": "REMOVE", "field": "contains:0009"}]
+        recipe = create_recipe(actions)
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        self.assertEqual(1, len(result))
+        with self.assertRaises(KeyError):
+            check1 = result[0]["00090010"].value
+
+    def test_tag_expanders_tagelement(self):
+        # includes public and private, groups and element numbers
+        """
+        %header
+        REMOVE contains:0010
+        """
+        print(
+            "Test expanding tag by tag number part (matches groups and element numbers)"
+        )
+        dicom_file = get_file(self.dataset)
+
+        actions = [{"action": "REMOVE", "field": "contains:0010"}]
+        recipe = create_recipe(actions)
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        self.assertEqual(1, len(result))
+        self.assertEqual(135, len(result[0]))
+        with self.assertRaises(KeyError):
+            check1 = result[0]["00090010"].value
+        with self.assertRaises(KeyError):
+            check2 = result[0]["PatientID"].value
+
+    def test_remove_all_func(self):
+        """
+        %header
+        REMOVE ALL func:contains_hibbard
+        """
+        print("Test tag removal by")
+        dicom_file = get_file(self.dataset)
+
+        def contains_hibbard(dicom, value, field, item):
+            from pydicom.tag import Tag
+
+            tag = Tag(field.element.tag)
+
+            if tag in dicom:
+                currentvalue = str(dicom.get(tag).value).lower()
+                if "hibbard" in currentvalue:
+                    return True
+                return False
+
+        actions = [
+            {"action": "REMOVE", "field": "ALL", "value": "func:contains_hibbard"}
+        ]
+        recipe = create_recipe(actions)
+
+        # Create a parser, define function for it
+        parser = DicomParser(dicom_file, recipe=recipe)
+        parser.define("contains_hibbard", contains_hibbard)
+        parser.parse()
+
+        self.assertEqual(156, len(parser.dicom))
+        with self.assertRaises(KeyError):
+            check1 = parser.dicom["ReferringPhysicianName"].value
+        with self.assertRaises(KeyError):
+            check2 = parser.dicom["PhysiciansOfRecord"].value
+        with self.assertRaises(KeyError):
+            check3 = parser.dicom["RequestingPhysician"].value
+        with self.assertRaises(KeyError):
+            check4 = parser.dicom["00331019"].value
+
+    # MORE TESTS NEED TO BE WRITTEN TO TEST SEQUENCES
+
+
+def create_recipe(actions, fields=None, values=None):
+    """helper method to create a recipe file 
+    """
+    from deid.config import DeidRecipe
+
+    recipe = DeidRecipe()
+    recipe.deid["header"].clear()
+    recipe.deid["header"] = actions
+
+    if fields is not None:
+        recipe.deid["fields"] = fields
+
+    if values is not None:
+        recipe.deid["values"] = values
+
+    return recipe
+
+
+def get_file(dataset):
+    """helper to get a dicom file 
+    """
+    from deid.dicom import get_files
+
+    dicom_files = get_files(dataset)
+    return next(dicom_files)
+
+
+if __name__ == "__main__":
+    unittest.main()

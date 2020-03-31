@@ -51,6 +51,12 @@ class DicomField:
         """
         return str(self.element.tag)
 
+    @property
+    def stripped_tag(self):
+        """Return the stripped element tag
+        """
+        return re.sub("([(]|[)]|,| )", "", str(self.element.tag))
+
     # Contains
 
     def name_contains(self, expression):
@@ -65,6 +71,7 @@ class DicomField:
         if (
             re.search(expression, self.name.lower())
             or re.search(expression, self.tag)
+            or re.search(expression, self.stripped_tag)
             or re.search(expression, self.element.name)
             or re.search(expression, self.element.keyword)
         ):
@@ -183,7 +190,7 @@ def expand_field_expression(field, dicom, contenders=None):
         return {
             uid: field
             for uid, field in contenders.items()
-            if field.name_contains(fields[0])
+            if field.name_contains("^" + fields[0] + "$")
         }
 
     # if we get down here, we have an expander and expression
@@ -206,7 +213,7 @@ def expand_field_expression(field, dicom, contenders=None):
                 fields[uid] = field
 
         elif expander.lower() == "except":
-            if field.name_contains(expression):
+            if not field.name_contains(expression):
                 fields[uid] = field
 
     return fields
@@ -264,6 +271,9 @@ def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
 
             # if it's a sequence, extract with prefix and index
             if isinstance(contender.value, Sequence) and expand_sequences is True:
+
+                # Add the contender (usually type Dataset) to fields
+                add_element(contender, name, uid)
 
                 # A nested dataset can be parsed as such
                 for idx, item in enumerate(contender.value):

@@ -71,14 +71,21 @@ def jitter_timestamp(dicom, field, value):
         elif dcmvr == "DT":
             # NEMA-compliant format for DICOM timestamp is
             # YYYYMMDDHHMMSS.FFFFFF&ZZXX
-            new_value = get_timestamp(
-                original, jitter_days=value, format="%Y%m%d%H%M%S.%f%z"
-            )
+            try:
+                new_value = get_timestamp(
+                    original, jitter_days=value, format="%Y%m%d%H%M%S.%f%z"
+                )
+            except:
+                new_value = get_timestamp(
+                    original, jitter_days=value, format="%Y%m%d%H%M%S.%f"
+                )
+
         else:
             # Do nothing and issue a warning.
             bot.warning("JITTER not supported for %s with VR=%s" % (field, dcmvr))
 
         if new_value is not None and new_value != original:
+
             # Only update if there's something to update AND there's been change
             dicom = update_tag(dicom, field=field, value=new_value)
 
