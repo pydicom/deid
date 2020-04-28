@@ -611,7 +611,9 @@ def create_recipe(actions, fields=None, values=None):
     from deid.config import DeidRecipe
 
     recipe = DeidRecipe()
-    recipe.deid["header"].clear()
+
+    # .clear() only supported Python 3.3 and after
+    del recipe.deid["header"][:]
     recipe.deid["header"] = actions
 
     if fields is not None:

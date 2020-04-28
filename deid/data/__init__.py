@@ -41,9 +41,9 @@ def get_dataset(dataset=None):
     """
     data_base = get_installdir()
     valid_datasets = {
-        "dicom-cookies": "%s/data/dicom-cookies" % data_base,
-        "animals": "%s/data/animals" % data_base,
-        "humans": "%s/data/humans" % data_base,
+        "dicom-cookies": os.path.join(data_base, "data", "dicom-cookies"),
+        "animals": os.path.join(data_base, "data", "animals"),
+        "humans": os.path.join(data_base, "data", "humans"),
     }
 
     if dataset is not None:
