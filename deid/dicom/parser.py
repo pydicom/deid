@@ -61,7 +61,7 @@ class DicomParser:
         self.fields = {}
 
         # Load default configuration, or a custom one
-        config = config or "%s/config.json" % (here)
+        config = config or os.path.join(here, "config.json")
         if not os.path.exists(config):
             bot.error("Cannot find config %s, exiting" % (config))
         self.config = read_json(config, ordered_dict=True)

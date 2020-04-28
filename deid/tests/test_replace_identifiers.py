@@ -513,6 +513,29 @@ class TestDicom(unittest.TestCase):
         with self.assertRaises(KeyError):
             check1 = result[0]["00090010"].value
 
+    def test_tag_expanders_midtag(self):
+        """REMOVE contains:8103
+           Should remove:
+           (0008, 103e) Series Description
+        """
+        dicom_file = get_file(self.dataset)
+        actions = [{"action": "REMOVE", "field": "contains:8103"}]
+        recipe = create_recipe(actions)
+
+        # Ensure tag is present before removal
+        dicom = read_file(dicom_file)
+        assert "0008103e" in dicom
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        self.assertEqual(1, len(result))
+        assert "0008103e" not in result[0]
+
     def test_tag_expanders_tagelement(self):
         # includes public and private, groups and element numbers
         """
