@@ -24,12 +24,13 @@ SOFTWARE.
 
 from deid.logger import bot
 import dateutil.parser
-from datetime import timedelta
+from datetime import timedelta, datetime
 import re
 
 
-def parse_value(item, value, field=None):
+def parse_value(dicom, value, item=None, field=None):
     """parse_value will parse the value field of an action,
+    TODO: can we remove this?
     either returning: 
         1. the string (string or from function)
         2. a variable looked up (var:FieldName)
@@ -58,7 +59,7 @@ def parse_value(item, value, field=None):
             # item is the lookup, value from the recipe, and field
             # If the user writes a custom function for private, will need
             # to convert field to str() in the function.
-            return item[value_option](item, value, field)
+            return item[value_option](dicom, value, field, item=item)
 
         bot.warning("%s is not a valid value type, skipping." % (value_type))
         return None
@@ -97,7 +98,11 @@ def get_timestamp(item_date, item_time=None, jitter_days=None, format=None):
 
     item_time = item_time or ""
 
-    timestamp = dateutil.parser.parse("%s%s" % (item_date, item_time))
+    try:
+        timestamp = dateutil.parser.parse("%s%s" % (item_date, item_time))
+    except:
+        timestamp = datetime.strptime("%s%s" % (item_date, item_time), format)
+
     if jitter_days is not None:
         jitter_days = int(float(jitter_days))
         timestamp = timestamp + timedelta(days=jitter_days)

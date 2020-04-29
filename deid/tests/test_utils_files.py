@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 """
-Testing field parsing and expansion
+Test files operations
 
-Copyright (c) 2020 Vanessa Sochat
+Copyright (c) 2016-2020 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,14 +33,13 @@ import os
 
 from deid.utils import get_installdir
 from deid.data import get_dataset
-from deid.dicom.fields import get_fields
 
 
-class TestDicomFields(unittest.TestCase):
+class TestDicom(unittest.TestCase):
     def setUp(self):
         self.pwd = get_installdir()
         self.deid = os.path.abspath("%s/../examples/deid/deid.dicom" % self.pwd)
-        self.dataset = get_dataset("animals")  # includes private tags
+        self.dataset = get_dataset("humans")
         self.tmpdir = tempfile.mkdtemp()
         print("\n######################START######################")
 
@@ -48,45 +47,50 @@ class TestDicomFields(unittest.TestCase):
         shutil.rmtree(self.tmpdir)
         print("\n######################END########################")
 
-    def test_field_expansion(self):
-        print("Test deid.dicom.fields expand_field_expression")
-        from deid.dicom.fields import expand_field_expression
+    def test_get_files(self):
+        print("Test test_get_files")
+        print("Case 1: Test get files from dataset")
+        from deid.dicom import get_files
+        from deid.config import load_deid
 
-        dicom = get_dicom(self.dataset)
+        found = 0
+        for dicom_file in get_files(self.dataset):
+            found += 1
+        expected = 1
+        self.assertEqual(found, expected)
 
-        contenders = get_fields(dicom)
+        print("Case 2: Ask for files from empty folder")
+        found = 0
+        for dicom_file in get_files(self.tmpdir):
+            found += 1
+        expected = 0
+        self.assertEqual(found, expected)
 
-        print("Testing that field expansion works for basic tags")
-        fields = expand_field_expression(
-            dicom=dicom, field="endswith:Time", contenders=contenders
-        )
+    def test_get_files_as_list(self):
+        print("Test test_get_files_as_list")
+        print("Case 1: Test get files from dataset")
+        from deid.dicom import get_files
+        from deid.config import load_deid
 
-        # The fields returned should end in time
-        for uid, field in fields.items():
-            assert field.name.endswith("Time")
+        dicom_files = list(get_files(self.dataset))
+        found = len(dicom_files)
+        expected = 1
+        self.assertEqual(found, expected)
 
-        print("Testing that we can also search private tags based on numbers.")
-        fields = expand_field_expression(
-            dicom=dicom, field="contains:0019", contenders=contenders
-        )
-
-        # The fields returned should include tag group or element 0019
-        for uid, field in fields.items():
-            assert "0019" in uid
-
-        print("Testing nested private tags")
-        dataset = get_dataset("animals")  # includes nested private tags
-        dicom = get_dicom(dataset)
+        print("Case 2: Ask for files from empty folder")
+        dicom_files = list(get_files(self.tmpdir))
+        found = len(dicom_files)
+        expected = 0
+        self.assertEqual(found, expected)
 
 
-def get_dicom(dataset):
-    """helper function to load a dicom
+def get_file(dataset):
+    """helper to get a dicom file 
     """
     from deid.dicom import get_files
-    from pydicom import read_file
 
     dicom_files = get_files(dataset)
-    return read_file(next(dicom_files))
+    return next(dicom_files)
 
 
 if __name__ == "__main__":

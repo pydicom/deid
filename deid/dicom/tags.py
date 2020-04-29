@@ -35,6 +35,21 @@ import re
 ################################################################################
 
 
+def add_tag(identifier, VR="UN", VM=None, name=None, keyword=None):
+    """Add tag will take a string for a tag (e.g., ) and define a new tag for it.
+       By default, we give the type "unknown."
+    """
+    tag = Tag("0x" + identifier)
+    manifest = {
+        "tag": tag,
+        "VR": VR,
+        "VM": VM,
+        "keyword": keyword,
+        "name": name,
+    }
+    return manifest
+
+
 def get_tag(field):
     """get_tag will return a dictionary with tag indexed by field. For each entry,
        a dictionary lookup is included with VR.
@@ -47,7 +62,7 @@ def get_tag(field):
     found = [
         {key: value} for key, value in DicomDictionary.items() if value[4] == field
     ]
-    tags = dict()
+    manifest = None
 
     if len(found) > 0:
 
@@ -64,8 +79,7 @@ def get_tag(field):
             "name": longName,
         }
 
-        tags[field] = manifest
-    return tags
+    return manifest
 
 
 def find_tag(term, VR=None, VM=None, retired=False):
@@ -108,63 +122,15 @@ def _filter_tags(tags, idx, fields=None):
 
 def remove_sequences(dicom):
     """remove sequences from a dicom by removing the associated tag.
- 
+       We use dicom.iterall() to get all nested sequences.
+
        Parameters
        ==========
        dicom: the loaded dicom to remove sequences
     """
-    for field in dicom.dir():
-        if isinstance(dicom.get(field), Sequence):
-            dicom = remove_tag(dicom, field)
-    return dicom
-
-
-def add_tag(dicom, field, value, quiet=False):
-    """add tag will add a tag only if it's in the (active) DicomDictionary
-
-       Parameters
-       ==========
-       dicom: the pydicom.dataset Dataset (pydicom.read_file)
-       field: the name of the field to add
-       value: the value to set, if name is a valid tag
-
-    """
-    if quiet is False:
-        bot.debug("Attempting ADDITION of %s." % (field))
-    dicom = change_tag(dicom, field, value)
-
-    # dicom.data_element("PatientIdentityRemoved")
-    # (0012, 0062) Patient Identity Removed            CS: 'Yes'
-
-    return dicom
-
-
-def change_tag(dicom, field, value):
-    """change tag is a general function that can be used by 
-       update_tag or add_tag. The only difference is the print output,
-       and determining to call the function based on different conditions
-
-       Parameters
-       ==========
-       dicom: the pydicom.dataset Dataset (pydicom.read_file)
-       field: the name of the field to add
-       value: the value to set, if name is a valid tag
-
-    """
-    # Case 1: Dealing with a string tag (field name)
-    if isinstance(field, str):
-        tag = get_tag(field)
-
-        if field in tag:
-            dicom.add_new(tag[field]["tag"], tag[field]["VR"], value)
-        else:
-            bot.error("%s is not a valid field to add. Skipping." % (field))
-
-    # Case 2: we already have a tag for the field name (type BaseTag)
-    else:
-        tag = dicom.get(field)
-        dicom.add_new(field, tag.VR, value)
-
+    for elem in dicom.iterall():
+        if isinstance(elem.value, Sequence):
+            del dicom[elem.tag]
     return dicom
 
 
@@ -173,7 +139,8 @@ def update_tag(dicom, field, value):
        if not, nothing is added. This check is the only difference
        between this function and change_tag. 
        If the user wants to add a value (that might not exist) 
-       the function add_tag should be used
+       the function add_tag should be used with a private identifier
+       as a string.
 
        Parameters
        ==========
@@ -182,53 +149,22 @@ def update_tag(dicom, field, value):
        value: the value to set, if name is a valid tag
 
     """
-    if field in dicom:
-        dicom = change_tag(dicom, field, value)
-    return dicom
+    if field not in dicom:
+        return dicom
 
-
-def blank_tag(dicom, field):
-    """blank tag calls update_tag with value set to an
-       empty string. If the tag cannot be found, warns the user
-       and doesn't touch (in case of imaging data, or not found)
-
-       Parameters
-       ==========
-       dicom: the pydicom.dataset Dataset (pydicom.read_file)
-       field: the name of the field to blank
-
-    """
-    # Case 1: We are provided a field that is a string, retrieve data element
+    # Case 1: Dealing with a string tag (field name)
     if isinstance(field, str):
-        element = dicom.data_element(field)
+        tag = get_tag(field)
+        if tag:
+            dicom.add_new(tag["tag"], tag["VR"], value)
+        else:
+            bot.error("%s is not a valid field to add. Skipping." % (field))
+
+    # Case 2: we already have a tag for the field name (type BaseTag)
     else:
-        element = dicom.get(field)
+        tag = dicom.get(field)
+        dicom.add_new(field, tag.VR, value)
 
-    if element is not None:
-
-        # Assert we have a data element
-        if not isinstance(element, DataElement):
-            bot.warning("Issue parsing %s as a DataElement, not blanked." % field)
-            return dicom
-
-        # We cannot blank VR types of US or SS
-        if element.VR not in ["US", "SS"]:
-            return update_tag(dicom, field, "")
-        bot.warning("Cannot determine tag for %s, skipping blank." % field)
-    return dicom
-
-
-def remove_tag(dicom, field):
-    """remove tag will remove a tag if it is present in the dataset
-
-       Parameters
-       ==========
-       dicom: the pydicom.dataset Dataset (pydicom.read_file)
-       field: the name of the field to remove
-    """
-    if field in dicom:
-        tag = dicom.data_element(field).tag
-        del dicom[tag]
     return dicom
 
 

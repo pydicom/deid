@@ -4,45 +4,281 @@ category: Getting Started
 order: 7
 ---
 
+At this point, we have a bunch of dicom files, have written a recipe with 
+actions, and want to run those actions across the files. The easiest way
+to do this is with the `DicomParser`
 
-At this point, we want to perform a `put` action, which is generally associated with 
-the `replace_identifiers` function. As a reminder, we are working with a data 
-structure returned from `get_identifiers` in the dicom module, and it is 
-indexed first by entity id (`PatientID`) and then item ID 
-(`SOPInstanceUID`). A single entry looks like this:
+## DicomParser
+
+The dicom parser is a helper class that will make it easy to load in your recipe,
+and perform custom actions on it, and then save (or not). Let's first
+get the full path to a cat dataset, and a recipe with actions to take.
 
 ```python
-ids['cookie-47']['1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947']
-{'BitsAllocated': 8,
- 'BitsStored': 8,
- 'Columns': 2048,
- 'ConversionType': 'WSD',
- 'HighBit': 7,
- 'ImageComments': 'This is a cookie tumor dataset for testing dicom tools.',
- 'InstitutionName': 'STANFORD',
- 'LossyImageCompression': '01',
- 'LossyImageCompressionMethod': 'ISO_10918_1',
- 'NameOfPhysiciansReadingStudy': 'Dr. damp lake',
- 'OperatorsName': 'nameless voice',
- 'PatientID': 'cookie-47',
- 'PatientName': 'still salad',
- 'PatientSex': 'F',
- 'PhotometricInterpretation': 'YBR_FULL_422',
- 'PixelRepresentation': 0,
- 'PlanarConfiguration': 0,
- 'ReferringPhysicianName': 'Dr. bold moon',
- 'Rows': 1536,
- 'SOPClassUID': '1.2.840.10008.5.1.4.1.1.7',
- 'SOPInstanceUID': '1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947',
- 'SamplesPerPixel': 3,
- 'SeriesInstanceUID': '1.2.276.0.7230010.3.1.3.8323329.5360.1495927170.640945',
- 'SpecificCharacterSet': 'ISO_IR 100',
- 'StudyDate': '20131210',
- 'StudyInstanceUID': '1.2.276.0.7230010.3.1.2.8323329.5360.1495927170.640946',
- 'StudyTime': '191930'}
+# dicom
+from deid.data import get_dataset
+from deid.dicom import get_files
+
+base = get_dataset("dicom-cookies")
+dicom_file = next(get_files(base))
+
+# recipe
+from deid.utils import get_installdir
+import os
+path = os.path.abspath("%s/../examples/deid/deid.dicom-groups" % get_installdir())
 ```
 
-At this point, let's walk through a few basic use cases. We again first need to load our dicom files:
+Let's now import the DicomParser and 
+
+```python
+from deid.dicom.parser import DicomParser
+parser = DicomParser(dicom_file, recipe=path)
+```
+
+### 1. Inspecting the Loaded Dicom
+
+You can see that the dicom is loaded:
+
+```python
+parser.dicom
+Out[32]: 
+(0008, 0005) Specific Character Set              CS: 'ISO_IR 100'
+(0008, 0016) SOP Class UID                       UI: Secondary Capture Image Storage
+(0008, 0018) SOP Instance UID                    UI: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
+(0008, 0020) Study Date                          DA: '20131210'
+(0008, 0030) Study Time                          TM: '191929'
+(0008, 0050) Accession Number                    SH: ''
+(0008, 0064) Conversion Type                     CS: 'WSD'
+(0008, 0080) Institution Name                    LO: 'STANFORD'
+(0008, 0090) Referring Physician's Name          PN: 'Dr. solitary heart'
+(0008, 1060) Name of Physician(s) Reading Study  PN: 'Dr. lively wind'
+(0008, 1070) Operators' Name                     PN: 'curly darkness'
+(0010, 0010) Patient's Name                      PN: 'falling disk'
+(0010, 0020) Patient ID                          LO: 'cookie-47'
+(0010, 0030) Patient's Birth Date                DA: ''
+(0010, 0040) Patient's Sex                       CS: 'M'
+(0020, 000d) Study Instance UID                  UI: 1.2.276.0.7230010.3.1.2.8323329.5329.1495927169.580350
+(0020, 000e) Series Instance UID                 UI: 1.2.276.0.7230010.3.1.3.8323329.5329.1495927169.580349
+(0020, 0010) Study ID                            SH: ''
+(0020, 0011) Series Number                       IS: ''
+(0020, 0013) Instance Number                     IS: ''
+(0020, 0020) Patient Orientation                 CS: ''
+(0020, 4000) Image Comments                      LT: 'This is a cookie tumor dataset for testing dicom tools.'
+(0028, 0002) Samples per Pixel                   US: 3
+(0028, 0004) Photometric Interpretation          CS: 'YBR_FULL_422'
+(0028, 0006) Planar Configuration                US: 0
+(0028, 0010) Rows                                US: 1536
+(0028, 0011) Columns                             US: 2048
+(0028, 0100) Bits Allocated                      US: 8
+(0028, 0101) Bits Stored                         US: 8
+(0028, 0102) High Bit                            US: 7
+(0028, 0103) Pixel Representation                US: 0
+(0028, 2110) Lossy Image Compression             CS: '01'
+(0028, 2114) Lossy Image Compression Method      CS: 'ISO_10918_1'
+(7fe0, 0010) Pixel Data                          OB: Array of 652494 bytes
+```
+
+Notice that we *don't* have a field for `PatientIdentityRemoved`, and the Patient name
+and Operator Name are some original value. Notice that since we haven't parsed anything
+yet, the parser.fields is empty:
+
+```python
+parser.fields
+{}
+```
+
+The recipe is provided by the parser too!
+
+```python
+parser.recipe
+[deid]
+```
+
+Actually, let's look in detail at the recipe so we know the actions that are going to be
+taken.
+
+```python
+OrderedDict([('format', 'dicom'),
+             ('values',
+              OrderedDict([('cookie_names',
+                            [{'action': 'SPLIT',
+                              'field': 'PatientID',
+                              'value': 'by="^";minlength=4'}]),
+                           ('operator_names',
+                            [{'action': 'FIELD',
+                              'field': 'startswith:Operator'}])])),
+             ('fields',
+              OrderedDict([('instance_fields',
+                            [{'action': 'FIELD',
+                              'field': 'contains:Instance'}])])),
+             ('header',
+              [{'action': 'ADD',
+                'field': 'PatientIdentityRemoved',
+                'value': 'Yes'},
+               {'action': 'REPLACE',
+                'field': 'values:cookie_names',
+                'value': 'var:id'},
+               {'action': 'REPLACE',
+                'field': 'values:operator_names',
+                'value': 'var:source_id'},
+               {'action': 'REMOVE', 'field': 'fields:instance_fields'}])])
+```
+
+Under "values," each named entry is a list of actions to take to derive a list of values
+to be used later. Under "fields" it's the same, but we will extract fields for later.
+Under "header" is where we see our list of actions. We want to:
+
+ - add a field, `PatientIdentityRemoved` with value `Yes`
+ - replace any values that are found in the list of extracted "cookie_names" with a variable we call id
+ - replace any values under "operator_names" that we define with a variable we call "source_id"
+ - remove any fields that quality under "instance_fields"
+
+### 2. Understanding fields and values
+
+The "values" and "fields" lists will be calculated based on your data. For example,
+this rule:
+
+```
+{"operator_names": {'action': 'FIELD', 'field': 'startswith:Operator'}}
+```
+
+says that we are going to derive a list called "operator_names" that includes
+all the values under fields that start with "Operator." This should come down to
+one field, `OperatorsName`, which is "curly darkness."
+
+### 3. Understanding var and func
+
+If you have a recipe that references a "var:name" or func:name" you would need
+to provide that directly to the parser. For the above example, we are referencing
+variables called "id" and "source_id" so we should define them for the parser:
+
+```python
+parser.define('id', 'new-cookie-id')
+parser.define('source_id', 'new-operator-id')
+```
+
+You would do the same thing for a named function. Where do these end up? In  a lookup
+held by the parser:
+
+```python
+parser.lookup                                                                                                                                
+{'id': 'new-cookie-id', 'source_id': 'new-operator-id'}
+```
+
+So they will be available when you parse.
+
+### 4. Parse Away!
+
+Now that we've defined the variables that we need, and we've loaded our recipe
+and dicom, let's perform the parse action! By default, sequences and private 
+tags are not removed (so they are included in parsing).
+
+```python
+parser.parse(strip_sequences=False, remove_private=False)
+```
+
+After this, you'll notice that the parser.fields is populated:
+
+```python
+{'(0008, 0005)': (0008, 0005) Specific Character Set              CS: 'ISO_IR 100'  [SpecificCharacterSet],
+ '(0008, 0016)': (0008, 0016) SOP Class UID                       UI: Secondary Capture Image Storage  [SOPClassUID],
+ '(0008, 0018)': (0008, 0018) SOP Instance UID                    UI: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351  [SOPInstanceUID],
+ '(0008, 0020)': (0008, 0020) Study Date                          DA: '20131210'  [StudyDate],
+ '(0008, 0030)': (0008, 0030) Study Time                          TM: '191929'  [StudyTime],
+ '(0008, 0050)': (0008, 0050) Accession Number                    SH: ''  [AccessionNumber],
+ '(0008, 0064)': (0008, 0064) Conversion Type                     CS: 'WSD'  [ConversionType],
+ '(0008, 0080)': (0008, 0080) Institution Name                    LO: 'STANFORD'  [InstitutionName],
+ '(0008, 0090)': (0008, 0090) Referring Physician's Name          PN: 'Dr. solitary heart'  [ReferringPhysicianName],
+ '(0008, 1060)': (0008, 1060) Name of Physician(s) Reading Study  PN: 'Dr. lively wind'  [NameOfPhysiciansReadingStudy],
+ '(0008, 1070)': (0008, 1070) Operators' Name                     PN: 'new-operator-id'  [OperatorsName],
+ '(0010, 0010)': (0010, 0010) Patient's Name                      PN: 'falling disk'  [PatientName],
+ '(0010, 0020)': (0010, 0020) Patient ID                          LO: 'new-cookie-id'  [PatientID],
+ '(0010, 0030)': (0010, 0030) Patient's Birth Date                DA: ''  [PatientBirthDate],
+ '(0010, 0040)': (0010, 0040) Patient's Sex                       CS: 'M'  [PatientSex],
+ '(0020, 000d)': (0020, 000d) Study Instance UID                  UI: 1.2.276.0.7230010.3.1.2.8323329.5329.1495927169.580350  [StudyInstanceUID],
+ '(0020, 000e)': (0020, 000e) Series Instance UID                 UI: 1.2.276.0.7230010.3.1.3.8323329.5329.1495927169.580349  [SeriesInstanceUID],
+ '(0020, 0010)': (0020, 0010) Study ID                            SH: ''  [StudyID],
+ '(0020, 0011)': (0020, 0011) Series Number                       IS: ''  [SeriesNumber],
+ '(0020, 0013)': (0020, 0013) Instance Number                     IS: ''  [InstanceNumber],
+ '(0020, 0020)': (0020, 0020) Patient Orientation                 CS: ''  [PatientOrientation],
+ '(0020, 4000)': (0020, 4000) Image Comments                      LT: 'This is a cookie tumor dataset for testing dicom tools.'  [ImageComments],
+ '(0028, 0002)': (0028, 0002) Samples per Pixel                   US: 3  [SamplesPerPixel],
+ '(0028, 0004)': (0028, 0004) Photometric Interpretation          CS: 'YBR_FULL_422'  [PhotometricInterpretation],
+ '(0028, 0006)': (0028, 0006) Planar Configuration                US: 0  [PlanarConfiguration],
+ '(0028, 0010)': (0028, 0010) Rows                                US: 1536  [Rows],
+ '(0028, 0011)': (0028, 0011) Columns                             US: 2048  [Columns],
+ '(0028, 0100)': (0028, 0100) Bits Allocated                      US: 8  [BitsAllocated],
+ '(0028, 0101)': (0028, 0101) Bits Stored                         US: 8  [BitsStored],
+ '(0028, 0102)': (0028, 0102) High Bit                            US: 7  [HighBit],
+ '(0028, 0103)': (0028, 0103) Pixel Representation                US: 0  [PixelRepresentation],
+ '(0028, 2110)': (0028, 2110) Lossy Image Compression             CS: '01'  [LossyImageCompression],
+ '(0028, 2114)': (0028, 2114) Lossy Image Compression Method      CS: 'ISO_10918_1'  [LossyImageCompressionMethod],
+ '(7fe0, 0010)': (7fe0, 0010) Pixel Data                          OB: Array of 652494 bytes  [PixelData],
+ '(0012, 0062)': (0012, 0062) Patient Identity Removed            CS: 'Yes'  [PatientIdentityRemoved]}
+```
+
+And each of the above is a DicomField, as discussed previously [here]({{ site.baseurl}}/getting-started/dicom-get/).
+Now if we look at the parser.lookup, we will see that all of the actions have been performed
+to extract data specific to the dicom for later use:
+
+```python
+{'id': 'new-cookie-id',
+ 'source_id': 'new-operator-id',
+ 'cookie_names': ['cookie-47'],
+ 'operator_names': ['curly darkness'],
+ 'instance_fields': {'(0008, 0018)': (0008, 0018) SOP Instance UID                    UI: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351  [SOPInstanceUID],
+  '(0020, 000d)': (0020, 000d) Study Instance UID                  UI: 1.2.276.0.7230010.3.1.2.8323329.5329.1495927169.580350  [StudyInstanceUID],
+  '(0020, 000e)': (0020, 000e) Series Instance UID                 UI: 1.2.276.0.7230010.3.1.3.8323329.5329.1495927169.580349  [SeriesInstanceUID],
+  '(0020, 0013)': (0020, 0013) Instance Number                     IS: ''  [InstanceNumber]}}
+```
+
+Importantly, if we look at the parser.dicom, the replacement has been done. Notice the Patient ID and
+Operator's name are changed, as is added the `PatientIdentityRemoved`. and the Instance fields are removed.
+
+```python
+(0008, 0005) Specific Character Set              CS: 'ISO_IR 100'
+(0008, 0016) SOP Class UID                       UI: Secondary Capture Image Storage
+(0008, 0020) Study Date                          DA: '20131210'
+(0008, 0030) Study Time                          TM: '191929'
+(0008, 0050) Accession Number                    SH: ''
+(0008, 0064) Conversion Type                     CS: 'WSD'
+(0008, 0080) Institution Name                    LO: 'STANFORD'
+(0008, 0090) Referring Physician's Name          PN: 'Dr. solitary heart'
+(0008, 1060) Name of Physician(s) Reading Study  PN: 'Dr. lively wind'
+(0008, 1070) Operators' Name                     PN: 'new-operator-id'
+(0010, 0010) Patient's Name                      PN: 'falling disk'
+(0010, 0020) Patient ID                          LO: 'new-cookie-id'
+(0010, 0030) Patient's Birth Date                DA: ''
+(0010, 0040) Patient's Sex                       CS: 'M'
+(0012, 0062) Patient Identity Removed            CS: 'Yes'
+(0020, 0010) Study ID                            SH: ''
+(0020, 0011) Series Number                       IS: ''
+(0020, 0020) Patient Orientation                 CS: ''
+(0020, 4000) Image Comments                      LT: 'This is a cookie tumor dataset for testing dicom tools.'
+(0028, 0002) Samples per Pixel                   US: 3
+(0028, 0004) Photometric Interpretation          CS: 'YBR_FULL_422'
+(0028, 0006) Planar Configuration                US: 0
+(0028, 0010) Rows                                US: 1536
+(0028, 0011) Columns                             US: 2048
+(0028, 0100) Bits Allocated                      US: 8
+(0028, 0101) Bits Stored                         US: 8
+(0028, 0102) High Bit                            US: 7
+(0028, 0103) Pixel Representation                US: 0
+(0028, 2110) Lossy Image Compression             CS: '01'
+(0028, 2114) Lossy Image Compression Method      CS: 'ISO_10918_1'
+(7fe0, 0010) Pixel Data                          OB: Array of 652494 bytes
+```
+
+And you could save your data to file.
+
+```python
+parser.save("/tmp/mydicom.dcm")
+```
+
+## Replace Identifiers
+
+If you want to do the above in bulk, you might find it easier to use the `replace_identifiers`
+function.
 
 ```python
 from deid.dicom import get_files
@@ -51,32 +287,22 @@ base = get_dataset('dicom-cookies')
 dicom_files = list(get_files(base))
 ```
 
-
-## Default: Remove Everything
-In this first use case, we extracted identifiers to save to our database, 
-and we want to remove everything in the data. To do this, we can use the 
-dicom module defaults, and we don't need to give the function anything. Our 
-call would look like this:
+Let's import the function, and get back a list of dicom objects to interact with.
+If we don't provide a recipe, deid will use it's default.
 
 ```python
 from deid.dicom import replace_identifiers
+cleaned_dicoms = replace_identifiers(dicom_files=dicom_files)
+```
 
-cleaned_files = replace_identifiers(dicom_files=dicom_files)
+The default recipe you can view [here](https://github.com/pydicom/deid/blob/master/deid/data/deid.dicom#L744).
+It's fairly agressive and generally removes times and other identifiers. But *you should not use this verbatim!*
+It's important that you develop a strategy that is most robust for your datasets.
+The example is provided as a conservative start. If you want to save to temporary
+files, you can specify save=True:
 
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5323.1495927169.335276
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5354.1495927170.440268
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5335.1495927169.763866
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5348.1495927170.228989
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5342.1495927169.3131
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
+```python
+cleaned_files = replace_identifiers(dicom_files=dicom_files, save=True)
 ```
 
 You will notice that by default, the files are written to a temporary directory:
@@ -144,84 +370,38 @@ there. If you really want to force an overwrite, then you need to do this:
 cleaned_files = replace_identifiers(dicom_files=dicom_files,
                                     output_folder='/home/vanessa/Desktop',
                                     overwrite=True)
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5323.1495927169.335276
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5354.1495927170.440268
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5335.1495927169.763866
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5348.1495927170.228989
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5342.1495927169.3131
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
 ```
 
 wherever you dump your new dicoms, it's up to you to decide how to then move 
 and store them, and (likely) deal with the original data with identifiers.
 
 ## Private Tags
-An important note is that by default, this function will also remove private tags
- (`remove_private=True`). If you need private tags to determine if there is 
-burned pixel data, you would want to set this to False, perform pixel 
-identification, and then remove the private tags yourself:
+
+An important note is that by default, this function will keep private tags
+ (`remove_private=False`). If you need to remove private tags 
+you would want to set this to True.
 
 
 ```python
-# Clean the files, but set remove_private to False
-cleaned_files = replace_identifiers(dicom_files=dicom_files,
-                                    remove_private=False)
-
-DEBUG Default action is BLANK
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5323.1495927169.335276
-WARNING Private tags were not removed!
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5354.1495927170.440268
-WARNING Private tags were not removed!
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5335.1495927169.763866
-WARNING Private tags were not removed!
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5348.1495927170.228989
-WARNING Private tags were not removed!
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947
-WARNING Private tags were not removed!
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5342.1495927169.3131
-WARNING Private tags were not removed!
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
-WARNING Private tags were not removed!
+# Clean the files, but set remove_private to True
+cleaned_dicom = replace_identifiers(dicom_files=dicom_files,
+                                    remove_private=True)
 ```
 
-Notice how the warning appeared, because we didn't remove private tags? 
-Next you would want to do your pixel cleaning, likely using those private
-tags that are still in the data. Then you would go back and remove them.
+If you want to keep the tags (default) but then go back and remove them,
+you can use the `remove_private_identifiers` function:
 
 ```python
 from deid.dicom import remove_private_identifiers
 
 really_cleaned = remove_private_identifiers(dicom_files=cleaned_files)
-DEBUG Removed private identifiers for /tmp/tmp2kayz83n/image4.dcm
-DEBUG Removed private identifiers for /tmp/tmp5iadxfb9/image2.dcm
-DEBUG Removed private identifiers for /tmp/tmpk0yii_ya/image7.dcm
-DEBUG Removed private identifiers for /tmp/tmpnxqirboq/image6.dcm
-DEBUG Removed private identifiers for /tmp/tmpp9_tj7zq/image3.dcm
-DEBUG Removed private identifiers for /tmp/tmpo_kwxmlj/image1.dcm
-DEBUG Removed private identifiers for /tmp/tmpf6whw73y/image5.dcm
-
 ```
 
 You could also do pixel scraping first, and then call the function
-(per default) to remove private. These are the first calls that we did, 
-not specifying the variable `remove_private`, and by default it was True. 
+(per default) to remove private.
 
 ### Getting Private Tags
+
 If you are working within python and want to get private tags for inspection, 
 you can do that too! Let's first load some default data:
 
@@ -258,315 +438,7 @@ private_tags = get_private(dicom)
 
 Although in this case, the list is empty.
 
-
-## Customize Replacement
-As we mentioned earlier, if you have a [deid settings]({{ site.baseurl}}/getting-started/dicom-config/) file, 
-you can specify how you want the replacement to work, and in this case, 
-you would want to provide the result `ids` variable from the [previous step]({{ site.baseurl}}/getting-started/dicom-get/)
-
-### Create your deid specification
-For this example, we will use an example file provided with this package. 
-Likely this will be put into a function with easier use, but this will work for now.
-
-```python
-from deid.utils import get_installdir
-from deid.config import load_deid
-import os
-
-path = os.path.abspath("%s/../examples/deid/" %get_installdir())
-```
-
-The above `deid` is just a path to a folder that we have a `deid` file in. 
-The function will find it for us. This function will happen internally, 
-but here is an example of what your loaded `deid` file might look like.
-
-```
-deid = load_deid(path)
-DEBUG FORMAT set to dicom
-DEBUG Adding ADD PatientIdentityRemoved Yes
-DEBUG Adding REPLACE PatientID var:id
-DEBUG Adding REPLACE SOPInstanceUID var:source_id
-deid
-
-{
- 'format': 'dicom',
- 'header': [
-             {'action': 'ADD','field': 'PatientIdentityRemoved','value': 'Yes'},
-             {'action': 'REPLACE', 'field': 'PatientID', 'value': 'var:id'},
-             {'action': 'REPLACE', 'field': 'SOPInstanceUID', 'value': 'var:source_id'}
-           ]
-}
-```
-
-Notice that under `header` we have a list of actions, each with a `field` 
-to be applied to, an `action` type (eg, `REPLACE`), and when relevant 
-(for `REPLACE` and `ADD`) we also have a value. If you remember what 
-the `deid` file looked like:
-
-```
-FORMAT dicom
-
-%header
-
-ADD PatientIdentityRemoved Yes
-REPLACE PatientID var:id
-REPLACE SOPInstanceUID var:source_id
-```
-
-The above is a "coded" version of that, which has also been validated and checked. In the instruction, written in two forms:
-
-```python
-        {'action': 'REPLACE', 'field': 'SOPInstanceUID', 'value': 'var:source_id'}
-    
-        REPLACE SOPInstanceUID var:source_id
-```
-
-we are saying that we want to replace the field `SOPInstanceUID` not with a value, 
-but with a **variable** (`var`) that is called `source_id`. The full expression 
-then for value, the third in the row, is `var:source_id`. What this means 
-is that when we receive our ids data structure back from get_identifiers, 
-we would need to do whatever lookup is necessary to get that item, and then 
-set it for the appropriate item. Eg, for the entity/item showed above, we would do:
-
-```python
-ids['cookie-47']['1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947']['source_id'] = 'suid123'
-```
-
-### Add your variables
-Let's walk through that complete example, first getting our identifiers,
- adding some random source_id and id, and then running the function.
-
-```python
-from deid.dicom import get_identifiers
-ids = get_identifiers(dicom_files)
-```
-
-Let's say that we want to change the `PatientID` `cookie-47` to `cookiemonster`, 
-and for each identifier, we will give it a numerically increasing `SOPInstanceUID`.
-
-```python
-count=0
-for entity, items in ids.items():
-    for item in items:
-        ids[entity][item]['id'] = "cookiemonster"
-        ids[entity][item]['source_id'] = "cookiemonster-image-%s" %(count)
-        count+=1
-```
-
-An important note - both fields are added on the level of the item, and not at the 
-level of the entity! This is because, although we have an entity and item both 
-represented, they are both represented in a flat hierarchy (on the level of the 
-item) so the final data structure, for each item, should look like this:
-
-```python
-entity = 'cookie-47'
-item = '1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351'
-
-ids[entity][item]
-
-{'BitsAllocated': 8,
- 'BitsStored': 8,h
- 'Columns': 2048,
- 'ConversionType': 'WSD',
- 'HighBit': 7,
- 'ImageComments': 'This is a cookie tumor dataset for testing dicom tools.',
- 'InstitutionName': 'STANFORD',
- 'LossyImageCompression': '01',
- 'LossyImageCompressionMethod': 'ISO_10918_1',
- 'NameOfPhysiciansReadingStudy': 'Dr. lively wind',
- 'OperatorsName': 'curly darkness',
- 'PatientID': 'cookie-47',
- 'PatientName': 'falling disk',
- 'PatientSex': 'M',
- 'PhotometricInterpretation': 'YBR_FULL_422',
- 'PixelRepresentation': 0,
- 'PlanarConfiguration': 0,
- 'ReferringPhysicianName': 'Dr. solitary heart',
- 'Rows': 1536,
- 'SOPClassUID': '1.2.840.10008.5.1.4.1.1.7',
- 'SOPInstanceUID': '1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351',
- 'SamplesPerPixel': 3,
- 'SeriesInstanceUID': '1.2.276.0.7230010.3.1.3.8323329.5329.1495927169.580349',
- 'SpecificCharacterSet': 'ISO_IR 100',
- 'StudyDate': '20131210',
- 'StudyInstanceUID': '1.2.276.0.7230010.3.1.2.8323329.5329.1495927169.580350',
- 'StudyTime': '191929',
- 'id': 'cookiemonster',
- 'id_source': 'cookiemonster-image-6'}
-```
-
-Now we are going to run our function again, but this time providing:
- 1. The path to our deid specification
- 2. the ids data structure we updated above
-
-
-### Replace identifiers
-It's time to clean our data with the deid specification and ids datastructure we have prepared.
-
-```python
-# path is '/home/vanessa/Documents/Dropbox/Code/som/dicom/deid/examples/deid'
-cleaned_files = replace_identifiers(dicom_files=dicom_files,
-                                    deid=path,
-                                    ids=ids)
-
-DEBUG FORMAT set to dicom
-DEBUG Adding ADD PatientIdentityRemoved Yes
-DEBUG Adding REPLACE PatientID var:id
-DEBUG Adding REPLACE SOPInstanceUID var:source_id
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5323.1495927169.335276
-DEBUG Attempting ADDITION of PatientIdentityRemoved to image4.dcm.
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5354.1495927170.440268
-DEBUG Attempting ADDITION of PatientIdentityRemoved to image2.dcm.
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5335.1495927169.763866
-DEBUG Attempting ADDITION of PatientIdentityRemoved to image7.dcm.
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5348.1495927170.228989
-DEBUG Attempting ADDITION of PatientIdentityRemoved to image6.dcm.
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947
-DEBUG Attempting ADDITION of PatientIdentityRemoved to image3.dcm.
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5342.1495927169.3131
-DEBUG Attempting ADDITION of PatientIdentityRemoved to image1.dcm.
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
-DEBUG Attempting ADDITION of PatientIdentityRemoved to image5.dcm.
-```
-
-We can now read in one of the output files to see the result:
-
-```python
-# We can load in a cleaned file to see what was done
-from pydicom import read_file
-test_file = read_file(cleaned_files[0])
-
-test_file
-(0008, 0018) SOP Instance UID                    UI: cookiemonster-image-4
-(0010, 0020) Patient ID                          LO: 'cookiemonster'
-(0012, 0062) Patient Identity Removed            CS: 'Yes'
-(0028, 0002) Samples per Pixel                   US: 3
-(0028, 0010) Rows                                US: 1536
-(0028, 0011) Columns                             US: 2048
-(7fe0, 0010) Pixel Data                          OB: Array of 738444 bytes
-```
-
-And it looks like we are good!
-
-In this example, we did the more complicated thing of setting the value to be a variable from the ids data structure (specified with `var:id`. We can take an even simpler approach. If we wanted it to be a string value, meaning the same for all items, we would leave out the `var`:
-
-
-```
-REPLACE Modality CT-SPECIAL
-```
-
-This example would replace the Modality for all items to be the string `CT-SPECIAL`.
-
-#### Define entity or items
-For this function, if you have set a custom `entity_id` or `item_id` 
-(that you used for the first call) you would also want to specify it here. 
-Again, the the defaults are `PatientID` for the entity, and `SOPInstanceUID` for each item. 
-
-
-```python
-replace_identifiers(dicom_files,
-                    ids=ids,
-                    entity_id="PatientID",
-                    item_id="SOPInstanceUID")
-```
-
-For more refinement of the default config, see the [development]({{ site.baseurl}}/development/) docs.
-
-## Errors During Replacement
-Let's try to break the above. We are going to extract ids, but then define the 
-`source_id` at the wrong variable. What happens?
-
-```python
-from deid.dicom import get_identifiers
-ids = get_identifiers(dicom_files)
-```
-
-Let's be stupid, oops, instead of `source_id` I wrote `source_uid`
-
-```python
-count=0
-for entity, items in ids.items():
-    for item in items:
-        ids[entity][item]['id'] = "cookiemonster"
-        ids[entity][item]['source_uid'] = "cookiemonster-image-%s" %(count)
-        count+=1
-```
-
-Try the replacement...
-
-```python
-cleaned_files = replace_identifiers(dicom_files=dicom_files,
-                                    deid=path,
-                                    ids=ids)
-DEBUG FORMAT set to dicom
-DEBUG Adding ADD PatientIdentityRemoved Yes
-DEBUG Adding REPLACE PatientID var:id
-DEBUG Adding REPLACE SOPInstanceUID var:source_id
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5323.1495927169.335276
-DEBUG Attempting ADDITION of PatientIdentityRemoved to image4.dcm.
-WARNING REPLACE SOPInstanceUID not done for image4.dcm
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5354.1495927170.440268
-DEBUG Attempting ADDITION of PatientIdentityRemoved to image2.dcm.
-WARNING REPLACE SOPInstanceUID not done for image2.dcm
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5335.1495927169.763866
-DEBUG Attempting ADDITION of PatientIdentityRemoved to image7.dcm.
-WARNING REPLACE SOPInstanceUID not done for image7.dcm
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5348.1495927170.228989
-DEBUG Attempting ADDITION of PatientIdentityRemoved to image6.dcm.
-WARNING REPLACE SOPInstanceUID not done for image6.dcm
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947
-DEBUG Attempting ADDITION of PatientIdentityRemoved to image3.dcm.
-WARNING REPLACE SOPInstanceUID not done for image3.dcm
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5342.1495927169.3131
-DEBUG Attempting ADDITION of PatientIdentityRemoved to image1.dcm.
-WARNING REPLACE SOPInstanceUID not done for image1.dcm
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
-DEBUG Attempting ADDITION of PatientIdentityRemoved to image5.dcm.
-WARNING REPLACE SOPInstanceUID not done for image5.dcm
-```
-
-You see that we get a warning. As a precaution, since the action wasn't taken, the field is removed from the data.
-
-```python
-from pydicom import read_file
-test_file = read_file(cleaned_files[0])
-
-test_file
-(0010, 0020) Patient ID                          LO: 'cookiemonster'
-(0012, 0062) Patient Identity Removed            CS: 'Yes'
-(0028, 0002) Samples per Pixel                   US: 3
-(0028, 0010) Rows                                US: 1536
-(0028, 0011) Columns                             US: 2048
-(7fe0, 0010) Pixel Data                          OB: Array of 738444 bytes
-```
-
-
-```python
-replace_identifiers(dicom_files,
-                    ids=ids,
-                    entity_id="PatientID",
-                    item_id="SOPInstanceUID")
-```
-
-
-```
-REPLACE Modality CT-SPECIAL
-```
-
 ## Developer Replacement
-If you are a developer, you can create your own config.json and give it to the function above. 
+
+If you are a developer, you can create your own config.json OR deid recipe for the functions above.
 You can read more about this in the [developers]({{ site.baseurl}}/development/) notes.
