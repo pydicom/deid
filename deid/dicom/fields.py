@@ -23,11 +23,76 @@ SOFTWARE.
 """
 
 from deid.logger import bot
-from deid.dicom.tags import get_private
 from pydicom.sequence import Sequence
 from pydicom.dataset import RawDataElement, Dataset
 from pydicom.dataelem import DataElement
 import re
+
+
+class DicomField:
+    """A dicom field holds the element, and a string that represents the entire
+       nested structure (e.g., SequenceName__CodeValue).
+    """
+
+    def __init__(self, element, name, uid):
+        self.element = element
+        self.name = name  # nested names (might not be unique)
+        self.uid = uid  # unique id includes parent tags
+
+    def __str__(self):
+        return "%s  [%s]" % (self.element, self.name)
+
+    def __repr__(self):
+        return self.__str__()
+
+    @property
+    def tag(self):
+        """Return a string of the element tag.
+        """
+        return str(self.element.tag)
+
+    @property
+    def stripped_tag(self):
+        """Return the stripped element tag
+        """
+        return re.sub("([(]|[)]|,| )", "", str(self.element.tag))
+
+    # Contains
+
+    def name_contains(self, expression):
+        """use re to search a field for a regular expression, meaning
+           the name, the keyword (nested) or the string tag.
+
+           name.lower: includes nested keywords (e.g., Sequence_Child)
+           self.tag: is the string version of the tag
+           self.element.name: is the human friendly name "Sequence Child"
+           self.element.keyword: is the name without nesting "Child"
+        """
+        if (
+            re.search(expression, self.name.lower())
+            or re.search(expression, self.tag)
+            or re.search(expression, self.stripped_tag)
+            or re.search(expression, self.element.name)
+            or re.search(expression, self.element.keyword)
+        ):
+            return True
+        return False
+
+    def value_contains(self, expression):
+        """use re to search a field value for a regular expression
+        """
+        values = self.element.value
+
+        # If we are not dealing with a list
+        if not isinstance(values, list):
+            values = [values]
+
+        values = [str(x) for x in values]
+
+        for value in values:
+            if re.search(expression, value, re.IGNORECASE):
+                return True
+        return False
 
 
 def extract_item(item, prefix=None, entry=None):
@@ -94,47 +159,27 @@ def extract_sequence(sequence, prefix=None):
     return items
 
 
-def find_by_values(values, dicom):
-    """Given a list of values, find fields in the dicom that contain any
-       of those values, as determined by a regular expression search.
-    """
-    # Values must be strings
-    values = [str(x) for x in values]
-
-    fields = []
-
-    # Includes private tags and values, if still part of dicom
-    contenders = get_fields(dicom)
-
-    # Create single regular expression to search by
-    regexp = "(%s)" % "|".join(values)
-    for field, value in contenders.items():
-        if re.search(regexp, value, re.IGNORECASE):
-            fields.append(field)
-
-    return fields
-
-
 def expand_field_expression(field, dicom, contenders=None):
     """Get a list of fields based on an expression. If 
        no expression found, return single field. Options for fields include:
 
-        endswith: filter to fields that end with the expression
-        startswith: filter to fields that start with the expression
-        contains: filter to fields that contain the expression
-        allfields: include all fields
-        exceptfields: filter to all fields except those listed ( | separated)   
+       endswith: filter to fields that end with the expression
+       startswith: filter to fields that start with the expression
+       contains: filter to fields that contain the expression
+       allfields: include all fields
+       exceptfields: filter to all fields except those listed ( | separated)   
+
+       Returns: a list of DicomField objects
     """
     # Expanders that don't have a : must be checked for
     expanders = ["all"]
 
-    # if no contenders provided, use all in dicom headers
+    # if no contenders provided, use top level of dicom headers
     if contenders is None:
-        contenders = dicom.dir()
+        contenders = get_fields(dicom)
 
     # Case 1: field is an expander without an argument (e.g., no :)
     if field.lower() in expanders:
-
         if field.lower() == "all":
             fields = contenders
         return fields
@@ -142,12 +187,16 @@ def expand_field_expression(field, dicom, contenders=None):
     # Case 2: The field is a specific field OR an expander with argument (A:B)
     fields = field.split(":", 1)
     if len(fields) == 1:
-        return fields
+        return {
+            uid: field
+            for uid, field in contenders.items()
+            if field.name_contains("^" + fields[0] + "$")
+        }
 
     # if we get down here, we have an expander and expression
     expander, expression = fields
     expression = expression.lower()
-    fields = []
+    fields = {}
 
     # Derive expression based on field expander
     if expander.lower() == "endswith":
@@ -155,99 +204,97 @@ def expand_field_expression(field, dicom, contenders=None):
     elif expander.lower() == "startswith":
         expression = "^(%s)" % expression
 
-    # Loop through fields, have special handling for private tags
-    for field in contenders:
-        field_name = field
-        if not isinstance(field, str):
-            field_name = str(field)
+    # Loop through fields, all are strings STOPPED HERE NEED TO ADDRESS EMPTY NAME
+    for uid, field in contenders.items():
 
-        # Apply expander to string for name, but add field to return (could be a tag)
+        # Apply expander to string for name OR to tag string
         if expander.lower() in ["endswith", "startswith", "contains"]:
-            if re.search(expression, field_name.lower()):
-                fields.append(field)
+            if field.name_contains(expression):
+                fields[uid] = field
 
         elif expander.lower() == "except":
-            if not re.search(expression, field_name.lower()):
-                fields.append(field)
+            if not field.name_contains(expression):
+                fields[uid] = field
 
     return fields
 
 
-def dicom_dir(dicom):
-    """Given a dicom file, return all fields (including private) if they
-       are not removed. With private this might look like:
-
-       ...
-      'WindowCenterWidthExplanation',
-      'WindowWidth',
-      (0011, 0003),
-      (0019, 0010),
-
-      and both can be used as indices into the dicom (dicom.get(x))
+def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
+    """expand all dicom fields into a list, where each entry is
+       a DicomField. If we find a sequence, we unwrap it and
+       represent the location with the name (e.g., Sequence__Child)
     """
-    # This becomes a list of strings and tags to be used as keys
-    return dicom.dir() + [t.tag for t in get_private(dicom)]
-
-
-def get_fields(dicom, skip=None, expand_sequences=True):
-    """get fields is a simple function to extract a dictionary of fields
-       (non empty) from a dicom file. This includes expanded sequenced,
-       and parses private tag values as well, example below:
-
-       'ViewPosition': 'AP',
-       'WindowCenter': '2048',
-       'WindowWidth': '4096',
-       (0011, 0003): 'Agfa DR',      # private tags start here
-       (0019, 0010): 'Agfa ADC NX',
-       (0019, 1007): 'YES',
-
-       Parameters
-       ==========
-       dicom: the dicom file to get fields for.
-       skip: an optional list of fields to skip
-       expand_sequences: if True, expand values that are sequences.
-    """
-    if skip is None:
-        skip = []
+    skip = skip or []
+    seen = seen or []
+    fields = {}  # indexed by nested tag
 
     if not isinstance(skip, list):
         skip = [skip]
 
-    fields = dict()
+    datasets = [dicom]
 
-    # Includes private tags, if they are not removed
-    contenders = dicom_dir(dicom)
+    # helper function to add an element based on tag uid
+    def add_element(element, name, uid):
+        """Add an element to fields, but only if it has not been seen.
+           The uid is derived from the tag (group, element) and includes
+           nesting, so the "same" tag on different levels is considered
+           different.
+        """
+        if uid not in seen:
+            fields[uid] = DicomField(element, name, uid)
+            seen.append(uid)
 
-    for contender in contenders:
+    while datasets:
 
-        # BaseTags need to be strings
-        contender_name = str(contender)
-        if contender_name in skip:
-            continue
+        # Grab the first dataset, usually just the dicom
+        dataset = datasets.pop(0)
 
-        try:
-            value = dicom.get(contender)
+        # If the dataset does not have a prefix, we are at the start
+        dataset.prefix = getattr(dataset, "prefix", None)
+        dataset.uid = getattr(dataset, "uid", None)
 
-            # Private tags will be DataElement types
-            if isinstance(value, DataElement):
-                fields[contender] = value.value
+        # Includes private tags, sequences flattened, non-null values
+        for contender in dataset.iterall():
 
-            # TODO: dicom_dir doesn't include sequences because dicom.dir()
-            # and get_private don't include them either. Thus we don't
-            # parse any sequences that have private tags. How should
-            # this be handled?
+            # All items should be data elements, skip based on keyword or tag
+            if contender.keyword in skip or str(contender.tag) in skip:
+                continue
 
-            # Adding expanded sequences
-            elif isinstance(value, Sequence) and expand_sequences is True:
-                print(contender)
-                fields.update(extract_sequence(value, prefix=contender))
+            # The name represents nesting
+            name = contender.keyword
+            uid = str(contender.tag)
+
+            if dataset.prefix is not None:
+                name = "%s__%s" % (dataset.prefix, name)
+            if dataset.uid is not None:
+                uid = "%s__%s" % (dataset.uid, uid)
+
+            # if it's a sequence, extract with prefix and index
+            if isinstance(contender.value, Sequence) and expand_sequences is True:
+
+                # Add the contender (usually type Dataset) to fields
+                add_element(contender, name, uid)
+
+                # A nested dataset can be parsed as such
+                for idx, item in enumerate(contender.value):
+                    if isinstance(item, Dataset):
+                        item.prefix = name
+                        item.uid = uid + "__%s" % idx
+                        datasets.append(item)
+
+                    # A Raw data element we can add to our list
+                    elif isinstance(item, DataElement):
+                        name = "%s__%s" % (name, item.keyword)
+                        uid = "%s__%s__%s" % (uid, str(item.tag), idx)
+                        add_element(item, name, uid)
+
+            # A DataElement can be extracted as is
+            elif isinstance(contender, DataElement):
+                add_element(contender, name, uid)
+
             else:
-                if value not in [None, ""]:
-                    if isinstance(value, bytes):
-                        value = value.decode("utf-8")
-                    fields[contender] = str(value)
-        except:
-            # This gets triggered for PixelData
-            pass
+                bot.warning(
+                    "Unrecognized type %s in extract sequences, skipping." % type(item)
+                )
 
     return fields

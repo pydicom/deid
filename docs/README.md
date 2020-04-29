@@ -1,4 +1,4 @@
-# Penrose Documentation
+# Deid Documentation
 
 ![assets/img/logo.png](assets/img/logo.png)
 

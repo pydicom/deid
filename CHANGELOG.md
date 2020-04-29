@@ -14,6 +14,8 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+=======
+ - refactor to use iterall for all fields (0.2.0)
  - including private tags in parsing (0.1.42)
  - adding filters (contains through missing) for REMOVE (0.1.41)
  - adding support for tag groups (values, fields) (0.1.4)

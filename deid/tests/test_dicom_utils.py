@@ -87,113 +87,6 @@ class TestDicomUtils(unittest.TestCase):
         expected = 0
         self.assertEqual(found, expected)
 
-    def test_parse_action(self):
-        print("Test test_parse_action")
-        from deid.dicom.actions import perform_action
-
-        dicom = get_dicom(self.dataset)
-
-        print("Case 1: Testing ADD action")
-        self.assertTrue("PatientIdentityRemoved" not in dicom)
-        ADD = {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yes"}
-
-        dicom = perform_action(dicom=dicom, action=ADD)
-        self.assertTrue("PatientIdentityRemoved" in dicom)
-        self.assertEqual(dicom.get("PatientIdentityRemoved"), "Yes")
-
-        print("Case 2: Testing REPLACE action with string")
-        REPLACE = {
-            "action": "REPLACE",
-            "field": "PatientIdentityRemoved",
-            "value": "No",
-        }
-
-        dicom = perform_action(dicom=dicom, action=REPLACE)
-        self.assertTrue("PatientIdentityRemoved" in dicom)
-        self.assertEqual(dicom.get("PatientIdentityRemoved"), "No")
-
-        print("Case 3: Testing REPLACE action with variable")
-        item = {"fish": "stick"}
-        REPLACE = {
-            "action": "REPLACE",
-            "field": "PatientIdentityRemoved",
-            "value": "var:fish",
-        }
-
-        dicom = perform_action(dicom=dicom, action=REPLACE, item=item)
-        self.assertEqual(dicom.get("PatientIdentityRemoved"), "stick")
-
-        print("Case 4: Testing REPLACE action with non-existing variable")
-        REPLACE = {
-            "action": "REPLACE",
-            "field": "PatientIdentityRemoved",
-            "value": "var:gummybear",
-        }
-        before = dicom.get("PatientIdentityRemoved")
-        updated = perform_action(dicom=dicom, action=REPLACE, item=item)
-        self.assertEqual(updated, updated)
-        after = dicom.get("PatientIdentityRemoved")
-        self.assertEqual(before, after)
-
-        print("Case 5: Testing REMOVE action")
-        REMOVE = {"action": "REMOVE", "field": "PatientIdentityRemoved"}
-
-        dicom = perform_action(dicom=dicom, action=REMOVE)
-        self.assertTrue("PatientIdentityRemoved" not in dicom)
-
-        # Test a boolean remove, contains field stanford
-        REMOVE = {"action": "REMOVE", "field": "ALL", "value": "func:is_stanford"}
-
-        # Here is the function that returns a boolean to indicate if replace
-        def is_stanford(item, value, field):
-            return item.get(field) == "STANFORD"
-
-        item = {"is_stanford": is_stanford}
-        dicom = perform_action(dicom=dicom, action=REMOVE, item=item)
-        self.assertTrue("InstitutionName" not in dicom)
-
-        print("Case 6: Testing invalid action")
-        RUN = {"action": "RUN", "field": "PatientIdentityRemoved"}
-
-        updated = perform_action(dicom=dicom, action=RUN)
-        self.assertEqual(updated, updated)
-
-        print("Case 7: Testing function (func:) with action")
-        ACTION = {
-            "action": "REPLACE",
-            "field": "PatientID",
-            "value": "func:generate_uid",
-        }
-
-        # Here is the function we define to replace
-        def generate_uid(item, value, field):
-            return "pancakes"
-
-        # The function must be in the item lookup
-        item["generate_uid"] = generate_uid
-
-        updated = perform_action(dicom=dicom, action=ACTION, item=item)
-        self.assertEqual(updated.PatientID, "pancakes")
-
-        # Test each of filters for contains, not contains, equals, etc.
-        dicom = get_dicom(self.dataset)
-
-        print("Testing contains, equals, and empty action with REMOVE")
-        self.assertTrue("ReferringPhysicianName" in dicom)
-        REMOVE = {"action": "REMOVE", "field": "ALL", "value": "contains:Dr."}
-        dicom = perform_action(dicom=dicom, action=REMOVE)
-        self.assertTrue("ReferringPhysicianName" not in dicom)
-
-        self.assertTrue("InstitutionName" in dicom)
-        REMOVE = {"action": "REMOVE", "field": "ALL", "value": "equals:STANFORD"}
-        dicom = perform_action(dicom=dicom, action=REMOVE)
-        self.assertTrue("InstitutionName" not in dicom)
-
-        self.assertTrue("StudyID" in dicom)
-        REMOVE = {"action": "REMOVE", "field": "ALL", "value": "empty"}
-        dicom = perform_action(dicom=dicom, action=REMOVE)
-        self.assertTrue("StudyID" not in dicom)
-
     def test_jitter_timestamp(self):
 
         from deid.dicom.actions import jitter_timestamp
@@ -238,16 +131,6 @@ class TestDicomUtils(unittest.TestCase):
         del dicom.StudyDate
         jitter_timestamp(dicom, "StudyDate", 10)
         self.assertTrue("StudyDate" not in dicom)
-
-        print("Case 7: Testing JITTER recipe action")
-        from deid.dicom.actions import perform_action
-
-        dicom.StudyDate = "20131210"
-        dicom.data_element("StudyDate").VR = "DA"
-        JITTER = {"action": "JITTER", "field": "StudyDate", "value": "-5"}
-        expected = "20131205"
-        dicom = perform_action(dicom=dicom, action=JITTER)
-        self.assertTrue(dicom.StudyDate, expected)
 
 
 def get_dicom(dataset):
