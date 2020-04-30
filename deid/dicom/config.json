@@ -17,9 +17,7 @@
 
    "put":{
 
-          "actions":[
- 
-              {"action":"ADD" ,"field":"PatientIdentityRemoved","value": "Yes"},
+          "actions":[ 
               {"action":"KEEP","field":"PixelData"}
       ]
    }

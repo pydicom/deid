@@ -103,7 +103,7 @@ which is expected in the item dict. Let's write that next.
 ## Write Your Function
 
 ```python
-def generate_uid(item, value, field):
+def generate_uid(item, value, field, dicom):
     '''This function will generate a uuid! You can expect it to be passed
        the dictionary of items extracted from the dicom (and your function)
        and variables, the original value (func:generate_uid) and the field
@@ -115,9 +115,9 @@ def generate_uid(item, value, field):
 
 ```
 
-As stated in the docstring, you can expect it to be passed the dictionary of 
-items extracted from the dicom (and your function) and variables, the 
-original value (func:generate_uid) and the field name you are applying it to.
+As stated in the docstring, you can expect it to be passed any special items lookup
+extracted from the dicom (e.g., your function function, values and fields lists 
+and variables).
 
 ## Update Your Items
 

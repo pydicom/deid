@@ -32,28 +32,31 @@ from .fields import get_fields, expand_field_expression
 import os
 
 
-def extract_values_list(dicom, actions):
+def extract_values_list(dicom, actions, fields=None):
     """Given a list of actions for a named group (a list) extract values from
        the dicom based on the list of actions provided. This function
        always returns a list intended to update some lookup to be used
        to further process the dicom.
     """
     values = set()
-    fields = get_fields(dicom)
+
+    # The function can be provided fields to save re-parsing
+    if not fields:
+        fields = get_fields(dicom)
+
     for action in actions:
+
+        # Extract some subset of fields based on action
+        subset = expand_field_expression(
+            field=action["field"], dicom=dicom, contenders=fields
+        )
 
         # Just grab the entire value string for a field, no parsing
         if action["action"] == "FIELD":
-            subset = expand_field_expression(
-                field=action["field"], dicom=dicom, contenders=fields
-            )
-            [values.add(dicom.get(field)) for field in subset if field in dicom]
+            [values.add(field.element.value) for uid, field in subset.items()]
 
         # Split action, can optionally have a "by" and/or minlength parameter
         elif action["action"] == "SPLIT":
-            subset = expand_field_expression(
-                field=action["field"], dicom=dicom, contenders=fields
-            )
 
             # Default values for split are length 1 and character empty space
             bot.debug("Parsing action %s" % action)
@@ -74,8 +77,8 @@ def extract_values_list(dicom, actions):
                         split_by = param_val.strip("'").strip('"')
                         bot.debug("Splitting value set to %s" % split_by)
 
-            for field in subset:
-                new_values = str(dicom.get(field, "")).split(split_by)
+            for uid, field in subset.items():
+                new_values = (str(field.element.value) or "").split(split_by)
                 for new_value in new_values:
                     if len(new_value) >= minlength:
                         values.add(new_value)
@@ -88,19 +91,24 @@ def extract_values_list(dicom, actions):
     return list(values)
 
 
-def extract_fields_list(dicom, actions):
+def extract_fields_list(dicom, actions, fields=None):
     """Given a list of actions for a named group (a list) extract values from
        the dicom based on the list of actions provided. This function
        always returns a list intended to update some lookup to be used
        to further process the dicom.
     """
-    subset = []
-    fields = get_fields(dicom)
+    subset = {}
+
+    if not fields:
+        fields = get_fields(dicom)
+
     for action in actions:
 
         if action["action"] == "FIELD":
-            subset += expand_field_expression(
-                field=action["field"], dicom=dicom, contenders=fields
+            subset.update(
+                expand_field_expression(
+                    field=action["field"], dicom=dicom, contenders=fields
+                )
             )
 
         else:

@@ -36,6 +36,7 @@ from deid.data import get_dataset
 from deid.config import DeidRecipe
 from deid.dicom.fields import get_fields
 from deid.dicom import get_identifiers, replace_identifiers
+from deid.dicom.parser import DicomParser
 
 
 class TestDicomGroups(unittest.TestCase):
@@ -55,7 +56,7 @@ class TestDicomGroups(unittest.TestCase):
         from deid.dicom.groups import extract_values_list, extract_fields_list
 
         dicom = get_dicom(self.dataset)
-        fields = get_fields(dicom)  # removes empty / null
+        fields = get_fields(dicom)
 
         # Test split action
         actions = [
@@ -67,37 +68,58 @@ class TestDicomGroups(unittest.TestCase):
 
         # Test field action
         actions = [{"action": "FIELD", "field": "startswith:Operator"}]
-        expected_operator = [dicom.get(x) for x in fields if x.startswith("Operator")]
+        expected_operator = [
+            x.element.value
+            for uid, x in fields.items()
+            if x.element.keyword.startswith("Operator")
+        ]
         actual = extract_values_list(dicom, actions)
         self.assertEqual(actual, expected_operator)
 
         print("Test deid.dicom.groups extract_fields_list")
         actions = [{"action": "FIELD", "field": "contains:Instance"}]
-        expected = [x for x in fields if "Instance" in x]
+        expected = {
+            uid: x for uid, x in fields.items() if "Instance" in x.element.keyword
+        }
         actual = extract_fields_list(dicom, actions)
-        self.assertEqual(actual, expected)
+        for uid in expected:
+            assert uid in actual
 
         # Get identifiers for file
         ids = get_identifiers(dicom)
         self.assertTrue(isinstance(ids, dict))
 
         # Add keys to be used for replace to ids - these first are for values
-        ids[dicom.filename]["cookie_names"] = expected_names
-        ids[dicom.filename]["operator_names"] = expected_operator
+        parser = DicomParser(dicom, recipe=self.deid)
+        parser.define("cookie_names", expected_names)
+        parser.define("operator_names", expected_operator)
 
         # This is for fields
-        ids[dicom.filename]["instance_fields"] = expected
-        ids[dicom.filename]["id"] = "new-cookie-id"
-        ids[dicom.filename]["source_id"] = "new-operator-id"
+        parser.define("instance_fields", expected)
+        parser.define("id", "new-cookie-id")
+        parser.define("source_id", "new-operator-id")
+        parser.parse()
 
-        replaced = replace_identifiers(dicom, ids=ids, save=False, deid=self.deid)
+        # Were the changes made?
+        assert parser.dicom.get("PatientID") == "new-cookie-id"
+        assert parser.dicom.get("OperatorsName") == "new-operator-id"
+
+        # Instance fields should be removed based on recipe
+        for uid, field in parser.lookup["instance_fields"].items():
+            self.assertTrue(field.element.keyword not in parser.dicom)
+
+        # Start over
+        dicom = get_dicom(self.dataset)
+
+        # We need to provide ids with variables "id" and "source_id"
+        ids = {dicom.filename: {"id": "new-cookie-id", "source_id": "new-operator-id"}}
+
+        # Returns list of updated dicom, since save is False
+        replaced = replace_identifiers(dicom, save=False, deid=self.deid, ids=ids)
         cleaned = replaced.pop()
+
         self.assertEqual(cleaned.get("PatientID"), "new-cookie-id")
         self.assertEqual(cleaned.get("OperatorsName"), "new-operator-id")
-
-        # Currently we don't well handle tag types, so we convert to string
-        for field in expected_operator:
-            self.assertTrue(str(field) not in cleaned)
 
 
 def get_dicom(dataset):

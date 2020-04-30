@@ -4,7 +4,7 @@ category: Getting Started
 order: 5
 ---
 
-A get request using the deid module will return the headers found in a particular dataset. 
+A get request using the deid module will return a data structure with headers found in a particular dataset. 
 Let's walk through these steps. As we did in the [loading]({{ site.baseurl }}/getting-started/dicom-loading), 
 the first step was to load a dicom dataset:
 
@@ -15,9 +15,6 @@ from deid.dicom import get_files
 
 base = get_dataset("dicom-cookies")
 dicom_files = list(get_files(base))
-DEBUG Found 7 contender files in dicom-cookies
-DEBUG Checking 7 dicom files for validation.
-Found 7 valid dicom files
 ```
 
 We now have our small dataset that we want to de-identify! The first step is to get 
@@ -28,140 +25,95 @@ from deid.dicom import get_identifiers
 ids = get_identifiers(dicom_files)
 ```
 
-By default, any Sequences (lists of items) within the files are expanded and 
-provided. This means that a Sequence with header value `AdditionalData` 
-and item `Modality` will be returned as `AdditionalData_Modality`. 
-If you want to disable this and not return expanded sequences:
+You'll get back a dictionary(indexed by the file name) for each dicom file.
+Within each entry, the value is another dictionary with an expanded string of
+the tag. For example:
 
-```python
-ids = get_identifiers(dicom_files=dicom_files,
-                      expand_sequences=False)
+```
+ids[dicom_files[0]]                                                                                                                           
+{'(0008, 0005)': (0008, 0005) Specific Character Set              CS: 'ISO_IR 100'  [SpecificCharacterSet],
+ '(0008, 0016)': (0008, 0016) SOP Class UID                       UI: Secondary Capture Image Storage  [SOPClassUID],
+ '(0008, 0018)': (0008, 0018) SOP Instance UID                    UI: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351  [SOPInstanceUID],
+ '(0008, 0020)': (0008, 0020) Study Date                          DA: '20131210'  [StudyDate],
+ '(0008, 0030)': (0008, 0030) Study Time                          TM: '191929'  [StudyTime],
+ '(0008, 0050)': (0008, 0050) Accession Number                    SH: ''  [AccessionNumber],
+ '(0008, 0064)': (0008, 0064) Conversion Type                     CS: 'WSD'  [ConversionType],
+ '(0008, 0080)': (0008, 0080) Institution Name                    LO: 'STANFORD'  [InstitutionName],
+ '(0008, 0090)': (0008, 0090) Referring Physician's Name          PN: 'Dr. solitary heart'  [ReferringPhysicianName],
+ '(0008, 1060)': (0008, 1060) Name of Physician(s) Reading Study  PN: 'Dr. lively wind'  [NameOfPhysiciansReadingStudy],
+ '(0008, 1070)': (0008, 1070) Operators' Name                     PN: 'curly darkness'  [OperatorsName],
+ '(0010, 0010)': (0010, 0010) Patient's Name                      PN: 'falling disk'  [PatientName],
+ '(0010, 0020)': (0010, 0020) Patient ID                          LO: 'cookie-47'  [PatientID],
+ '(0010, 0030)': (0010, 0030) Patient's Birth Date                DA: ''  [PatientBirthDate],
+ '(0010, 0040)': (0010, 0040) Patient's Sex                       CS: 'M'  [PatientSex],
+ '(0020, 000d)': (0020, 000d) Study Instance UID                  UI: 1.2.276.0.7230010.3.1.2.8323329.5329.1495927169.580350  [StudyInstanceUID],
+ '(0020, 000e)': (0020, 000e) Series Instance UID                 UI: 1.2.276.0.7230010.3.1.3.8323329.5329.1495927169.580349  [SeriesInstanceUID],
+ '(0020, 0010)': (0020, 0010) Study ID                            SH: ''  [StudyID],
+ '(0020, 0011)': (0020, 0011) Series Number                       IS: ''  [SeriesNumber],
+ '(0020, 0013)': (0020, 0013) Instance Number                     IS: ''  [InstanceNumber],
+ '(0020, 0020)': (0020, 0020) Patient Orientation                 CS: ''  [PatientOrientation],
+ '(0020, 4000)': (0020, 4000) Image Comments                      LT: 'This is a cookie tumor dataset for testing dicom tools.'  [ImageComments],
+ '(0028, 0002)': (0028, 0002) Samples per Pixel                   US: 3  [SamplesPerPixel],
+ '(0028, 0004)': (0028, 0004) Photometric Interpretation          CS: 'YBR_FULL_422'  [PhotometricInterpretation],
+ '(0028, 0006)': (0028, 0006) Planar Configuration                US: 0  [PlanarConfiguration],
+ '(0028, 0010)': (0028, 0010) Rows                                US: 1536  [Rows],
+ '(0028, 0011)': (0028, 0011) Columns                             US: 2048  [Columns],
+ '(0028, 0100)': (0028, 0100) Bits Allocated                      US: 8  [BitsAllocated],
+ '(0028, 0101)': (0028, 0101) Bits Stored                         US: 8  [BitsStored],
+ '(0028, 0102)': (0028, 0102) High Bit                            US: 7  [HighBit],
+ '(0028, 0103)': (0028, 0103) Pixel Representation                US: 0  [PixelRepresentation],
+ '(0028, 2110)': (0028, 2110) Lossy Image Compression             CS: '01'  [LossyImageCompression],
+ '(0028, 2114)': (0028, 2114) Lossy Image Compression Method      CS: 'ISO_10918_1'  [LossyImageCompressionMethod],
+ '(7fe0, 0010)': (7fe0, 0010) Pixel Data                          OB: Array of 652494 bytes  [PixelData]}
 ```
 
-We will see debug output for each, indicating that we found a particular number of fields:
+If there is a nested tag, you'll see it with the format `(7fe0, 0010)__(0080, 0012)`. If there
+is a nested sequence, you'll see the index provided in that same format. For example,
+`(7fe0, 0010)__0__(0080, 0012)` counts as the first element of a sequence, 
+and `(7fe0, 0010)__1__(0080, 0012)` the second. We start counting at 0, we aren't barbarians!
+
+
+## DicomField
+
+The content of each field is a DicomField, which carries with it the
+dicom tag (string), name (string), and the actual element for further
+parsing. For example:
 
 ```python
-$ ids=get_identifiers(dicom_files)
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5323.1495927169.335276
-DEBUG Found 27 defined fields for image4.dcm
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5354.1495927170.440268
-DEBUG Found 27 defined fields for image2.dcm
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5335.1495927169.763866
-DEBUG Found 27 defined fields for image7.dcm
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5348.1495927170.228989
-DEBUG Found 27 defined fields for image6.dcm
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947
-DEBUG Found 27 defined fields for image3.dcm
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5342.1495927169.3131
-DEBUG Found 27 defined fields for image1.dcm
-DEBUG entity id: cookie-47
-DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
-DEBUG Found 27 defined fields for image5.dcm
+field = ids[dicom_files[0]]['(0010, 0010)']
+
+field.element                                                                                                                                 
+(0010, 0010) Patient's Name                      PN: 'falling disk'
+
+field.name                                                                                                                                   
+'PatientName'
+
+field.uid                                                                                                                                    
+'(0010, 0010)'
 ```
 
-Since a data structure is returned indexed by an entity id and then item 
-(eg, patient --> image). under the hood this means that we use fields 
-from the header to use as the index for entity id and item id. 
-If you don't change the defaults, the entity_id is `PatientID` and item 
-id is `SOPInstanceUID`. To change this, just specify in the function:
+The field.element is what you would get if you indexed the dicom Dataset
+at dicom.get("PatientName"). The name refers to the keyword (which, if there
+is nesting, will include that. For example, a Sequence with header value `AdditionalData` 
+and item `Modality` will be returned as `AdditionalData_Modality`,
+and this name string is used to help with filters. The uid would also
+include the index of the sequence, since we use it to index into the
+Dataset.
 
-```python
+## Next Steps
 
-ids = get_identifiers(dicom_files,
-                      entity_id="PatientFullName",
-                      item_id="InstanceUID")
-```
-
-
-## Organization
-Let's take a closer look at how this is organized. If you notice, the above 
-seems to be able to identify entity and items. This is because in the default, 
-the configuration has set an entity id to be the `PatientID` and the item the 
-`SOPInstanceUID`. This is how it is organized in the returned result - 
-the entity is the first lookup key:
-
-```python
-# We found one entity
-len(ids)
-1
-
-# The entity id is cookie-47
-ids.keys()
-dict_keys(['cookie-47'])
-```
-
-and then below that, the data is indexed by the item id:
-
-```python
-list(ids['cookie-47'].keys())
-['1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947',
- '1.2.276.0.7230010.3.1.4.8323329.5348.1495927170.228989',
- '1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351',
- '1.2.276.0.7230010.3.1.4.8323329.5342.1495927169.3131',
- '1.2.276.0.7230010.3.1.4.8323329.5354.1495927170.440268',
- '1.2.276.0.7230010.3.1.4.8323329.5323.1495927169.335276',
- '1.2.276.0.7230010.3.1.4.8323329.5335.1495927169.763866']
-```
-**note** that I only made it a list for prettier printing. 
-
-
-### Why this organization?
-We have this organization because by default, the software doesn't know what 
-headers it will find in the dicom files, and it also doesn't know the number 
-of (possibly) different entities (eg, a patient) or images (eg, an instance) 
-it will find. For this reason, by default, for dicom we have specified that 
-the entity id is the `PatientID` and the `itemID` is the `SOPInstanceUID`. 
-
-
-### Header Fields
-Then if we look at the data under a particular item id, we see the dicom fields (and corresponding values) found in the data.
-
-```python
-ids['cookie-47']['1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947']
-{'BitsAllocated': 8,
- 'BitsStored': 8,
- 'Columns': 2048,
- 'ConversionType': 'WSD',
- 'HighBit': 7,
- 'ImageComments': 'This is a cookie tumor dataset for testing dicom tools.',
- 'InstitutionName': 'STANFORD',
- 'LossyImageCompression': '01',
- 'LossyImageCompressionMethod': 'ISO_10918_1',
- 'NameOfPhysiciansReadingStudy': 'Dr. damp lake',
- 'OperatorsName': 'nameless voice',
- 'PatientID': 'cookie-47',
- 'PatientName': 'still salad',
- 'PatientSex': 'F',
- 'PhotometricInterpretation': 'YBR_FULL_422',
- 'PixelRepresentation': 0,
- 'PlanarConfiguration': 0,
- 'ReferringPhysicianName': 'Dr. bold moon',
- 'Rows': 1536,
- 'SOPClassUID': '1.2.840.10008.5.1.4.1.1.7',
- 'SOPInstanceUID': '1.2.276.0.7230010.3.1.4.8323329.5360.1495927170.640947',
- 'SamplesPerPixel': 3,
- 'SeriesInstanceUID': '1.2.276.0.7230010.3.1.3.8323329.5360.1495927170.640945',
- 'SpecificCharacterSet': 'ISO_IR 100',
- 'StudyDate': '20131210',
- 'StudyInstanceUID': '1.2.276.0.7230010.3.1.2.8323329.5360.1495927170.640946',
- 'StudyTime': '191930'}
-```
-
-## Save what you need
-Pretty neat! At this point, you have a few options:
+The `get_identifiers` function is an easy way to quickly extract (in bulk) multiple
+identifiers for inspection, across a lot of files. You might be writing or developing
+a recipe, and need easy access to all these fields. What should you do next?
+At this point, you have a few options:
 
 ### Recipe Interaction
-If you want to do more than load in a basic recipe file (e.g., add new actions, 
-use only a subset of groups, or any customization) then you should read about 
-how to [work with recipes]({{ site.basurl }}/examples/recipe/).
+
+If you want to write a recipe to perform a bunch of custom actions on your 
+dicom files, you should read about how to [work with recipes]({{ site.basurl }}/examples/recipe/).
 
 ### Clean Pixels
+
 It's likely that the pixels in the images have burned in annotations, and we can 
 use the header data to flag these images. Thus, before you replace identifiers, 
 you probably want to do this. We have a DicomCleaner class that can flag images 
@@ -169,6 +121,7 @@ for PHI based on matching some header filter criteria, and you can
 [read about that here]({{site.baseurl}}/getting-started/dicom-pixels/). 
 
 ### Update Identifiers
+
 Once you are finished with any customization of the recipe, updating identifiers,
  and/or potentially flagging and quarantining images that have PHI, you should be 
 ready to [replace (PUT)]({{ site.baseurl}}/getting-started/dicom-put/) with new
