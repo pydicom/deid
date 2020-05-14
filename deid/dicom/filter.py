@@ -154,8 +154,15 @@ def empty(self, field):
     """
     content = self.get(field)
 
+    # Case 1: No content (empty list or none)
+    if not content:
+        return True
+
+    if hasattr(content, "_list"):
+        return len(content) == 0
+
     # This is the case of a data element
-    if not isinstance(content, str):
+    elif not isinstance(content, str):
         content = content.value
 
     if content == "":
