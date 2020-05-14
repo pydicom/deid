@@ -14,7 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
- - DicomCleaner empty method does not handle list (0.2.01)
+ - DicomCleaner empty method does not handle list (0.2.1)
  - refactor to use iterall for all fields (0.2.0)
  - including private tags in parsing (0.1.42)
  - adding filters (contains through missing) for REMOVE (0.1.41)
