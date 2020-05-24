@@ -88,14 +88,20 @@ recipe.get_actions(field='PatientID', action="REMOVE")
 # Here we need to update each item with the function we want to use!
 
 def generate_uid(item, value, field):
-    '''This function will generate a uuid! You can expect it to be passed
+    '''This function will generate a dicom uid! You can expect it to be passed
        the dictionary of items extracted from the dicom (and your function)
        and variables, the original value (func:generate_uid) and the field
        name you are applying it to.
     '''
     import uuid
+    # Your organization should have it's own DICOM ORG ROOT.
+    # For the purpose of an example, borrowing PYMEDPHYS_ROOT_UID
+    ORG_ROOT = "1.2.826.0.1.3680043.10.188"  # e.g. PYMEDPHYS_ROOT_UID
     prefix = field.lower().replace(' ', " ")
-    return prefix + "-" + str(uuid.uuid4())
+    bigint_uid = str(uuid.uuid4().int)
+    full_uid = ORG_ROOT + "." + bigint_uid
+    sliced_uid = full_uid[0:64]  # A DICOM UID is limited to 64 characters
+    return prefix + "-" + sliced_uid
 
 # Remember, the action is: 
 # REPLACE StudyInstanceUID func:generate_uid
