@@ -13,9 +13,7 @@ This code is licensed under the MIT [LICENSE](LICENSE).
 
 ## Pull Request Process
 
-1. Bug fix PRs should be sent to both the master and development branches.
-   Feature enhancements should only be submitted against the development
-   branch.
+1. All PRs should be sent to the master branch.
 2. Follow the existing code style precedent. This does not need to be strictly
    defined as there are many thousands of lines of examples. Note the lack
    of tabs anywhere in the project, parentheses and spacing, documentation
