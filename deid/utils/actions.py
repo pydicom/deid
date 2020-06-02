@@ -30,7 +30,6 @@ import re
 
 def parse_value(dicom, value, item=None, field=None):
     """parse_value will parse the value field of an action,
-    TODO: can we remove this?
     either returning: 
         1. the string (string or from function)
         2. a variable looked up (var:FieldName)
@@ -53,13 +52,16 @@ def parse_value(dicom, value, item=None, field=None):
         elif value_type.lower() == "func":
 
             if value_option not in item:
-                bot.warning("%s not found in item lookup %s" % (value_option))
+                bot.warning("%s not found in item lookup." % (value_option))
                 return None
 
+            if hasattr(field, "name"):
+                field = field.name
+
             # item is the lookup, value from the recipe, and field
-            # If the user writes a custom function for private, will need
-            # to convert field to str() in the function.
-            return item[value_option](dicom, value, field, item=item)
+            return item[value_option](
+                dicom=dicom, value=value, field=str(field), item=item
+            )
 
         bot.warning("%s is not a valid value type, skipping." % (value_type))
         return None

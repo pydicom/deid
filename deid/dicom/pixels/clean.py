@@ -31,6 +31,8 @@ import matplotlib
 import os
 import re
 
+from matplotlib import pyplot as plt
+
 matplotlib.use("pdf")
 
 bot.level = 3
@@ -129,8 +131,6 @@ class DicomCleaner:
            was already clean, it is simply a copy of the original.
            If show is True, plot the image.
         """
-        from matplotlib import pyplot as plt
-
         if hasattr(self, image_type):
             _, ax = plt.subplots(figsize=(10, 6))
             ax.imshow(self.cleaned, cmap=self.cmap)
@@ -167,8 +167,6 @@ class DicomCleaner:
            to "original." If the image was already clean (not 
            flagged) the cleaned image is just a copy of original
         """
-        from matplotlib import pyplot as plt
-
         if hasattr(self, image_type):
             png_file = self._get_clean_name(output_folder, "png")
             plt = self.get_figure(image_type=image_type, title=title)

@@ -375,7 +375,6 @@ class DicomParser:
                 element = DataElement(tag["tag"], tag["VR"], value)
                 self.dicom.add(element)
                 self.fields[uid] = DicomField(element, name, uid)
-            else:
                 bot.warning("Cannot find tag for field %s, skipping." % name)
 
     def _run_action(self, field, action, value=None):

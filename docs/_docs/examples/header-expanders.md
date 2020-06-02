@@ -232,9 +232,11 @@ in the Python environment before we replace identifiers. The function we write s
  - field: if the name of the field, e.g., PatientID.
 
 ```python
-def pusheenize(item, value, field):
-    value = item.get(field, '')
+def pusheenize(item, value, field, dicom):
+    # The value coming in is func:pusheenize so we need to get actual value
+    value = dicom.get(field, '')
     if "Name" in field:
+        # If this is a person name class, it will need to be converted to string
         value = "Pusheena" + value.replace(' ', '')
     return value
 ```
