@@ -229,10 +229,12 @@ in the Python environment before we replace identifiers. The function we write s
 
  - item: is going to be the dictionary of fields (keys) and respective values for the dicom being processed. We do this to make all data in the dicom header available to you.
  - value: Is the function name (e.g., func:pusheen) that you've defined.
- - field: if the name of the field, e.g., PatientID.
+ - field: is a dicom Element for you to interact with. For example, you can get `field.element.keyword`, `field.element.name`, or `field.name` for different string values (e.g., PatientID).
 
 ```python
 def pusheenize(item, value, field, dicom):
+    # field is a dicom element object, so we need to derive it's name
+    field = field.element.keyword
     # The value coming in is func:pusheenize so we need to get actual value
     value = dicom.get(field, '')
     if "Name" in field:

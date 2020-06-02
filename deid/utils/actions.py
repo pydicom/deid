@@ -55,13 +55,9 @@ def parse_value(dicom, value, item=None, field=None):
                 bot.warning("%s not found in item lookup." % (value_option))
                 return None
 
-            if hasattr(field, "name"):
-                field = field.name
-
             # item is the lookup, value from the recipe, and field
-            return item[value_option](
-                dicom=dicom, value=value, field=str(field), item=item
-            )
+            # The field is an entire dicom element object
+            return item[value_option](dicom=dicom, value=value, field=field, item=item)
 
         bot.warning("%s is not a valid value type, skipping." % (value_type))
         return None
