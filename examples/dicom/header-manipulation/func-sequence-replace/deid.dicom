@@ -2,4 +2,4 @@ FORMAT dicom
 
 %header
 
-REPLACE InstanceCreationDate func:generate_uid
+REPLACE InstanceCreationDate func:generate_date

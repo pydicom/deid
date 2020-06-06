@@ -3,7 +3,7 @@
 from deid.dicom import DicomCleaner
 
 # This is a complete example of using the cleaning client to inspect
-# and clean pixels 
+# and clean pixels
 # based on a deid.dicom specification
 # https://pydicom.github.io/deid
 
@@ -12,11 +12,11 @@ from deid.dicom import DicomCleaner
 #########################################
 
 # This will get a set of example cookie dicoms
-from deid.dicom import get_files 
+from deid.dicom import get_files
 from deid.data import get_dataset
 
-base = get_dataset('dicom-cookies')
-dicom_files = list(get_files(base)) # todo : consider using generator functionality
+base = get_dataset("dicom-cookies")
+dicom_files = list(get_files(base))  # todo : consider using generator functionality
 dicom_file = dicom_files[3]
 
 
@@ -27,7 +27,7 @@ dicom_file = dicom_files[3]
 client = DicomCleaner()
 
 # You can set the output folder if you want, otherwis tmpdir is used
-client = DicomCleaner(output_folder='/home/vanessa/Desktop')
+client = DicomCleaner(output_folder="/home/vanessa/Desktop")
 
 # Steps are to detect, clean, and save in desired format, one image
 # at a time.
@@ -37,7 +37,7 @@ client = DicomCleaner(output_folder='/home/vanessa/Desktop')
 
 
 #########################################
-# 3. Detect 
+# 3. Detect
 #########################################
 
 # Detect means using the deid recipe to parse headers
@@ -55,7 +55,7 @@ client.detect(dicom_file)
 
 
 #########################################
-# 4. Clean and save 
+# 4. Clean and save
 #########################################
 
 client.clean()
@@ -67,4 +67,3 @@ client.clean()
 # or directly to saving functions
 client.save_png()
 client.save_dicom()
-

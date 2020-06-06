@@ -10,19 +10,20 @@ import os
 
 
 # This will get a set of example cookie dicoms
-base = get_dataset('dicom-cookies')
-dicom_files = list(get_files(base)) # todo : consider using generator functionality
+base = get_dataset("dicom-cookies")
+dicom_files = list(get_files(base))  # todo : consider using generator functionality
 
 
 # This is the function to get identifiers
 from deid.dicom import get_identifiers
+
 ids = get_identifiers(dicom_files)
 
-#**
+# **
 # Here you might save them in your special (IRB approvied) places
 # And then provide replacement anonymous ids to put back in the data
 # A cookie tumor example is below
-#**
+# **
 
 ################################################################################
 # The Deid Recipe
@@ -41,6 +42,7 @@ ids = get_identifiers(dicom_files)
 
 # Create a DeidRecipe
 from deid.config import DeidRecipe
+
 recipe = DeidRecipe()
 
 # Since we didn't load a custom deid recipe text file, we get a default
@@ -52,7 +54,7 @@ recipe.deid
 
 # You can also provide your own deid recipe file, and in doing so, you
 # won't load a default
-path = os.path.abspath("%s/../examples/deid/" %get_installdir())
+path = os.path.abspath("%s/../examples/deid/" % get_installdir())
 recipe = DeidRecipe(deid=path)
 
 # You can also choose to load the default base with your own recipe
@@ -61,11 +63,11 @@ recipe = DeidRecipe(deid=path, base=True)
 # Or specify a different base entirely. The base is the deid.<tag> in the
 # deid.data folder. So for example, under deid/data/deid.dicom.chest.xray we would
 # do:
-recipe = DeidRecipe(deid=path, base=True, default_base='dicom.xray.chest')
+recipe = DeidRecipe(deid=path, base=True, default_base="dicom.xray.chest")
 
 # We can also specify one of the deid recipes provided by the library as our
 # only to use.
-recipe = DeidRecipe(deid='dicom.xray.chest')
+recipe = DeidRecipe(deid="dicom.xray.chest")
 
 # This is to encourage sharing! If you have a general recipe that others might
 # use, please contribute it to the library.
@@ -100,7 +102,7 @@ recipe.ls_filters()
 # ['whitelist', 'blacklist']
 
 # To get a list of specific filters under a group
-recipe.get_filters('blacklist')
+recipe.get_filters("blacklist")
 
 
 ################################################################################
@@ -118,9 +120,9 @@ recipe = DeidRecipe()
 recipe.get_actions()
 
 # We can filter to an action type
-recipe.get_actions(action='ADD')
+recipe.get_actions(action="ADD")
 
-#[{'action': 'ADD',
+# [{'action': 'ADD',
 #  'field': 'IssuerOfPatientID',
 #  'value': 'STARR. In an effort to remove PHI all dates are offset from their original values.'},
 # {'action': 'ADD',
@@ -132,13 +134,13 @@ recipe.get_actions(action='ADD')
 # {'action': 'ADD', 'field': 'PatientIdentityRemoved', 'value': 'Yes'}]
 
 # or we can filter to a field
-recipe.get_actions(field='PatientID')
+recipe.get_actions(field="PatientID")
 
-#[{'action': 'REMOVE', 'field': 'PatientID'},
+# [{'action': 'REMOVE', 'field': 'PatientID'},
 # {'action': 'ADD', 'field': 'PatientID', 'value': 'var:entity_id'}]
 
 # and logically, both
-recipe.get_actions(field='PatientID', action="REMOVE")
+recipe.get_actions(field="PatientID", action="REMOVE")
 #  [{'action': 'REMOVE', 'field': 'PatientID'}]
 
 
@@ -156,7 +158,7 @@ recipe.get_actions(field='PatientID', action="REMOVE")
 ##################################
 
 # Load the dummy / example deid
-path = os.path.abspath("%s/../examples/deid/" %get_installdir())
+path = os.path.abspath("%s/../examples/deid/" % get_installdir())
 recipe = DeidRecipe(deid=path)
 
 # What actions are defined?
@@ -176,25 +178,27 @@ recipe.get_actions()
 # adding values to be used as new variables) or we can make a new datastructure
 
 # Let's be lazy and just update the extracted ones
-updated_ids = dict(); count=0
+updated_ids = dict()
+count = 0
 for image, fields in ids.items():
-    fields['id'] = 'cookiemonster'
-    fields['source_id'] = "cookiemonster-image-%s" %(count)
+    fields["id"] = "cookiemonster"
+    fields["source_id"] = "cookiemonster-image-%s" % (count)
     updated_ids[image] = fields
-    count+=1
+    count += 1
 
 # You can look at each of the updated_ids entries and see the added variables
 #  'id': 'cookiemonster',
 #  'source_id': 'cookiemonster-image-2'}}
 
 # And then use the deid recipe and updated to create new files
-cleaned_files = replace_identifiers(dicom_files=dicom_files,
-                                    deid=recipe,
-                                    ids=updated_ids)
+cleaned_files = replace_identifiers(
+    dicom_files=dicom_files, deid=recipe, ids=updated_ids
+)
 
 
 # We can load in a cleaned file to see what was done
 from pydicom import read_file
+
 test_file = read_file(cleaned_files[0])
 
 
@@ -209,14 +213,15 @@ test_file = read_file(cleaned_files[0])
 
 
 # Different output folder
-cleaned_files = replace_identifiers(dicom_files=dicom_files,
-                                    deid=recipe,
-                                    ids=updated_ids,
-                                    output_folder='/tmp/')
+cleaned_files = replace_identifiers(
+    dicom_files=dicom_files, deid=recipe, ids=updated_ids, output_folder="/tmp/"
+)
 
 # Force overwrite (be careful!)
-cleaned_files = replace_identifiers(dicom_files=dicom_files,
-                                    deid=recipe,
-                                    ids=updated_ids,
-                                    output_folder='/tmp/',
-                                    overwrite=True)
+cleaned_files = replace_identifiers(
+    dicom_files=dicom_files,
+    deid=recipe,
+    ids=updated_ids,
+    output_folder="/tmp/",
+    overwrite=True,
+)
