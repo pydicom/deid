@@ -225,7 +225,10 @@ You can load in a cleaned file to see what was done
 
 ```python
 print(cleaned_files[0].InstanceCreationDate)
-'referencedperformedprocedurestepsequence__instancecreationdate-1.2.826.0.1.3680043.10.188.1582618439074514008838876290183355533'
+print(cleaned_files[0].ReferencedPerformedProcedureStepSequence[0].InstanceCreationDate)
+
+20200608
+20200608
 ```
 
 Full code for the
