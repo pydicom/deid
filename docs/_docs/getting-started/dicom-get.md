@@ -72,7 +72,7 @@ is a nested sequence, you'll see the index provided in that same format. For exa
 `(7fe0, 0010)__0__(0080, 0012)` counts as the first element of a sequence, 
 and `(7fe0, 0010)__1__(0080, 0012)` the second. We start counting at 0, we aren't barbarians!
 
-
+<a id="dicomfield">
 ## DicomField
 
 The content of each field is a DicomField, which carries with it the
@@ -100,6 +100,7 @@ and this name string is used to help with filters. The uid would also
 include the index of the sequence, since we use it to index into the
 Dataset.
 
+<a id="next-steps">
 ## Next Steps
 
 The `get_identifiers` function is an easy way to quickly extract (in bulk) multiple
@@ -107,11 +108,13 @@ identifiers for inspection, across a lot of files. You might be writing or devel
 a recipe, and need easy access to all these fields. What should you do next?
 At this point, you have a few options:
 
+<a id="recipe-interaction">
 ### Recipe Interaction
 
 If you want to write a recipe to perform a bunch of custom actions on your 
 dicom files, you should read about how to [work with recipes]({{ site.basurl }}/examples/recipe/).
 
+<a id="clean-pixels">
 ### Clean Pixels
 
 It's likely that the pixels in the images have burned in annotations, and we can 
@@ -120,6 +123,7 @@ you probably want to do this. We have a DicomCleaner class that can flag images
 for PHI based on matching some header filter criteria, and you can 
 [read about that here]({{site.baseurl}}/getting-started/dicom-pixels/). 
 
+<a id="update-identifiers">
 ### Update Identifiers
 
 Once you are finished with any customization of the recipe, updating identifiers,

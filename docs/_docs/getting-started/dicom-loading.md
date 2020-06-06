@@ -74,6 +74,7 @@ We provide a few more robust functions to find datasets, because it's usually th
 done to be sure that each file is dicom.
 
 
+<a id="find-datasets">
 ## Find Datasets
 The function that we have provided will find all datasets matching some pattern 
 (or all files recursively in a folder). You simply need to provide a list of top folders, 

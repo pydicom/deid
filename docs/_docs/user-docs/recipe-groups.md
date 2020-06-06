@@ -41,6 +41,7 @@ below, we will use this sample header provided by [@wetzelj](https://github.com/
 (0019,1092) : DS   Len: 6      <Unknown Tag>                  Value: [M123456]
 ```
 
+<a id="fields">
 ## Fields
 
 A fields section looks like the following:
@@ -84,7 +85,7 @@ This of course means that the actions supported for the `%fields` section includ
 
  - **FIELD** reference to a full name of a field, or any parsing of any [expander]({{ site.baseurl }}/examples/header-expanders/).
 
-
+<a id="values">
 ## Values
 
 It could be that you want to generate a list of _values_ extracted from the dicom

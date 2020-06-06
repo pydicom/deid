@@ -12,6 +12,7 @@ If you are interested in the code for this example, it's available
 [here](https://github.com/pydicom/deid/tree/master/examples/dicom/header-manipulation).
 Let's get started!
 
+<a id="imports">
 ## Imports
 We first import the functions that we need
 
@@ -61,6 +62,7 @@ The function we will use for the example will perform an action to generate a ui
 but you can also use it to communicate with databases, APIs, or do something like 
 save the original (and newly generated one) in some (IRB approvied) place
 
+<a id="the-deid-recipe">
 ## The Deid Recipe
 
 The process of updating header values means writing a series of actions
@@ -126,6 +128,7 @@ Our recipe instance is ready to go. From the above we are saying we want to repl
 output from the generate_uid function, which is expected in the item dict. Let's write
 that next.
 
+<a id="write-your-function">
 ## Write Your Function
 
 A simple function with a uid generated from the uuid library might look like
@@ -177,6 +180,7 @@ As stated in the docstring, you can expect it to be passed the dictionary of
 items extracted from the dicom (and your function) and variables, the 
 original value (func:generate_uid) and the field name you are applying it to.
 
+<a id="development-tip">
 ## Development Tip
 
 If you want to interactively develop and test what is passed to the function,
@@ -217,6 +221,7 @@ dicom
 And note that field can be the string identifier, or the full element, depending
 on how it is used internally, so you should always check.
 
+<a id="update-your-items">
 ## Update Your Items
 
 How do we update the items? Remember, the action is: 
@@ -232,6 +237,7 @@ for item in items:
     items[item]['generate_uid'] = generate_uid
 ```
 
+<a id="replace-identifiers">
 ## Replace identifiers
 We are ready to go! Now let's generate the cleaned files! It will output to a 
 temporary directory. 

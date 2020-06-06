@@ -8,8 +8,10 @@ It's so great that you want to contribute! The documentation here includes infor
 about using and developing {{ site.title }}, and they are hosted on Github, meaning that you
 can easily contribute via a [pull request](https://help.github.com/articles/about-pull-requests/).
 
+<a id="getting-started">
 ## Getting Started
 
+<a id="installing-dependencies">
 ### Installing Dependencies
 Initially (on OS X), you will need to setup [Brew](http://brew.sh/) which is a 
 package manager for OS X and [Git](https://git-scm.com/). To install Brew and Git, 
@@ -26,7 +28,7 @@ If you are on Debian/Ubuntu, then you can easily install git with `apt-get`
 apt-get update && apt-get install -y git
 ```
 
-
+<a id="fork-the-repo">
 ### Fork the repo
 To contribute to the web based documentation, you should obtain a GitHub account and *fork* the <a href="https://www.github.com/{{ site.repo }}" target="_blank">{{ site.title }} Documentation</a> repository by clicking the *fork* button on the top right of the page. Once forked, you will want to clone the fork of the repo to your computer. Let's say my GitHub username is *meatball*:
 
@@ -35,6 +37,7 @@ git clone https://github.com/meatball/{{ site.reponame }}
 cd {{ site.reponame }}/
 ```
 
+<a id="install-a-local-jekyll-server">
 ### Install a local Jekyll server
 This step is required if you want to render your work locally before committing the changes. This is highly recommended to ensure that your changes will render properly and will be accepted.
 

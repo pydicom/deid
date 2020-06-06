@@ -40,6 +40,7 @@ Since there are so many, we enforce (at least for dicom) the most conservative
 approach of removing header fields that the client has not asked anything special 
 to be done for. Let's now talk about the [config.json](config.json).
 
+<a id="config.json">
 ## Config.json
 The base of the json has two classes, and they correspond with the actions of 
 `get` and `put`, where a "get" is broadly the step of getting identifiers from 
@@ -83,7 +84,7 @@ Note that we don't need to specify the datatypes like "PixelData" or "Columns",
 or other fields related to the data. These fields are by default kept, as they 
 are specific to the pixel data. For details see [this issue](https://github.com/pydicom/pydicom/issues/372).
 
-
+<a id="get">
 ### Get
 
 If you read the details about get (usage for the client) see [get]({{ site.baseurl }}/getting-started/dicom-get/), 
@@ -95,7 +96,7 @@ want returned, then add them to the skip list. Have caution that the user won't 
 the field returned, and likely won't ask for any action to be taken, meaning it will 
 by default be blanked.
 
-
+<a id="put">
 ### Put
 Put is primarily concerned with actions, which as they are for the user, can be 
 `ADD`, `KEEP`, `REMOVE`, or `BLANK`. For the default, we keep the useful pixel data, 

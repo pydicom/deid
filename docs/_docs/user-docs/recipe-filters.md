@@ -9,6 +9,7 @@ notes page, the deid recipe allows you to configure both cleaning of pixels
 and changing header values. This document will cover the first, how to write
 and apply filters to clean images.
 
+<a id="filters">
 ### Filters
 
 You might want to flag images based on their header values. For example, "I have a directory
@@ -20,6 +21,7 @@ For example, an image that would be flagged with a general Blacklist criteria th
 first to be computationally more efficient, because we can stop checking the 
 image when we hit the first criteria flag.
 
+<a id="filter-groups">
 #### Filter Groups
 While you are free to define your own groups and criteria, we provide a [default deid](https://github.com/pydicom/deid/blob/master/deid/data/deid.dicom) that has the following levels defined within:
 
@@ -29,7 +31,7 @@ While you are free to define your own groups and criteria, we provide a [default
 
  - **Blacklist** images that are not Greylisted or Blacklisted are largely unknowns. They may contain PHI in an unstructured fashion, and we need to be conservative and precaucious. Blacklist images may be passed through a more sophisticated filter (such as a character recognition algorithm), deleted, or passed through and possibly marked (in the DICOM header or on the image) to note the images are blacklisted (with the requesting researcher defining the best method).
 
-
+<a id="filter-example">
 #### Filter Example
 I'll again show you the previous example, but give more detail this time. 
 The start of a filter might look like this:
@@ -68,6 +70,7 @@ Each section is indicated by `%filter`, and within sections, a set of criteria a
 The formatting of this is inspired by both [CTP](http://mircwiki.rsna.org/index.php?title=The_CTP_DICOM_Filter) 
 and my early work with [Singularity Containers](https://sylabs.io/docs/), which is based on RPM.
 
+<a id="how-are-images-filtered">
 ##### How are images filtered?
 You can imagine an image starting at the top of the file, and moving down line by line. 
 If at any point it doesn't pass criteria, it is flagged and placed with the group, 
@@ -79,6 +82,7 @@ logical because the graylist corresponds to a specific set of image header
 criteria for which we know how to clean. We only resort to general blacklist 
 criteria if we make it far enough and haven't been convinced that there isn't PHI.
 
+<a id="how-do-i-read-a-criteria">
 ##### How do I read a criteria?
 Each filter section criteria starts with `LABEL`. this is an identifier to 
 report to the user given that the flag goes off. Each criteria then has the following format:
@@ -146,6 +150,7 @@ LABEL Ct Dose Series
   coordinates 0,0,512,200
 ```
 
+<a id="what-are-the-criteria-options">
 ##### What are the criteria options?
 For all of the below, case does not matter. All fields are changed to lowercase before comparison, and stripped of leading and trailing white spaces.
 
@@ -156,6 +161,7 @@ For all of the below, case does not matter. All fields are changed to lowercase 
  - **notEquals** is the inverse of equals
  - **notContains** is the inverse of contains
 
+<a id="how-do-i-customize-the-process">
 ##### How do I customize the process?
 There are several things you can customize! 
 

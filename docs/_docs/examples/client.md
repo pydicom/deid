@@ -7,6 +7,7 @@ order: 3
 Here is a quick example of using the deid executable. For more information on this
 client, see the [user docs]({{ site.baseurl }}/user-docs/client/) page.
 
+<a id="deid-executable">
 ### Deid Executable
 The deid executable is installed automatically with the module. Just running `deid` we see:
 
@@ -98,7 +99,7 @@ deid/data/dicom-cookies/image1.dcm,CLEAN
 deid/data/dicom-cookies/image1.dcm,FLAGGED      dangerouscookie  PatientSex contains M and OperatorsName notequals bold bread
 deid/data/dicom-cookies/image1.dcm,FLAGGED      dangerouscookie  PatientSex contains M and OperatorsName notequals bold bread
 ```
-
+<a id="within-python">
 ### Within Python
 First, let's load the example "dicom cookies" dataset. We will first run this example within python, and then using a command line client (not written yet).
 

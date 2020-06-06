@@ -8,6 +8,7 @@ At this point, we have a bunch of dicom files, have written a recipe with
 actions, and want to run those actions across the files. The easiest way
 to do this is with the `DicomParser`
 
+<a id="dicom-parser">
 ## DicomParser
 
 The dicom parser is a helper class that will make it easy to load in your recipe,
@@ -35,6 +36,7 @@ from deid.dicom.parser import DicomParser
 parser = DicomParser(dicom_file, recipe=path)
 ```
 
+<a id="inspecting-the-loaded-dicom">
 ### 1. Inspecting the Loaded Dicom
 
 You can see that the dicom is loaded:
@@ -133,6 +135,7 @@ Under "header" is where we see our list of actions. We want to:
  - replace any values under "operator_names" that we define with a variable we call "source_id"
  - remove any fields that quality under "instance_fields"
 
+<a id="understanding-fields-and-values">
 ### 2. Understanding fields and values
 
 The "values" and "fields" lists will be calculated based on your data. For example,
@@ -146,6 +149,7 @@ says that we are going to derive a list called "operator_names" that includes
 all the values under fields that start with "Operator." This should come down to
 one field, `OperatorsName`, which is "curly darkness."
 
+<a id="understanding-var-and-func">
 ### 3. Understanding var and func
 
 If you have a recipe that references a "var:name" or func:name" you would need
@@ -274,7 +278,7 @@ And you could save your data to file.
 ```python
 parser.save("/tmp/mydicom.dcm")
 ```
-
+<a id="replace-identifers">
 ## Replace Identifiers
 
 If you want to do the above in bulk, you might find it easier to use the `replace_identifiers`
@@ -375,6 +379,7 @@ cleaned_files = replace_identifiers(dicom_files=dicom_files,
 wherever you dump your new dicoms, it's up to you to decide how to then move 
 and store them, and (likely) deal with the original data with identifiers.
 
+<a id="private-tags">
 ## Private Tags
 
 An important note is that by default, this function will keep private tags
@@ -400,6 +405,7 @@ really_cleaned = remove_private_identifiers(dicom_files=cleaned_files)
 You could also do pixel scraping first, and then call the function
 (per default) to remove private.
 
+<a id="getting-private-tags">
 ### Getting Private Tags
 
 If you are working within python and want to get private tags for inspection, 
@@ -438,6 +444,7 @@ private_tags = get_private(dicom)
 
 Although in this case, the list is empty.
 
+<a id="developer-replacement">
 ## Developer Replacement
 
 If you are a developer, you can create your own config.json OR deid recipe for the functions above.

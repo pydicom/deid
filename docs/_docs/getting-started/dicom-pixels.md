@@ -10,6 +10,7 @@ into the data. If you don't want the detalis, jump into our
 [example script](https://github.com/pydicom/deid/blob/master/examples/dicom/pixels/run-cleaner-client.py). 
 Here we will walk through how this cleaner was derived, and how it works.
 
+<a id="inspiration-from-ctp">
 ## Inspiration from CTP
 
 Flagging images with potentially having burned in PHI is based on a well established 
@@ -79,6 +80,7 @@ carry any obvious mapping to a location. We can think of both as a set of filter
 some with a clear location, and others not. TLDR: the second file (`DicomPixelAnonymizer.script`) 
 has both header fields and locations.
 
+<a id="deid-implementation">
 ## Deid Implementation
 
 We have a set of pixel functions that mirror the functionality of MIRCTP, 
@@ -107,6 +109,7 @@ dataset = get_dataset('dicom-cookies')
 dicom_file = list(get_files(dataset))[0]
 ```
 
+<a id="client">
 ### Client
 
 We need to instantiate a client once, and can use this client to clean one or more files.
@@ -125,6 +128,7 @@ The basic steps we will take are the following:
  - `client.clean()`: clean the areas by writing black pixels, given that coordinates are provided in the recipe.
  - `client.save_<format>`: save the images to a new dicom or png
 
+<a id="detect">
 ### Detect
 
 Detect means using the deid recipe to parse headers. You must run detect before you try to clean. If you don't:
@@ -145,6 +149,7 @@ client.detect(dicom_file)
   'reason': ' ImageType missing  or ImageType empty '}]}
 ```
 
+<a id="clean-and-save">
 ### Clean and Save
 After detection, the flags that were triggered are saved with the client, until 
 you override with another file. You can now run clean, and save the 

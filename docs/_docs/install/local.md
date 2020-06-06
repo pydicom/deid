@@ -7,6 +7,7 @@ order: 3
 
 Let's walk through how to install {{ site.title }} locally. 
 
+<a id="install-from-github">
 ## Install from Github
 
 First, clone the Github repository to your present working directory. If you
@@ -30,6 +31,7 @@ Then install with python!
 python setup.py install
 ```
 
+<a id="install-from-pypi">
 ## Install from Pypi
 
 If you want to install a particular version, the package is [available on pypi](https://pypi.org/project/deid/).
