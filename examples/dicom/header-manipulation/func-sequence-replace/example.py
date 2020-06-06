@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from deid.dicom import get_identifiers, replace_identifiers
 from deid.config import DeidRecipe
 
@@ -18,28 +19,24 @@ recipe = DeidRecipe("deid.dicom")
 
 # Here is our function
 
-
-def generate_uid(item, value, field):
-    """This function will generate a dicom uid! You can expect it to be passed
+def generate_date(item, value, field, dicom):
+    '''This function will generate a dicom uid! You can expect it to be passed
        the dictionary of items extracted from the dicom (and your function)
        and variables, the original value (func:generate_uid) and the field
-       name you are applying it to.
-    """
-    import pydicom
-
-    # Your organization should have it's own DICOM ORG ROOT.
-    # For the purpose of an example, borrowing PYMEDPHYS_ROOT_UID
-    ORG_ROOT = "1.2.826.0.1.3680043.10.188"  # e.g. PYMEDPHYS_ROOT_UID
-    prefix = field.lower().replace(" ", " ")
-    full_uid = pydicom.uid.generate_uid(ORG_ROOT)
-    return prefix + "-" + full_uid
+       object you are applying it to.
+    '''
+    return "20200608"
 
 
 # Add the function to each item to be found
 for item in items:
-    items[item]["generate_uid"] = generate_uid
+    items[item]["generate_date"] = generate_date
 
 # Clean the files
 cleaned_files = replace_identifiers(
     dicom_files=dicom_files, deid=recipe, strip_sequences=False, ids=items
 )
+
+# Print two instances (one in sequence)
+print(cleaned_files[0].InstanceCreationDate)
+print(cleaned_files[0].ReferencedPerformedProcedureStepSequence[0].InstanceCreationDate)

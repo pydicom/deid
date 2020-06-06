@@ -87,13 +87,18 @@ recipe.get_actions(field='PatientID', action="REMOVE")
 
 # Here we need to update each item with the function we want to use!
 
-def generate_uid(item, value, field):
+def generate_uid(item, value, field, dicom):
     '''This function will generate a dicom uid! You can expect it to be passed
        the dictionary of items extracted from the dicom (and your function)
        and variables, the original value (func:generate_uid) and the field
-       name you are applying it to.
+       object you are applying it to.
     '''
     import uuid
+
+    # a field can either be just the name string, or a DicomElement
+    if hasattr(field, 'name'):
+        field = field.name
+
     # Your organization should have it's own DICOM ORG ROOT.
     # For the purpose of an example, borrowing PYMEDPHYS_ROOT_UID
     ORG_ROOT = "1.2.826.0.1.3680043.10.188"  # e.g. PYMEDPHYS_ROOT_UID
@@ -117,25 +122,5 @@ cleaned_files = replace_identifiers(dicom_files=dicom_files,
                                     ids=items)
 
 
-# We can load in a cleaned file to see what was done
-from pydicom import read_file
-test_file = read_file(cleaned_files[0])
-print(test_file)
-
-# test_file (subset of changed)
-# (0020, 000d) Study Instance UID                  UI: studyinstanceuid-022f82f4-e9df-4533-b237-6ab563dfaf56
-# (0020, 000e) Series Instance UID                 UI: seriesinstanceuid-6a3a0ac8-22fd-449f-9779-2580cf2897bd
-# (0020, 0052) Frame of Reference UID              UI: frameofreferenceuid-0693b1fa-9144-4a1d-9cb7-82da56e462ce
-
-# Different output folder
-cleaned_files = replace_identifiers(dicom_files=dicom_files,
-                                    deid=recipe,
-                                    ids=items,
-                                    output_folder='/tmp/')
-
-# Force overwrite (be careful!)
-cleaned_files = replace_identifiers(dicom_files=dicom_files,
-                                    deid=recipe,
-                                    ids=items,
-                                    output_folder='/tmp/',
-                                    overwrite=True)
+# Print a cleaned file
+print(cleaned_files[0])

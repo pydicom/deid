@@ -102,22 +102,94 @@ which is expected in the item dict. Let's write that next.
 
 ## Write Your Function
 
+A simple function with a uid generated from the uuid library might look like
+this:
+
 ```python
-def generate_uid(item, value, field, dicom):
+def generate_uid(item, value, field):
     '''This function will generate a uuid! You can expect it to be passed
        the dictionary of items extracted from the dicom (and your function)
        and variables, the original value (func:generate_uid) and the field
        name you are applying it to.
     '''
     import uuid
+    # a field can either be just the name string, or a DicomElement
+    if hasattr(field, 'name'):
+        field = field.name
     prefix = field.lower().replace(' ', " ")
     return prefix + "-" + str(uuid.uuid4())
 
 ```
 
-As stated in the docstring, you can expect it to be passed any special items lookup
-extracted from the dicom (e.g., your function function, values and fields lists 
-and variables).
+but if we want to be more correct and adhere to the dicom standard, we would want
+to do:
+
+```python
+def generate_uid(item, value, field, dicom):
+    '''This function will generate a dicom uid! You can expect it to be passed
+       the dictionary of items extracted from the dicom (and your function)
+       and variables, the original value (func:generate_uid) and the field
+       object you are applying it to.
+    '''
+    import uuid
+
+    # a field can either be just the name string, or a DicomElement
+    if hasattr(field, 'name'):
+        field = field.name
+
+    # Your organization should have it's own DICOM ORG ROOT.
+    # For the purpose of an example, borrowing PYMEDPHYS_ROOT_UID
+    ORG_ROOT = "1.2.826.0.1.3680043.10.188"  # e.g. PYMEDPHYS_ROOT_UID
+    prefix = field.lower().replace(' ', " ")
+    bigint_uid = str(uuid.uuid4().int)
+    full_uid = ORG_ROOT + "." + bigint_uid
+    sliced_uid = full_uid[0:64]  # A DICOM UID is limited to 64 characters
+    return prefix + "-" + sliced_uid
+```
+
+As stated in the docstring, you can expect it to be passed the dictionary of 
+items extracted from the dicom (and your function) and variables, the 
+original value (func:generate_uid) and the field name you are applying it to.
+
+## Development Tip
+
+If you want to interactively develop and test what is passed to the function,
+just insert an embedded ipython into the function:
+
+```python
+def generate_uid(item, value, field, dicom):
+    '''This function will generate a dicom uid! You can expect it to be passed
+       the dictionary of items extracted from the dicom (and your function)
+       and variables, the original value (func:generate_uid) and the field
+       object you are applying it to.
+    '''
+    import IPython
+    IPython.embed()
+```
+
+And then proceed running the replace operation. This will put your into an
+interactive session and have all the variables available to you for inspection.
+For example:
+
+```python
+item                                                                                                                    
+# {'(0008, 0005)': (0008, 0005) Specific Character Set              CS: 'ISO_IR 100'  [SpecificCharacterSet],
+# ...
+# 'generate_uid': <function __main__.generate_uid(item, value, field, dicom)>}
+
+value                                                                                                                  
+# 'func:generate_uid'
+
+field                                                                                                                  
+# (0020, 000d) Study Instance UID                  UI: 1.2.276.0.7230010.3.1.2.8323329.5329.1495927169.580350  [StudyInstanceUID]
+
+dicom                                                                                                                  
+# (0008, 0005) Specific Character Set              CS: 'ISO_IR 100'
+...
+```
+
+And note that field can be the string identifier, or the full element, depending
+on how it is used internally, so you should always check.
 
 ## Update Your Items
 
@@ -141,32 +213,20 @@ set `strip_sequences` to False.
 
 
 ```python
-cleaned_files = replace_identifiers(dicom_files=dicom_files,
-                                    deid=recipe,
-                                    ids=items,
-                                    strip_sequences=False)
+# Clean the files
+cleaned_files = replace_identifiers(
+    dicom_files=dicom_files, deid=recipe, strip_sequences=False, ids=items
+)
 ```
 
 Note that expansion of sequences is not currently supported for operations
 that remove or add a value (ADD, REMOVE, JITTER).
-You can load in a cleaned file to see what was done (a cleaned file is provided
-in the example folder):
+You can load in a cleaned file to see what was done
 
 ```python
-from pydicom import read_file
-cleaned = read_file(cleaned_files[0])
-print(cleaned)
-
-# cleaned (subset of changed)
-(0008, 0012) Instance Creation Date              DA: 'instancecreationdate-2ad6c7f6-2264-4f9d-a3f2-ead2cf438fe1'
-...
-# here is a nested sequence
-   (0008, 0012) Instance Creation Date              DA: 'instancecreationdate-7fb93a26-b2fe-446a-8899-84ac7a1fc217'
+print(cleaned_files[0].InstanceCreationDate)
+'referencedperformedprocedurestepsequence__instancecreationdate-1.2.826.0.1.3680043.10.188.1582618439074514008838876290183355533'
 ```
-
-You can write to a different output folder by setting `output_folder` in
-the function, and use `overwrite` to specify if files should be overwritten
-that already exist.
 
 Full code for the
 example above is [available here](https://github.com/pydicom/deid/tree/master/examples/dicom/header-manipulation/func-sequence-replace/).
