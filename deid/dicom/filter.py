@@ -150,8 +150,12 @@ def missing(self, field):
 
 
 def empty(self, field):
-    """empty returns True if the value is found to be ""
+    """empty returns True if the value is found to be "". If the field
+       is not present for the dicom, then we return False (missing != empty)
     """
+    if field not in self:
+        return False
+
     content = self.get(field)
 
     # Case 1: No content (empty list or none)

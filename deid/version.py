@@ -22,7 +22,7 @@ SOFTWARE.
 
 """
 
-__version__ = "0.2.12"
+__version__ = "0.2.13"
 AUTHOR = "Vanessa Sochat"
 AUTHOR_EMAIL = "vsochat@stanford.edu"
 NAME = "deid"
@@ -33,6 +33,7 @@ LICENSE = "LICENSE"
 
 INSTALL_REQUIRES = (
     ("matplotlib", {"min_version": None}),
-    ("pydicom", {"min_version": "1.2.1"}),
+    ("numpy", {"min_version": None}),
+    ("pydicom", {"exact_version": "1.3.0"}),
     ("python-dateutil", {"min_version": None}),
 )

@@ -1,4 +1,5 @@
 """
+
 clean.py: functions for pixel scrubbing
 
 Copyright (c) 2017-2020 Vanessa Sochat
@@ -23,17 +24,19 @@ SOFTWARE.
 
 """
 
+from pydicom.pixel_data_handlers.util import get_expected_length
 from deid.config import DeidRecipe
 from deid.logger import bot
 from deid.utils import get_temporary_name
 from pydicom import read_file
 import matplotlib
+import numpy
 import os
 import re
 
-from matplotlib import pyplot as plt
-
 matplotlib.use("pdf")
+
+from matplotlib import pyplot as plt
 
 bot.level = 3
 
@@ -42,7 +45,6 @@ class DicomCleaner:
     """take an input dicom file, check for burned pixels, and then clean,
        with option to save / output in multiple formats. This object should
        map to one dicom file, and the usage flow is the following:
-
        cleaner = DicomCleaner()
        summary = cleaner.detect(dicom_file)
       
@@ -88,7 +90,7 @@ class DicomCleaner:
         self.dicom_file = dicom_file
         return self.results
 
-    def clean(self):
+    def clean(self, fix_interpretation=True, pixel_data_attribute="PixelData"):
         """
         take a dicom image and a list of pixel coordinates, and return
         a cleaned file (if output file is specified) or simply plot 
@@ -98,6 +100,7 @@ class DicomCleaner:
         ==========
             add_padding: add N=margin pixels of padding
             margin: pixels of padding to add, if add_padding True
+            fix_interpretation: fix the photometric interpretation if found off
         """
 
         if not self.results:
@@ -108,10 +111,33 @@ class DicomCleaner:
 
             # Load in dicom file, and image data
             dicom = read_file(self.dicom_file, force=True)
+            pixel_data = getattr(dicom, pixel_data_attribute)
 
-            # We will set original image to image, cleaned to clean
-            self.original = dicom.pixel_array
-            self.cleaned = self.original.copy()
+            # Get expected and actual length of the pixel data (bytes, expected does not include trailing null byte)
+            expected_length = get_expected_length(dicom)
+            actual_length = len(pixel_data)
+            padded_expected_length = expected_length + expected_length % 2
+            full_length = expected_length / 2 * 3  # upsampled data is a third larger
+            full_length += (
+                1 if full_length % 2 else 0
+            )  # trailing padding byte if even length
+
+            # If we have YBR_FULL_2, must be RGB to obtain pixel data
+            if (
+                not dicom.file_meta.TransferSyntaxUID.is_compressed
+                and dicom.PhotometricInterpretation == "YBR_FULL_422"
+                and fix_interpretation
+                and actual_length >= full_length
+            ):
+                bot.warning(
+                    "Updating dicom.PhotometricInterpretation to RGB, set fix_interpretation to False to skip."
+                )
+                photometric_original = dicom.PhotometricInterpretation
+                dicom.PhotometricInterpretation = "RGB"
+                self.original = dicom.pixel_array
+                dicom.PhotometricInterpretation = photometric_original
+            else:
+                self.original = dicom.pixel_array
 
             # Compile coordinates from result
             coordinates = []
@@ -122,9 +148,48 @@ class DicomCleaner:
                         new_coordinates = [int(x) for x in coordinate_set.split(",")]
                         coordinates.append(new_coordinates)  # [[1,2,3,4],...[1,2,3,4]]
 
+            # Instead of writing directly to data, create a mask
+            # For 4D, (frames, X, Y, channel)
+            if len(self.original.shape) == 4:
+                mask = numpy.zeros(self.original.shape[1:3], dtype=numpy.uint8)
+
+            # For 3D, (X, Y, channel)
+            else:
+                mask = numpy.zeros(self.original.shape[0:2], dtype=numpy.uint8)
+
             for coordinate in coordinates:
                 minr, minc, maxr, maxc = coordinate
-                self.cleaned[minc:maxc, minr:maxr] = 0  # should fill with black
+
+                # Update the mask: values set to 0 to be black
+                mask[minc:maxc, minr:maxr] = 1
+
+            # Now apply finished mask to the data
+            if len(self.original.shape) == 4:
+
+                # np.tile does the copying and stacking of masks into the channel dim to produce 3D masks
+                # transposition to convert tile output (channel, X, Y)  into (X, Y, channel)
+                # see: https://github.com/nquach/anonymize/blob/master/anonymize.py#L154
+                channel3mask = numpy.transpose(numpy.tile(mask, (3, 1, 1)), (1, 2, 0))
+
+                # use numpy.tile to copy and stack the 3D masks into 4D array to apply to 4D pixel data
+                # tile converts (X, Y, channels) -> (frames, X, Y, channels), presumed ordering for 4D pixel data
+                final_mask = numpy.tile(channel3mask, (self.original.shape[0], 1, 1, 1))
+
+                # apply final 4D mask to 4D pixel data
+                self.cleaned = final_mask * self.original
+
+            # greyscale: no need to stack into the channel dim since it doesnt exist
+            elif len(self.original.shape) == 3:
+
+                # numpy.tile converts (X, Y) -> (frames, X, Y)
+                final_mask = numpy.tile(mask, (self.original.shape[0], 1, 1))
+                self.cleaned = final_mask * self.original
+
+            else:
+                bot.warning(
+                    "Pixel array dimension %s is not recognized."
+                    % (self.original.shape)
+                )
 
     def get_figure(self, show=False, image_type="cleaned", title=None):
         """get a figure for an original or cleaned image. If the image
