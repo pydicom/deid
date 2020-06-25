@@ -28,6 +28,7 @@ from deid.config import DeidRecipe
 from deid.logger import bot
 from deid.dicom.filter import apply_filter
 from pydicom import read_file
+from pydicom.sequence import Sequence
 
 
 def has_burned_pixels(dicom_files, force=True, deid=None):
@@ -141,6 +142,7 @@ def _has_burned_pixels_single(dicom_file, force, deid):
 
                 # You cannot pop from the list
                 for a in range(len(group["action"])):
+
                     action = group["action"][a]
                     field = group["field"][a]
                     value = ""
@@ -164,21 +166,21 @@ def _has_burned_pixels_single(dicom_file, force, deid):
 
                     group_descriptions.append(description)
 
-                # At the end of a group, evaluate the inner group
-                flag = evaluate_group(group_flags)
+            # At the end of a group, evaluate the inner group
+            flag = evaluate_group(group_flags)
 
-                # "Operator" is relevant for the outcome of the list of actions
-                operator = ""
-                if "operator" in group:
-                    if group["operator"] is not None:
-                        operator = group["operator"]
-                        flags.append(operator)
+            # "Operator" is relevant for the outcome of the list of actions
+            operator = ""
+            if "operator" in group:
+                if group["operator"] is not None:
+                    operator = group["operator"]
+                    flags.append(operator)
 
-                flags.append(flag)
-                reason = ("%s %s" % (operator, " ".join(group_descriptions))).replace(
-                    "\n", " "
-                )
-                descriptions.append(reason)
+            flags.append(flag)
+            reason = ("%s %s" % (operator, " ".join(group_descriptions))).replace(
+                "\n", " "
+            )
+            descriptions.append(reason)
 
             # When we parse through a group, we evaluate based on all flags
             flagged = evaluate_group(flags=flags)
@@ -186,6 +188,12 @@ def _has_burned_pixels_single(dicom_file, force, deid):
             if flagged is True:
                 global_flagged = True
                 reason = " ".join(descriptions)
+
+                # If coordinates are empty, we derive from dicom
+                if item["coordinates"] and "from:" in item["coordinates"][0]:
+                    item["coordinates"] = extract_coordinates(
+                        dicom, item["coordinates"][0]
+                    )
 
                 result = {
                     "reason": reason,
@@ -211,6 +219,10 @@ def evaluate_group(flags):
     flagged = False
     first_entry = True
 
+    # If it starts with and and/or, remove it
+    if flags and flags[0] in ["and", "or"]:
+        flags.pop(0)
+
     while len(flags) > 0:
         flag = flags.pop(0)
         if flag == "and":
@@ -228,3 +240,55 @@ def evaluate_group(flags):
         first_entry = False
 
     return flagged
+
+
+def extract_coordinates(dicom, field):
+    """Given a field that is provided for a dicom, extract coordinates
+    """
+    field = field.replace("from:", "", 1)
+    coordinates = []
+    if field not in dicom:
+        return coordinates
+
+    regions = []
+    region = dicom.get(field)
+
+    # First put list of attributes together
+    if isinstance(region, Sequence):
+        for entry in region:
+            regions.append(entry)
+    else:
+        regions.append(region)
+
+    # Now extract coordinates
+    for region in regions:
+
+        if (
+            "RegionLocationMinX0" in region
+            and "RegionLocationMinY0" in region
+            and "RegionLocationMaxX1" in region
+            and "RegionLocationMaxY1" in region
+        ):
+
+            # https://gist.github.com/vsoch/df6957be12c34e62b21000603f1687e5
+            # minr, minc, maxr, maxc = coordinate
+            # self.cleaned[minc:maxc, minr:maxr] = 0  # should fill with black
+            # self.cleaned[A:B, C:D]
+            # image[A:B,C:D]
+            # A: refers to ymin
+            # B: refers to ymax
+            # C: refers xmin
+            # D: refers to xmax
+            # self.cleaned[ymin:ymax, xmin:xmax]
+            # coordinate must be [xmin, ymin, xmax, ymax]
+            # x0,y0,x1,y1.
+            coordinates.append(
+                "%s,%s,%s,%s"
+                % (
+                    region.RegionLocationMinX0,
+                    region.RegionLocationMinY0,
+                    region.RegionLocationMaxX1,
+                    region.RegionLocationMaxY1,
+                )
+            )
+    return coordinates

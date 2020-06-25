@@ -30,6 +30,7 @@ probably guess that we are going to create a filter called "dangerouscookie"
 based on some set of criteria, and perform some actions on image headers.
 Let's first discuss each of the sections.
 
+<a id="sections">
 ## Sections
 
 A section is a part of the recipe that starts with a "%". You can think of
@@ -49,7 +50,7 @@ a section as a chunk of text that is parsed for some purpose. For example,
 Good question! Let's talk about the two primary functions of deid, and how
 to write recipes to do those things.
 
-
+<a id="clean-pixels">
 ## Clean Pixels
 
 The general application flow of the clean function is the following:
@@ -67,7 +68,7 @@ action corresponds with either:
 For reading more about how the Deid software does this by way of a file called 
 a deid recipe, read about deid [recipe filters]({{ site.baseurl }}/user-docs/recipe-filters/).
 
-
+<a id="clean-headers">
 ## Clean Headers
 
 The general application flow to clean headers looks like this:

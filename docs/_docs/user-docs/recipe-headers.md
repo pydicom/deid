@@ -9,6 +9,7 @@ notes page, the deid recipe allows you to configure both cleaning of pixels
 and changing header values. This document covers the second - how to get, update,
 and replace header values.
 
+<a id="application-flow">
 ## Application Flow
 
 Cleaning headers in dicom images typically has four parts:
@@ -23,6 +24,7 @@ how you can configure rules for the software. If you are interested in the comma
 line client for these commands (and not functions) you should read about 
 [the client]({{ site.baseurl }}/user-docs/client/).
 
+<a id="defaults">
 ## Defaults
 
 The application does the following, by default, taking a conservative de-identification process:
@@ -39,6 +41,7 @@ However, you might want to do either of the following:
 
 We will show you a working example of the above as you continue this walkthrough. For now, let's review configuration settings. 
 
+<a id="standard-anonymization">
 ### Standard Anonymization
 For a best effort anonymization, you will likely want to extract data, replace some fields, 
 and put back the replacements. In this case you need to make a config file that should be provided with your function calls. 
@@ -48,6 +51,7 @@ and put back the replacements. In this case you need to make a config file that 
 The format of this file is discussed below, and can be used to specify preferences 
 for different kinds of datasets (dicom or nifti) and things to identify (pixels and headers).
 
+<a id="rules">
 ## Rules
 You can create a specification of rules for the application to customize its behavior. 
 The file standard that I've been using is to call all files `deid` and use a reverse extension to indicate tag,
@@ -72,14 +76,17 @@ In the above example, we tell the application exactly how to deal with header fi
 We do that by way of sections (the lines that begin with `%` like `%header` and actions (eg, `KEEP`). 
 Each of these variables will be discussed in detail, next.
 
+<a id="format">
 ### Format
 The first thing that should appear in a recipe file is the `FORMAT` label. This is a message to the 
 application that the following commands are intended for dicom files, and the name `dicom` 
 matches exactly with the "dicom" module in the deid module. 
 
+<a id="sections">
 ### Sections
 Each section corresponds to a part of the data (eg, header or pixels) and then defines actions that can be taken for it.
 
+<a id="actions">
 #### Actions
 Although different sections can have their own actions defined, for simplicity many sections share the same set:
 
@@ -99,7 +106,7 @@ ADD PatientIdentityRemoved Yes
 #<ACTION> <FIELD>
 KEEP PixelData
 ```
-
+<a id="dynamic-values">
 #### Dynamic Values
 
 **var**
@@ -172,6 +179,7 @@ check if any portion of the name is represented in the current value. We return
 True if this is the case. The dicom is the dicom file (read in with Pydicom) that you can use to interact
 with (in the example above we grab the `PatientName`).
 
+<a id="header">
 #### Header
 
 We know that we are dealing with functions relevant to the header of the image 
@@ -215,6 +223,7 @@ The above would remove everything except for the pixel data, and a few fields
 that are relevant to its dimensions. It would add a field to indicate the 
 patient's identity was removed.
 
+<a id="jitter">
 ##### Jitter
 For jitter, you can add a hard coded number, or a variable to specify it:
 
@@ -224,6 +233,7 @@ JITTER Date 31
 JITTER PatientBirthDate -31
 ```
 
+<a id="field-expansion">
 ##### Field Expansion
 
 In some cases, it might be extremely tenuous to list every field ending in the same thing, 
@@ -387,7 +397,7 @@ These notes are provided to give detail about the implementation - you do not ne
 to worry about using these underlying functions to do expansion, only that they
 are working to expose even private tags for parsing.
 
-
+<a id="example">
 ## Example
 
 The suggested approach that you should take, replacing the main entity data 
@@ -417,8 +427,10 @@ REPLACE SOPInstanceUID var:source_id
 And the expectation would be that you provide variables with keys `source_id` and `id` 
 appended to the response from get that is handed to the put action. 
 
+<a id="future-additions">
 ## Future Additions
 
+<a id="format-nifti">
 ### Format nifti
 In the future when we add support for other data types, the config might look 
 something like this (note the added nifti section):
@@ -441,7 +453,7 @@ REPLACE PatientID var:id
 REPLACE InstanceSOPUID var:source_id
 ```
 
-
+<a id="value-expansion">
 ##### Value Expansion
 
 These same filters can also be used with any action that is considered a boolean,

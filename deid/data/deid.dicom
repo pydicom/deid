@@ -11,6 +11,14 @@ LABEL Marked as Clean Catch All # (Vanessa Sochat)
 
 %filter graylist
 
+# Coordinates from fields
+
+LABEL Clean Ultrasound Regions
+    present SequenceOfUltrasoundRegions
+    coordinates from:SequenceOfUltrasoundRegions
+
+# Flags Only
+
 LABEL Stanford Med Reconstruction # (Vanessa Sochat)
   missing Manufacturer || empty Manufacturer
   + contains ImageType RECONSTRUCTION|SECONDARY|DERIVED

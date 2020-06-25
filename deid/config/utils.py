@@ -304,7 +304,7 @@ def parse_label(section, config, section_name, members, label=None):
 
         # We have a coordinate line
         if member.lower().startswith("coordinates"):
-            coordinate = member.lower().replace("coordinates", "").strip()
+            coordinate = member.replace("coordinates", "").strip()
             criteria["coordinates"].append(coordinate)
             continue
         operator = None
@@ -315,6 +315,10 @@ def parse_label(section, config, section_name, members, label=None):
         elif member.startswith("||"):
             operator = "or"
             member = member.replace("||", "", 1).strip()
+
+        # Skip over comments
+        if member.startswith("#"):
+            continue
 
         # Now that operators removed, parse member
         if not member.lower().startswith(filters):

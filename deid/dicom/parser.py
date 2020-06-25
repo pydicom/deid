@@ -371,10 +371,21 @@ class DicomParser:
                 tag = add_tag(name)
 
             if tag:
-                uid = str(tag["tag"])
-                element = DataElement(tag["tag"], tag["VR"], value)
-                self.dicom.add(element)
-                self.fields[uid] = DicomField(element, name, uid)
+                uid = getattr(field, "uid", None) or str(tag["tag"])
+
+                # For a replacement, this is likely
+                if uid in self.fields:
+                    element = self.fields[uid]
+
+                    # Nested fields
+                    while not hasattr(element, "value"):
+                        element = element.element
+                    element.value = value
+
+                else:
+                    element = DataElement(tag["tag"], tag["VR"], value)
+                    self.dicom.add(element)
+                    self.fields[uid] = DicomField(element, name, uid)
             else:
                 bot.warning("Cannot find tag for field %s, skipping." % name)
 

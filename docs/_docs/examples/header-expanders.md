@@ -9,6 +9,7 @@ to select more than one field from a dicom header to apply an action to.
 Thanks to [@howardpchen](https://github.com/howardpchen) for contributing this idea in [this issue](https://github.com/pydicom/deid/issues/87). We will first show examples that you can write into [a deid recipe](https://pydicom.github.io/deid/examples/recipe/) to keep a record of your dicom header edits. We will then show the same
 (and more advanced) actions working with expanders directly in Python. Let's go! Let's say I want to:
 
+<a id="deid-recipes">
 ## Deid Recipes
 
 **Blank all fields that end with "Name"**
@@ -57,12 +58,14 @@ REPLACE all func:my_special_function
 REPLACE except:LoserField func:my_special_function
 ```
 
+<a id="python-examples">
 ## Python Examples
 
 If you want to use the expanders in your code, that's easy too! Here
 are the same examples. Let's first start with reading in a dicom file, 
 such as one of the dicom-cookies examples provided with deid.
 
+<a id="imports">
 ## Imports
 We first import the functions that we need
 
@@ -80,6 +83,7 @@ dicom_files = list(get_files(base))
 
 `dicom_files` is a list of the complete paths for 7 dicom cookie examples.
 
+<a id="explore-expanders">
 ## Explore Expanders
 
 For the purpose of exploration, let's load one file.
@@ -102,6 +106,7 @@ fields that meet some criteria.  Given an action, these fields would be
 passed on to the next step in deid to handle the action. 
 You could also use this function to interactively explore the header data, or another purpose.
 
+<a id="select-all-fields-that-end-with-name">
 ### Select all fields that end with "Name"
 
 Let's get back the list of fields that end with name.
@@ -115,7 +120,7 @@ fields = expand_field_expression("endswith:Name", dicom)
 Notice that we are passing the dicom image, and the list returned in fact ends
 with name. Capitalization of "Name" "name" "nAmE" does not matter.
 
-
+<a id="select-all-fields-that-start-with-patient">
 ### Select all fields that start with Patient
 
 Here we want fields that start with Patient. Again, the capitalization (or not)
@@ -134,6 +139,7 @@ fields = expand_field_expression("startswith:Patient", dicom)
 If you were using this to explore data, it would be useful to do to possibly
 discover fields relevant to the patient that you didn't know about.
 
+<a id="select-all-fields-that-contain-physician-or-patient">
 ### Select all fields that contain Physician or Patient
 
 A pro tip (do they still call them that these days?) Some of the expanders use regular
@@ -154,6 +160,7 @@ fields = expand_field_expression("contains:Patient|Physician", dicom)
 
 You can also just select one field.
 
+<a id="select-all-fields-except-patientname-or-patientsex">
 ### Select all fields except PatientName or PatientSex
 
 We know there are a total of 34 fields, so this should select 32.
@@ -166,6 +173,7 @@ len(fields)
 ```
 Indeed we've selected all but the two, leaving us with 32.
 
+<a id="select-a-specific-field">
 ### Select a specific field
 
 This is a fairly silly example to show, but for many actions you may just choose
@@ -176,6 +184,7 @@ fields = expand_field_expression("PatientID", dicom)
 ['PatientID']
 ```
 
+<a id="apply-your-special-function-to-all-fields">
 ### Apply your special function to ALL fields
 
 This is a more complex (and fun!) example. We want to apply a function to
@@ -208,6 +217,7 @@ recipe.get_actions()
 Out[47]: [{'action': 'REPLACE', 'field': 'all', 'value': 'func:pusheenize'}]
 ```
 
+<a id="extract-identifiers">
 ### 1. Extract Identifiers
 
 We would first need to extract what is currently there. Identifiers are basically a dictionary
@@ -222,6 +232,7 @@ items = get_identifiers(dicom_files)
 The items is a lookup dictionary mapping dicom files to a dictionary of fields
 and corresponding values. Now let's write our function.
 
+<a id="write-our-function">
 ### 2. Write Our Function!
 
 Notice the reference to a "func:pusheenize" in the recipe? We need that function
@@ -229,12 +240,16 @@ in the Python environment before we replace identifiers. The function we write s
 
  - item: is going to be the dictionary of fields (keys) and respective values for the dicom being processed. We do this to make all data in the dicom header available to you.
  - value: Is the function name (e.g., func:pusheen) that you've defined.
- - field: if the name of the field, e.g., PatientID.
+ - field: is a dicom Element for you to interact with. For example, you can get `field.element.keyword`, `field.element.name`, or `field.name` for different string values (e.g., PatientID).
 
 ```python
-def pusheenize(item, value, field):
-    value = item.get(field, '')
+def pusheenize(item, value, field, dicom):
+    # field is a dicom element object, so we need to derive it's name
+    field = field.element.keyword
+    # The value coming in is func:pusheenize so we need to get actual value
+    value = dicom.get(field, '')
     if "Name" in field:
+        # If this is a person name class, it will need to be converted to string
         value = "Pusheena" + value.replace(' ', '')
     return value
 ```
@@ -258,6 +273,7 @@ for item in items:
     items[item]['pusheenize'] = pusheenize
 ```
 
+<a id="replace-identifers">
 ### 3. Replace Identifiers
 given that our function is in the python working environment, we would
 have extracted identifiers like this. We don't want to save them

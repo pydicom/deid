@@ -17,7 +17,7 @@ usage and commands) please [provide feedback]
 The primary use of deid by the developers group has 
 been via functions in Python, so the client might be neglected.
 
-
+<a id="usage">
 ## Usage
 If you run the executable without any arguments, it will show you it's usage:
 
@@ -37,7 +37,7 @@ actions. Let's walk through the simplest use case, giving an action without
 any other arguments, which will use the default dataset provided (a subset 
 of [dicom-cookies](https://pydicom.github.io/dicom-cookies)).
 
-
+<a id="inspect">
 ### Inspect
 
 Currently, inspect is simply going to look at header fields and try to guess 
@@ -129,6 +129,7 @@ that to save and tweak these identifiers, you will likely need to load them
 programmatically anyway, and we are doing a good deed for the world to 
 encourage using Python :). 
 
+<a id="customize-message-level">
 #### Customize Message Level
 Also by default, we give you debug output. If you want to silence the output, 
 then you can add `--quiet`:
@@ -154,6 +155,7 @@ deid --action get
 
 And nothing would be printed! 
 
+<a id="customize-output">
 #### Customize Output
 If you just want to check output, it might be useful to print it to the screen. 
 You can do this by adding the flag `--print`:
@@ -222,7 +224,7 @@ image1.dcm  image3.dcm  image5.dcm  image7.dcm
 image2.dcm  image4.dcm  image6.dcm
 
 ```
-
+<a id="customizing-output-directory">
 ### Customizing Output Directory
 You can change the output directory with the `--outfolder` flag:
 
@@ -301,7 +303,7 @@ DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
 
 and no error message occurs. 
 
-
+<a id="customize-deid-recipe">
 #### Customize Deid Recipe
 If you generate a configuration file (deid) that says how you want to deidentify 
 your data, then you can give that to get. Here is a simple one, discussed in 
@@ -473,7 +475,7 @@ DEBUG Attempting ADDITION of PatientIdentityRemoved to image5.dcm.
 
 Looks good!
 
-
+<a id="put-and-get">
 ### Put and Get (All)
 If you just want to de-identify your data, (meaning get and put without intervention in between) you can use `--action all`:
 
@@ -527,7 +529,7 @@ This will mean that the majority of things will be removed. You can still specif
 deid file to have additions, or blanks, but all variables must be present in the 
 header already (eg, the fields returned in the ids that we had tweaked above) for it to work.
 
-
+<a id="your-own-folder">
 ### Your own folder
 This is what you really want to do! Specify your own input folder with --input
 

@@ -14,7 +14,10 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
-=======
+ - adding custom cleaner to specify region fields (0.2.13)
+ - bug with replace for tested fields (0.2.12)
+ - fixing func args to be kwargs (0.2.11)
+ - DicomCleaner empty method does not handle list (0.2.1)
  - refactor to use iterall for all fields (0.2.0)
  - including private tags in parsing (0.1.42)
  - adding filters (contains through missing) for REMOVE (0.1.41)

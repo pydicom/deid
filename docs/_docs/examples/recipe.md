@@ -20,10 +20,12 @@ interacting with it, and then using it to replace identifiers. If you want to
 jump in, then go straight to the [script](https://github.com/pydicom/deid/blob/master/examples/dicom/recipe/deid-dicom-example.py) 
 that describes this example.
 
+<a id="recipe-management">
 ## Recipe Management
 
 The following sections will describe creating and combining recipes.
 
+<a id="create-a-deidrecipe">
 ### Create a DeidRecipe
 
 We will start with how to work with a `DeidRecipe` object. If you aren't interested 
@@ -76,6 +78,7 @@ I would strongly recommended starting with an example, and building your custom
 recipe from it. If you have an example that you think others would find useful, 
 please contribute it to the repository in the examples folder.
 
+<a id="combine-recipes">
 ### Combine Recipes
 
 You can also choose to load the default base with your own recipe. In this action, 
@@ -116,7 +119,7 @@ This data folder is to encourage sharing! It often is a lot of work to develop
 a criteria specific for your group or interest. If you have a general recipe 
 that others might use, please [contribute it](https://github.com/pydicom/deid/blob/master/CONTRIBUTING.md#pull-request-process).
 
-
+<a id="sections">
 ## Sections
 
 Now let's discuss the sections that a recipe can include, including a header, labels, filters, and
@@ -143,7 +146,7 @@ recipe.ls_filters()
 # To get a list of specific filters under a group
 recipe.get_filters('blacklist')
 ```
-
+<a id="header-actions">
 ## Header Actions
 
 A header action is a step (e.g., replace, remove, blank) to be applied to
@@ -210,6 +213,7 @@ recipe.get_values_lists("cookie_names")
 
 If you have need for more advanced functions, please [file an issue](https://www.github.com/pydicom/deid/issues).
 
+<a id="replace-identifiers">
 ## Replace Identifiers
 
 The `%header` section of a deid recipe defines a set of actions and associated
@@ -331,6 +335,7 @@ cleaned_files = replace_identifiers(dicom_files=dicom_files,
                                     overwrite=True)
 ```
 
+<a id="groups">
 ## Groups
 
 More advanced usage of header actions would be to define a group of values (the content of the 
