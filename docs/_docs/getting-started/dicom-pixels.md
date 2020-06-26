@@ -236,6 +236,24 @@ but you might choose also `FloatPixelData` or `DoubleFloatPixelData` you can do:
 client.clean(pixel_data_attribute="FloatPixelData")
 ```
 
+Note that if your image is 4D and you try to save PNG, it will choose a random
+channel and a middle slice to save.
+
+```python
+client.save_png()
+WARNING Image detected as 4d, will sample channel 1 and middle Z slice
+```
+
+On the other hand, if you want to save a small animation, as of deid version
+0.2.14 you can do that for 4D images instead:
+
+```python
+client.save_animation()
+WARNING Selecting channel 0 for rendering
+Generating animation...
+'/tmp/deid-clean-10_pezq4/cleaned-echo1.mp4'
+```
+
 <a id="debugging">
 ### Debugging and Important Notes
 

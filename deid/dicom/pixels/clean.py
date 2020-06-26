@@ -30,9 +30,12 @@ from deid.logger import bot
 from deid.utils import get_temporary_name
 from pydicom import read_file
 import matplotlib
+import math
 import numpy
 import os
+import random
 import re
+import sys
 
 matplotlib.use("pdf")
 
@@ -194,11 +197,25 @@ class DicomCleaner:
     def get_figure(self, show=False, image_type="cleaned", title=None):
         """get a figure for an original or cleaned image. If the image
            was already clean, it is simply a copy of the original.
-           If show is True, plot the image.
+           If show is True, plot the image. If a 4d image is discovered, we use
+           randomly choose a slice.
         """
         if hasattr(self, image_type):
             _, ax = plt.subplots(figsize=(10, 6))
-            ax.imshow(self.cleaned, cmap=self.cmap)
+
+            # Retrieve full image
+            image = getattr(self, image_type)
+
+            # Handle 4d data by choosing one dimension
+            if len(image.shape) == 4:
+                channel = random.choice(range(image.shape[3]))
+                bot.warning(
+                    "Image detected as 4d, will sample channel %s and middle slice"
+                    % channel
+                )
+                image = image[math.floor(image.shape[0] / 2), :, :, channel]
+
+            ax.imshow(image, cmap=self.cmap)
             if title is not None:
                 plt.title(title, fontdict=self.font)
             if show is True:
@@ -227,10 +244,11 @@ class DicomCleaner:
         return "%s/cleaned-%s.%s" % (output_folder, basename, extension)
 
     def save_png(self, output_folder=None, image_type="cleaned", title=None):
-        """save an original or cleaned dicom as png to disk.
-           Default image_format is "cleaned" and can be set 
-           to "original." If the image was already clean (not 
-           flagged) the cleaned image is just a copy of original
+        """save an original or cleaned dicom as png to disk. Default 
+           image_format is "cleaned" and can be set to "original." If the image 
+           was already clean (not flagged) the cleaned image is just a 
+           copy of original. If a 4d image is provided, we save the dimension
+           specified (or if not provided, a randomly chosen dimension).
         """
         if hasattr(self, image_type):
             png_file = self._get_clean_name(output_folder, "png")
@@ -238,6 +256,63 @@ class DicomCleaner:
             plt.savefig(png_file)
             plt.close()
             return png_file
+        else:
+            bot.warning("use detect() --> clean() before saving is possible.")
+
+    def save_animation(self, output_folder=None, image_type="cleaned", title=None):
+        """save an original or cleaned animation of a dicom. If there are not
+           enough frames, then save_png should be used instead.
+        """
+        if hasattr(self, image_type):
+            from matplotlib import animation, rc
+
+            animation.rcParams["animation.writer"] = "ffmpeg"
+
+            image = getattr(self, image_type)
+
+            # If we have rgb, choose a channel
+
+            if len(image.shape) == 4:
+                channel = random.choice(range(image.shape[3]))
+                bot.warning("Selecting channel %s for rendering" % channel)
+                image = image[:, :, :, channel]
+
+            # Now we expect 3D, we can animate one dimension over time
+            if len(image.shape) == 3:
+                movie_file = self._get_clean_name(output_folder, "mp4")
+
+                # First set up the figure, the axis, and the plot element we want to animate
+                fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 6))
+                plt.close()
+                ax.xlim = (0, image.shape[1])
+                ax.ylim = (0, image.shape[2])
+                ax.set_xticks([])
+                ax.set_yticks([])
+                img = ax.imshow(image[0, :, :].T, cmap="gray")
+                img.set_interpolation("nearest")
+
+                # The animation function should take an index i
+                def animate(i):
+                    img.set_data(image[i, :, :].T)
+                    sys.stdout.flush()
+                    return (img,)
+
+                bot.info("Generating animation...")
+                anim = animation.FuncAnimation(
+                    fig, animate, frames=image.shape[0], interval=50, blit=True
+                )
+                anim.save(
+                    movie_file,
+                    writer="ffmpeg",
+                    fps=10,
+                    dpi=100,
+                    metadata={"title": title or "deid-animation"},
+                )
+                return movie_file
+            else:
+                bot.warning(
+                    "save_animation() is only for 4D data. Use save_png instead."
+                )
         else:
             bot.warning("use detect() --> clean() before saving is possible.")
 
