@@ -602,6 +602,28 @@ class TestDicom(unittest.TestCase):
         with self.assertRaises(KeyError):
             check4 = parser.dicom["00331019"].value
 
+    def test_strip_sequences(self):
+        """
+        %header
+        ADD PatientIdentityRemoved Yeppers!
+        """
+        print("Test strip_sequences")
+        dicom_file = get_file(self.dataset)
+
+        actions = [{"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yeppers!"}]
+        recipe = create_recipe(actions)
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=True,
+        )
+        self.assertEqual(1, len(result))
+        self.assertEqual(152, len(result[0]))
+        with self.assertRaises(KeyError):
+            check1 = result[0]["00081110"].value
+
     # MORE TESTS NEED TO BE WRITTEN TO TEST SEQUENCES
 
 
