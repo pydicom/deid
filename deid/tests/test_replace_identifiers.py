@@ -615,7 +615,9 @@ class TestDicom(unittest.TestCase):
         print("Test strip_sequences")
         dicom_file = get_file(self.dataset)
 
-        actions = [{"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yeppers!"}]
+        actions = [
+            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yeppers!"}
+        ]
         recipe = create_recipe(actions)
         result = replace_identifiers(
             dicom_files=dicom_file,
@@ -630,7 +632,6 @@ class TestDicom(unittest.TestCase):
             check1 = result[0]["00081110"].value
         for tag in result[0]:
             self.assertFalse(isinstance(tag.value, Sequence))
-
 
     # MORE TESTS NEED TO BE WRITTEN TO TEST SEQUENCES
 

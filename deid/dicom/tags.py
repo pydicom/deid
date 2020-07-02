@@ -133,6 +133,7 @@ def remove_sequences(dicom):
             del dicom[elem.tag]
     return dicom
 
+
 def update_tag(dicom, field, value):
     """update tag will update a value in the header, if it exists
        if not, nothing is added. This check is the only difference
