@@ -132,18 +132,6 @@ def remove_sequences(dicom):
         if isinstance(elem.value, Sequence) and dicom.get(elem.tag) != None:
             del dicom[elem.tag]
     return dicom
-    
-    """
-    #Option B
-    for elem in dicom.iterall():
-        if isinstance(elem.value, Sequence):       
-            try:
-                del dicom[elem.tag]
-            except KeyError as e:
-                # consume KeyError.  This handles scenarios where the key has already been removed. (Nested sequences)
-                pass
-    return dicom
-    """
 
 def update_tag(dicom, field, value):
     """update tag will update a value in the header, if it exists

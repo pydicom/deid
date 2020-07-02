@@ -36,6 +36,7 @@ from deid.data import get_dataset
 from deid.dicom.parser import DicomParser
 from deid.dicom import get_identifiers, replace_identifiers
 from pydicom import read_file
+from pydicom.sequence import Sequence
 
 from collections import OrderedDict
 
@@ -604,6 +605,10 @@ class TestDicom(unittest.TestCase):
 
     def test_strip_sequences(self):
         """
+        Testing strip sequences: Checks to ensure that the strip_sequences removes all tags of type 
+        sequence.  Since sequence removal relies on dicom.iterall(), nested sequences previously
+        caused exceptions to be thrown when child (or duplicate) sequences existed within the header.
+
         %header
         ADD PatientIdentityRemoved Yeppers!
         """
@@ -623,6 +628,9 @@ class TestDicom(unittest.TestCase):
         self.assertEqual(152, len(result[0]))
         with self.assertRaises(KeyError):
             check1 = result[0]["00081110"].value
+        for tag in result[0]:
+            self.assertFalse(isinstance(tag.value, Sequence))
+
 
     # MORE TESTS NEED TO BE WRITTEN TO TEST SEQUENCES
 
