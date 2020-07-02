@@ -14,7 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
- - bug fix for duplicate/nested sequences within replace_identifiers - strip_sequences [#137](https://github.com/pydicom/deid/issues/137) (0.2.14)
+ - nested sequence in replace_identifiers/strip_sequences bug [#137](https://github.com/pydicom/deid/issues/137) (0.2.14)
  - adding custom cleaner to specify region fields (0.2.13)
  - bug with replace for tested fields (0.2.12)
  - fixing func args to be kwargs (0.2.11)
