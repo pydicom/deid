@@ -36,6 +36,7 @@ from deid.data import get_dataset
 from deid.dicom.parser import DicomParser
 from deid.dicom import get_identifiers, replace_identifiers
 from pydicom import read_file
+from pydicom.sequence import Sequence
 
 from collections import OrderedDict
 
@@ -601,6 +602,36 @@ class TestDicom(unittest.TestCase):
             check3 = parser.dicom["RequestingPhysician"].value
         with self.assertRaises(KeyError):
             check4 = parser.dicom["00331019"].value
+
+    def test_strip_sequences(self):
+        """
+        Testing strip sequences: Checks to ensure that the strip_sequences removes all tags of type 
+        sequence.  Since sequence removal relies on dicom.iterall(), nested sequences previously
+        caused exceptions to be thrown when child (or duplicate) sequences existed within the header.
+
+        %header
+        ADD PatientIdentityRemoved Yeppers!
+        """
+        print("Test strip_sequences")
+        dicom_file = get_file(self.dataset)
+
+        actions = [
+            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yeppers!"}
+        ]
+        recipe = create_recipe(actions)
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=True,
+        )
+        self.assertEqual(1, len(result))
+        self.assertEqual(152, len(result[0]))
+        with self.assertRaises(KeyError):
+            check1 = result[0]["00081110"].value
+        for tag in result[0]:
+            self.assertFalse(isinstance(tag.value, Sequence))
 
     # MORE TESTS NEED TO BE WRITTEN TO TEST SEQUENCES
 
