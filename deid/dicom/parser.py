@@ -164,6 +164,7 @@ class DicomParser:
         parent, desired = self.get_nested_field(field, return_parent=True)
         if parent and desired in parent:
             del parent[desired]
+            del self.fields[field.uid]
 
     def blank_field(self, field):
         """Blank a field"""
@@ -345,7 +346,12 @@ class DicomParser:
 
         # Otherwise, these are operations on existing fields
         else:
-            for uid, field in fields.items():
+            """ clone the fields dictionary. delete actions must also delete from the fields dictionary.
+                performing the clone and iterating on the clone allows the deletions while preventing a
+                runtime error - "dictionary changed size during iterations"
+            """
+            temp_fields = dict(fields)
+            for uid, field in temp_fields.items():
                 self._run_action(field=field, action=action, value=value)
 
     def add_field(self, field, value):
