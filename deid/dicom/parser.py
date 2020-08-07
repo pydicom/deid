@@ -43,6 +43,7 @@ from deid.utils import parse_value, read_json
 
 import os
 import re
+from copy import deepcopy
 
 here = os.path.dirname(os.path.abspath(__file__))
 
@@ -350,7 +351,7 @@ class DicomParser:
                 performing the clone and iterating on the clone allows the deletions while preventing a
                 runtime error - "dictionary changed size during iterations"
             """
-            temp_fields = dict(fields)
+            temp_fields = deepcopy(fields)
             for uid, field in temp_fields.items():
                 self._run_action(field=field, action=action, value=value)
 
