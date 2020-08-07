@@ -649,7 +649,7 @@ class TestDicom(unittest.TestCase):
 
         actions = [
             {"action": "JITTER", "field": "StudyDate", "value": "1"},
-            {"action": "JITTER", "field": "StudyDate", "value": "2"}
+            {"action": "JITTER", "field": "StudyDate", "value": "2"},
         ]
         recipe = create_recipe(actions)
         result = replace_identifiers(
@@ -680,7 +680,7 @@ class TestDicom(unittest.TestCase):
 
         actions = [
             {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yeppers!"},
-            {"action": "REMOVE", "field": "PatientIdentityRemoved"}
+            {"action": "REMOVE", "field": "PatientIdentityRemoved"},
         ]
         recipe = create_recipe(actions)
         result = replace_identifiers(
@@ -712,7 +712,7 @@ class TestDicom(unittest.TestCase):
 
         actions = [
             {"action": "REMOVE", "field": "PatientID"},
-            {"action": "ADD", "field": "PatientID", "value": "123456"}
+            {"action": "ADD", "field": "PatientID", "value": "123456"},
         ]
         recipe = create_recipe(actions)
         result = replace_identifiers(
