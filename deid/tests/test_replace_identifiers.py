@@ -36,6 +36,7 @@ from deid.data import get_dataset
 from deid.dicom.parser import DicomParser
 from deid.dicom import get_identifiers, replace_identifiers
 from pydicom import read_file
+from pydicom.sequence import Sequence
 
 from collections import OrderedDict
 
@@ -601,6 +602,130 @@ class TestDicom(unittest.TestCase):
             check3 = parser.dicom["RequestingPhysician"].value
         with self.assertRaises(KeyError):
             check4 = parser.dicom["00331019"].value
+
+    def test_strip_sequences(self):
+        """
+        Testing strip sequences: Checks to ensure that the strip_sequences removes all tags of type 
+        sequence.  Since sequence removal relies on dicom.iterall(), nested sequences previously
+        caused exceptions to be thrown when child (or duplicate) sequences existed within the header.
+
+        %header
+        ADD PatientIdentityRemoved Yeppers!
+        """
+        print("Test strip_sequences")
+        dicom_file = get_file(self.dataset)
+
+        actions = [
+            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yeppers!"}
+        ]
+        recipe = create_recipe(actions)
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=True,
+        )
+        self.assertEqual(1, len(result))
+        self.assertEqual(152, len(result[0]))
+        with self.assertRaises(KeyError):
+            check1 = result[0]["00081110"].value
+        for tag in result[0]:
+            self.assertFalse(isinstance(tag.value, Sequence))
+
+    def test_jitter_compounding(self):
+        """
+        Testing jitter compounding: Checks to ensure that multiple jitter rules applied to the same field result
+        in both rules being applied. While in practice this may be somewhat of a nonsensical use case when large recipes
+        exist multiple rules may inadvertently be defined.  In prior versions of pydicom/deid rules were additive and 
+        recipes are built in that manner.  This test ensures consistency with prior versions.
+
+        %header
+        JITTER StudyDate 1
+        JITTER StudyDate 2
+        """
+        print("Test jitter compounding")
+        dicom_file = get_file(self.dataset)
+
+        actions = [
+            {"action": "JITTER", "field": "StudyDate", "value": "1"},
+            {"action": "JITTER", "field": "StudyDate", "value": "2"},
+        ]
+        recipe = create_recipe(actions)
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=True,
+        )
+
+        self.assertEqual(1, len(result))
+        self.assertEqual(151, len(result[0]))
+        self.assertEqual("20230104", result[0]["StudyDate"].value)
+
+    def test_addremove_compounding(self):
+        """
+        Testing add/remove compounding: Checks to ensure that multiple rules applied to the same field result
+        in both rules being applied. While in practice this may be somewhat of a nonsensical use case when large recipes
+        exist multiple rules may inadvertently be defined.  In prior versions of pydicom/deid rules were additive and 
+        recipes are built in that manner.  This test ensures consistency with prior versions.
+
+        %header
+        ADD PatientIdentityRemoved Yeppers!
+        REMOVE PatientIdentityRemoved
+        """
+        print("Test addremove compounding")
+        dicom_file = get_file(self.dataset)
+
+        actions = [
+            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yeppers!"},
+            {"action": "REMOVE", "field": "PatientIdentityRemoved"},
+        ]
+        recipe = create_recipe(actions)
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=True,
+        )
+
+        self.assertEqual(1, len(result))
+        self.assertEqual(151, len(result[0]))
+        with self.assertRaises(KeyError):
+            willerror = result[0]["PatientIdentityRemoved"].value
+
+    def test_removeadd_compounding(self):
+        """
+        Testing remove/add compounding: Checks to ensure that multiple rules applied to the same field result
+        in both rules being applied. While in practice this may be somewhat of a nonsensical use case when large recipes
+        exist multiple rules may inadvertently be defined.  In prior versions of pydicom/deid rules were additive and 
+        recipes are built in that manner.  This test ensures consistency with prior versions.
+
+        %header
+        REMOVE StudyDate
+        ADD StudyDate 20200805
+        """
+        print("Test remove/add compounding")
+        dicom_file = get_file(self.dataset)
+
+        actions = [
+            {"action": "REMOVE", "field": "PatientID"},
+            {"action": "ADD", "field": "PatientID", "value": "123456"},
+        ]
+        recipe = create_recipe(actions)
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=True,
+        )
+
+        self.assertEqual(1, len(result))
+        self.assertEqual(151, len(result[0]))
+        self.assertEqual("123456", result[0]["PatientID"].value)
 
     # MORE TESTS NEED TO BE WRITTEN TO TEST SEQUENCES
 

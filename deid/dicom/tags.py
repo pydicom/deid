@@ -129,7 +129,7 @@ def remove_sequences(dicom):
        dicom: the loaded dicom to remove sequences
     """
     for elem in dicom.iterall():
-        if isinstance(elem.value, Sequence):
+        if isinstance(elem.value, Sequence) and dicom.get(elem.tag) != None:
             del dicom[elem.tag]
     return dicom
 
