@@ -15,6 +15,7 @@ Referenced versions in headers are tagged on Github, in parentheses are for pypi
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
  - ability to save 4d dicom series as animation (0.2.16)
+ - adding keepcoordinates to allow for reverse specified coordinates
  - bug with multiple actions on the same header field [#140](https://github.com/pydicom/deid/issues/140) (0.2.15)
  - nested sequence in replace_identifiers/strip_sequences bug [#137](https://github.com/pydicom/deid/issues/137) (0.2.14)
  - adding custom cleaner to specify region fields (0.2.13)
