@@ -781,7 +781,7 @@ class TestDicom(unittest.TestCase):
         """
         import pydicom
 
-        print("Test empty value valueset")
+        print("Test one empty value valueset")
         dicom_file = get_file(self.dataset)
         original_dataset = pydicom.dcmread(dicom_file)
 

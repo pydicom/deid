@@ -272,7 +272,7 @@ class DicomParser:
 
         fields = {}
 
-        if len(values) > 0:
+        if values:
             # Create single regular expression to search by
             regexp = "(%s)" % "|".join(values)
             for uid, field in self.fields.items():
