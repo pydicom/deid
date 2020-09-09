@@ -34,9 +34,9 @@ import os
 
 def extract_values_list(dicom, actions, fields=None):
     """Given a list of actions for a named group (a list) extract values from
-       the dicom based on the list of actions provided. This function
-       always returns a list intended to update some lookup to be used
-       to further process the dicom.
+    the dicom based on the list of actions provided. This function
+    always returns a list intended to update some lookup to be used
+    to further process the dicom.
     """
     values = set()
 
@@ -53,7 +53,9 @@ def extract_values_list(dicom, actions, fields=None):
 
         # Just grab the entire value string for a field, no parsing
         if action["action"] == "FIELD":
-            [values.add(field.element.value) for uid, field in subset.items()]
+            for uid, field in subset.items():
+                if field.element.value not in ["", None]:
+                    values.add(field.element.value)
 
         # Split action, can optionally have a "by" and/or minlength parameter
         elif action["action"] == "SPLIT":
@@ -93,9 +95,9 @@ def extract_values_list(dicom, actions, fields=None):
 
 def extract_fields_list(dicom, actions, fields=None):
     """Given a list of actions for a named group (a list) extract values from
-       the dicom based on the list of actions provided. This function
-       always returns a list intended to update some lookup to be used
-       to further process the dicom.
+    the dicom based on the list of actions provided. This function
+    always returns a list intended to update some lookup to be used
+    to further process the dicom.
     """
     subset = {}
 

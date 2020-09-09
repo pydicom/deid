@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+ - bug with empty values within %values sections [#144](https://github.com/pydicom/deid/issues/144) (0.2.17)
  - ability to save 4d dicom series as animation (0.2.16)
  - bug with multiple actions on the same header field [#140](https://github.com/pydicom/deid/issues/140) (0.2.15)
  - nested sequence in replace_identifiers/strip_sequences bug [#137](https://github.com/pydicom/deid/issues/137) (0.2.14)
