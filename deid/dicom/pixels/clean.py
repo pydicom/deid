@@ -142,14 +142,23 @@ class DicomCleaner:
             else:
                 self.original = dicom.pixel_array
 
-            # Compile coordinates from result
+            # Compile coordinates from result, generate list of tuples with coordinate and value
+            # keepcoordinates == 1 (included in mask) and coordinates == 0 (remove).
             coordinates = []
+            mask_values = {"keepcoordinates": 1, "coordinates": 0}
             for item in self.results["results"]:
-                if len(item["coordinates"]) > 0:
-                    for coordinate_set in item["coordinates"]:
-                        # Coordinates expected to be list separated by commas
-                        new_coordinates = [int(x) for x in coordinate_set.split(",")]
-                        coordinates.append(new_coordinates)  # [[1,2,3,4],...[1,2,3,4]]
+
+                # Keepcoordinates first to be conservative
+                for index in ["keepcoordinates", "coordinates"]:
+                    if item[index]:
+                        for coordinate_set in item[index]:
+                            # Coordinates expected to be list separated by commas
+                            new_coordinates = [
+                                int(x) for x in coordinate_set.split(",")
+                            ]
+                            coordinates.append(
+                                (mask_values[index], new_coordinates)
+                            )  # [(1, [1,2,3,4]),...(0, [1,2,3,4])]
 
             # Instead of writing directly to data, create a mask
             # For 4D, (frames, X, Y, channel)
@@ -160,11 +169,11 @@ class DicomCleaner:
             else:
                 mask = numpy.zeros(self.original.shape[0:2], dtype=numpy.uint8)
 
-            for coordinate in coordinates:
+            for coordinate_value, coordinate in coordinates:
                 minr, minc, maxr, maxc = coordinate
 
                 # Update the mask: values set to 0 to be black
-                mask[minc:maxc, minr:maxr] = 1
+                mask[minc:maxc, minr:maxr] = coordinate_value
 
             # Now apply finished mask to the data
             if len(self.original.shape) == 4:

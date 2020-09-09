@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+ - adding keepcoordinates to allow for reverse specified coordinates (0.2.18)
  - bug with empty values within %values sections [#144](https://github.com/pydicom/deid/issues/144) (0.2.17)
  - ability to save 4d dicom series as animation (0.2.16)
  - bug with multiple actions on the same header field [#140](https://github.com/pydicom/deid/issues/140) (0.2.15)
