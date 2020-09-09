@@ -56,7 +56,7 @@ class TestDicom(unittest.TestCase):
         print("\n######################END########################")
 
     def test_add_private_constant(self):
-        """ RECIPE RULE
+        """RECIPE RULE
         ADD 11112221 SIMPSON
         """
         print("Test add private tag constant value")
@@ -76,7 +76,7 @@ class TestDicom(unittest.TestCase):
         self.assertEqual("SIMPSON", result[0]["11112221"].value)
 
     def test_add_public_constant(self):
-        """ RECIPE RULE
+        """RECIPE RULE
         ADD PatientIdentityRemoved Yeppers!
         """
 
@@ -99,7 +99,7 @@ class TestDicom(unittest.TestCase):
         self.assertEqual("Yeppers!", result[0].PatientIdentityRemoved)
 
     def test_replace_with_constant(self):
-        """ RECIPE RULE
+        """RECIPE RULE
         REPLACE AccessionNumber 987654321
         REPLACE 00190010 NEWVALUE!
         """
@@ -142,7 +142,7 @@ class TestDicom(unittest.TestCase):
         self.assertEqual(newvalue2, result[0][newfield2].value)
 
     def test_remove(self):
-        """ RECIPE RULE
+        """RECIPE RULE
         REMOVE InstitutionName
         REMOVE 00190010
         """
@@ -194,7 +194,7 @@ class TestDicom(unittest.TestCase):
             check2 = result[0][field2name].value
 
     def test_add_tag_variable(self):
-        """ RECIPE RULE
+        """RECIPE RULE
         ADD 11112221 var:myVar
         ADD PatientIdentityRemoved var:myVar
         """
@@ -225,7 +225,7 @@ class TestDicom(unittest.TestCase):
 
     def test_jitter_date(self):
         # DICOM datatype DA
-        """ RECIPE RULE
+        """RECIPE RULE
         JITTER StudyDate 1
         """
 
@@ -247,7 +247,7 @@ class TestDicom(unittest.TestCase):
 
     def test_jitter_timestamp(self):
         # DICOM datatype DT
-        """ RECIPE RULE
+        """RECIPE RULE
         JITTER AcquisitionDateTime 1
         """
 
@@ -270,7 +270,7 @@ class TestDicom(unittest.TestCase):
         )
 
     def test_expanders(self):
-        """ RECIPE RULES
+        """RECIPE RULES
         REMOVE contains:Collimation
         REMOVE endswith:Diameter
         REMOVE startswith:Exposure
@@ -304,7 +304,7 @@ class TestDicom(unittest.TestCase):
 
     def test_expander_except(self):
         # Remove all fields except Manufacturer
-        """ RECIPE RULE
+        """RECIPE RULE
         REMOVE except:Manufacturer
         """
 
@@ -333,7 +333,7 @@ class TestDicom(unittest.TestCase):
             check3 = result[0]["DataCollectionDiameter"].value
 
     def test_fieldset_remove(self):
-        """  RECIPE
+        """RECIPE
         %fields field_set1
         FIELD Manufacturer
         FIELD contains:Time
@@ -516,8 +516,8 @@ class TestDicom(unittest.TestCase):
 
     def test_tag_expanders_midtag(self):
         """REMOVE contains:8103
-           Should remove:
-           (0008, 103e) Series Description
+        Should remove:
+        (0008, 103e) Series Description
         """
         dicom_file = get_file(self.dataset)
         actions = [{"action": "REMOVE", "field": "contains:8103"}]
@@ -605,7 +605,7 @@ class TestDicom(unittest.TestCase):
 
     def test_strip_sequences(self):
         """
-        Testing strip sequences: Checks to ensure that the strip_sequences removes all tags of type 
+        Testing strip sequences: Checks to ensure that the strip_sequences removes all tags of type
         sequence.  Since sequence removal relies on dicom.iterall(), nested sequences previously
         caused exceptions to be thrown when child (or duplicate) sequences existed within the header.
 
@@ -637,7 +637,7 @@ class TestDicom(unittest.TestCase):
         """
         Testing jitter compounding: Checks to ensure that multiple jitter rules applied to the same field result
         in both rules being applied. While in practice this may be somewhat of a nonsensical use case when large recipes
-        exist multiple rules may inadvertently be defined.  In prior versions of pydicom/deid rules were additive and 
+        exist multiple rules may inadvertently be defined.  In prior versions of pydicom/deid rules were additive and
         recipes are built in that manner.  This test ensures consistency with prior versions.
 
         %header
@@ -668,7 +668,7 @@ class TestDicom(unittest.TestCase):
         """
         Testing add/remove compounding: Checks to ensure that multiple rules applied to the same field result
         in both rules being applied. While in practice this may be somewhat of a nonsensical use case when large recipes
-        exist multiple rules may inadvertently be defined.  In prior versions of pydicom/deid rules were additive and 
+        exist multiple rules may inadvertently be defined.  In prior versions of pydicom/deid rules were additive and
         recipes are built in that manner.  This test ensures consistency with prior versions.
 
         %header
@@ -700,7 +700,7 @@ class TestDicom(unittest.TestCase):
         """
         Testing remove/add compounding: Checks to ensure that multiple rules applied to the same field result
         in both rules being applied. While in practice this may be somewhat of a nonsensical use case when large recipes
-        exist multiple rules may inadvertently be defined.  In prior versions of pydicom/deid rules were additive and 
+        exist multiple rules may inadvertently be defined.  In prior versions of pydicom/deid rules were additive and
         recipes are built in that manner.  This test ensures consistency with prior versions.
 
         %header
@@ -727,12 +727,98 @@ class TestDicom(unittest.TestCase):
         self.assertEqual(151, len(result[0]))
         self.assertEqual("123456", result[0]["PatientID"].value)
 
+    def test_valueset_empty_remove(self):
+        """
+        Testing to ensure correct actions are taken when a defined valueset contains no data (the field identified has an empty value). Since the
+        ConversionType flag contains "No Value", in the test below, value_set1 will be empty and as a result this combination of rules should have no
+        impact on the header.  The input header should be identical to the output header.
+
+        %values value_set1
+        FIELD ConversionType 
+        %header
+        REMOVE values:value_set1
+        """
+        import pydicom
+
+        print("Test empty value valueset")
+        dicom_file = get_file(self.dataset)
+        original_dataset = pydicom.dcmread(dicom_file)
+
+        actions = [{"action": "REMOVE", "field": "values:value_set1"}]
+        values = OrderedDict()
+        values["value_set1"] = [
+            {"field": "ConversionType", "action": "FIELD"},
+        ]
+        recipe = create_recipe(actions, values=values)
+
+        # Check that values we want are present using DicomParser
+        parser = DicomParser(dicom_file, recipe=recipe)
+        parser.parse()
+        self.assertEqual(len(parser.lookup["value_set1"]), 0)
+
+        # Perform action
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        self.assertEqual(1, len(result))
+        self.assertEqual(len(original_dataset), len(result[0]))
+
+    def test_valueset_remove_one_empty(self):
+        """
+        Testing to ensure correct actions are taken when a defined valueset contains a field that has an empty value. Since the
+        ConversionType flag contains "No Value", in the test below, value_set1 will only have the value from Manufacturer and should
+        only identify the fields which contain "SIEMENS".
+
+        %values value_set1
+        FIELD ConversionType
+        FIELD Manufacturer
+        %header
+        REMOVE values:value_set1
+        """
+        import pydicom
+
+        print("Test one empty value valueset")
+        dicom_file = get_file(self.dataset)
+        original_dataset = pydicom.dcmread(dicom_file)
+
+        actions = [{"action": "REMOVE", "field": "values:value_set1"}]
+        values = OrderedDict()
+        values["value_set1"] = [
+            {"field": "ConversionType", "action": "FIELD"},
+            {"field": "Manufacturer", "action": "FIELD"},
+        ]
+        recipe = create_recipe(actions, values=values)
+
+        # Check that values we want are present using DicomParser
+        parser = DicomParser(dicom_file, recipe=recipe)
+        parser.parse()
+        self.assertEqual(len(parser.lookup["value_set1"]), 1)
+        self.assertTrue("SIEMENS" in parser.lookup["value_set1"])
+
+        # Perform action
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        self.assertEqual(1, len(result))
+        self.assertNotEqual(len(original_dataset), len(result[0]))
+        with self.assertRaises(KeyError):
+            check1 = result[0]["00090010"].value
+        with self.assertRaises(KeyError):
+            check2 = result[0]["Manufacturer"].value
+
     # MORE TESTS NEED TO BE WRITTEN TO TEST SEQUENCES
 
 
 def create_recipe(actions, fields=None, values=None):
-    """helper method to create a recipe file 
-    """
+    """helper method to create a recipe file"""
     from deid.config import DeidRecipe
 
     recipe = DeidRecipe()
@@ -751,8 +837,7 @@ def create_recipe(actions, fields=None, values=None):
 
 
 def get_file(dataset):
-    """helper to get a dicom file 
-    """
+    """helper to get a dicom file"""
     from deid.dicom import get_files
 
     dicom_files = get_files(dataset)

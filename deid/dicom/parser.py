@@ -50,7 +50,7 @@ here = os.path.dirname(os.path.abspath(__file__))
 
 class DicomParser:
     """A dicom header serves as a cache to read in all fields from a dicom
-       file. For each, we store the element and child elements
+    file. For each, we store the element and child elements
     """
 
     def __init__(self, dicom_file, recipe=None, config=None, force=True):
@@ -81,7 +81,7 @@ class DicomParser:
 
     def load(self, dicom_file, force=True):
         """Ensure that the dicom file exists, and use full path. Here
-           we load the file, and save the dicom, dicom_file, and dicom_name.
+        we load the file, and save the dicom, dicom_file, and dicom_name.
         """
         # Reset seen, which is generated when we parse
         self.seen = []
@@ -102,7 +102,7 @@ class DicomParser:
 
     def define(self, name, value):
         """Add a function or variable to the lookup for later usage.
-           This can be used for functions, lists, or variables.
+        This can be used for functions, lists, or variables.
         """
         self.lookup[name] = value
 
@@ -113,7 +113,7 @@ class DicomParser:
 
     def get_nested_field(self, field, return_parent=False):
         """Based on a DicomField, return the one referenced in self.dicom.
-           If a delete is needed, then the parent should be returned as well.
+        If a delete is needed, then the parent should be returned as well.
         """
         # The field provided will be last in the list, the one we want
         # It is not be nested because fields are stored flat
@@ -158,8 +158,8 @@ class DicomParser:
 
     def delete_field(self, field):
         """Delete a field from the dicom. We do this by way of
-           parsing all nested levels of a tag into actual tags,
-           and deleting the child node.
+        parsing all nested levels of a tag into actual tags,
+        and deleting the child node.
         """
         # Returns the parent, and a DataElement (indexes into parent by tag)
         parent, desired = self.get_nested_field(field, return_parent=True)
@@ -182,17 +182,17 @@ class DicomParser:
 
     def replace_field(self, field, value):
         """Replace a value in a field. This uses the same function as ADD,
-           except we know that it's likely that the dicom has the value.
+        except we know that it's likely that the dicom has the value.
         """
         self.add_field(field, value)
 
     def parse(self, strip_sequences=False, remove_private=False):
         """The parse action corresponds to iterating through fields, and
-           for each one, saving a data structure with the full element,
-           the string (with nested representation of the keywords)
-           and the tag. We want to save all three in a flat list that is
-           easy to search over, and also build up actions for the lookup
-           on the first parsing.
+        for each one, saving a data structure with the full element,
+        the string (with nested representation of the keywords)
+        and the tag. We want to save all three in a flat list that is
+        easy to search over, and also build up actions for the lookup
+        on the first parsing.
         """
         # Remove sequences first, maintained in DataStore
         if strip_sequences is True:
@@ -240,8 +240,7 @@ class DicomParser:
         # The user can save, or take other action
 
     def save(self, filename, overwrite=False):
-        """After a parse action, the user can choose to save the dicom to file.
-        """
+        """After a parse action, the user can choose to save the dicom to file."""
         filename = filename or self.dicom_file
         ds = save_dicom(
             dicom=self.dicom,
@@ -253,8 +252,8 @@ class DicomParser:
 
     def get_fields(self, expand_sequences=True):
         """expand all dicom fields into a list, where each entry is
-           a DicomField. If we find a sequence, we unwrap it and
-           represent the location with the name (e.g., Sequence__Child)
+        a DicomField. If we find a sequence, we unwrap it and
+        represent the location with the name (e.g., Sequence__Child)
         """
         if not self.fields:
             self.fields = get_fields(
@@ -264,27 +263,30 @@ class DicomParser:
 
     def find_by_values(self, values):
         """Given a list of values, find fields in the dicom that contain any
-           of those values, as determined by a regular expression search.
+        of those values, as determined by a regular expression search.
         """
         # Values must be strings
         values = [str(x) for x in values]
 
         fields = {}
 
-        # Create single regular expression to search by
-        regexp = "(%s)" % "|".join(values)
-        for uid, field in self.fields.items():
-            if field.value_contains(regexp):
-                fields[uid] = field
+        if values:
+            # Create single regular expression to search by
+            regexp = "(%s)" % "|".join(values)
+            for uid, field in self.fields.items():
+                if field.value_contains(regexp):
+                    fields[uid] = field
+        else:
+            bot.warning("Empty values list encountered.  No fields will be identified.")
 
         return fields
 
     def find_by_name(self, name):
         """Given a string, find all field objects that contain the name.
-           Name can correspond to:
-            - a string of the tag, with or without the parens and comma/space
-            - a keyword
-            - a field name
+        Name can correspond to:
+         - a string of the tag, with or without the parens and comma/space
+         - a keyword
+         - a field name
         """
         fields = {}
 
@@ -299,15 +301,15 @@ class DicomParser:
 
     def perform_action(self, field, value, action):
         """perform action takes an action (dictionary with field, action, value)
-           and performs the action on the loaded dicom.
+        and performs the action on the loaded dicom.
 
-           Parameters
-           ==========
-           fields: if provided, a filtered list of fields for expand
-           action: the action from the parsed deid to take
-              "field" (eg, PatientID) the header field to process
-              "action" (eg, REPLACE) what to do with the field
-              "value": if needed, the field from the response to replace with
+        Parameters
+        ==========
+        fields: if provided, a filtered list of fields for expand
+        action: the action from the parsed deid to take
+           "field" (eg, PatientID) the header field to process
+           "action" (eg, REPLACE) what to do with the field
+           "value": if needed, the field from the response to replace with
 
         """
         # Validate the action
@@ -347,17 +349,16 @@ class DicomParser:
 
         # Otherwise, these are operations on existing fields
         else:
-            """ clone the fields dictionary. delete actions must also delete from the fields dictionary.
-                performing the clone and iterating on the clone allows the deletions while preventing a
-                runtime error - "dictionary changed size during iterations"
+            """clone the fields dictionary. delete actions must also delete from the fields dictionary.
+            performing the clone and iterating on the clone allows the deletions while preventing a
+            runtime error - "dictionary changed size during iterations"
             """
             temp_fields = deepcopy(fields)
             for uid, field in temp_fields.items():
                 self._run_action(field=field, action=action, value=value)
 
     def add_field(self, field, value):
-        """add a field to the dicom. If it's already present, update the value.
-        """
+        """add a field to the dicom. If it's already present, update the value."""
         value = parse_value(
             item=self.lookup, value=value, field=field, dicom=self.dicom
         )
@@ -398,9 +399,9 @@ class DicomParser:
 
     def _run_action(self, field, action, value=None):
         """perform_action (above) typically is called using a loaded deid,
-           and _run_addition is typically done via an addition in a config
-           Both result in a call to this function. If an action fails or is not
-           done, None is returned, and the calling function should handle this.
+        and _run_addition is typically done via an addition in a config
+        Both result in a call to this function. If an action fails or is not
+        done, None is returned, and the calling function should handle this.
         """
         # Blank the value
         if action == "BLANK":
@@ -444,8 +445,7 @@ class DicomParser:
                 self.delete_field(field)
 
     def remove_private(self):
-        """Remove private tags from the loaded dicom
-        """
+        """Remove private tags from the loaded dicom"""
         try:
             self.dicom.remove_private_tags()
         except:
