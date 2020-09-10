@@ -293,7 +293,7 @@ def parse_label(section, config, section_name, members, label=None):
        members: the lines beloning to the section/section_name
        label: an optional name for the group of commands
     """
-    criteria = {"filters": [], "coordinates": []}
+    criteria = {"filters": [], "coordinates": [], "keepcoordinates": []}
 
     if label is not None:
         label = label.replace("label", "", 1).split("#")[0].strip()
@@ -302,11 +302,18 @@ def parse_label(section, config, section_name, members, label=None):
     while len(members) > 0:
         member = members.pop(0).strip()
 
-        # We have a coordinate line
+        # We have a coordinate line (coordinates to remove)
         if member.lower().startswith("coordinates"):
             coordinate = member.replace("coordinates", "").strip()
             criteria["coordinates"].append(coordinate)
             continue
+
+        # Coordinates to keep
+        elif member.lower().startswith("keepcoordinates"):
+            coordinate = member.replace("keepcoordinates", "").strip()
+            criteria["keepcoordinates"].append(coordinate)
+            continue
+
         operator = None
         entry = None
         if member.startswith("+"):
