@@ -75,6 +75,29 @@ class TestDicom(unittest.TestCase):
         self.assertEqual(1, len(result))
         self.assertEqual("SIMPSON", result[0]["11112221"].value)
 
+    def test_add_private_constant_save_true(self):
+        """RECIPE RULE
+        ADD 11112221 SIMPSON
+        """
+        print("Test add private tag constant value")
+        dicom_file = get_file(self.dataset)
+
+        actions = [{"action": "ADD", "field": "11112221", "value": "SIMPSON"}]
+        recipe = create_recipe(actions)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+            output_folder=self.tmpdir,
+        )
+        outputfile = read_file(result[0])
+
+        self.assertEqual(1, len(result))
+        self.assertEqual("SIMPSON", outputfile["11112221"].value)
+
     def test_add_public_constant(self):
         """RECIPE RULE
         ADD PatientIdentityRemoved Yeppers!
@@ -222,6 +245,38 @@ class TestDicom(unittest.TestCase):
         self.assertEqual(1, len(result))
         self.assertEqual("SIMPSON", result[0]["11112221"].value)
         self.assertEqual("SIMPSON", result[0]["PatientIdentityRemoved"].value)
+
+    def test_add_tag_variable_save_true(self):
+        """RECIPE RULE
+        ADD 11112221 var:myVar
+        ADD PatientIdentityRemoved var:myVar
+        """
+
+        print("Test add tag constant value from variable")
+        dicom_file = get_file(self.dataset)
+
+        actions = [
+            {"action": "ADD", "field": "11112221", "value": "var:myVar"},
+            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "var:myVar"},
+        ]
+        recipe = create_recipe(actions)
+
+        # Method 1, define ids manually
+        ids = {dicom_file: {"myVar": "SIMPSON"}}
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            ids=ids,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+            output_folder=self.tmpdir,
+        )
+        outputfile = read_file(result[0])
+        self.assertEqual(1, len(result))
+        self.assertEqual("SIMPSON", outputfile["11112221"].value)
+        self.assertEqual("SIMPSON", outputfile["PatientIdentityRemoved"].value)
 
     def test_jitter_date(self):
         # DICOM datatype DA
