@@ -35,9 +35,9 @@ import re
 ################################################################################
 
 
-def add_tag(identifier, VR="UN", VM=None, name=None, keyword=None):
+def add_tag(identifier, VR="ST", VM=None, name=None, keyword=None):
     """Add tag will take a string for a tag (e.g., ) and define a new tag for it.
-       By default, we give the type "unknown."
+       By default, we give the type "Short Text."
     """
     tag = Tag("0x" + identifier)
     manifest = {
