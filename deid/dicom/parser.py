@@ -323,6 +323,10 @@ class DicomParser:
             fields = self.find_by_values(values=values)
 
         # A fields list is used vertabim
+        # In expand_field_expression below, the stripped_tag is being passed in to field.  At this point,
+        # expanders for %fields lists have already been processed and each of the contenders is an
+        # identified, unique field.  It is important to use stripped_tag at this point instead of
+        # element.keyword as private tags will not have a keyword and can only be identified by tag number.
         elif re.search("^fields", field):
             listing = {}
             for uid, contender in self.lookup.get(
@@ -330,7 +334,7 @@ class DicomParser:
             ).items():
                 listing.update(
                     expand_field_expression(
-                        field=contender.element.keyword,
+                        field=contender.stripped_tag,
                         dicom=self.dicom,
                         contenders=self.fields,
                     )
