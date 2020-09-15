@@ -68,12 +68,15 @@ class TestDicom(unittest.TestCase):
         result = replace_identifiers(
             dicom_files=dicom_file,
             deid=recipe,
-            save=False,
+            save=True,
             remove_private=False,
             strip_sequences=False,
+            output_folder=self.tmpdir,
         )
+        outputfile = read_file(result[0])
+
         self.assertEqual(1, len(result))
-        self.assertEqual("SIMPSON", result[0]["11112221"].value)
+        self.assertEqual("SIMPSON", outputfile["11112221"].value)
 
     def test_add_public_constant(self):
         """RECIPE RULE
@@ -91,12 +94,15 @@ class TestDicom(unittest.TestCase):
         result = replace_identifiers(
             dicom_files=dicom_file,
             deid=recipe,
-            save=False,
+            save=True,
             remove_private=False,
             strip_sequences=False,
+            output_folder=self.tmpdir,
         )
+        outputfile = read_file(result[0])
+
         self.assertEqual(1, len(result))
-        self.assertEqual("Yeppers!", result[0].PatientIdentityRemoved)
+        self.assertEqual("Yeppers!", outputfile.PatientIdentityRemoved)
 
     def test_replace_with_constant(self):
         """RECIPE RULE
@@ -132,14 +138,16 @@ class TestDicom(unittest.TestCase):
         result = replace_identifiers(
             dicom_files=dicom_file,
             deid=recipe,
-            save=False,
+            save=True,
             remove_private=False,
             strip_sequences=False,
+            output_folder=self.tmpdir,
         )
+        outputfile = read_file(result[0])
 
         self.assertEqual(1, len(result))
-        self.assertEqual(newvalue1, result[0][newfield1].value)
-        self.assertEqual(newvalue2, result[0][newfield2].value)
+        self.assertEqual(newvalue1, outputfile[newfield1].value)
+        self.assertEqual(newvalue2, outputfile[newfield2].value)
 
     def test_remove(self):
         """RECIPE RULE
@@ -174,10 +182,12 @@ class TestDicom(unittest.TestCase):
         result = replace_identifiers(
             dicom_files=dicom_file,
             deid=recipe,
-            save=False,
+            save=True,
             remove_private=False,
             strip_sequences=False,
+            output_folder=self.tmpdir,
         )
+        outputfile = read_file(result[0])
 
         # Create a DicomParser to easily find fields
         parser = DicomParser(result[0])
@@ -189,9 +199,9 @@ class TestDicom(unittest.TestCase):
 
         self.assertEqual(1, len(result))
         with self.assertRaises(KeyError):
-            check1 = result[0][field1name].value
+            check1 = outputfile[field1name].value
         with self.assertRaises(KeyError):
-            check2 = result[0][field2name].value
+            check2 = outputfile[field2name].value
 
     def test_add_tag_variable(self):
         """RECIPE RULE
@@ -215,13 +225,15 @@ class TestDicom(unittest.TestCase):
             dicom_files=dicom_file,
             ids=ids,
             deid=recipe,
-            save=False,
+            save=True,
             remove_private=False,
             strip_sequences=False,
+            output_folder=self.tmpdir,
         )
+        outputfile = read_file(result[0])
         self.assertEqual(1, len(result))
-        self.assertEqual("SIMPSON", result[0]["11112221"].value)
-        self.assertEqual("SIMPSON", result[0]["PatientIdentityRemoved"].value)
+        self.assertEqual("SIMPSON", outputfile["11112221"].value)
+        self.assertEqual("SIMPSON", outputfile["PatientIdentityRemoved"].value)
 
     def test_jitter_date(self):
         # DICOM datatype DA
@@ -238,12 +250,14 @@ class TestDicom(unittest.TestCase):
         result = replace_identifiers(
             dicom_files=dicom_file,
             deid=recipe,
-            save=False,
+            save=True,
             remove_private=False,
             strip_sequences=False,
+            output_folder=self.tmpdir,
         )
+        outputfile = read_file(result[0])
         self.assertEqual(1, len(result))
-        self.assertEqual("20230102", result[0]["StudyDate"].value)
+        self.assertEqual("20230102", outputfile["StudyDate"].value)
 
     def test_jitter_timestamp(self):
         # DICOM datatype DT
@@ -260,13 +274,15 @@ class TestDicom(unittest.TestCase):
         result = replace_identifiers(
             dicom_files=dicom_file,
             deid=recipe,
-            save=False,
+            save=True,
             remove_private=False,
             strip_sequences=False,
+            output_folder=self.tmpdir,
         )
+        outputfile = read_file(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(
-            "20230102011721.621000", result[0]["AcquisitionDateTime"].value
+            "20230102011721.621000", outputfile["AcquisitionDateTime"].value
         )
 
     def test_expanders(self):
@@ -289,18 +305,20 @@ class TestDicom(unittest.TestCase):
         result = replace_identifiers(
             dicom_files=dicom_file,
             deid=recipe,
-            save=False,
+            save=True,
             remove_private=False,
             strip_sequences=False,
+            output_folder=self.tmpdir,
         )
+        outputfile = read_file(result[0])
         self.assertEqual(1, len(result))
-        self.assertEqual(153, len(result[0]))
+        self.assertEqual(153, len(outputfile))
         with self.assertRaises(KeyError):
-            check1 = result[0]["ExposureTime"].value
+            check1 = outputfile["ExposureTime"].value
         with self.assertRaises(KeyError):
-            check2 = result[0]["TotalCollimationWidth"].value
+            check2 = outputfile["TotalCollimationWidth"].value
         with self.assertRaises(KeyError):
-            check3 = result[0]["DataCollectionDiameter"].value
+            check3 = outputfile["DataCollectionDiameter"].value
 
     def test_expander_except(self):
         # Remove all fields except Manufacturer
@@ -317,20 +335,22 @@ class TestDicom(unittest.TestCase):
         result = replace_identifiers(
             dicom_files=dicom_file,
             deid=recipe,
-            save=False,
+            save=True,
             remove_private=False,
             strip_sequences=False,
+            output_folder=self.tmpdir,
         )
+        outputfile = read_file(result[0])
         self.assertEqual(1, len(result))
-        self.assertEqual(2, len(result[0]))
+        self.assertEqual(2, len(outputfile))
 
-        self.assertEqual("SIEMENS", result[0]["Manufacturer"].value)
+        self.assertEqual("SIEMENS", outputfile["Manufacturer"].value)
         with self.assertRaises(KeyError):
-            check1 = result[0]["ExposureTime"].value
+            check1 = outputfile["ExposureTime"].value
         with self.assertRaises(KeyError):
-            check2 = result[0]["TotalCollimationWidth"].value
+            check2 = outputfile["TotalCollimationWidth"].value
         with self.assertRaises(KeyError):
-            check3 = result[0]["DataCollectionDiameter"].value
+            check3 = outputfile["DataCollectionDiameter"].value
 
     def test_fieldset_remove(self):
         """RECIPE
@@ -371,19 +391,21 @@ class TestDicom(unittest.TestCase):
         result = replace_identifiers(
             dicom_files=dicom_file,
             deid=recipe,
-            save=False,
+            save=True,
             remove_private=False,
             strip_sequences=False,
+            output_folder=self.tmpdir,
         )
+        outputfile = read_file(result[0])
         self.assertEqual(1, len(result))
-        print(len(result[0]))
-        self.assertEqual(expected_number, len(result[0]))
+        print(len(outputfile))
+        self.assertEqual(expected_number, len(outputfile))
         with self.assertRaises(KeyError):
-            check1 = result[0]["Manufacturer"].value
+            check1 = outputfile["Manufacturer"].value
         with self.assertRaises(KeyError):
-            check2 = result[0]["TotalCollimationWidth"].value
+            check2 = outputfile["TotalCollimationWidth"].value
         with self.assertRaises(KeyError):
-            check3 = result[0]["SingleCollimationWidth"].value
+            check3 = outputfile["SingleCollimationWidth"].value
 
     def test_valueset_remove(self):
         """
@@ -418,17 +440,19 @@ class TestDicom(unittest.TestCase):
         result = replace_identifiers(
             dicom_files=dicom_file,
             deid=recipe,
-            save=False,
+            save=True,
             remove_private=False,
             strip_sequences=False,
+            output_folder=self.tmpdir,
         )
+        outputfile = read_file(result[0])
         self.assertEqual(1, len(result))
         with self.assertRaises(KeyError):
-            check1 = result[0]["00090010"].value
+            check1 = outputfile["00090010"].value
         with self.assertRaises(KeyError):
-            check2 = result[0]["Manufacturer"].value
+            check2 = outputfile["Manufacturer"].value
         with self.assertRaises(KeyError):
-            check3 = result[0]["PhysiciansOfRecord"].value
+            check3 = outputfile["PhysiciansOfRecord"].value
 
     def test_fieldset_remove_private(self):
         """
@@ -450,6 +474,7 @@ class TestDicom(unittest.TestCase):
         ]
         recipe = create_recipe(actions, fields)
 
+        # Method 1: Use DicomParser
         parser = DicomParser(dicom_file, recipe=recipe)
         parser.parse()
         self.assertTrue("(0009, 0010)" in parser.lookup["field_set2_private"])
@@ -461,6 +486,25 @@ class TestDicom(unittest.TestCase):
             check1 = parser.dicom["00090010"].value
         with self.assertRaises(KeyError):
             check2 = parser.dicom["PatientID"].value
+
+        # Method 2: use replace_identifiers
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+            output_folder=self.tmpdir,
+        )
+        outputfile = read_file(result[0])
+        self.assertEqual(1, len(result))
+        print(len(outputfile))
+        self.assertEqual(158, len(outputfile))
+        self.assertEqual("SIEMENS CT VA0  COAD", outputfile["00190010"].value)
+        with self.assertRaises(KeyError):
+            check1 = outputfile["00090010"].value
+        with self.assertRaises(KeyError):
+            check2 = outputfile["PatientID"].value
 
     def test_valueset_private(self):
         """
@@ -482,6 +526,7 @@ class TestDicom(unittest.TestCase):
         ]
         recipe = create_recipe(actions, values=values)
 
+        # Method 1: Use DicomParser
         parser = DicomParser(dicom_file, recipe=recipe)
         parser.parse()
         for entry in ["SIEMENS", "M1212121", "DUMMY"]:
@@ -493,6 +538,24 @@ class TestDicom(unittest.TestCase):
             check2 = parser.dicom["Manufacturer"].value
         with self.assertRaises(KeyError):
             check3 = parser.dicom["00190010"].value
+
+        # Method 2: use replace_identifiers
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+            output_folder=self.tmpdir,
+        )
+        outputfile = read_file(result[0])
+        self.assertEqual(1, len(result))
+        with self.assertRaises(KeyError):
+            check1 = outputfile["OtherPatientIDs"].value
+        with self.assertRaises(KeyError):
+            check2 = outputfile["Manufacturer"].value
+        with self.assertRaises(KeyError):
+            check3 = outputfile["00190010"].value
 
     def test_tag_expanders_taggroup(self):
         # This tests targets the group portion of a tag identifier - 0009 in (0009, 0001)
@@ -508,13 +571,15 @@ class TestDicom(unittest.TestCase):
         result = replace_identifiers(
             dicom_files=dicom_file,
             deid=recipe,
-            save=False,
+            save=True,
             remove_private=False,
             strip_sequences=False,
+            output_folder=self.tmpdir,
         )
+        outputfile = read_file(result[0])
         self.assertEqual(1, len(result))
         with self.assertRaises(KeyError):
-            check1 = result[0]["00090010"].value
+            check1 = outputfile["00090010"].value
 
     def test_tag_expanders_midtag(self):
         """REMOVE contains:8103
@@ -532,12 +597,14 @@ class TestDicom(unittest.TestCase):
         result = replace_identifiers(
             dicom_files=dicom_file,
             deid=recipe,
-            save=False,
+            save=True,
             remove_private=False,
             strip_sequences=False,
+            output_folder=self.tmpdir,
         )
+        outputfile = read_file(result[0])
         self.assertEqual(1, len(result))
-        assert "0008103e" not in result[0]
+        assert "0008103e" not in outputfile
 
     def test_tag_expanders_tagelement(self):
         # includes public and private, groups and element numbers
@@ -555,16 +622,18 @@ class TestDicom(unittest.TestCase):
         result = replace_identifiers(
             dicom_files=dicom_file,
             deid=recipe,
-            save=False,
+            save=True,
             remove_private=False,
             strip_sequences=False,
+            output_folder=self.tmpdir,
         )
+        outputfile = read_file(result[0])
         self.assertEqual(1, len(result))
-        self.assertEqual(135, len(result[0]))
+        self.assertEqual(135, len(outputfile))
         with self.assertRaises(KeyError):
-            check1 = result[0]["00090010"].value
+            check1 = outputfile["00090010"].value
         with self.assertRaises(KeyError):
-            check2 = result[0]["PatientID"].value
+            check2 = outputfile["PatientID"].value
 
     def test_remove_all_func(self):
         """
@@ -624,15 +693,17 @@ class TestDicom(unittest.TestCase):
         result = replace_identifiers(
             dicom_files=dicom_file,
             deid=recipe,
-            save=False,
+            save=True,
             remove_private=False,
             strip_sequences=True,
+            output_folder=self.tmpdir,
         )
+        outputfile = read_file(result[0])
         self.assertEqual(1, len(result))
-        self.assertEqual(152, len(result[0]))
+        self.assertEqual(152, len(outputfile))
         with self.assertRaises(KeyError):
-            check1 = result[0]["00081110"].value
-        for tag in result[0]:
+            check1 = outputfile["00081110"].value
+        for tag in outputfile:
             self.assertFalse(isinstance(tag.value, Sequence))
 
     def test_jitter_compounding(self):
@@ -657,14 +728,16 @@ class TestDicom(unittest.TestCase):
         result = replace_identifiers(
             dicom_files=dicom_file,
             deid=recipe,
-            save=False,
+            save=True,
             remove_private=False,
             strip_sequences=True,
+            output_folder=self.tmpdir,
         )
+        outputfile = read_file(result[0])
 
         self.assertEqual(1, len(result))
-        self.assertEqual(151, len(result[0]))
-        self.assertEqual("20230104", result[0]["StudyDate"].value)
+        self.assertEqual(151, len(outputfile))
+        self.assertEqual("20230104", outputfile["StudyDate"].value)
 
     def test_addremove_compounding(self):
         """
@@ -688,15 +761,17 @@ class TestDicom(unittest.TestCase):
         result = replace_identifiers(
             dicom_files=dicom_file,
             deid=recipe,
-            save=False,
+            save=True,
             remove_private=False,
             strip_sequences=True,
+            output_folder=self.tmpdir,
         )
+        outputfile = read_file(result[0])
 
         self.assertEqual(1, len(result))
-        self.assertEqual(151, len(result[0]))
+        self.assertEqual(151, len(outputfile))
         with self.assertRaises(KeyError):
-            willerror = result[0]["PatientIdentityRemoved"].value
+            willerror = outputfile["PatientIdentityRemoved"].value
 
     def test_removeadd_compounding(self):
         """
@@ -720,14 +795,16 @@ class TestDicom(unittest.TestCase):
         result = replace_identifiers(
             dicom_files=dicom_file,
             deid=recipe,
-            save=False,
+            save=True,
             remove_private=False,
             strip_sequences=True,
+            output_folder=self.tmpdir,
         )
+        outputfile = read_file(result[0])
 
         self.assertEqual(1, len(result))
-        self.assertEqual(151, len(result[0]))
-        self.assertEqual("123456", result[0]["PatientID"].value)
+        self.assertEqual(151, len(outputfile))
+        self.assertEqual("123456", outputfile["PatientID"].value)
 
     def test_valueset_empty_remove(self):
         """
@@ -762,12 +839,14 @@ class TestDicom(unittest.TestCase):
         result = replace_identifiers(
             dicom_files=dicom_file,
             deid=recipe,
-            save=False,
+            save=True,
             remove_private=False,
             strip_sequences=False,
+            output_folder=self.tmpdir,
         )
+        outputfile = read_file(result[0])
         self.assertEqual(1, len(result))
-        self.assertEqual(len(original_dataset), len(result[0]))
+        self.assertEqual(len(original_dataset), len(outputfile))
 
     def test_valueset_remove_one_empty(self):
         """
@@ -805,16 +884,18 @@ class TestDicom(unittest.TestCase):
         result = replace_identifiers(
             dicom_files=dicom_file,
             deid=recipe,
-            save=False,
+            save=True,
             remove_private=False,
             strip_sequences=False,
+            output_folder=self.tmpdir,
         )
+        outputfile = read_file(result[0])
         self.assertEqual(1, len(result))
-        self.assertNotEqual(len(original_dataset), len(result[0]))
+        self.assertNotEqual(len(original_dataset), len(outputfile))
         with self.assertRaises(KeyError):
-            check1 = result[0]["00090010"].value
+            check1 = outputfile["00090010"].value
         with self.assertRaises(KeyError):
-            check2 = result[0]["Manufacturer"].value
+            check2 = outputfile["Manufacturer"].value
 
     # MORE TESTS NEED TO BE WRITTEN TO TEST SEQUENCES
 
