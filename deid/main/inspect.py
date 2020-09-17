@@ -36,8 +36,8 @@ import os
 
 def main(args, parser):
     """inspect currently serves to inspect the header fields of a set
-       of dicom files against a standard, and flag images that don't
-       pass the different levels of criteria
+    of dicom files against a standard, and flag images that don't
+    pass the different levels of criteria
     """
 
     # If a deid is given, check against format

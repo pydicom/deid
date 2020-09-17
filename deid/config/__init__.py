@@ -40,20 +40,20 @@ bot.level = 3
 
 class DeidRecipe:
     """Create and work with a deid recipe to filter and perform operations on
-       a dicom header. Usage typically looks like:
+    a dicom header. Usage typically looks like:
 
-       deid = 'dicom.deid'
-       recipe = DeidRecipe(deid)
-       
-       If deid is None, the default provided by the application is used.
+    deid = 'dicom.deid'
+    recipe = DeidRecipe(deid)
 
-       Parameters
-       ==========
-       deid: the deid recipe (or recipes) files to use. If more than one
-             is provided, should be done in order of preference for load
-             (later in the list overrides earlier loaded).
-       base: if True, load a default base (default_base) before custom
-       default_base: the default base to load if "base" is True
+    If deid is None, the default provided by the application is used.
+
+    Parameters
+    ==========
+    deid: the deid recipe (or recipes) files to use. If more than one
+          is provided, should be done in order of preference for load
+          (later in the list overrides earlier loaded).
+    base: if True, load a default base (default_base) before custom
+    default_base: the default base to load if "base" is True
 
     """
 
@@ -74,7 +74,7 @@ class DeidRecipe:
 
     def load(self, deid):
         """load a deid recipe into the object. If a deid configuration is
-           already defined, append to that. 
+        already defined, append to that.
         """
         deid = get_deid(deid)
         if deid is not None:
@@ -87,8 +87,7 @@ class DeidRecipe:
             self.deid = load_combined_deid([self.deid, deid])
 
     def _get_section(self, name):
-        """return a section (key) in the loaded deid, if it exists
-        """
+        """return a section (key) in the loaded deid, if it exists"""
         section = None
         if self.deid is not None:
             section = self.deid.get(name)
@@ -97,14 +96,13 @@ class DeidRecipe:
     # Get Sections
 
     def get_format(self):
-        """return the format of the loaded deid, if one exists
-        """
+        """return the format of the loaded deid, if one exists"""
         return self._get_section("format")
 
     def _get_named_section(self, section_name, name=None):
         """a helper function to return an entire section, or if a name is
-           provided, a named section under it. If the section is not
-           defined, we appropriately return None.
+        provided, a named section under it. If the section is not
+        defined, we appropriately return None.
         """
         section = self._get_section(section_name)
         if name is not None and section is not None:
@@ -112,30 +110,27 @@ class DeidRecipe:
         return section
 
     def get_filters(self, name=None):
-        """return all filters for a deid recipe, or a set based on a name
-        """
+        """return all filters for a deid recipe, or a set based on a name"""
         return self._get_named_section("filter", name)
 
     def get_values_lists(self, name=None):
-        """return a values list by name
-        """
+        """return a values list by name"""
         return self._get_named_section("values", name)
 
     def get_fields_lists(self, name=None):
-        """return a values list by name
-        """
+        """return a values list by name"""
         return self._get_named_section("fields", name)
 
     def get_actions(self, action=None, field=None):
         """get deid actions to perform on a header, or a subset based on a type
 
-           A header action is a list with the following:
-           {'action': 'REMOVE', 'field': 'AssignedLocation'},
- 
-           Parameters
-           ==========
-           action: if not None, filter to action specified
-           field: if not None, filter to field specified
+        A header action is a list with the following:
+        {'action': 'REMOVE', 'field': 'AssignedLocation'},
+
+        Parameters
+        ==========
+        action: if not None, filter to action specified
+        field: if not None, filter to field specified
 
         """
         header = self._get_section("header")
@@ -182,16 +177,16 @@ class DeidRecipe:
     # Init
 
     def _init_deid(self, deid=None, base=False, default_base="dicom"):
-        """initalize the recipe with one or more deids, optionally including 
-           the default. This function is called at init time. If you need to add
-           or work with already loaded configurations, use add/remove 
-    
-           Parameters
-           ==========
-           deid: the deid recipe (or recipes) files to use. If more than one
-                 is provided, should be done in order of preference for load
-                 (later in the list overrides earlier loaded).
-           default_base: load the default base before the user customizations. 
+        """initalize the recipe with one or more deids, optionally including
+        the default. This function is called at init time. If you need to add
+        or work with already loaded configurations, use add/remove
+
+        Parameters
+        ==========
+        deid: the deid recipe (or recipes) files to use. If more than one
+              is provided, should be done in order of preference for load
+              (later in the list overrides earlier loaded).
+        default_base: load the default base before the user customizations.
 
         """
         if deid is None:

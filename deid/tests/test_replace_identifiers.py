@@ -791,7 +791,7 @@ class TestDicom(unittest.TestCase):
         impact on the header.  The input header should be identical to the output header.
 
         %values value_set1
-        FIELD ConversionType 
+        FIELD ConversionType
         %header
         REMOVE values:value_set1
         """

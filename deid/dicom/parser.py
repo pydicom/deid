@@ -257,7 +257,9 @@ class DicomParser:
         """
         if not self.fields:
             self.fields = get_fields(
-                dicom=self.dicom, expand_sequences=expand_sequences, seen=self.seen,
+                dicom=self.dicom,
+                expand_sequences=expand_sequences,
+                seen=self.seen,
             )
         return self.fields
 

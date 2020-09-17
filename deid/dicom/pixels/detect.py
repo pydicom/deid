@@ -32,13 +32,13 @@ from pydicom.sequence import Sequence
 
 
 def has_burned_pixels(dicom_files, force=True, deid=None):
-    """ has burned pixels is an entrypoint for has_burned_pixels_multi (for 
-        multiple images) or has_burned_pixels_single (for one detailed repor)
-        We will use the MIRCTP criteria (see ref folder with the
-        original scripts used by CTP) to determine if an image is likely to have 
-        PHI, based on fields in the header alone. This script does NOT perform
-        pixel cleaning, but returns a dictionary of results (for multi) or one
-        detailed result (for single)
+    """has burned pixels is an entrypoint for has_burned_pixels_multi (for
+    multiple images) or has_burned_pixels_single (for one detailed repor)
+    We will use the MIRCTP criteria (see ref folder with the
+    original scripts used by CTP) to determine if an image is likely to have
+    PHI, based on fields in the header alone. This script does NOT perform
+    pixel cleaning, but returns a dictionary of results (for multi) or one
+    detailed result (for single)
     """
     # if the user has provided a custom deid, load it
     if not isinstance(deid, DeidRecipe):
@@ -53,9 +53,9 @@ def has_burned_pixels(dicom_files, force=True, deid=None):
 
 def _has_burned_pixels_multi(dicom_files, force, deid):
     """return a summary dictionary with lists of clean, and then lookups
-       for flagged images with reasons. The deid should be a deid recipe
-       instantiated from deid.config.DeidRecipe. This function should not
-       be called directly, but should be called from has_burned_pixels
+    for flagged images with reasons. The deid should be a deid recipe
+    instantiated from deid.config.DeidRecipe. This function should not
+    be called directly, but should be called from has_burned_pixels
     """
 
     # Store decisions in lookup based on filter groups
@@ -78,46 +78,46 @@ def _has_burned_pixels_multi(dicom_files, force, deid):
 def _has_burned_pixels_single(dicom_file, force, deid):
 
     """has burned pixels single will evaluate one dicom file for burned in
-       pixels based on 'filter' criteria in a deid. If deid is not provided,
-       will use application default. The method proceeds as follows:
+    pixels based on 'filter' criteria in a deid. If deid is not provided,
+    will use application default. The method proceeds as follows:
 
-       1. deid is loaded, with criteria groups ordered from specific --> general
-       2. image is run down the criteria, stops when hits and reports FLAG
-       3. passing through the entire list gives status of pass
-    
-       The default deid has a greylist, whitelist, then blacklist
+    1. deid is loaded, with criteria groups ordered from specific --> general
+    2. image is run down the criteria, stops when hits and reports FLAG
+    3. passing through the entire list gives status of pass
 
-       Parameters
-       =========
-       dicom_file: the fullpath to the file to evaluate
-       force: force reading of a potentially erroneous file
-       deid: the full path to a deid specification. if not defined, only default used
+    The default deid has a greylist, whitelist, then blacklist
 
-       deid['filter']['dangerouscookie'] <-- filter list "dangerouscookie"
+    Parameters
+    =========
+    dicom_file: the fullpath to the file to evaluate
+    force: force reading of a potentially erroneous file
+    deid: the full path to a deid specification. if not defined, only default used
 
-       --> This is what an item in the criteria looks like
-            [{'coordinates': ['0,0,512,110'],
-              'filters': [{'InnerOperators': [],
-              'action': ['notequals'],
-              'field': ['OperatorsName'],
-              'operator': 'and',
-              'value': ['bold bread']}],
-            'name': 'criteria for dangerous cookie'}]
+    deid['filter']['dangerouscookie'] <-- filter list "dangerouscookie"
 
-    
-       Returns
-       =======
-       --> This is what a clean image looks like:
-           {'flagged': False, 'results': []}
+    --> This is what an item in the criteria looks like
+         [{'coordinates': ['0,0,512,110'],
+           'filters': [{'InnerOperators': [],
+           'action': ['notequals'],
+           'field': ['OperatorsName'],
+           'operator': 'and',
+           'value': ['bold bread']}],
+         'name': 'criteria for dangerous cookie'}]
 
-       --> This is what a flagged image looks like:
-          {'flagged': True,
-           'results': [
-                  {'reason': ' ImageType missing  or ImageType empty ',
-                   'group': 'blacklist',
-                   'coordinates': []}
-               ]
-           }
+
+    Returns
+    =======
+    --> This is what a clean image looks like:
+        {'flagged': False, 'results': []}
+
+    --> This is what a flagged image looks like:
+       {'flagged': True,
+        'results': [
+               {'reason': ' ImageType missing  or ImageType empty ',
+                'group': 'blacklist',
+                'coordinates': []}
+            ]
+        }
     """
     dicom = read_file(dicom_file, force=force)
 
@@ -136,35 +136,41 @@ def _has_burned_pixels_single(dicom_file, force, deid):
 
             descriptions = []  # description for each group across items
 
-            for group in item["filters"]:
-                group_flags = []  # evaluation for a single line
-                group_descriptions = []
+            # If there aren't any filters but we have coordinates, assume True
+            if not item.get("filters") and item.get("coordinates"):
+                group_flags = [True]
+                group_descriptions = [item.get("name", "")]
 
-                # You cannot pop from the list
-                for a in range(len(group["action"])):
+            else:
+                for group in item["filters"]:
+                    group_flags = []  # evaluation for a single line
+                    group_descriptions = []
 
-                    action = group["action"][a]
-                    field = group["field"][a]
-                    value = ""
+                    # You cannot pop from the list
+                    for a in range(len(group["action"])):
 
-                    if len(group["value"]) > a:
-                        value = group["value"][a]
+                        action = group["action"][a]
+                        field = group["field"][a]
+                        value = ""
 
-                    flag = apply_filter(
-                        dicom=dicom,
-                        field=field,
-                        filter_name=action,
-                        value=value or None,
-                    )
-                    group_flags.append(flag)
-                    description = "%s %s %s" % (field, action, value)
+                        if len(group["value"]) > a:
+                            value = group["value"][a]
 
-                    if len(group["InnerOperators"]) > a:
-                        inner_operator = group["InnerOperators"][a]
-                        group_flags.append(inner_operator)
-                        description = "%s %s" % (description, inner_operator)
+                        flag = apply_filter(
+                            dicom=dicom,
+                            field=field,
+                            filter_name=action,
+                            value=value or None,
+                        )
+                        group_flags.append(flag)
+                        description = "%s %s %s" % (field, action, value)
 
-                    group_descriptions.append(description)
+                        if len(group["InnerOperators"]) > a:
+                            inner_operator = group["InnerOperators"][a]
+                            group_flags.append(inner_operator)
+                            description = "%s %s" % (description, inner_operator)
+
+                        group_descriptions.append(description)
 
             # At the end of a group, evaluate the inner group
             flag = evaluate_group(group_flags)
@@ -189,11 +195,12 @@ def _has_burned_pixels_single(dicom_file, force, deid):
                 global_flagged = True
                 reason = " ".join(descriptions)
 
-                # If coordinates are empty, we derive from dicom
-                if item["coordinates"] and "from:" in item["coordinates"][0]:
-                    item["coordinates"] = extract_coordinates(
-                        dicom, item["coordinates"][0]
-                    )
+                # Each coordinate is a list with [value, [coordinate]]
+                # and if from: in the coordinate value, it indicates we get
+                # the coordinate from some field (done here)
+                for coordset in item["coordinates"]:
+                    if "from:" in coordset[1]:
+                        coordset[1] = extract_coordinates(dicom, coordset[1])
 
                 result = {
                     "reason": reason,
@@ -210,11 +217,11 @@ def _has_burned_pixels_single(dicom_file, force, deid):
 def evaluate_group(flags):
     """evaluate group will take a list of flags (eg:
 
-        [True, and, False, or, True]
+     [True, and, False, or, True]
 
-       And read through the logic to determine if the image result
-       is to be flagged. This is how we combine a set of criteria in
-       a group to come to a final decision.
+    And read through the logic to determine if the image result
+    is to be flagged. This is how we combine a set of criteria in
+    a group to come to a final decision.
     """
     flagged = False
     first_entry = True
@@ -243,8 +250,7 @@ def evaluate_group(flags):
 
 
 def extract_coordinates(dicom, field):
-    """Given a field that is provided for a dicom, extract coordinates
-    """
+    """Given a field that is provided for a dicom, extract coordinates"""
     field = field.replace("from:", "", 1)
     coordinates = []
     if field not in dicom:

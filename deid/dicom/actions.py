@@ -34,14 +34,14 @@ import re
 
 def jitter_timestamp(dicom, field, value):
     """if present, jitter a timestamp in dicom
-       field "field" by number of days specified by "value"
-       The value can be positive or negative.
- 
-       Parameters
-       ==========
-       dicom: the pydicom Dataset
-       field: the field with the timestamp
-       value: number of days to jitter by. Jitter bug!
+    field "field" by number of days specified by "value"
+    The value can be positive or negative.
+
+    Parameters
+    ==========
+    dicom: the pydicom Dataset
+    field: the field with the timestamp
+    value: number of days to jitter by. Jitter bug!
 
     """
     if not isinstance(value, int):
