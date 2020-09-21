@@ -153,36 +153,34 @@ class DicomCleaner:
                     # Each is a list with [value, coordinate]
                     mask_value, new_coordinates = coordinate_set
 
-                    for new_coordinate in new_coordinates:
+                    # Case 1: an "all" indicates applying to entire image
+                    if new_coordinates.lower() == "all":
 
-                        # Case 1: an "all" indicates applying to entire image
-                        if new_coordinate.lower() == "all":
+                        # no frames, just X, Y
+                        if len(self.original.shape) == 2:
+                            # minr, minc, maxr, maxc = [0, 0, Y, X]
+                            new_coordinates = [
+                                0,
+                                0,
+                                self.original.shape[1],
+                                self.original.shape[0],
+                            ]
 
-                            # no frames, just X, Y
-                            if len(self.original.shape) == 2:
-                                # minr, minc, maxr, maxc = [0, 0, Y, X]
-                                new_coordinate = [
-                                    0,
-                                    0,
-                                    self.original.shape[1],
-                                    self.original.shape[0],
-                                ]
-
-                            # (frames, X, Y, channel) OR (frames, X,Y)
-                            if len(self.original.shape) >= 3:
-                                new_coordinate = [
-                                    0,
-                                    0,
-                                    self.original.shape[2],
-                                    self.original.shape[1],
-                                ]
-
+                        # (frames, X, Y, channel) OR (frames, X,Y)
+                        if len(self.original.shape) >= 3:
+                            new_coordinates = [
+                                0,
+                                0,
+                                self.original.shape[2],
+                                self.original.shape[1],
+                            ]
+                    else:
                         # Coordinates expected to be list separated by commas
-                        else:
-                            new_coordinate = [int(x) for x in new_coordinate.split(",")]
-                        coordinates.append(
-                            (mask_value, new_coordinate)
-                        )  # [(1, [1,2,3,4]),...(0, [1,2,3,4])]
+                        new_coordinates = [int(x) for x in new_coordinates.split(",")]
+
+                    coordinates.append(
+                        (mask_value, new_coordinates)
+                    )  # [(1, [1,2,3,4]),...(0, [1,2,3,4])]
 
             # Instead of writing directly to data, create a mask of 1s (start keeping all)
             # For 4D, (frames, X, Y, channel)
@@ -228,7 +226,7 @@ class DicomCleaner:
             else:
                 bot.warning(
                     "Pixel array dimension %s is not recognized."
-                    % (self.original.shape)
+                    % (str(self.original.shape))
                 )
 
     def get_figure(self, show=False, image_type="cleaned", title=None):
@@ -275,10 +273,10 @@ class DicomCleaner:
 
         if not os.path.exists(output_folder):
             bot.debug("Creating output folder %s" % output_folder)
-            os.mkdir(output_folder)
+            os.makedirs(output_folder)
 
         basename = re.sub("[.]dicom|[.]dcm", "", os.path.basename(self.dicom_file))
-        return "%s/cleaned-%s.%s" % (output_folder, basename, extension)
+        return "%s/%s.%s" % (output_folder, basename, extension)
 
     def save_png(self, output_folder=None, image_type="cleaned", title=None):
         """save an original or cleaned dicom as png to disk. Default
