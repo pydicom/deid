@@ -153,6 +153,9 @@ class DicomCleaner:
                     # Each is a list with [value, coordinate]
                     mask_value, new_coordinates = coordinate_set
 
+                    if not isinstance(new_coordinates, list):
+                        new_coordinates = [new_coordinates]
+
                     for new_coordinate in new_coordinates:
 
                         # Case 1: an "all" indicates applying to entire image
@@ -176,8 +179,6 @@ class DicomCleaner:
                                     self.original.shape[2],
                                     self.original.shape[1],
                                 ]
-
-                        # Coordinates expected to be list separated by commas
                         else:
                             new_coordinate = [int(x) for x in new_coordinate.split(",")]
                         coordinates.append(
@@ -228,7 +229,7 @@ class DicomCleaner:
             else:
                 bot.warning(
                     "Pixel array dimension %s is not recognized."
-                    % (self.original.shape)
+                    % (str(self.original.shape))
                 )
 
     def get_figure(self, show=False, image_type="cleaned", title=None):
@@ -275,7 +276,7 @@ class DicomCleaner:
 
         if not os.path.exists(output_folder):
             bot.debug("Creating output folder %s" % output_folder)
-            os.mkdir(output_folder)
+            os.makedirs(output_folder)
 
         basename = re.sub("[.]dicom|[.]dcm", "", os.path.basename(self.dicom_file))
         return "%s/cleaned-%s.%s" % (output_folder, basename, extension)
