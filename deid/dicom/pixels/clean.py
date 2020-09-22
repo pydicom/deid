@@ -153,34 +153,37 @@ class DicomCleaner:
                     # Each is a list with [value, coordinate]
                     mask_value, new_coordinates = coordinate_set
 
-                    # Case 1: an "all" indicates applying to entire image
-                    if new_coordinates.lower() == "all":
+                    if not isinstance(new_coordinates, list):
+                        new_coordinates = [new_coordinates]
 
-                        # no frames, just X, Y
-                        if len(self.original.shape) == 2:
-                            # minr, minc, maxr, maxc = [0, 0, Y, X]
-                            new_coordinates = [
-                                0,
-                                0,
-                                self.original.shape[1],
-                                self.original.shape[0],
-                            ]
+                    for new_coordinate in new_coordinates:
 
-                        # (frames, X, Y, channel) OR (frames, X,Y)
-                        if len(self.original.shape) >= 3:
-                            new_coordinates = [
-                                0,
-                                0,
-                                self.original.shape[2],
-                                self.original.shape[1],
-                            ]
-                    else:
-                        # Coordinates expected to be list separated by commas
-                        new_coordinates = [int(x) for x in new_coordinates.split(",")]
+                        # Case 1: an "all" indicates applying to entire image
+                        if new_coordinate.lower() == "all":
 
-                    coordinates.append(
-                        (mask_value, new_coordinates)
-                    )  # [(1, [1,2,3,4]),...(0, [1,2,3,4])]
+                            # no frames, just X, Y
+                            if len(self.original.shape) == 2:
+                                # minr, minc, maxr, maxc = [0, 0, Y, X]
+                                new_coordinate = [
+                                    0,
+                                    0,
+                                    self.original.shape[1],
+                                    self.original.shape[0],
+                                ]
+
+                            # (frames, X, Y, channel) OR (frames, X,Y)
+                            if len(self.original.shape) >= 3:
+                                new_coordinate = [
+                                    0,
+                                    0,
+                                    self.original.shape[2],
+                                    self.original.shape[1],
+                                ]
+                        else:
+                            new_coordinate = [int(x) for x in new_coordinate.split(",")]
+                        coordinates.append(
+                            (mask_value, new_coordinate)
+                        )  # [(1, [1,2,3,4]),...(0, [1,2,3,4])]
 
             # Instead of writing directly to data, create a mask of 1s (start keeping all)
             # For 4D, (frames, X, Y, channel)

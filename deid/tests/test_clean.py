@@ -210,6 +210,35 @@ class TestClean(unittest.TestCase):
         compare = inputpixels == outputpixels
         self.assertTrue(compare.all())
 
+    def test_pixel_cleaner_keepcoordinates_from(self):
+        """Test the pixel cleaner to ensure that multiple keep coordinates retrieved from a dicom field are appropriately retained."""
+        from deid.config import DeidRecipe
+        from deid.dicom import DicomCleaner
+
+        dicom_file = get_file(self.dataset)
+        deid = os.path.join(self.deidpath, "keepcoordinates_from.dicom")
+
+        client = DicomCleaner(output_folder=self.tmpdir, deid=deid)
+        out = client.detect(dicom_file)
+        self.assertTrue(out["flagged"])
+
+        client.clean()
+        cleanedfile = client.save_dicom()
+
+        outputfile = read_file(cleanedfile)
+        outputpixels = outputfile.pixel_array
+
+        inputfile = read_file(dicom_file)
+        inputpixels = inputfile.pixel_array
+        compare = inputpixels == outputpixels
+        self.assertFalse(compare.all())
+
+        inputpixels[1000:2000, 0:1000] = 0
+        inputpixels[0:1000, 1000:2000] = 0
+
+        compare = inputpixels[0:2000, 0:2000] == outputpixels[0:2000, 0:2000]
+        self.assertTrue(compare.all())
+
 
 def get_file(dataset):
     """helper to get a dicom file"""
