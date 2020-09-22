@@ -45,8 +45,8 @@ class TestUtils(unittest.TestCase):
         print("\n######################END########################")
 
     def test_get_temporary_name(self):
-        """test_get_temporary_name will test the generation of a temporary 
-           file name.
+        """test_get_temporary_name will test the generation of a temporary
+        file name.
         """
         from deid.utils import get_temporary_name
 
@@ -60,8 +60,8 @@ class TestUtils(unittest.TestCase):
         self.assertTrue(tmpname.endswith(".dcm"))
 
     def test_write_read_files(self):
-        """test_write_read_files will test the functions 
-           write_file and read_file
+        """test_write_read_files will test the functions
+        write_file and read_file
         """
         print("Testing utils.write_file...")
         from deid.utils import write_file
@@ -108,8 +108,7 @@ class TestUtils(unittest.TestCase):
         self.assertTrue(whereami.endswith("deid"))
 
     def test_recursive_find(self):
-        """test_recursive_find should detect 7 dicoms
-        """
+        """test_recursive_find should detect 7 dicoms"""
         print("Testing recursive find.")
         from deid.utils import recursive_find
 
@@ -121,8 +120,7 @@ class TestUtils(unittest.TestCase):
         self.assertTrue(found == expected)
 
     def test_recursive_find_as_list(self):
-        """test_recursive_find_as_list should detect 7 dicoms
-        """
+        """test_recursive_find_as_list should detect 7 dicoms"""
         print("Testing recursive find as lit.")
         from deid.utils import recursive_find
 

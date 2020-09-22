@@ -46,17 +46,17 @@ here = os.path.dirname(os.path.abspath(__file__))
 def get_identifiers(
     dicom_files, force=True, config=None, strip_sequences=False, remove_private=False
 ):
-    """ extract all identifiers from a dicom image.
-        This function returns a lookup by file name, where each value indexed
-        includes a dictionary of nested fields (indexed by nested tag).
+    """extract all identifiers from a dicom image.
+    This function returns a lookup by file name, where each value indexed
+    includes a dictionary of nested fields (indexed by nested tag).
 
-        Parameters
-        ==========
-        dicom_files: the dicom file(s) to extract from
-        force: force reading the file (default True)
-        config: if None, uses default in provided module folder
-        strip_sequences: if True, remove all sequences
-        remove_private: remove private tags
+    Parameters
+    ==========
+    dicom_files: the dicom file(s) to extract from
+    force: force reading the file (default True)
+    config: if None, uses default in provided module folder
+    strip_sequences: if True, remove all sequences
+    remove_private: remove private tags
 
     """
     if config is None:
@@ -84,7 +84,7 @@ def remove_private_identifiers(
     dicom_files, save=True, overwrite=False, output_folder=None, force=True
 ):
 
-    """remove_private_identifiers is a wrapper for the 
+    """remove_private_identifiers is a wrapper for the
     simple call to dicom.remove_private_tags, it simply
     reads in the files for the user and saves accordingly
     """
@@ -124,8 +124,8 @@ def replace_identifiers(
 ):
 
     """replace identifiers using pydicom, can be slow when writing
-       and saving new files. If you want to replace sequences, they need
-       to be extracted with get_identifiers and expand_sequences to True.
+    and saving new files. If you want to replace sequences, they need
+    to be extracted with get_identifiers and expand_sequences to True.
     """
 
     if not isinstance(dicom_files, list):

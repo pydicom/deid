@@ -36,15 +36,15 @@ import os
 
 def get_files(contenders, check=True, pattern=None, force=False):
     """get_files will take a list of single dicom files or directories,
-       and return a generator that yields complete paths to all files
-    
-       Parameters
-       ==========
-       conteners: a list of files or directories (contenders!)
-       check: boolean to indicate if we should validate dicoms (default True)
-       pattern: A pattern to use with fnmatch. If None, * is used
-       force: force reading of the files, if some headers invalid.
-              Not recommended, as many non-dicom will come through
+    and return a generator that yields complete paths to all files
+
+    Parameters
+    ==========
+    conteners: a list of files or directories (contenders!)
+    check: boolean to indicate if we should validate dicoms (default True)
+    pattern: A pattern to use with fnmatch. If None, * is used
+    force: force reading of the files, if some headers invalid.
+           Not recommended, as many non-dicom will come through
 
     """
     if not isinstance(contenders, list):
@@ -70,14 +70,14 @@ def get_files(contenders, check=True, pattern=None, force=False):
 
 def save_dicom(dicom, dicom_file, output_folder=None, overwrite=False):
     """save_dicom will save a dicom file to an output folder,
-       making sure to not overwrite unless the user has enforced it
+    making sure to not overwrite unless the user has enforced it
 
-       Parameters
-       ==========
-       dicom: the pydicon Dataset to save
-       dicom_file: the path to the dicom file to save (we only use basename)
-       output_folder: the folder to save the file to
-       overwrite: overwrite any existing file? (default is False)
+    Parameters
+    ==========
+    dicom: the pydicon Dataset to save
+    dicom_file: the path to the dicom file to save (we only use basename)
+    output_folder: the folder to save the file to
+    overwrite: overwrite any existing file? (default is False)
 
     """
 

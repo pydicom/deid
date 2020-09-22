@@ -123,8 +123,7 @@ class TestDicomGroups(unittest.TestCase):
 
 
 def get_dicom(dataset):
-    """helper function to load a dicom
-    """
+    """helper function to load a dicom"""
     from deid.dicom import get_files
     from pydicom import read_file
 

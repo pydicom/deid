@@ -74,8 +74,8 @@ class DeidMessage:
 
     def useColor(self):
         """useColor will determine if color should be added
-           to a print. Will check if being run in a terminal, and
-           if has support for asci
+        to a print. Will check if being run in a terminal, and
+        if has support for asci
         """
         COLORIZE = get_user_color_preference()
         if COLORIZE is not None:
@@ -90,7 +90,7 @@ class DeidMessage:
 
     def addColor(self, level, text):
         """addColor to the prompt (usually prefix) if terminal
-           supports, and specified to do so
+        supports, and specified to do so
         """
         if self.colorize:
             if level in self.colors:
@@ -99,7 +99,7 @@ class DeidMessage:
 
     def emitError(self, level):
         """determine if a level should print to
-           stderr, includes all levels but INFO and QUIET
+        stderr, includes all levels but INFO and QUIET
         """
         if level in [
             ABORT,
@@ -116,28 +116,27 @@ class DeidMessage:
 
     def emitOutput(self, level):
         """determine if a level should print to stdout
-           only includes INFO
+        only includes INFO
         """
         if level in [LOG, INFO, CUSTOM]:
             return True
         return False
 
     def isEnabledFor(self, messageLevel):
-        """check if a messageLevel is enabled to emit a level
-        """
+        """check if a messageLevel is enabled to emit a level"""
         if messageLevel <= self.level:
             return True
         return False
 
     def emit(self, level, message, prefix=None, color=None):
         """emit is the main function to print the message
-           optionally with a prefix
-        
-           Parameters
-           ==========
-           level: the level of the message
-           message: the message to print
-           prefix: a prefix for the message
+        optionally with a prefix
+
+        Parameters
+        ==========
+        level: the level of the message
+        message: the message to print
+        prefix: a prefix for the message
         """
         if color is None:
             color = level
@@ -170,7 +169,7 @@ class DeidMessage:
 
     def write(self, stream, message):
         """write will write a message to a stream,
-           first checking the encoding
+        first checking the encoding
         """
         if isinstance(message, bytes):
             message = message.decode("utf-8")
@@ -178,7 +177,7 @@ class DeidMessage:
 
     def get_logs(self, join_newline=True):
         """'get_logs will return the complete history, joined by newline
-            (default) or as is.
+        (default) or as is.
         """
         if join_newline:
             return "\n".join(self.history)
@@ -278,8 +277,7 @@ class DeidMessage:
         self.emit(DEBUG, message, "DEBUG")
 
     def is_quiet(self):
-        """is_quiet returns true if the level is under 1
-        """
+        """is_quiet returns true if the level is under 1"""
         if self.level < 1:
             return False
         return True
@@ -287,9 +285,9 @@ class DeidMessage:
     # Terminal ------------------------------------------
 
     def table(self, rows, col_width=2):
-        """table will print a table of entries. If the rows is 
-           a dictionary, the keys are interpreted as column names. if
-           not, a numbered list is used.
+        """table will print a table of entries. If the rows is
+        a dictionary, the keys are interpreted as column names. if
+        not, a numbered list is used.
         """
 
         labels = [str(x) for x in range(1, len(rows) + 1)]
@@ -349,7 +347,7 @@ def get_user_color_preference():
 
 def convert2boolean(arg):
     """convert2boolean is used for environmental variables that must be
-       returned as boolean
+    returned as boolean
     """
     if not isinstance(arg, bool):
         return arg.lower() in ("yes", "true", "t", "1", "y")
