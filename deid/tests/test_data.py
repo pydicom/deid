@@ -42,8 +42,7 @@ class TestUtils(unittest.TestCase):
         print("\n######################END########################")
 
     def test_get_dataset(self):
-        """test_get_dataset will make sure we can load provided datasets
-        """
+        """test_get_dataset will make sure we can load provided datasets"""
         print("Case 1: Ask for existing dataset.")
         from deid.data import get_dataset
 

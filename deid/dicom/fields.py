@@ -31,7 +31,7 @@ import re
 
 class DicomField:
     """A dicom field holds the element, and a string that represents the entire
-       nested structure (e.g., SequenceName__CodeValue).
+    nested structure (e.g., SequenceName__CodeValue).
     """
 
     def __init__(self, element, name, uid):
@@ -47,26 +47,24 @@ class DicomField:
 
     @property
     def tag(self):
-        """Return a string of the element tag.
-        """
+        """Return a string of the element tag."""
         return str(self.element.tag)
 
     @property
     def stripped_tag(self):
-        """Return the stripped element tag
-        """
+        """Return the stripped element tag"""
         return re.sub("([(]|[)]|,| )", "", str(self.element.tag))
 
     # Contains
 
     def name_contains(self, expression):
         """use re to search a field for a regular expression, meaning
-           the name, the keyword (nested) or the string tag.
+        the name, the keyword (nested) or the string tag.
 
-           name.lower: includes nested keywords (e.g., Sequence_Child)
-           self.tag: is the string version of the tag
-           self.element.name: is the human friendly name "Sequence Child"
-           self.element.keyword: is the name without nesting "Child"
+        name.lower: includes nested keywords (e.g., Sequence_Child)
+        self.tag: is the string version of the tag
+        self.element.name: is the human friendly name "Sequence Child"
+        self.element.keyword: is the name without nesting "Child"
         """
         if (
             re.search(expression, self.name.lower())
@@ -79,8 +77,7 @@ class DicomField:
         return False
 
     def value_contains(self, expression):
-        """use re to search a field value for a regular expression
-        """
+        """use re to search a field value for a regular expression"""
         values = self.element.value
 
         # If we are not dealing with a list
@@ -96,12 +93,12 @@ class DicomField:
 
 
 def extract_item(item, prefix=None, entry=None):
-    """a helper function to extract sequence, will extract values from 
-       a dicom sequence depending on the type.
+    """a helper function to extract sequence, will extract values from
+    a dicom sequence depending on the type.
 
-       Parameters
-       ==========
-       item: an item from a sequence.
+    Parameters
+    ==========
+    item: an item from a sequence.
     """
     # First call, we define entry to be a lookup dictionary
     if entry is None:
@@ -130,15 +127,15 @@ def extract_item(item, prefix=None, entry=None):
 
 def extract_sequence(sequence, prefix=None):
     """return a pydicom.sequence.Sequence recursively
-       as a flattened list of items. For example, a nested FieldA and FieldB
-       would return as:
+    as a flattened list of items. For example, a nested FieldA and FieldB
+    would return as:
 
-       {'FieldA__FieldB': '111111'}
+    {'FieldA__FieldB': '111111'}
 
-       Parameters
-       ==========
-       sequence: the sequence to extract, should be pydicom.sequence.Sequence
-       prefix: the parent name
+    Parameters
+    ==========
+    sequence: the sequence to extract, should be pydicom.sequence.Sequence
+    prefix: the parent name
     """
     items = {}
     for item in sequence:
@@ -160,16 +157,16 @@ def extract_sequence(sequence, prefix=None):
 
 
 def expand_field_expression(field, dicom, contenders=None):
-    """Get a list of fields based on an expression. If 
-       no expression found, return single field. Options for fields include:
+    """Get a list of fields based on an expression. If
+    no expression found, return single field. Options for fields include:
 
-       endswith: filter to fields that end with the expression
-       startswith: filter to fields that start with the expression
-       contains: filter to fields that contain the expression
-       allfields: include all fields
-       exceptfields: filter to all fields except those listed ( | separated)   
+    endswith: filter to fields that end with the expression
+    startswith: filter to fields that start with the expression
+    contains: filter to fields that contain the expression
+    allfields: include all fields
+    exceptfields: filter to all fields except those listed ( | separated)
 
-       Returns: a list of DicomField objects
+    Returns: a list of DicomField objects
     """
     # Expanders that don't have a : must be checked for
     expanders = ["all"]
@@ -221,8 +218,8 @@ def expand_field_expression(field, dicom, contenders=None):
 
 def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
     """expand all dicom fields into a list, where each entry is
-       a DicomField. If we find a sequence, we unwrap it and
-       represent the location with the name (e.g., Sequence__Child)
+    a DicomField. If we find a sequence, we unwrap it and
+    represent the location with the name (e.g., Sequence__Child)
     """
     skip = skip or []
     seen = seen or []
@@ -236,9 +233,9 @@ def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
     # helper function to add an element based on tag uid
     def add_element(element, name, uid):
         """Add an element to fields, but only if it has not been seen.
-           The uid is derived from the tag (group, element) and includes
-           nesting, so the "same" tag on different levels is considered
-           different.
+        The uid is derived from the tag (group, element) and includes
+        nesting, so the "same" tag on different levels is considered
+        different.
         """
         if uid not in seen:
             fields[uid] = DicomField(element, name, uid)

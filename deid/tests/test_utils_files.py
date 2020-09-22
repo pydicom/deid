@@ -85,8 +85,7 @@ class TestDicom(unittest.TestCase):
 
 
 def get_file(dataset):
-    """helper to get a dicom file 
-    """
+    """helper to get a dicom file"""
     from deid.dicom import get_files
 
     dicom_files = get_files(dataset)

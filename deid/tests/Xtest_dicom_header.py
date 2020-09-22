@@ -94,8 +94,7 @@ class TestDicomHeader(unittest.TestCase):
 
 
 def get_dicom(dataset, return_dir=False):
-    """helper function to load a dicom
-    """
+    """helper function to load a dicom"""
     from deid.dicom import get_files
     from pydicom import read_file
 

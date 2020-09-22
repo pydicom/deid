@@ -46,12 +46,12 @@ bot.level = 3
 
 class DicomCleaner:
     """take an input dicom file, check for burned pixels, and then clean,
-       with option to save / output in multiple formats. This object should
-       map to one dicom file, and the usage flow is the following:
-       cleaner = DicomCleaner()
-       summary = cleaner.detect(dicom_file)
-      
-       cleaner.clean()
+    with option to save / output in multiple formats. This object should
+    map to one dicom file, and the usage flow is the following:
+    cleaner = DicomCleaner()
+    summary = cleaner.detect(dicom_file)
+
+    cleaner.clean()
     """
 
     def __init__(
@@ -78,13 +78,12 @@ class DicomCleaner:
 
     def default_font(self):
         """define the font style for saving png figures
-           if a title is provided
+        if a title is provided
         """
         return {"family": "serif", "color": "darkred", "weight": "normal", "size": 16}
 
     def detect(self, dicom_file):
-        """detect will initiate the cleaner for a new dicom file.
-        """
+        """detect will initiate the cleaner for a new dicom file."""
         from deid.dicom.pixels.detect import has_burned_pixels
 
         self.results = has_burned_pixels(
@@ -96,9 +95,9 @@ class DicomCleaner:
     def clean(self, fix_interpretation=True, pixel_data_attribute="PixelData"):
         """
         take a dicom image and a list of pixel coordinates, and return
-        a cleaned file (if output file is specified) or simply plot 
+        a cleaned file (if output file is specified) or simply plot
         the cleaned result (if no file is specified)
-    
+
         Parameters
         ==========
             add_padding: add N=margin pixels of padding
@@ -145,30 +144,57 @@ class DicomCleaner:
             # Compile coordinates from result, generate list of tuples with coordinate and value
             # keepcoordinates == 1 (included in mask) and coordinates == 0 (remove).
             coordinates = []
-            mask_values = {"keepcoordinates": 1, "coordinates": 0}
+
             for item in self.results["results"]:
 
-                # Keepcoordinates first to be conservative
-                for index in ["keepcoordinates", "coordinates"]:
-                    if item[index]:
-                        for coordinate_set in item[index]:
-                            # Coordinates expected to be list separated by commas
-                            new_coordinates = [
-                                int(x) for x in coordinate_set.split(",")
-                            ]
-                            coordinates.append(
-                                (mask_values[index], new_coordinates)
-                            )  # [(1, [1,2,3,4]),...(0, [1,2,3,4])]
+                # We iterate through coordinates in order specified in file
+                for coordinate_set in item.get("coordinates", []):
 
-            # Instead of writing directly to data, create a mask
+                    # Each is a list with [value, coordinate]
+                    mask_value, new_coordinates = coordinate_set
+
+                    if not isinstance(new_coordinates, list):
+                        new_coordinates = [new_coordinates]
+
+                    for new_coordinate in new_coordinates:
+
+                        # Case 1: an "all" indicates applying to entire image
+                        if new_coordinate.lower() == "all":
+
+                            # no frames, just X, Y
+                            if len(self.original.shape) == 2:
+                                # minr, minc, maxr, maxc = [0, 0, Y, X]
+                                new_coordinate = [
+                                    0,
+                                    0,
+                                    self.original.shape[1],
+                                    self.original.shape[0],
+                                ]
+
+                            # (frames, X, Y, channel) OR (frames, X,Y)
+                            if len(self.original.shape) >= 3:
+                                new_coordinate = [
+                                    0,
+                                    0,
+                                    self.original.shape[2],
+                                    self.original.shape[1],
+                                ]
+                        else:
+                            new_coordinate = [int(x) for x in new_coordinate.split(",")]
+                        coordinates.append(
+                            (mask_value, new_coordinate)
+                        )  # [(1, [1,2,3,4]),...(0, [1,2,3,4])]
+
+            # Instead of writing directly to data, create a mask of 1s (start keeping all)
             # For 4D, (frames, X, Y, channel)
             if len(self.original.shape) == 4:
-                mask = numpy.zeros(self.original.shape[1:3], dtype=numpy.uint8)
+                mask = numpy.ones(self.original.shape[1:3], dtype=numpy.uint8)
 
-            # For 3D, (X, Y, channel)
+            # For 2D, (X, Y) or 3D (X, Y channel)
             else:
-                mask = numpy.zeros(self.original.shape[0:2], dtype=numpy.uint8)
+                mask = numpy.ones(self.original.shape[0:2], dtype=numpy.uint8)
 
+            # Here we apply the coordinates to the mask, 1==keep, 0==clean
             for coordinate_value, coordinate in coordinates:
                 minr, minc, maxr, maxc = coordinate
 
@@ -197,17 +223,20 @@ class DicomCleaner:
                 final_mask = numpy.tile(mask, (self.original.shape[0], 1, 1))
                 self.cleaned = final_mask * self.original
 
+            elif len(self.original.shape) == 2:
+                self.cleaned = mask * self.original
+
             else:
                 bot.warning(
                     "Pixel array dimension %s is not recognized."
-                    % (self.original.shape)
+                    % (str(self.original.shape))
                 )
 
     def get_figure(self, show=False, image_type="cleaned", title=None):
         """get a figure for an original or cleaned image. If the image
-           was already clean, it is simply a copy of the original.
-           If show is True, plot the image. If a 4d image is discovered, we use
-           randomly choose a slice.
+        was already clean, it is simply a copy of the original.
+        If show is True, plot the image. If a 4d image is discovered, we use
+        randomly choose a slice.
         """
         if hasattr(self, image_type):
             _, ax = plt.subplots(figsize=(10, 6))
@@ -233,31 +262,31 @@ class DicomCleaner:
 
     def _get_clean_name(self, output_folder, extension="dcm"):
         """return a full path to an output file, with custom folder and
-           extension. If the output folder isn't yet created, make it.
- 
-           Parameters
-           ==========
-           output_folder: the output folder to create, will be created if doesn't
-           exist.
-           extension: the extension of the file to create a name for, should
-           not start with "."
+        extension. If the output folder isn't yet created, make it.
+
+        Parameters
+        ==========
+        output_folder: the output folder to create, will be created if doesn't
+        exist.
+        extension: the extension of the file to create a name for, should
+        not start with "."
         """
         if output_folder is None:
             output_folder = self.output_folder
 
         if not os.path.exists(output_folder):
             bot.debug("Creating output folder %s" % output_folder)
-            os.mkdir(output_folder)
+            os.makedirs(output_folder)
 
         basename = re.sub("[.]dicom|[.]dcm", "", os.path.basename(self.dicom_file))
         return "%s/cleaned-%s.%s" % (output_folder, basename, extension)
 
     def save_png(self, output_folder=None, image_type="cleaned", title=None):
-        """save an original or cleaned dicom as png to disk. Default 
-           image_format is "cleaned" and can be set to "original." If the image 
-           was already clean (not flagged) the cleaned image is just a 
-           copy of original. If a 4d image is provided, we save the dimension
-           specified (or if not provided, a randomly chosen dimension).
+        """save an original or cleaned dicom as png to disk. Default
+        image_format is "cleaned" and can be set to "original." If the image
+        was already clean (not flagged) the cleaned image is just a
+        copy of original. If a 4d image is provided, we save the dimension
+        specified (or if not provided, a randomly chosen dimension).
         """
         if hasattr(self, image_type):
             png_file = self._get_clean_name(output_folder, "png")
@@ -270,7 +299,7 @@ class DicomCleaner:
 
     def save_animation(self, output_folder=None, image_type="cleaned", title=None):
         """save an original or cleaned animation of a dicom. If there are not
-           enough frames, then save_png should be used instead.
+        enough frames, then save_png should be used instead.
         """
         if hasattr(self, image_type):
             from matplotlib import animation, rc
@@ -327,9 +356,9 @@ class DicomCleaner:
 
     def save_dicom(self, output_folder=None, image_type="cleaned"):
         """save a cleaned dicom to disk. We expose an option to save
-           an original (change image_type to "original" to be consistent,
-           although this is not incredibly useful given it would duplicate
-           the original data.
+        an original (change image_type to "original" to be consistent,
+        although this is not incredibly useful given it would duplicate
+        the original data.
         """
         # Having clean also means has dicom image
         if hasattr(self, image_type):

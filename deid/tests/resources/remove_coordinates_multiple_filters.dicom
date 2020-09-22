@@ -1,0 +1,16 @@
+FORMAT dicom
+
+%filter blacklist1
+
+LABEL by SOPClassUID blacklist1
+  contains SOPClassUID 1.2.840.10008.5.1.4.1.1.1.1
+  coordinates 0,0,10,10
+
+%filter blacklist2
+
+LABEL by SOPClassUID blacklist2
+  contains SOPClassUID 1.2.840.10008.5.1.4.1.1.1.1
+  coordinates 10,10,20,20
+
+%header
+ADD PatientIdentityRemoved No 

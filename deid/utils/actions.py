@@ -30,7 +30,7 @@ import re
 
 def parse_value(dicom, value, item=None, field=None):
     """parse_value will parse the value field of an action,
-    either returning: 
+    either returning:
         1. the string (string or from function)
         2. a variable looked up (var:FieldName)
     """
@@ -66,11 +66,11 @@ def parse_value(dicom, value, item=None, field=None):
 
 def get_func(function_name):
     """get_func will return a function that is defined from a string.
-       the function is assumed to be in this file
+    the function is assumed to be in this file
 
-       Parameters
-       ==========
-       return a function from globals based on a name string
+    Parameters
+    ==========
+    return a function from globals based on a name string
 
     """
     env = globals()
@@ -83,9 +83,9 @@ def get_func(function_name):
 
 
 def get_timestamp(item_date, item_time=None, jitter_days=None, format=None):
-    """get_timestamp will return (default) a UTC timestamp 
-       with some date and (optionall) time. A different format can be 
-       provided to change default behavior. eg: "%Y%m%d"
+    """get_timestamp will return (default) a UTC timestamp
+    with some date and (optionall) time. A different format can be
+    provided to change default behavior. eg: "%Y%m%d"
     """
     if format is None:
         format = "%Y-%m-%dT%H:%M:%SZ"

@@ -46,10 +46,10 @@ import sys
 
 def load_combined_deid(deids):
     """load one or more deids, either based on a path or a tag
-    
-       Parameters
-       ==========
-       deids: should be a custom list of deids
+
+    Parameters
+    ==========
+    deids: should be a custom list of deids
 
     """
     if not isinstance(deids, list):
@@ -104,23 +104,23 @@ def load_combined_deid(deids):
 
 def load_deid(path=None):
     """load_deid will return a loaded in (user) deid configuration file
-       that can be used to update a default config.json. If a file path is
-       specified, it is loaded directly. If a folder is specified, we look
-       for a deid file in the folder. If nothing is specified, we assume
-       the user wants to load a deid file in the present working directory.
-       If the user wants to have multiple deid files in a directory, this
-       can be done with an extension that specifies the module, eg;
-   
-             deid.dicom
-             deid.nifti
+    that can be used to update a default config.json. If a file path is
+    specified, it is loaded directly. If a folder is specified, we look
+    for a deid file in the folder. If nothing is specified, we assume
+    the user wants to load a deid file in the present working directory.
+    If the user wants to have multiple deid files in a directory, this
+    can be done with an extension that specifies the module, eg;
 
-       Parameters
-       ==========
-       path: a path to a deid file
+          deid.dicom
+          deid.nifti
 
-       Returns
-       =======
-       config: a parsed deid (dictionary) with valid sections
+    Parameters
+    ==========
+    path: a path to a deid file
+
+    Returns
+    =======
+    config: a parsed deid (dictionary) with valid sections
 
     """
     path = find_deid(path)
@@ -201,11 +201,11 @@ def load_deid(path=None):
 
 def find_deid(path=None):
     """find_deid is a helper function to load_deid to find a deid file in
-       a folder, or return the path provided if it is the file.
+    a folder, or return the path provided if it is the file.
 
-       Parameters
-       ==========
-       path: a path on the filesystem. If not provided, will assume PWD.
+    Parameters
+    ==========
+    path: a path on the filesystem. If not provided, will assume PWD.
 
     """
     # A default deid will be loaded if all else fails
@@ -241,12 +241,12 @@ def find_deid(path=None):
 
 def parse_format(line):
     """given a line that starts with FORMAT, parse the format of the
-       file and check that it is supported. If not, exit on error. If yes,
-       return the format.
+    file and check that it is supported. If not, exit on error. If yes,
+    return the format.
 
-       Parameters
-       ==========
-       line: the line that starts with format.
+    Parameters
+    ==========
+    line: the line that starts with format.
     """
     fmt = re.sub("FORMAT|(\s+)", "", line).lower()
     if fmt not in formats:
@@ -257,15 +257,15 @@ def parse_format(line):
 
 def parse_filter_group(spec):
     """given the specification (a list of lines) continue parsing lines
-       until the filter group ends, as indicated by the start of a new LABEL,
-       (case 1), the start of a new section (case 2) or the end of the spec
-       file (case 3). Returns a list of members (lines) that belong to the
-       filter group. The list (by way of using pop) is updated in the calling
-       function.
+    until the filter group ends, as indicated by the start of a new LABEL,
+    (case 1), the start of a new section (case 2) or the end of the spec
+    file (case 3). Returns a list of members (lines) that belong to the
+    filter group. The list (by way of using pop) is updated in the calling
+    function.
 
-       Parameters
-       ==========
-       spec: unparsed lines of the deid recipe file
+    Parameters
+    ==========
+    spec: unparsed lines of the deid recipe file
     """
     members = []
     keep_going = True
@@ -283,17 +283,17 @@ def parse_filter_group(spec):
 
 def parse_label(section, config, section_name, members, label=None):
     """parse label will add a (optionally named) label to the filter
-       section, including one or more criteria
-   
-       Parameters
-       ==========
-       section: the section name (e.g., header) must be one in sections
-       config: the config (dictionary) parsed thus far
-       section_name: an optional name for a section
-       members: the lines beloning to the section/section_name
-       label: an optional name for the group of commands
+    section, including one or more criteria
+
+    Parameters
+    ==========
+    section: the section name (e.g., header) must be one in sections
+    config: the config (dictionary) parsed thus far
+    section_name: an optional name for a section
+    members: the lines beloning to the section/section_name
+    label: an optional name for the group of commands
     """
-    criteria = {"filters": [], "coordinates": [], "keepcoordinates": []}
+    criteria = {"filters": [], "coordinates": []}
 
     if label is not None:
         label = label.replace("label", "", 1).split("#")[0].strip()
@@ -302,16 +302,16 @@ def parse_label(section, config, section_name, members, label=None):
     while len(members) > 0:
         member = members.pop(0).strip()
 
-        # We have a coordinate line (coordinates to remove)
+        # We have a coordinate line (coordinates to remove, mask 0)
         if member.lower().startswith("coordinates"):
             coordinate = member.replace("coordinates", "").strip()
-            criteria["coordinates"].append(coordinate)
+            criteria["coordinates"].append([0, coordinate])
             continue
 
-        # Coordinates to keep
+        # Coordinates to keep (mask 1)
         elif member.lower().startswith("keepcoordinates"):
             coordinate = member.replace("keepcoordinates", "").strip()
-            criteria["keepcoordinates"].append(coordinate)
+            criteria["coordinates"].append([1, coordinate])
             continue
 
         operator = None
@@ -344,8 +344,8 @@ def parse_label(section, config, section_name, members, label=None):
 
 def parse_member(members, operator=None):
     """a parsing function for a filter member. Will return a single member
-       with fields, values, and an operator. In the case of multiple and/or
-       statements that are chained, will instead return a list.
+    with fields, values, and an operator. In the case of multiple and/or
+    statements that are chained, will instead return a list.
     """
     main_operator = operator
 
@@ -426,13 +426,13 @@ def parse_member(members, operator=None):
 
 def add_section(config, section, section_name=None):
     """add section will add a section (and optionally)
-       section name to a config
+    section name to a config
 
-       Parameters
-       ==========
-       config: the config (dict) parsed thus far
-       section: the section name to add
-       section_name: an optional name, added as a level
+    Parameters
+    ==========
+    config: the config (dict) parsed thus far
+    section: the section name to add
+    section_name: an optional name, added as a level
 
     """
 
@@ -466,7 +466,7 @@ def add_section(config, section, section_name=None):
 
 def _remove_comments(parts):
     """given a list of parts, and that the action and field are removed,
-       get the remainder of the line and clean up any trailing comments. 
+    get the remainder of the line and clean up any trailing comments.
     """
     value = " ".join(parts[0:])  # get remained of line
     return value.split("#")[0]  # remove comments
@@ -474,14 +474,14 @@ def _remove_comments(parts):
 
 def parse_group_action(section, line, config, section_name):
     """parse a group action, either FIELD or SPLIT, which must belong to
-       either a fields or values section.
+    either a fields or values section.
 
-       Parameters
-       =========
-       section: a valid section name from the deid config file
-       line: the line content to parse for the section/action
-       config: the growing/current config dictionary
-       section_name: optionally, a section name
+    Parameters
+    =========
+    section: a valid section name from the deid config file
+    line: the line content to parse for the section/action
+    config: the growing/current config dictionary
+    section_name: optionally, a section name
     """
     if not line.upper().startswith(group_actions):
         bot.exit("%s is not a valid group action." % line)
@@ -522,15 +522,15 @@ def parse_group_action(section, line, config, section_name):
 
 def parse_config_action(section, line, config, section_name=None):
     """add action will take a line from a deid config file, a config (dictionary), and
-       an active section name (eg header) and add an entry to the config file to perform
-       the action.
+    an active section name (eg header) and add an entry to the config file to perform
+    the action.
 
-       Parameters
-       =========
-       section: a valid section name from the deid config file
-       line: the line content to parse for the section/action
-       config: the growing/current config dictionary
-       section_name: optionally, a section name
+    Parameters
+    =========
+    section: a valid section name from the deid config file
+    line: the line content to parse for the section/action
+    config: the growing/current config dictionary
+    section_name: optionally, a section name
 
     """
     if not line.upper().startswith(actions):
@@ -578,16 +578,16 @@ def parse_config_action(section, line, config, section_name=None):
 
 def get_deid(tag=None, exit_on_fail=True, quiet=False, load=False):
     """get deid is intended to retrieve the full path of a deid file provided with
-       the software, based on a tag. For example, under deid/data if a file is called
-       "deid.dicom", the tag would be "dicom". 
+    the software, based on a tag. For example, under deid/data if a file is called
+    "deid.dicom", the tag would be "dicom".
 
-       Parameters
-       ==========
-       tag: the text that comes after deid to indicate the tag of the file in deid/data
-       exit_on_fail: if None is an acceptable return value, this should be set to False
-                     (default is True).
-       quiet: Default False. If None is acceptable, quiet can be set to True
-       load: also load the deid, if resulting path (from path or tag) is not None
+    Parameters
+    ==========
+    tag: the text that comes after deid to indicate the tag of the file in deid/data
+    exit_on_fail: if None is an acceptable return value, this should be set to False
+                  (default is True).
+    quiet: Default False. If None is acceptable, quiet can be set to True
+    load: also load the deid, if resulting path (from path or tag) is not None
 
     """
     # no tag/path means load default

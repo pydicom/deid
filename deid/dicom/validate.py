@@ -27,13 +27,13 @@ from pydicom import read_file
 
 
 def validate_dicoms(dcm_files, force=False):
-    """validate dicoms will test opening one or more dicom files, 
-       and return a list of valid files.
+    """validate dicoms will test opening one or more dicom files,
+    and return a list of valid files.
 
-       Parameters
-       ==========
-       dcm_files: one or more dicom files to test
-    
+    Parameters
+    ==========
+    dcm_files: one or more dicom files to test
+
     """
     if not isinstance(dcm_files, list):
         dcm_files = [dcm_files]

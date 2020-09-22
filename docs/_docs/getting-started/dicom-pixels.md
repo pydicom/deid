@@ -138,9 +138,15 @@ The basic steps we will take are the following:
 ### Coordinates from Fields
 
 By default, we use a list of rules provided by CTP and other users in [dicom.deid](https://github.com/pydicom/deid/blob/master/deid/data/deid.dicom), and these are based on finding known locations based on dicom header values.
-If you want to define a custom cleaning action, for example, taking the coordinates
-defined based on the [SequenceOfUltrasoundRegions](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.8.5.5.html#table_C.8-17) identifier, you can define this as a `CLEAN` action in any
-of the provided lists. An instruction to identify a known region in this file looks like this:
+There are two operations we can apply to coordinates:
+
+ - `keepcoordinates` indicates a set of coordinates that you want to set the mask to a value of 1, to indicate keeping
+ - `coordinates` indicates a set of coordintes that you want to set the mask to a value of 0, to indicate cleaning.
+
+By default, deid will start with a mask of all 1s, indicating that we keep all coordinates. We then
+apply the list of rules provided by CTP and others in [dicom.deid](https://github.com/pydicom/deid/blob/master/deid/data/deid.dicom)
+to add regions with 0s, indicating regions to be cleaned. For example, here is a rule to scrub a box of pixels
+based on finding a particular set of metadata:
 
 ```
 LABEL LightSpeed Dose Report # (Susan Weber)
@@ -150,48 +156,98 @@ LABEL LightSpeed Dose Report # (Susan Weber)
   coordinates 0,0,512,121
 ```
 
-And so to identify an instruction to clean based on presence of a particular
-dicom header (and then use the pixels identified within) would look like this:
+On the other hand, let's say that you want to specify a set of values to keep, for example
+if there is a large region to remove, but then a smaller region inside of it to keep.
+You can do this with the `keepcoordinate` attribute, which might look the same as above
+but instead of `coordinates` you would have:
+
+```
+  keepcoordinates 0,0,512,121
+```
+
+In that the default mask is 1s (to indicate keep) this would only be meaningful if you've already
+provided a directive to clean some area including that region. 
+
+#### Custom Clean
+
+Let's say that you want to perform a cleaning action, but you don't have corresponding header fields
+to indicate it. In fact, you want to go further and extract the coordinates from a field in the image. 
+In this case you can use a smiliar snippet. In the example below, we take
+ the coordinates defined based on the [SequenceOfUltrasoundRegions](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.8.5.5.html#table_C.8-17) identifier, and tell deid to keep that region.
 
 ```
 LABEL Clean Ultrasound
     present SequenceOfUltrasoundRegions
-    coordinates from:SequenceOfUltrasoundRegions
+    keepcoordinates from:SequenceOfUltrasoundRegions
 ```
 
-In the above, we tell deid to look for the dicom header `SequenceOfUltrasoundRegions`
+And since the default value of the mask is all 1s, we need to start with the inverse, 
+all zeros! We can do that as follows:
+
+```
+LABEL Blank Mask
+    coordinates all
+
+LABEL Clean Ultrasound
+    present SequenceOfUltrasoundRegions
+    keepcoordinates from:SequenceOfUltrasoundRegions
+```
+
+In the above, we first tell deid to blank the entire mask (setting values of 0). We
+then ask to look for the dicom header `SequenceOfUltrasoundRegions`
 (it must be present), and given this condition, we look for coordinates
-from that field. This action is added to the default deid.dicom recipe, so if we
-just create a cleaner and interact with a dicom file that has this field, we should
-see the coordinates extracted. For example, here is an ultrasound image that
-has regions defined until this field:
+from that field, and set then to a value of 1 (keep) in our mask. 
+These actions is added to the provided deid.dicom.ultrasound recipe, a subset shown
+below:
+
+```
+FORMAT dicom
+
+%filter whitelist
+
+LABEL Marked as Clean Catch All # (Vanessa Sochat)
+  contains BurnedInAnnotation No
+
+%filter graylist
+
+# Coordinates from fields
+
+LABEL Blank Image
+    coordinates all
+
+LABEL Clean Ultrasound Regions
+    present SequenceOfUltrasoundRegions
+    keepcoordinates from:SequenceOfUltrasoundRegions
+```
+
+Let's say we have this file, `deid.ultrasound` in our present working directory,
+and we have an ultrasound image, `echo/echo1.dcm` to clean. We can do:
+We can do:
 
 ```python
-from deid.dicom import DicomCleaner
-client = DicomCleaner()
-client.detect('echo1.dcm')
+from deid.dicom.pixels import DicomCleaner
+client=DicomCleaner(deid='dicom.ultrasound')
+client.detect('echo/echo1.dcm')
+```
+and then easily see the pixel operations that will be done:
+
+```python
 {'flagged': True,
- 'results': [{'reason': ' SequenceOfUltrasoundRegions present ',
+ 'results': [{'reason': ' LABEL Blank Image',
    'group': 'graylist',
-   'coordinates': ['231,70,784,657']},
-  {'reason': 'and ImageType contains RECONSTRUCTION|SECONDARY|DERIVED',
+   'coordinates': [[0, 'all']]},
+  {'reason': ' SequenceOfUltrasoundRegions present ',
    'group': 'graylist',
-   'coordinates': []},
-  {'reason': 'and ImageType contains DERIVED|SECONDARY|SCREEN SAVE|VOLREN|VXTL STATE',
-   'group': 'graylist',
-   'coordinates': []},
-  {'reason': 'and ImageType contains DERIVED|SECONDARY|SCREEN|SAVE',
-   'group': 'blacklist',
-   'coordinates': []}]}
+   'coordinates': [[1, ['231,70,784,657']]]}]}
 ```
 
-Notice that the coordinates are filled in. We might next want to perform a clean.
+and then run clean to perform the actions.
 
 ```python
 client.clean()
 
 import os
-client.save_dicom(output_folder=os.getcwd())                                                    
+cleaner.save_dicom(output_folder=os.getcwd())                                                    
 '/home/vanessa/Desktop/Code/deid/echo/cleaned-echo1.dcm'
 ```
 

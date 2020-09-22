@@ -40,12 +40,12 @@ import re
 def apply_filter(dicom, field, filter_name, value):
     """essentially a switch statement to apply a filter to a dicom file.
 
-       Parameters
-       ==========
-       dicom: the pydicom.dataset Dataset (pydicom.read_file)
-       field: the name of the field to apply the filter to
-       filer_name: the name of the filter to apply (e.g., contains)
-       value: the value to set, if filter_name is valid
+    Parameters
+    ==========
+    dicom: the pydicom.dataset Dataset (pydicom.read_file)
+    field: the name of the field to apply the filter to
+    filer_name: the name of the filter to apply (e.g., contains)
+    value: the value to set, if filter_name is valid
 
     """
     filter_name = filter_name.lower().strip()
@@ -81,8 +81,7 @@ def apply_filter(dicom, field, filter_name, value):
 
 
 def equalsBase(self, field, term, ignore_case=True, not_equals=False):
-    """base of equals, with variable for ignore case (default True)
-    """
+    """base of equals, with variable for ignore case (default True)"""
 
     is_equal = False
 
@@ -118,8 +117,8 @@ def equalsBase(self, field, term, ignore_case=True, not_equals=False):
 
 
 def equals(self, field, term):
-    """returns true if the value of the identifier exactly 
-       equals the string argument; otherwise, it returns false."""
+    """returns true if the value of the identifier exactly
+    equals the string argument; otherwise, it returns false."""
     return self.equalsBase(field, term)
 
 
@@ -141,7 +140,7 @@ Dataset.notEquals = notEquals
 
 def missing(self, field):
     """missing returns True if the dicom is missing the field entirely
-       This means that the entire field is None
+    This means that the entire field is None
     """
     content = self.get(field)
     if content is None:
@@ -151,7 +150,7 @@ def missing(self, field):
 
 def empty(self, field):
     """empty returns True if the value is found to be "". If the field
-       is not present for the dicom, then we return False (missing != empty)
+    is not present for the dicom, then we return False (missing != empty)
     """
     if field not in self:
         return False
@@ -188,8 +187,8 @@ Dataset.missing = missing
 
 def compareBase(self, field, expression, func, ignore_case=True):
     """compareBase takes either re.search (for contains) or
-       re.match (for matches) and returns True if the given regular
-       expression is contained or matched
+    re.match (for matches) and returns True if the given regular
+    expression is contained or matched
     """
     is_match = False
 
@@ -219,24 +218,24 @@ def compareBase(self, field, expression, func, ignore_case=True):
 
 
 def matches(self, field, expression):
-    """matches returns true if the value of the identifier matches 
-       the regular expression specified in the string argument; 
-       otherwise, it returns false.
+    """matches returns true if the value of the identifier matches
+    the regular expression specified in the string argument;
+    otherwise, it returns false.
     """
     return self.compareBase(field=field, expression=expression, func=re.match)
 
 
 def contains(self, field, expression):
-    """contains returns true if the value of the identifier 
-       contains the the string argument anywhere within it; 
-       otherwise, it returns false.
+    """contains returns true if the value of the identifier
+    contains the the string argument anywhere within it;
+    otherwise, it returns false.
     """
     return self.compareBase(field=field, expression=expression, func=re.search)
 
 
 def notContains(self, field, expression):
-    """notContains returns true if the value of the identifier 
-       does not contain the the string argument anywhere within it; 
+    """notContains returns true if the value of the identifier
+    does not contain the the string argument anywhere within it;
     """
     return not self.compareBase(field=field, expression=expression, func=re.search)
 
@@ -252,16 +251,16 @@ Dataset.notContains = notContains
 
 
 def startsWith(self, field, term):
-    """startsWith returns true if the value of the identifier 
-       starts with the string argument; otherwise, it returns false.
+    """startsWith returns true if the value of the identifier
+    starts with the string argument; otherwise, it returns false.
     """
     expression = "^%s" % term
     return self.compareBase(field=field, expression=expression, func=re.match)
 
 
 def endsWith(self, field, term):
-    """endsWith returns true if the value of the identifier ends with 
-       the string argument; otherwise, it returns false.
+    """endsWith returns true if the value of the identifier ends with
+    the string argument; otherwise, it returns false.
     """
     expression = "%s$" % term
     return self.compareBase(field=field, expression=expression, func=re.match)

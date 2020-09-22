@@ -37,7 +37,7 @@ import re
 
 def add_tag(identifier, VR="ST", VM=None, name=None, keyword=None):
     """Add tag will take a string for a tag (e.g., ) and define a new tag for it.
-       By default, we give the type "Short Text."
+    By default, we give the type "Short Text."
     """
     tag = Tag("0x" + identifier)
     manifest = {
@@ -52,11 +52,11 @@ def add_tag(identifier, VR="ST", VM=None, name=None, keyword=None):
 
 def get_tag(field):
     """get_tag will return a dictionary with tag indexed by field. For each entry,
-       a dictionary lookup is included with VR.
-    
-       Parameters
-       ==========
-       field: the keyword to get tag for, eg "PatientIdentityRemoved"
+    a dictionary lookup is included with VR.
+
+    Parameters
+    ==========
+    field: the keyword to get tag for, eg "PatientIdentityRemoved"
 
     """
     found = [
@@ -84,7 +84,7 @@ def get_tag(field):
 
 def find_tag(term, VR=None, VM=None, retired=False):
     """find_tag will search over tags in the DicomDictionary and return the tags found
-       to match some term.
+    to match some term.
     """
     searchin = DicomDictionary
     if retired:
@@ -106,9 +106,9 @@ def find_tag(term, VR=None, VM=None, retired=False):
 
 def _filter_tags(tags, idx, fields=None):
     """filter tags is a helper function to take some list of tags in the format
-       [ (VR, VM, longname, retired, keyword).. ]
-       where each of the items above has some index, idx, and filter that index
-       down to what is provided in fields.
+    [ (VR, VM, longname, retired, keyword).. ]
+    where each of the items above has some index, idx, and filter that index
+    down to what is provided in fields.
     """
     if not isinstance(fields, list):
         fields = [fields]
@@ -122,11 +122,11 @@ def _filter_tags(tags, idx, fields=None):
 
 def remove_sequences(dicom):
     """remove sequences from a dicom by removing the associated tag.
-       We use dicom.iterall() to get all nested sequences.
+    We use dicom.iterall() to get all nested sequences.
 
-       Parameters
-       ==========
-       dicom: the loaded dicom to remove sequences
+    Parameters
+    ==========
+    dicom: the loaded dicom to remove sequences
     """
     for elem in dicom.iterall():
         if isinstance(elem.value, Sequence) and dicom.get(elem.tag) != None:
@@ -136,17 +136,17 @@ def remove_sequences(dicom):
 
 def update_tag(dicom, field, value):
     """update tag will update a value in the header, if it exists
-       if not, nothing is added. This check is the only difference
-       between this function and change_tag. 
-       If the user wants to add a value (that might not exist) 
-       the function add_tag should be used with a private identifier
-       as a string.
+    if not, nothing is added. This check is the only difference
+    between this function and change_tag.
+    If the user wants to add a value (that might not exist)
+    the function add_tag should be used with a private identifier
+    as a string.
 
-       Parameters
-       ==========
-       dicom: the pydicom.dataset Dataset (pydicom.read_file)
-       field: the name of the field to update
-       value: the value to set, if name is a valid tag
+    Parameters
+    ==========
+    dicom: the pydicom.dataset Dataset (pydicom.read_file)
+    field: the name of the field to update
+    value: the value to set, if name is a valid tag
 
     """
     if field not in dicom:
@@ -176,9 +176,9 @@ def update_tag(dicom, field, value):
 def get_private(dicom):
     """get private tags
 
-       Parameters
-       ==========
-       dicom: the pydicom.dataset Dataset (pydicom.read_file)
+    Parameters
+    ==========
+    dicom: the pydicom.dataset Dataset (pydicom.read_file)
     """
     datasets = [dicom]
     private_tags = []
@@ -207,9 +207,9 @@ def get_private(dicom):
 def has_private(dicom):
     """has_private will return True if the header has private tags
 
-       Parameters
-       ==========
-       dicom: the pydicom.dataset Dataset (pydicom.read_file)
+    Parameters
+    ==========
+    dicom: the pydicom.dataset Dataset (pydicom.read_file)
 
     """
     private_tags = len(get_private(dicom))
