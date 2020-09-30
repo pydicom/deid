@@ -121,6 +121,86 @@ class TestFilterDetect(unittest.TestCase):
         out = client.detect(dicom_file)
         self.assertTrue(out["flagged"])
 
+    def test_filter_multiple_two_filter_match(self):
+        """Test the DicomCleaner.detect to ensure multiple detected filters are appropriately detected.
+        """
+        from deid.dicom import DicomCleaner
+
+        dicom_file = get_file(self.dataset)
+        deid = os.path.join(self.deidpath, "filter_multiple_two_filter_match.dicom")
+
+        client = DicomCleaner(output_folder=self.tmpdir, deid=deid)
+        out = client.detect(dicom_file)
+        self.assertTrue(out["flagged"])
+
+        matchgroups = set()
+
+        for r in out["results"]:
+            matchgroups.add(r["group"])
+
+        self.assertIn("ShouldMatch1", matchgroups)
+        self.assertIn("ShouldMatch2", matchgroups)
+
+    def test_filter_multiple_zero_filter_match(self):
+        """Test the DicomCleaner.detect to ensure multiple detected filters are appropriately not detected when they shouldn't match.
+        """
+        from deid.dicom import DicomCleaner
+
+        dicom_file = get_file(self.dataset)
+        deid = os.path.join(self.deidpath, "filter_multiple_zero_filter_match.dicom")
+
+        client = DicomCleaner(output_folder=self.tmpdir, deid=deid)
+        out = client.detect(dicom_file)
+        self.assertFalse(out["flagged"])
+
+        matchgroups = set()
+
+        for r in out["results"]:
+            matchgroups.add(r["group"])
+
+        self.assertNotIn("ShouldNotMatch1", matchgroups)
+        self.assertNotIn("ShouldNotMatch2", matchgroups)
+
+    def test_filter_multiple_first_filter_match(self):
+        """Test the DicomCleaner.detect to ensure multiple detected filters are appropriately detected.
+        """
+        from deid.dicom import DicomCleaner
+
+        dicom_file = get_file(self.dataset)
+        deid = os.path.join(self.deidpath, "filter_multiple_first_filter_match.dicom")
+
+        client = DicomCleaner(output_folder=self.tmpdir, deid=deid)
+        out = client.detect(dicom_file)
+        self.assertTrue(out["flagged"])
+
+        matchgroups = set()
+
+        for r in out["results"]:
+            matchgroups.add(r["group"])
+
+        self.assertIn("ShouldMatch", matchgroups)
+        self.assertNotIn("ShouldNotMatch", matchgroups)
+
+    def test_filter_multiple_second_filter_match(self):
+        """Test the DicomCleaner.detect to ensure multiple detected filters are appropriately detected.
+        """
+        from deid.dicom import DicomCleaner
+
+        dicom_file = get_file(self.dataset)
+        deid = os.path.join(self.deidpath, "filter_multiple_second_filter_match.dicom")
+
+        client = DicomCleaner(output_folder=self.tmpdir, deid=deid)
+        out = client.detect(dicom_file)
+        self.assertTrue(out["flagged"])
+
+        matchgroups = set()
+
+        for r in out["results"]:
+            matchgroups.add(r["group"])
+
+        self.assertIn("ShouldMatch", matchgroups)
+        self.assertNotIn("ShouldNotMatch", matchgroups)
+
 
 def get_file(dataset):
     """helper to get a dicom file"""
@@ -132,3 +212,4 @@ def get_file(dataset):
 
 if __name__ == "__main__":
     unittest.main()
+
