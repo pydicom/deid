@@ -50,8 +50,7 @@ class TestFilterDetect(unittest.TestCase):
         print("\n######################END########################")
 
     def test_filter_single_rule_false(self):
-        """Test the DicomCleaner.detect to ensure a single rule evaluated to false detects appropriately.
-        """
+        """Test the DicomCleaner.detect to ensure a single rule evaluated to false detects appropriately."""
         from deid.dicom import DicomCleaner
 
         dicom_file = get_file(self.dataset)
@@ -62,8 +61,7 @@ class TestFilterDetect(unittest.TestCase):
         self.assertFalse(out["flagged"])
 
     def test_filter_single_rule_true(self):
-        """Test the DicomCleaner.detect to ensure a single rule evaluated to true detects appropriately.
-        """
+        """Test the DicomCleaner.detect to ensure a single rule evaluated to true detects appropriately."""
         from deid.dicom import DicomCleaner
 
         dicom_file = get_file(self.dataset)
@@ -74,8 +72,7 @@ class TestFilterDetect(unittest.TestCase):
         self.assertTrue(out["flagged"])
 
     def test_filter_single_rule_innerop_false(self):
-        """Test the DicomCleaner.detect to ensure a single rule with an inner operator evaluated to false detects appropriately.
-        """
+        """Test the DicomCleaner.detect to ensure a single rule with an inner operator evaluated to false detects appropriately."""
         from deid.dicom import DicomCleaner
 
         dicom_file = get_file(self.dataset)
@@ -86,8 +83,7 @@ class TestFilterDetect(unittest.TestCase):
         self.assertFalse(out["flagged"])
 
     def test_filter_single_rule_innerop_true(self):
-        """Test the DicomCleaner.detect to ensure a single rule with an inner operator evaluated to true detects appropriately.
-        """
+        """Test the DicomCleaner.detect to ensure a single rule with an inner operator evaluated to true detects appropriately."""
         from deid.dicom import DicomCleaner
 
         dicom_file = get_file(self.dataset)
@@ -98,8 +94,7 @@ class TestFilterDetect(unittest.TestCase):
         self.assertTrue(out["flagged"])
 
     def test_filter_multiple_rule_innerop_false(self):
-        """Test the DicomCleaner.detect to ensure multiple rules within a filter evaluated to false detects appropriately.
-        """
+        """Test the DicomCleaner.detect to ensure multiple rules within a filter evaluated to false detects appropriately."""
         from deid.dicom import DicomCleaner
 
         dicom_file = get_file(self.dataset)
@@ -110,8 +105,7 @@ class TestFilterDetect(unittest.TestCase):
         self.assertFalse(out["flagged"])
 
     def test_filter_multple_rule_innerop_true(self):
-        """Test the DicomCleaner.detect to ensure multiple rules within a filter evaluated to true detects appropriately.
-        """
+        """Test the DicomCleaner.detect to ensure multiple rules within a filter evaluated to true detects appropriately."""
         from deid.dicom import DicomCleaner
 
         dicom_file = get_file(self.dataset)
@@ -122,8 +116,7 @@ class TestFilterDetect(unittest.TestCase):
         self.assertTrue(out["flagged"])
 
     def test_filter_multiple_two_filter_match(self):
-        """Test the DicomCleaner.detect to ensure multiple detected filters are appropriately detected.
-        """
+        """Test the DicomCleaner.detect to ensure multiple detected filters are appropriately detected."""
         from deid.dicom import DicomCleaner
 
         dicom_file = get_file(self.dataset)
@@ -142,8 +135,7 @@ class TestFilterDetect(unittest.TestCase):
         self.assertIn("ShouldMatch2", matchgroups)
 
     def test_filter_multiple_zero_filter_match(self):
-        """Test the DicomCleaner.detect to ensure multiple detected filters are appropriately not detected when they shouldn't match.
-        """
+        """Test the DicomCleaner.detect to ensure multiple detected filters are appropriately not detected when they shouldn't match."""
         from deid.dicom import DicomCleaner
 
         dicom_file = get_file(self.dataset)
@@ -162,8 +154,7 @@ class TestFilterDetect(unittest.TestCase):
         self.assertNotIn("ShouldNotMatch2", matchgroups)
 
     def test_filter_multiple_first_filter_match(self):
-        """Test the DicomCleaner.detect to ensure multiple detected filters are appropriately detected.
-        """
+        """Test the DicomCleaner.detect to ensure multiple detected filters are appropriately detected."""
         from deid.dicom import DicomCleaner
 
         dicom_file = get_file(self.dataset)
@@ -182,8 +173,7 @@ class TestFilterDetect(unittest.TestCase):
         self.assertNotIn("ShouldNotMatch", matchgroups)
 
     def test_filter_multiple_second_filter_match(self):
-        """Test the DicomCleaner.detect to ensure multiple detected filters are appropriately detected.
-        """
+        """Test the DicomCleaner.detect to ensure multiple detected filters are appropriately detected."""
         from deid.dicom import DicomCleaner
 
         dicom_file = get_file(self.dataset)
@@ -212,4 +202,3 @@ def get_file(dataset):
 
 if __name__ == "__main__":
     unittest.main()
-
