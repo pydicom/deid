@@ -1,0 +1,16 @@
+FORMAT dicom
+
+%filter ShouldNotMatch
+
+LABEL - To be tested with Cat.dcm.  Intended to flag the image.
+  contains Modality MR
+  + contains Manufacturer Agfa
+
+%filter ShouldMatch
+
+LABEL - To be tested with Cat.dcm.  Intended to NOT flag the image.
+  contains PatientSex M
+  + contains Manufacturer Agfa
+
+%header
+ADD PatientIdentityRemoved No 
