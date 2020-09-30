@@ -1,0 +1,10 @@
+FORMAT dicom
+
+%filter blacklist
+
+LABEL Modality
+  contains Modality CT + contains PatientSex F
+  + contains Manufacturer Agfa
+
+%header
+ADD PatientIdentityRemoved No 

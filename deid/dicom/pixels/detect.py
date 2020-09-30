@@ -142,9 +142,9 @@ def _has_burned_pixels_single(dicom_file, force, deid):
                 group_descriptions = [item.get("name", "")]
 
             else:
+                group_flags = []  # evaluation for a single line
+                group_descriptions = []
                 for group in item["filters"]:
-                    group_flags = []  # evaluation for a single line
-                    group_descriptions = []
 
                     # You cannot pop from the list
                     for a in range(len(group["action"])):

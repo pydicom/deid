@@ -1,0 +1,9 @@
+FORMAT dicom
+
+%filter blacklist
+
+LABEL Modality
+  contains Modality DX
+
+%header
+ADD PatientIdentityRemoved No 
