@@ -2,7 +2,7 @@ FORMAT dicom
 
 %filter blacklist
 
-LABEL Modality
+LABEL - To be tested with Cat.dcm.  Intended to NOT flag the image.
   contains Modality CT
 
 %header
