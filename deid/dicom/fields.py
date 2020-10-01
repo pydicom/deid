@@ -251,7 +251,7 @@ def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
         dataset.uid = getattr(dataset, "uid", None)
 
         # Includes private tags, sequences flattened, non-null values
-        for contender in dataset.iterall():
+        for contender in dataset:
 
             # All items should be data elements, skip based on keyword or tag
             if contender.keyword in skip or str(contender.tag) in skip:
