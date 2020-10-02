@@ -690,6 +690,45 @@ class TestDicom(unittest.TestCase):
         for tag in result[0]:
             self.assertFalse(isinstance(tag.value, Sequence))
 
+    def test_nested_replace(self):
+        """
+        Fields are read into a dictionary lookup that should index back to the
+        correct data element. We add this test to ensure this is happening,
+        meaning that a replace action to a particular contains: string changes
+        both top level and nested fields.
+
+        %header
+
+        REPLACE contains:StudyInstanceUID var:new_val
+        """
+        print("Test nested_replace")
+        dicom_file = get_file(self.dataset)
+
+        actions = [
+            {
+                "action": "REPLACE",
+                "field": "contains:StudyInstanceUID",
+                "value": "var:new_val",
+            }
+        ]
+        recipe = create_recipe(actions)
+
+        items = get_identifiers([dicom_file])
+        for item in items:
+            items[item]["new_val"] = "modified"
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            ids=items,
+            deid=recipe,
+            save=False,
+        )
+        self.assertEqual(1, len(result))
+        self.assertEqual(result[0].StudyInstanceUID, "modified")
+        self.assertEqual(
+            result[0].RequestAttributesSequence[0].StudyInstanceUID, "modified"
+        )
+
     def test_jitter_compounding(self):
         """
         Testing jitter compounding: Checks to ensure that multiple jitter rules applied to the same field result
