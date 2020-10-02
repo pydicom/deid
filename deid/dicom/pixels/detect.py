@@ -121,14 +121,15 @@ def _has_burned_pixels_single(dicom_file, force, deid):
     """
     dicom = read_file(dicom_file, force=force)
 
-    # Load criteria (actions) for flagging
-    filters = deid.get_filters()
-    if not filters:
-        bot.exit("Deid provided does not have %filter, exiting.")
-
     # Return list with lookup as dicom_file
     results = []
     global_flagged = False
+
+    # Load criteria (actions) for flagging
+    filters = deid.get_filters()
+    if not filters:
+        bot.warning("Deid provided does not have %filter.")
+        return {"flagged": global_flagged, "results": results}
 
     for name, items in filters.items():
         for item in items:
