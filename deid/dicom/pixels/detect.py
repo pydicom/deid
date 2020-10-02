@@ -124,7 +124,9 @@ def _has_burned_pixels_single(dicom_file, force, deid):
     # Load criteria (actions) for flagging
     filters = deid.get_filters()
     if not filters:
-        bot.exit("Deid provided does not have %filter, exiting.")
+        bot.warning("Deid provided does not have %filter.")
+        results = {"flagged": False, "results": None}
+        return results
 
     # Return list with lookup as dicom_file
     results = []

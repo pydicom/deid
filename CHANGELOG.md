@@ -14,7 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
- - changing iteration technique through fields to properly add nested uids [#153](https://github.com/pydicom/deid/issues/153) (0.2.22)
+ - changing iteration technique through fields to properly add nested uids [#153](https://github.com/pydicom/deid/issues/153), change to return results from detect when recipe does not contain filters [#155](https://github.com/pydicom/deid/issues/155) (0.2.22)
  - fix to correct bug in detect [#142](https://github.com/pydicom/deid/issues/142)  (0.2.21)
  - fixes to detect and clean to better represent keep/coordinates (0.2.20)
  - modify default VR for added tags [#146](https://github.com/pydicom/deid/issues/146), bug with private tags in %fields section [#147](https://github.com/pydicom/deid/issues/147) (0.2.19)
