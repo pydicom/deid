@@ -131,6 +131,10 @@ def replace_identifiers(
     if not isinstance(dicom_files, list):
         dicom_files = [dicom_files]
 
+    # Warn the user that we use the default deid recipe
+    if not deid:
+        bot.warning("No deid specification provided, will use defaults.")
+
     # ids (a lookup) is not required
     ids = ids or {}
 
