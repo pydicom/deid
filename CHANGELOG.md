@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+ - removing verbosity of debug logger (0.2.23)
  - changing iteration technique through fields to properly add nested uids [#153](https://github.com/pydicom/deid/issues/153) (0.2.22)
  - change to return results from detect when recipe does not contain filters [#155](https://github.com/pydicom/deid/issues/155)
  - fix to correct bug in detect [#142](https://github.com/pydicom/deid/issues/142)  (0.2.21)
