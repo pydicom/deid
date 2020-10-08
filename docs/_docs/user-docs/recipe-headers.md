@@ -353,6 +353,7 @@ structure:
 
 ```python
 from deid.dicom.fields import expand_field_expression
+from deid.dicom.tags import get_private
 
 # contenders should include all fields plus private tag names as keys
 contenders = dicom.dir() + [e.tag for e in get_private(dicom)]

@@ -1,5 +1,5 @@
 ---
-title: Recipe Headers
+title: Recipe Labels
 category: User Documentation
 order: 3
 ---

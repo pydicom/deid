@@ -35,8 +35,6 @@ from deid.logger import bot
 import os
 import re
 
-bot.level = 3
-
 
 class DeidRecipe:
     """Create and work with a deid recipe to filter and perform operations on
@@ -61,7 +59,6 @@ class DeidRecipe:
 
         # If deid is None, use the default
         if deid is None:
-            bot.warning("No specification, loading default base deid.%s" % default_base)
             base = True
 
         self._init_deid(deid, base=base, default_base=default_base)
