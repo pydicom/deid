@@ -53,7 +53,9 @@ class DicomParser:
     file. For each, we store the element and child elements
     """
 
-    def __init__(self, dicom_file, recipe=None, config=None, force=True):
+    def __init__(
+        self, dicom_file, recipe=None, config=None, force=True, stop_before_pixels=False
+    ):
 
         # Lookup for the dicom
         self.lookup = {}
@@ -70,7 +72,7 @@ class DicomParser:
         # Deid can be a recipe or filename
         if not isinstance(recipe, DeidRecipe):
             recipe = DeidRecipe(recipe)
-        self.load(dicom_file, force=force)
+        self.load(dicom_file, force=force, stop_before_pixels=stop_before_pixels)
         self.recipe = recipe
 
     def __str__(self):
@@ -79,7 +81,7 @@ class DicomParser:
     def __repr__(self):
         return self.__str__()
 
-    def load(self, dicom_file, force=True):
+    def load(self, dicom_file, force=True, stop_before_pixels=False):
         """Ensure that the dicom file exists, and use full path. Here
         we load the file, and save the dicom, dicom_file, and dicom_name.
         """
@@ -94,7 +96,9 @@ class DicomParser:
             # If we must read the file, the path must exist
             if not os.path.exists(dicom_file):
                 bot.exit("%s does not exist." % dicom_file)
-            self.dicom = read_file(dicom_file, force=force)
+            self.dicom = read_file(
+                dicom_file, force=force, stop_before_pixels=stop_before_pixels
+            )
 
         # Set class variables that might be helpful later
         self.dicom_file = os.path.abspath(self.dicom.filename)

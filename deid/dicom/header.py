@@ -44,7 +44,12 @@ here = os.path.dirname(os.path.abspath(__file__))
 
 
 def get_identifiers(
-    dicom_files, force=True, config=None, strip_sequences=False, remove_private=False
+    dicom_files,
+    force=True,
+    config=None,
+    strip_sequences=False,
+    remove_private=False,
+    stop_before_pixels=False,
 ):
     """extract all identifiers from a dicom image.
     This function returns a lookup by file name, where each value indexed
