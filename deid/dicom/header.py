@@ -79,9 +79,7 @@ def get_identifiers(
 
     # Parse each dicom file
     for dicom_file in dicom_files:
-        parser = DicomParser(
-            dicom_file, force=force, stop_before_pixels=stop_before_pixels
-        )
+        parser = DicomParser(dicom_file, force=force)
         lookup[parser.dicom_file] = parser.get_fields()
 
     return lookup

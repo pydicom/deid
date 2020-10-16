@@ -53,7 +53,9 @@ class DicomParser:
     file. For each, we store the element and child elements
     """
 
-    def __init__(self, dicom_file, recipe=None, config=None, force=True):
+    def __init__(
+        self, dicom_file, recipe=None, config=None, force=True, stop_before_pixels=False
+    ):
 
         # Lookup for the dicom
         self.lookup = {}
@@ -70,7 +72,7 @@ class DicomParser:
         # Deid can be a recipe or filename
         if not isinstance(recipe, DeidRecipe):
             recipe = DeidRecipe(recipe)
-        self.load(dicom_file, force=force)
+        self.load(dicom_file, force=force, stop_before_pixels=stop_before_pixels)
         self.recipe = recipe
 
     def __str__(self):
