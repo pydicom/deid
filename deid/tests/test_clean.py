@@ -23,18 +23,12 @@ SOFTWARE.
 import unittest
 import tempfile
 import shutil
-import json
 import os
 import numpy as np
 
 from deid.utils import get_installdir
 from deid.data import get_dataset
-from deid.dicom.parser import DicomParser
-from deid.dicom import get_identifiers, replace_identifiers
 from pydicom import read_file
-from pydicom.sequence import Sequence
-
-from collections import OrderedDict
 
 global generate_uid
 
@@ -53,7 +47,6 @@ class TestClean(unittest.TestCase):
 
     def test_pixel_cleaner_remove_coordinates(self):
         """Test the pixel cleaner to ensure it appropriately clears specified pixels."""
-        from deid.config import DeidRecipe
         from deid.dicom import DicomCleaner
 
         dicom_file = get_file(self.dataset)
@@ -80,7 +73,6 @@ class TestClean(unittest.TestCase):
 
     def test_pixel_cleaner_remove_all(self):
         """Test the pixel cleaner to ensure it appropriately clears all pixels."""
-        from deid.config import DeidRecipe
         from deid.dicom import DicomCleaner
 
         dicom_file = get_file(self.dataset)
@@ -107,7 +99,6 @@ class TestClean(unittest.TestCase):
 
     def test_pixel_cleaner_keepcoordinates_noaction(self):
         """Test the pixel cleaner to ensure that a keepcoordinates with no removecoordinates has no impact on the pixels."""
-        from deid.config import DeidRecipe
         from deid.dicom import DicomCleaner
 
         dicom_file = get_file(self.dataset)
@@ -130,7 +121,6 @@ class TestClean(unittest.TestCase):
 
     def test_pixel_cleaner_keepcoordinates(self):
         """Test the pixel cleaner to ensure that a keepcoordinates retains appropriate pixels."""
-        from deid.config import DeidRecipe
         from deid.dicom import DicomCleaner
 
         dicom_file = get_file(self.dataset)
@@ -156,7 +146,6 @@ class TestClean(unittest.TestCase):
 
     def test_pixel_cleaner_remove_multiple(self):
         """Test the pixel cleaner to ensure that multiple remove coordinates in the same filter remove the appropriate pixels."""
-        from deid.config import DeidRecipe
         from deid.dicom import DicomCleaner
 
         dicom_file = get_file(self.dataset)
@@ -184,7 +173,6 @@ class TestClean(unittest.TestCase):
 
     def test_pixel_cleaner_remove_multiple_filters(self):
         """Test the pixel cleaner to ensure that multiple remove coordinates in different filters remove the appropriate pixels."""
-        from deid.config import DeidRecipe
         from deid.dicom import DicomCleaner
 
         dicom_file = get_file(self.dataset)
@@ -212,7 +200,6 @@ class TestClean(unittest.TestCase):
 
     def test_pixel_cleaner_keepcoordinates_from(self):
         """Test the pixel cleaner to ensure that multiple keep coordinates retrieved from a dicom field are appropriately retained."""
-        from deid.config import DeidRecipe
         from deid.dicom import DicomCleaner
 
         dicom_file = get_file(self.dataset)

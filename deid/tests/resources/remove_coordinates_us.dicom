@@ -1,0 +1,10 @@
+FORMAT dicom
+
+%filter blacklist
+
+LABEL by SOPClassUID
+  contains Modality US
+  coordinates 0,0,500,500
+
+%header
+ADD PatientIdentityRemoved No 

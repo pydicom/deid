@@ -202,6 +202,7 @@ class DicomCleaner:
                 mask[minc:maxc, minr:maxr] = coordinate_value
 
             # Now apply finished mask to the data
+            # RGB cine clip
             if len(self.original.shape) == 4:
 
                 # np.tile does the copying and stacking of masks into the channel dim to produce 3D masks
@@ -216,13 +217,26 @@ class DicomCleaner:
                 # apply final 4D mask to 4D pixel data
                 self.cleaned = final_mask * self.original
 
-            # greyscale: no need to stack into the channel dim since it doesnt exist
+            # RGB image or Greyscale cine clip
             elif len(self.original.shape) == 3:
 
-                # numpy.tile converts (X, Y) -> (frames, X, Y)
-                final_mask = numpy.tile(mask, (self.original.shape[0], 1, 1))
+                # This condition is ambiguous.  If the image shape is 3, we may have a single frame RGB image: size (X, Y, channel)
+                # or a multiframe greyscale image: size (frames, X, Y).  Interrogate the SamplesPerPixel field.
+                if dicom.SamplesPerPixel == 3:
+                    # RGB Image
+                    # Convert (X, Y) -> (X, Y, channel)
+                    final_mask = numpy.transpose(
+                        numpy.tile(mask, (self.original.shape[2], 1, 1)), (1, 2, 0)
+                    )
+                else:
+                    # Greyscale cine clip
+                    # Convert (X, Y) -> (frames, X, Y)
+                    final_mask = numpy.tile(mask, (self.original.shape[0], 1, 1))
+
+                # apply final 3D mask to 3D pixel data
                 self.cleaned = final_mask * self.original
 
+            # greyscale image: no need to stack into the channel dim since it doesnt exist
             elif len(self.original.shape) == 2:
                 self.cleaned = mask * self.original
 
