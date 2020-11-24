@@ -28,19 +28,20 @@ from .validate import validate_dicoms
 from deid.utils import recursive_find
 import tempfile
 import os
+import zipfile
 
 ################################################################################
 # Functions for Dicom files
 ################################################################################
 
 
-def get_files(contenders, check=True, pattern=None, force=False):
+def get_files(contenders, check=True, pattern=None, force=False, tempdir=None):
     """get_files will take a list of single dicom files or directories,
     and return a generator that yields complete paths to all files
 
     Parameters
     ==========
-    conteners: a list of files or directories (contenders!)
+    contenders: a list of files or directories (contenders!)
     check: boolean to indicate if we should validate dicoms (default True)
     pattern: A pattern to use with fnmatch. If None, * is used
     force: force reading of the files, if some headers invalid.
@@ -57,6 +58,18 @@ def get_files(contenders, check=True, pattern=None, force=False):
             dicom_files = [contender]
 
         for dicom_file in dicom_files:
+            dfile, dextension = os.path.splitext(dicom_file)
+            # The code currently only assumes a single-file per zip.  This could be
+            # expanded to allow for multiple test files within an archive.
+            if dextension == ".zip":
+                with zipfile.ZipFile(dicom_file, "r") as compressedFile:
+                    compressedFile.extractall(tempdir)
+                    dicom_file = next(
+                        os.path.join(tempdir, f)
+                        for f in os.listdir(tempdir)
+                        if os.path.isfile(os.path.join(tempdir, f))
+                    )
+
             if dicom_file is not None:
                 if check:
                     validated_files = validate_dicoms(dicom_file, force=force)
