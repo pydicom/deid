@@ -113,7 +113,7 @@ class TestUtils(unittest.TestCase):
         from deid.utils import recursive_find
 
         found = 0
-        expected = 9
+        expected = 11
         for file in recursive_find(self.pwd, pattern="*.dcm"):
             found += 1
         print("Found %s files" % (found))
@@ -124,7 +124,7 @@ class TestUtils(unittest.TestCase):
         print("Testing recursive find as lit.")
         from deid.utils import recursive_find
 
-        expected = 9
+        expected = 11
         files = list(recursive_find(self.pwd, pattern="*.dcm"))
         found = len(files)
         print("Found %s files" % (len(files)))

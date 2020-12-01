@@ -44,6 +44,7 @@ def get_dataset(dataset=None):
         "dicom-cookies": os.path.join(data_base, "data", "dicom-cookies"),
         "animals": os.path.join(data_base, "data", "animals"),
         "humans": os.path.join(data_base, "data", "humans"),
+        "ultrasounds": os.path.join(data_base, "data", "ultrasounds"),
     }
 
     if dataset is not None:

@@ -161,8 +161,11 @@ class DicomCleaner:
                         # Case 1: an "all" indicates applying to entire image
                         if new_coordinate.lower() == "all":
 
-                            # no frames, just X, Y
-                            if len(self.original.shape) == 2:
+                            # 2D - Greyscale Image - Shape = (X, Y) OR 3D - RGB Image - Shape = (X, Y, Channel)
+                            if len(self.original.shape) == 2 or (
+                                len(self.original.shape) == 3
+                                and dicom.SamplesPerPixel == 3
+                            ):
                                 # minr, minc, maxr, maxc = [0, 0, Y, X]
                                 new_coordinate = [
                                     0,
@@ -171,8 +174,11 @@ class DicomCleaner:
                                     self.original.shape[0],
                                 ]
 
-                            # (frames, X, Y, channel) OR (frames, X,Y)
-                            if len(self.original.shape) >= 3:
+                            # 4D - RGB Cine Clip - Shape = (frames, X, Y, channel) OR 3D - Greyscale Cine Clip - Shape = (frames, X, Y)
+                            if len(self.original.shape) == 4 or (
+                                len(self.original.shape) == 3
+                                and dicom.SamplesPerPixel == 1
+                            ):
                                 new_coordinate = [
                                     0,
                                     0,
@@ -186,11 +192,12 @@ class DicomCleaner:
                         )  # [(1, [1,2,3,4]),...(0, [1,2,3,4])]
 
             # Instead of writing directly to data, create a mask of 1s (start keeping all)
-            # For 4D, (frames, X, Y, channel)
-            if len(self.original.shape) == 4:
+            # For 4D RGB Cine - (frames, X, Y, channel) or 3D Greyscale Cine - (frames, X, Y)
+            if len(self.original.shape) == 4 or (
+                len(self.original.shape) == 3 and dicom.SamplesPerPixel == 1
+            ):
                 mask = numpy.ones(self.original.shape[1:3], dtype=numpy.uint8)
-
-            # For 2D, (X, Y) or 3D (X, Y channel)
+            # For 2D Greyscale image (X, Y) or 3D RGB Image (X, Y channel)
             else:
                 mask = numpy.ones(self.original.shape[0:2], dtype=numpy.uint8)
 
@@ -202,6 +209,7 @@ class DicomCleaner:
                 mask[minc:maxc, minr:maxr] = coordinate_value
 
             # Now apply finished mask to the data
+            # RGB cine clip
             if len(self.original.shape) == 4:
 
                 # np.tile does the copying and stacking of masks into the channel dim to produce 3D masks
@@ -216,13 +224,26 @@ class DicomCleaner:
                 # apply final 4D mask to 4D pixel data
                 self.cleaned = final_mask * self.original
 
-            # greyscale: no need to stack into the channel dim since it doesnt exist
+            # RGB image or Greyscale cine clip
             elif len(self.original.shape) == 3:
 
-                # numpy.tile converts (X, Y) -> (frames, X, Y)
-                final_mask = numpy.tile(mask, (self.original.shape[0], 1, 1))
+                # This condition is ambiguous.  If the image shape is 3, we may have a single frame RGB image: size (X, Y, channel)
+                # or a multiframe greyscale image: size (frames, X, Y).  Interrogate the SamplesPerPixel field.
+                if dicom.SamplesPerPixel == 3:
+                    # RGB Image
+                    # Convert (X, Y) -> (X, Y, channel)
+                    final_mask = numpy.transpose(
+                        numpy.tile(mask, (self.original.shape[2], 1, 1)), (1, 2, 0)
+                    )
+                else:
+                    # Greyscale cine clip
+                    # Convert (X, Y) -> (frames, X, Y)
+                    final_mask = numpy.tile(mask, (self.original.shape[0], 1, 1))
+
+                # apply final 3D mask to 3D pixel data
                 self.cleaned = final_mask * self.original
 
+            # greyscale image: no need to stack into the channel dim since it doesnt exist
             elif len(self.original.shape) == 2:
                 self.cleaned = mask * self.original
 
