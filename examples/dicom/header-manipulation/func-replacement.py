@@ -102,7 +102,11 @@ def generate_uid(item, value, field, dicom):
         field = field.name
 
     # Your organization should have it's own DICOM ORG ROOT.
-    # For the purpose of an example, borrowing PYMEDPHYS_ROOT_UID
+    # For the purpose of an example, borrowing PYMEDPHYS_ROOT_UID.
+    #
+    # When using a UUID to dynamically create a UID (e.g. SOPInstanceUID),
+    # the root '2.25' can be used instead of an organization's root.
+    # For more information see DICOM PS3.5 2020b B.2
     ORG_ROOT = "1.2.826.0.1.3680043.10.188"  # e.g. PYMEDPHYS_ROOT_UID
     prefix = field.lower().replace(" ", " ")
     bigint_uid = str(uuid.uuid4().int)

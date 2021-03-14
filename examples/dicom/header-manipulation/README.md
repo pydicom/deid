@@ -32,7 +32,7 @@ items = get_identifiers(dicom_files)
 ```
 
 The function performs an action to generate a uid, but you can also use
-it to communicate with databases, APIs, or do something like 
+it to communicate with databases, APIs, or do something like
 save the original (and newly generated one) in some (IRB approvied) place
 
 ## The Deid Recipe
@@ -120,7 +120,7 @@ def generate_uid(item, value, field):
 
 ```
 
-but if we want to be more correct and adhere to the dicom standard, we would want
+but if we want to be more correct and adhere to the [dicom standard](http://dicom.nema.org/medical/Dicom/2017c/output/chtml/part05/chapter_B.html), we would want
 to do:
 
 ```python
@@ -137,7 +137,11 @@ def generate_uid(item, value, field, dicom):
         field = field.name
 
     # Your organization should have it's own DICOM ORG ROOT.
-    # For the purpose of an example, borrowing PYMEDPHYS_ROOT_UID
+    # For the purpose of an example, borrowing PYMEDPHYS_ROOT_UID.
+    #
+    # When using a UUID to dynamically create a UID (e.g. SOPInstanceUID),
+    # the root '2.25' can be used instead of an organization's root.
+    # For more information see DICOM PS3.5 2020b B.2
     ORG_ROOT = "1.2.826.0.1.3680043.10.188"  # e.g. PYMEDPHYS_ROOT_UID
     prefix = field.lower().replace(' ', " ")
     bigint_uid = str(uuid.uuid4().int)
@@ -146,8 +150,8 @@ def generate_uid(item, value, field, dicom):
     return prefix + "-" + sliced_uid
 ```
 
-As stated in the docstring, you can expect it to be passed the dictionary of 
-items extracted from the dicom (and your function) and variables, the 
+As stated in the docstring, you can expect it to be passed the dictionary of
+items extracted from the dicom (and your function) and variables, the
 original value (func:generate_uid) and the field name you are applying it to.
 
 ## Development Tip
@@ -171,18 +175,18 @@ interactive session and have all the variables available to you for inspection.
 For example:
 
 ```python
-item                                                                                                                    
+item
 # {'(0008, 0005)': (0008, 0005) Specific Character Set              CS: 'ISO_IR 100'  [SpecificCharacterSet],
 # ...
 # 'generate_uid': <function __main__.generate_uid(item, value, field, dicom)>}
 
-value                                                                                                                  
+value
 # 'func:generate_uid'
 
-field                                                                                                                  
+field
 # (0020, 000d) Study Instance UID                  UI: 1.2.276.0.7230010.3.1.2.8323329.5329.1495927169.580350  [StudyInstanceUID]
 
-dicom                                                                                                                  
+dicom
 # (0008, 0005) Specific Character Set              CS: 'ISO_IR 100'
 ...
 ```
@@ -192,7 +196,7 @@ on how it is used internally, so you should always check.
 
 ## Update Your Items
 
-How do we update the items? Remember, the action is: 
+How do we update the items? Remember, the action is:
 
 ```
 REPLACE StudyInstanceUID func:generate_uid
@@ -206,7 +210,7 @@ for item in items:
 ```
 
 ## Replace identifiers
-We are ready to go! Now let's generate the cleaned files! It will output to a 
+We are ready to go! Now let's generate the cleaned files! It will output to a
 temporary directory.
 
 ```python
@@ -219,7 +223,7 @@ cleaned_files = replace_identifiers(dicom_files=dicom_files,
 You can inspect the first cleaned file in the list:
 
 ```python
-cleaned_files[0]                                                                                                       
+cleaned_files[0]
 (0020, 000d) Study Instance UID                  UI: studyinstanceuid-1.2.826.0.1.3680043.10.188.1803528571851574950019323462792270863
 (0020, 000e) Series Instance UID                 UI: seriesinstanceuid-1.2.826.0.1.3680043.10.188.1218768560803332968447018964651707696
 (0020, 0052) Frame of Reference UID              UI: frameofreferenceuid-1.2.826.0.1.3680043.10.188.3138524385829221974514732538424409758
