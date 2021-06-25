@@ -28,6 +28,7 @@ SOFTWARE.
 from deid.logger import bot
 from .tags import remove_sequences
 from .fields import get_fields, expand_field_expression
+from pydicom.multival import MultiValue
 
 import os
 
@@ -55,7 +56,10 @@ def extract_values_list(dicom, actions, fields=None):
         if action["action"] == "FIELD":
             for uid, field in subset.items():
                 if field.element.value not in ["", None]:
-                    values.add(field.element.value)
+                    if type(field.element.value) is MultiValue:
+                        values.update(field.element.value)
+                    else:
+                        values.add(field.element.value)
 
         # Split action, can optionally have a "by" and/or minlength parameter
         elif action["action"] == "SPLIT":
