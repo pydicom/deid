@@ -56,7 +56,7 @@ def extract_values_list(dicom, actions, fields=None):
         if action["action"] == "FIELD":
             for uid, field in subset.items():
                 if field.element.value not in ["", None]:
-                    if type(field.element.value) is MultiValue:
+                    if isinstance(field.element.value, MultiValue):
                         values.update(field.element.value)
                     else:
                         values.add(field.element.value)
