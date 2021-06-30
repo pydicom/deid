@@ -753,10 +753,7 @@ class TestDicom(unittest.TestCase):
             items[item]["new_val"] = "modified"
 
         result = replace_identifiers(
-            dicom_files=dicom_file,
-            ids=items,
-            deid=recipe,
-            save=False,
+            dicom_files=dicom_file, ids=items, deid=recipe, save=False,
         )
         self.assertEqual(1, len(result))
         self.assertEqual(result[0].StudyInstanceUID, "modified")

@@ -20,7 +20,7 @@ jobs:
         run: |
           export PATH="/usr/share/miniconda/bin:$PATH"
           source activate black
-          pip install black==20.8b1
+          pip install black
           black --check --verbose deid
 
   testing:

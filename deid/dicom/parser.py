@@ -257,9 +257,7 @@ class DicomParser:
         """
         if not self.fields:
             self.fields = get_fields(
-                dicom=self.dicom,
-                expand_sequences=expand_sequences,
-                seen=self.seen,
+                dicom=self.dicom, expand_sequences=expand_sequences, seen=self.seen,
             )
         return self.fields
 
@@ -395,6 +393,7 @@ class DicomParser:
                     while not hasattr(element, "value"):
                         element = element.element
                     element.value = value
+                    self.dicom.add(element)
 
                 else:
                     element = DataElement(tag["tag"], tag["VR"], value)
@@ -429,9 +428,13 @@ class DicomParser:
             if value is not None:
 
                 # Jitter the field by the supplied value
+                old_value = self.dicom[field.name].value
                 jitter_timestamp(
                     dicom=self.dicom, field=field.element.keyword, value=value
                 )
+                new_value = self.dicom[field.name].value
+                if old_value != new_value:
+                    self.replace_field(field, new_value)
             else:
                 bot.warning("JITTER %s unsuccessful" % field)
 
