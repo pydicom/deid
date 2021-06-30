@@ -16,6 +16,7 @@ Referenced versions in headers are tagged on Github, in parentheses are for pypi
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
  - updated pydicom dependency from 1.3.0 to 2.1.1 [#171] (https://github.com/pydicom/deid/issues/171) (0.2.25)
  - bug fix for multivalued fields in %values lists [#174](https://github.com/pydicom/deid/issues/174)
+ - ensuring that an add/replace of an existing value is also updated in fields [#173](https://github.com/pydicom/deid/issues/173)
  - change to correct issue with deidentifying RGB images [#165](https://github.com/pydicom/deid/issues/165) (0.2.24)
  - removing verbosity of debug logger (0.2.23)
  - changing iteration technique through fields to properly add nested uids [#153](https://github.com/pydicom/deid/issues/153) (0.2.22)
