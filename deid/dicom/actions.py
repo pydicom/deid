@@ -81,8 +81,20 @@ def jitter_timestamp(dicom, field, value):
                 )
 
         else:
-            # Do nothing and issue a warning.
-            bot.warning("JITTER not supported for %s with VR=%s" % (field, dcmvr))
+
+            # If the field type is not supplied, attempt to parse different formats
+            for fmtstr in ["%Y%m%d", "%Y%m%d%H%M%S.%f%z", "%Y%m%d%H%M%S.%f"]:
+                try:
+                    new_value = get_timestamp(
+                        original, jitter_days=value, format=fmtstr
+                    )
+                    break
+                except:
+                    pass
+
+            # If nothing works, do nothing and issue a warning.
+            if not new_value:
+                bot.warning("JITTER not supported for %s with VR=%s" % (field, dcmvr))
 
         if new_value is not None and new_value != original:
 
