@@ -718,7 +718,10 @@ class TestDicom(unittest.TestCase):
             items[item]["new_val"] = "modified"
 
         result = replace_identifiers(
-            dicom_files=dicom_file, ids=items, deid=recipe, save=False,
+            dicom_files=dicom_file,
+            ids=items,
+            deid=recipe,
+            save=False,
         )
         self.assertEqual(1, len(result))
         self.assertEqual(result[0].StudyInstanceUID, "modified")
@@ -907,7 +910,52 @@ class TestDicom(unittest.TestCase):
         with self.assertRaises(KeyError):
             check2 = result[0]["Manufacturer"].value
 
-    # MORE TESTS NEED TO BE WRITTEN TO TEST SEQUENCES
+    def test_jitter_values(self):
+        """
+        Testing to ensure fields (including non-DA/DT VR fields) identified by a values list
+        are appropriately jittered
+
+        %values value_set1
+        FIELD StudyDate
+        %header
+        JITTER values:value_set1 1
+        """
+        import pydicom
+
+        print("Test jitter from values list")
+        dicom_file = get_file(self.dataset)
+        original_dataset = pydicom.dcmread(dicom_file)
+
+        actions = [{"action": "JITTER", "field": "values:value_set1", "value": "1"}]
+        values = OrderedDict()
+        values["value_set1"] = [{"field": "StudyDate", "action": "FIELD"}]
+        recipe = create_recipe(actions, values=values)
+
+        # Check that values we want are present using DicomParser
+        parser = DicomParser(dicom_file, recipe=recipe)
+        parser.parse()
+        self.assertEqual(len(parser.lookup["value_set1"]), 1)
+        self.assertTrue("20230101" in parser.lookup["value_set1"])
+
+        # Perform action
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+
+        self.assertEqual(1, len(result))
+        self.assertEqual(len(original_dataset), len(result[0]))
+        self.assertEqual("20230102", result[0]["StudyDate"].value)
+        self.assertEqual("20230102", result[0]["SeriesDate"].value)
+        self.assertEqual("20230102", result[0]["AcquisitionDate"].value)
+        self.assertEqual("20230102", result[0]["ContentDate"].value)
+        self.assertEqual("20230102", result[0]["00291019"].value)
+
+
+# MORE TESTS NEED TO BE WRITTEN TO TEST SEQUENCES
 
 
 def create_recipe(actions, fields=None, values=None):
