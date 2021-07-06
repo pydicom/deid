@@ -23,23 +23,18 @@ SOFTWARE.
 """
 
 from deid.logger import bot
-from deid.dicom.tags import update_tag
 from deid.utils import get_timestamp
-
-import re
-
 
 # Timestamps
 
 
-def jitter_timestamp(dicom, field, value):
+def jitter_timestamp(field, value):
     """if present, jitter a timestamp in dicom
     field "field" by number of days specified by "value"
     The value can be positive or negative.
 
     Parameters
     ==========
-    dicom: the pydicom Dataset
     field: the field with the timestamp
     value: number of days to jitter by. Jitter bug!
 
@@ -47,23 +42,17 @@ def jitter_timestamp(dicom, field, value):
     if not isinstance(value, int):
         value = int(value)
 
-    original = dicom.get(field)
+    original = field.element.value
+    new_value = original
 
     if original is not None:
 
         # Create default for new value
         new_value = None
-
-        # If we have a string, we need to create a DataElement
-        if isinstance(field, str):
-            dcmvr = dicom.data_element(field).VR
-        else:
-            dcmvr = dicom.get(field).VR
-            original = dicom.get(field).value
+        dcmvr = field.element.VR
 
         # DICOM Value Representation can be either DA (Date) DT (Timestamp),
         # or something else, which is not supported.
-
         if dcmvr == "DA":
             # NEMA-compliant format for DICOM date is YYYYMMDD
             new_value = get_timestamp(original, jitter_days=value, format="%Y%m%d")
@@ -96,9 +85,4 @@ def jitter_timestamp(dicom, field, value):
             if not new_value:
                 bot.warning("JITTER not supported for %s with VR=%s" % (field, dcmvr))
 
-        if new_value is not None and new_value != original:
-
-            # Only update if there's something to update AND there's been change
-            dicom = update_tag(dicom, field=field, value=new_value)
-
-    return dicom
+    return new_value

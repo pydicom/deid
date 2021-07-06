@@ -89,48 +89,61 @@ class TestDicomUtils(unittest.TestCase):
 
     def test_jitter_timestamp(self):
 
+        from deid.dicom.fields import DicomField
         from deid.dicom.actions import jitter_timestamp
+        from deid.dicom.tags import get_tag
 
         dicom = get_dicom(self.dataset)
 
         print("Testing test_jitter_timestamp")
 
         print("Case 1: Testing jitter_timestamp with DICOM Date (DA)")
+        name = "StudyDate"
+        tag = get_tag(name)
         dicom.StudyDate = "20131210"
-        dicom.data_element("StudyDate").VR = "DA"
-        jitter_timestamp(dicom, "StudyDate", 10)
+        dicom.data_element(name).VR = "DA"
+        field = DicomField(dicom.data_element(name), name, str(tag["tag"]))
+        actual = jitter_timestamp(field, 10)
         expected = "20131220"
-        self.assertEqual(dicom.StudyDate, expected)
+        self.assertEqual(actual, expected)
 
         print("Case 2: Testing with DICOM timestamp (DT)")
+        name = "AcquisitionDateTime"
+        tag = get_tag(name)
         dicom.AcquisitionDateTime = "20131210081530"
-        dicom.data_element("AcquisitionDateTime").VR = "DT"
-        jitter_timestamp(dicom, "AcquisitionDateTime", 10)
+        dicom.data_element(name).VR = "DT"
+        field = DicomField(dicom.data_element(name), name, str(tag["tag"]))
+        actual = jitter_timestamp(field, 10)
         expected = "20131220081530.000000"
-        self.assertEqual(dicom.AcquisitionDateTime, expected)
+        self.assertEqual(actual, expected)
 
         print("Case 3: Testing with non-standard DICOM date (DA)")
+        name = "StudyDate"
+        tag = get_tag(name)
         dicom.StudyDate = "2013/12/10"
-        dicom.data_element("StudyDate").VR = "DA"
-        jitter_timestamp(dicom, "StudyDate", 10)
+        dicom.data_element(name).VR = "DA"
+        field = DicomField(dicom.data_element(name), name, str(tag["tag"]))
+        actual = jitter_timestamp(field, 10)
         expected = "20131220"
-        self.assertEqual(dicom.StudyDate, expected)
+        self.assertEqual(actual, expected)
 
         print("Case 4: Testing negative jitter value")
+        name = "StudyDate"
+        tag = get_tag(name)
         dicom.StudyDate = "20131210"
-        jitter_timestamp(dicom, "StudyDate", -5)
+        field = DicomField(dicom.data_element(name), name, str(tag["tag"]))
+        actual = jitter_timestamp(field, -5)
         expected = "20131205"
-        self.assertEqual(dicom.StudyDate, expected)
+        self.assertEqual(actual, expected)
 
         print("Case 5: Testing with empty field")
-        dicom.StudyDate = expected = ""
-        jitter_timestamp(dicom, "StudyDate", 10)
-        self.assertEqual(dicom.StudyDate, expected)
-
-        print("Case 6: Testing with nonexistent field")
-        del dicom.StudyDate
-        jitter_timestamp(dicom, "StudyDate", 10)
-        self.assertTrue("StudyDate" not in dicom)
+        name = "StudyDate"
+        tag = get_tag(name)
+        dicom.StudyDate = ""
+        field = DicomField(dicom.data_element(name), name, str(tag["tag"]))
+        actual = jitter_timestamp(field, 10)
+        expected = None
+        self.assertEqual(actual, expected)
 
 
 def get_dicom(dataset):
