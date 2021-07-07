@@ -349,7 +349,7 @@ class TestDicom(unittest.TestCase):
             strip_sequences=False,
         )
         self.assertEqual(1, len(result))
-        self.assertEqual(153, len(result[0]))
+        self.assertEqual(157, len(result[0]))
         with self.assertRaises(KeyError):
             check1 = result[0]["ExposureTime"].value
         with self.assertRaises(KeyError):
@@ -510,7 +510,7 @@ class TestDicom(unittest.TestCase):
         self.assertTrue("(0009, 0010)" in parser.lookup["field_set2_private"])
         self.assertTrue("(0010, 0020)" in parser.lookup["field_set2_private"])
 
-        self.assertEqual(158, len(parser.dicom))
+        self.assertEqual(162, len(parser.dicom))
         self.assertEqual("SIEMENS CT VA0  COAD", parser.dicom["00190010"].value)
         with self.assertRaises(KeyError):
             check1 = parser.dicom["00090010"].value
@@ -615,7 +615,7 @@ class TestDicom(unittest.TestCase):
             strip_sequences=False,
         )
         self.assertEqual(1, len(result))
-        self.assertEqual(135, len(result[0]))
+        self.assertEqual(139, len(result[0]))
         with self.assertRaises(KeyError):
             check1 = result[0]["00090010"].value
         with self.assertRaises(KeyError):
@@ -650,7 +650,7 @@ class TestDicom(unittest.TestCase):
         parser.define("contains_hibbard", contains_hibbard)
         parser.parse()
 
-        self.assertEqual(156, len(parser.dicom))
+        self.assertEqual(160, len(parser.dicom))
         with self.assertRaises(KeyError):
             check1 = parser.dicom["ReferringPhysicianName"].value
         with self.assertRaises(KeyError):
@@ -684,7 +684,7 @@ class TestDicom(unittest.TestCase):
             strip_sequences=True,
         )
         self.assertEqual(1, len(result))
-        self.assertEqual(152, len(result[0]))
+        self.assertEqual(156, len(result[0]))
         with self.assertRaises(KeyError):
             check1 = result[0]["00081110"].value
         for tag in result[0]:
@@ -754,7 +754,7 @@ class TestDicom(unittest.TestCase):
         )
 
         self.assertEqual(1, len(result))
-        self.assertEqual(151, len(result[0]))
+        self.assertEqual(155, len(result[0]))
         self.assertEqual("20230104", result[0]["StudyDate"].value)
 
     def test_addremove_compounding(self):
@@ -785,7 +785,7 @@ class TestDicom(unittest.TestCase):
         )
 
         self.assertEqual(1, len(result))
-        self.assertEqual(151, len(result[0]))
+        self.assertEqual(155, len(result[0]))
         with self.assertRaises(KeyError):
             willerror = result[0]["PatientIdentityRemoved"].value
 
@@ -817,7 +817,7 @@ class TestDicom(unittest.TestCase):
         )
 
         self.assertEqual(1, len(result))
-        self.assertEqual(151, len(result[0]))
+        self.assertEqual(155, len(result[0]))
         self.assertEqual("123456", result[0]["PatientID"].value)
 
     def test_valueset_empty_remove(self):
@@ -907,7 +907,84 @@ class TestDicom(unittest.TestCase):
         with self.assertRaises(KeyError):
             check2 = result[0]["Manufacturer"].value
 
-    # MORE TESTS NEED TO BE WRITTEN TO TEST SEQUENCES
+    def test_jitter_values(self):
+        """
+        Testing to ensure fields (including non-DA/DT VR fields) identified by a values list
+        are appropriately jittered
+
+        %values value_set1
+        FIELD StudyDate
+        %header
+        JITTER values:value_set1 1
+        """
+        import pydicom
+
+        print("Test jitter from values list")
+        dicom_file = get_file(self.dataset)
+        original_dataset = pydicom.dcmread(dicom_file)
+
+        actions = [{"action": "JITTER", "field": "values:value_set1", "value": "1"}]
+        values = OrderedDict()
+        values["value_set1"] = [{"field": "StudyDate", "action": "FIELD"}]
+        recipe = create_recipe(actions, values=values)
+
+        # Check that values we want are present using DicomParser
+        parser = DicomParser(dicom_file, recipe=recipe)
+        parser.parse()
+        self.assertEqual(len(parser.lookup["value_set1"]), 1)
+        self.assertTrue("20230101" in parser.lookup["value_set1"])
+
+        # Perform action
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+
+        self.assertEqual(1, len(result))
+        self.assertEqual(len(original_dataset), len(result[0]))
+        self.assertEqual("20230102", result[0]["StudyDate"].value)
+        self.assertEqual("20230102", result[0]["SeriesDate"].value)
+        self.assertEqual("20230102", result[0]["AcquisitionDate"].value)
+        self.assertEqual("20230102", result[0]["ContentDate"].value)
+        self.assertEqual("20230102", result[0]["00291019"].value)
+        self.assertEqual("20230102011721.621000", result[0]["00291020"].value)
+        self.assertEqual(20230102, result[0]["00291021"].value)
+        self.assertEqual("20230102011721.621000-0040", result[0]["00291022"].value)
+
+    def test_jitter_private_tag(self):
+        """
+        Testing to private tags can be jittered
+
+        %header
+        JITTER 00291019 1
+        """
+        import pydicom
+
+        print("Test jitter private tag")
+        dicom_file = get_file(self.dataset)
+        original_dataset = pydicom.dcmread(dicom_file)
+
+        actions = [{"action": "JITTER", "field": "00291019", "value": "1"}]
+        recipe = create_recipe(actions)
+
+        # Perform action
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+
+        self.assertEqual(1, len(result))
+        self.assertEqual(len(original_dataset), len(result[0]))
+        self.assertEqual("20230102", result[0]["00291019"].value)
+
+
+# MORE TESTS NEED TO BE WRITTEN TO TEST SEQUENCES
 
 
 def create_recipe(actions, fields=None, values=None):
