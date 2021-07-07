@@ -393,6 +393,7 @@ class DicomParser:
                     while not hasattr(element, "value"):
                         element = element.element
                     element.value = value
+                    self.dicom.add(element)
 
                 else:
                     element = DataElement(tag["tag"], tag["VR"], value)
@@ -425,6 +426,13 @@ class DicomParser:
                 item=self.lookup, dicom=self.dicom, value=value, field=field
             )
             if value is not None:
+
+                # Cut out early if the field isn't in the dicom
+                if field.name not in self.dicom:
+                    return
+
+                # Preserve the old value in case we need to update
+                old_value = self.dicom[field.name].value
 
                 # Jitter the field by the supplied value
                 new_val = jitter_timestamp(field=field, value=value)
