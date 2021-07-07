@@ -426,24 +426,9 @@ class DicomParser:
                 item=self.lookup, dicom=self.dicom, value=value, field=field
             )
             if value is not None:
-
-                # Cut out early if the field isn't in the dicom
-                if field.name not in self.dicom:
-                    return
-
-                # Preserve the old value in case we need to update
-                old_value = self.dicom[field.name].value
-
                 # Jitter the field by the supplied value
-                jitter_timestamp(
-                    dicom=self.dicom, field=field.element.keyword, value=value
-                )
-
-                # Get the updated value, update if it's different
-                new_value = self.dicom[field.name].value
-                if old_value != new_value:
-                    self.replace_field(field, new_value)
-
+                new_val = jitter_timestamp(field=field, value=value)
+                self.replace_field(field, new_val)
             else:
                 bot.warning("JITTER %s unsuccessful" % field)
 
