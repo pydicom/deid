@@ -3,7 +3,7 @@
 """
 Test replace_identifiers
 
-Copyright (c) 2016-2020 Vanessa Sochat
+Copyright (c) 2016-2021 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -163,6 +163,41 @@ class TestDicom(unittest.TestCase):
         self.assertEqual(1, len(result))
         self.assertEqual(newvalue1, result[0][newfield1].value)
         self.assertEqual(newvalue2, result[0][newfield2].value)
+
+    def test_jitter_replace_compounding(self):
+        """RECIPE RULE
+        JITTER AcquisitonDate 1
+        REPLACE AcquisitionDate 20210330
+        """
+
+        print("Test replace tags with constant values")
+        dicom_file = get_file(self.dataset)
+
+        newfield1 = "AcquisitionDate"
+        newvalue1 = "20210330"
+
+        actions = [
+            {"action": "JITTER", "field": newfield1, "value": "1"},
+            {"action": "REPLACE", "field": newfield1, "value": newvalue1},
+        ]
+        recipe = create_recipe(actions)
+
+        inputfile = read_file(dicom_file)
+        currentValue = inputfile[newfield1].value
+
+        self.assertNotEqual(newvalue1, currentValue)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+        )
+
+        outputfile = read_file(result[0])
+        self.assertEqual(1, len(result))
+        self.assertEqual(newvalue1, outputfile[newfield1].value)
 
     def test_remove(self):
         """RECIPE RULE
@@ -718,10 +753,7 @@ class TestDicom(unittest.TestCase):
             items[item]["new_val"] = "modified"
 
         result = replace_identifiers(
-            dicom_files=dicom_file,
-            ids=items,
-            deid=recipe,
-            save=False,
+            dicom_files=dicom_file, ids=items, deid=recipe, save=False,
         )
         self.assertEqual(1, len(result))
         self.assertEqual(result[0].StudyInstanceUID, "modified")

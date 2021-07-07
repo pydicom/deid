@@ -2,7 +2,7 @@
 
 header.py: functions to extract identifiers from dicom headers
 
-Copyright (c) 2017-2020 Vanessa Sochat
+Copyright (c) 2017-2021 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -127,7 +127,6 @@ def replace_identifiers(
     and saving new files. If you want to replace sequences, they need
     to be extracted with get_identifiers and expand_sequences to True.
     """
-
     if not isinstance(dicom_files, list):
         dicom_files = [dicom_files]
 
