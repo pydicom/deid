@@ -36,6 +36,7 @@ from deid.dicom.parser import DicomParser
 from deid.dicom import get_identifiers, replace_identifiers
 from pydicom import read_file
 from pydicom.sequence import Sequence
+from deid.tests.common import get_file
 
 from collections import OrderedDict
 
@@ -193,14 +194,6 @@ class TestFilterDetect(unittest.TestCase):
 
         self.assertIn("ShouldMatch", matchgroups)
         self.assertNotIn("ShouldNotMatch", matchgroups)
-
-
-def get_file(dataset):
-    """helper to get a dicom file"""
-    from deid.dicom import get_files
-
-    dicom_files = get_files(dataset)
-    return next(dicom_files)
 
 
 if __name__ == "__main__":

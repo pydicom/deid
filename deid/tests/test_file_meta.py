@@ -1,4 +1,7 @@
+#!/usr/bin/env python
+
 """
+Test file meta
 
 Copyright (c) 2016-2021 Vanessa Sochat
 
@@ -30,37 +33,46 @@ import os
 
 from deid.utils import get_installdir
 from deid.data import get_dataset
-from deid.tests.common import get_file
+from deid.dicom.parser import DicomParser
+from deid.dicom import get_identifiers, replace_identifiers
+from pydicom import read_file
+from pydicom.sequence import Sequence
+
+from deid.tests.common import create_recipe, get_file
+
+from collections import OrderedDict
 
 
-class TestDicomTags(unittest.TestCase):
+class TestDicom(unittest.TestCase):
     def setUp(self):
         self.pwd = get_installdir()
-        self.deid = os.path.abspath("%s/../examples/deid/deid.dicom" % self.pwd)
-        self.dataset = get_dataset("dicom-cookies")
-        self.tmpdir = tempfile.mkdtemp()
-        print("\n######################START######################")
+        self.dataset = get_dataset("animals")
 
-    def tearDown(self):
-        shutil.rmtree(self.tmpdir)
-        print("\n######################END########################")
+    def test_replace_filemeta(self):
+        """RECIPE RULE
+        REPLACE MediaStorageSOPInstanceUID new-id
+        """
+        print("Test replace filemeta")
+        dicom_file = get_file(self.dataset)
 
-    def test_get_tag(self):
-        print("Test deid.dicom.tags get_tag")
-        from deid.dicom.tags import get_tag
-        from pydicom.tag import BaseTag
+        actions = [
+            {
+                "action": "REPLACE",
+                "field": "MediaStorageSOPInstanceUID",
+                "value": "new-id",
+            }
+        ]
+        recipe = create_recipe(actions)
 
-        print("Case 1: Ask for known tag")
-        tag = get_tag("Modality")
-        self.assertEqual(tag["VM"], "1")
-        self.assertEqual(tag["VR"], "CS")
-        self.assertEqual(tag["keyword"], "Modality")
-        self.assertEqual(tag["name"], "Modality")
-        self.assertTrue(isinstance(tag["tag"], BaseTag))
-
-        print("Case 2: Ask for unknown tag")
-        tag = get_tag("KleenexTissue")
-        self.assertTrue(not tag)
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        self.assertEqual(1, len(result))
+        self.assertEqual("new-id", result[0]["MediaStorageSOPInstanceUID"].value)
 
 
 if __name__ == "__main__":

@@ -221,11 +221,21 @@ class DicomParser:
                         dicom=self.dicom, actions=actions, fields=fields
                     )
 
+            # actions on the header
             for action in self.recipe.get_actions():
                 self.perform_action(
                     field=action.get("field"),
                     value=action.get("value"),
                     action=action.get("action"),
+                )
+
+            # actions on the file_meta
+            for action in self.recipe.get_filemeta_actions():
+                self.perform_action(
+                    field=action.get("field"),
+                    value=action.get("value"),
+                    action=action.get("action"),
+                    filemeta=True,
                 )
 
         # Next perform actions in default config, only if not done
@@ -257,7 +267,9 @@ class DicomParser:
         """
         if not self.fields:
             self.fields = get_fields(
-                dicom=self.dicom, expand_sequences=expand_sequences, seen=self.seen,
+                dicom=self.dicom,
+                expand_sequences=expand_sequences,
+                seen=self.seen,
             )
         return self.fields
 
@@ -299,7 +311,7 @@ class DicomParser:
 
     # Actions
 
-    def perform_action(self, field, value, action):
+    def perform_action(self, field, value, action, filemeta=False):
         """perform action takes an action (dictionary with field, action, value)
         and performs the action on the loaded dicom.
 
@@ -310,7 +322,7 @@ class DicomParser:
            "field" (eg, PatientID) the header field to process
            "action" (eg, REPLACE) what to do with the field
            "value": if needed, the field from the response to replace with
-
+        filemeta (bool) perform on filemeta
         """
         # Validate the action
         if action not in valid_actions:

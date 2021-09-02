@@ -118,6 +118,18 @@ class DeidRecipe:
         """return a values list by name"""
         return self._get_named_section("fields", name)
 
+    def _get_actions(self, action=None, field=None, section="header"):
+        """handler for header or filemeta actions."""
+        header = self._get_section(section) or []
+        if header is not None:
+            if action is not None:
+                action = action.upper()
+                header = [x for x in header if x["action"].upper() == action]
+            if field is not None:
+                field = field.upper()
+                header = [x for x in header if x["field"].upper() == field]
+        return header
+
     def get_actions(self, action=None, field=None):
         """get deid actions to perform on a header, or a subset based on a type
 
@@ -130,16 +142,11 @@ class DeidRecipe:
         field: if not None, filter to field specified
 
         """
-        header = self._get_section("header")
-        if header is not None:
-            if action is not None:
-                action = action.upper()
-                header = [x for x in header if x["action"].upper() == action]
-            if field is not None:
-                field = field.upper()
-                header = [x for x in header if x["field"].upper() == field]
+        return self._get_actions(action, field)
 
-        return header
+    def get_filemeta_actions(self, action=None, field=None):
+        """special set of actions for filemeta fields"""
+        return self._get_actions(action, field, "filemeta")
 
     # Boolean properties
 

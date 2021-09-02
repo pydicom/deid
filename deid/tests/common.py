@@ -1,6 +1,7 @@
-"""
+#!/usr/bin/env python
 
-Copyright (c) 2017-2021 Vanessa Sochat
+"""
+Copyright (c) 2016-2021 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,34 +23,38 @@ SOFTWARE.
 
 """
 
-# Supported formats
-formats = ["dicom"]
 
-# Supported Sections
-sections = ["header", "labels", "filter", "values", "fields", "filemeta"]
+def create_recipe(actions, fields=None, values=None):
+    """helper method to create a recipe file"""
+    from deid.config import DeidRecipe
 
-# Supported Header Actions
-actions = ("ADD", "BLANK", "JITTER", "KEEP", "REPLACE", "REMOVE", "LABEL")
+    recipe = DeidRecipe()
 
-# Supported Group actions (SPLIT only supported for values)
-groups = ["values", "fields"]
-group_actions = ("FIELD", "SPLIT")
+    # .clear() only supported Python 3.3 and after
+    del recipe.deid["header"][:]
+    recipe.deid["header"] = actions
 
-# Valid actions for a field filter action
-filters = (
-    "contains",
-    "notcontains",
-    "equals",
-    "notequals",
-    "missing",
-    "present",
-    "empty",
-)
+    if fields is not None:
+        recipe.deid["fields"] = fields
 
-# valid actions for a value filter
-value_filters = (
-    "contains",
-    "notcontains",
-    "equals",
-    "notequals",
-)
+    if values is not None:
+        recipe.deid["values"] = values
+
+    return recipe
+
+
+def get_dicom(dataset):
+    """helper function to load a dicom"""
+    from deid.dicom import get_files
+    from pydicom import read_file
+
+    dicom_files = get_files(dataset)
+    return read_file(next(dicom_files))
+
+
+def get_file(dataset):
+    """helper to get a dicom file"""
+    from deid.dicom import get_files
+
+    dicom_files = get_files(dataset)
+    return next(dicom_files)

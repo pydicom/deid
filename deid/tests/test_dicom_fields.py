@@ -34,6 +34,7 @@ import os
 from deid.utils import get_installdir
 from deid.data import get_dataset
 from deid.dicom.fields import get_fields
+from deid.tests.common import get_dicom
 
 
 class TestDicomFields(unittest.TestCase):
@@ -77,15 +78,6 @@ class TestDicomFields(unittest.TestCase):
         print("Testing nested private tags")
         dataset = get_dataset("animals")  # includes nested private tags
         dicom = get_dicom(dataset)
-
-
-def get_dicom(dataset):
-    """helper function to load a dicom"""
-    from deid.dicom import get_files
-    from pydicom import read_file
-
-    dicom_files = get_files(dataset)
-    return read_file(next(dicom_files))
 
 
 if __name__ == "__main__":

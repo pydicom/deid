@@ -31,6 +31,7 @@ import numpy as np
 
 from deid.utils import get_installdir
 from deid.data import get_dataset
+from deid.tests.common import get_file
 from pydicom import read_file
 
 global generate_uid
@@ -228,14 +229,6 @@ class TestClean(unittest.TestCase):
 
         compare = inputpixels[0:2000, 0:2000] == outputpixels[0:2000, 0:2000]
         self.assertTrue(compare.all())
-
-
-def get_file(dataset):
-    """helper to get a dicom file"""
-    from deid.dicom import get_files
-
-    dicom_files = get_files(dataset)
-    return next(dicom_files)
 
 
 if __name__ == "__main__":
