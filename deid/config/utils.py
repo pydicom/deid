@@ -90,9 +90,8 @@ def load_combined_deid(deids):
                                 deid["filter"].get("name", []) + group
                             )
 
-                for attr in ["header", "filemeta"]:
-                    if attr in next_deid:
-                        deid[attr] = deid.get(attr, []) + next_deid[attr]
+                if "header" in next_deid:
+                    deid["header"] = deid.get("header", []) + next_deid["header"]
 
         else:
             bot.warning("Problem loading %s, skipping." % single_deid)

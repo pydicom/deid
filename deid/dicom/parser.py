@@ -53,13 +53,18 @@ class DicomParser:
     file. For each, we store the element and child elements
     """
 
-    def __init__(self, dicom_file, recipe=None, config=None, force=True):
+    def __init__(
+        self, dicom_file, recipe=None, config=None, force=True, disable_skip=False
+    ):
 
         # Lookup for the dicom
         self.lookup = {}
 
         # Will be a list of DicomField
         self.fields = {}
+
+        # Disable skip will load ALL fields, even those protected
+        self.disable_skip = disable_skip
 
         # Load default configuration, or a custom one
         config = config or os.path.join(here, "config.json")
@@ -229,15 +234,6 @@ class DicomParser:
                     action=action.get("action"),
                 )
 
-            # actions on the file_meta
-            for action in self.recipe.get_filemeta_actions():
-                self.perform_action(
-                    field=action.get("field"),
-                    value=action.get("value"),
-                    action=action.get("action"),
-                    filemeta=True,
-                )
-
         # Next perform actions in default config, only if not done
         for action in self.config["put"]["actions"]:
             self.perform_action(
@@ -260,6 +256,16 @@ class DicomParser:
         )
         return ds
 
+    @property
+    def skip(self):
+        """
+        Return a list of fields to skip, as defined in the self.config
+        """
+        skips = []
+        if self.config and not self.disable_skip:
+            skips = self.config.get("get", {}).get("skip", {})
+        return skips
+
     def get_fields(self, expand_sequences=True):
         """expand all dicom fields into a list, where each entry is
         a DicomField. If we find a sequence, we unwrap it and
@@ -270,6 +276,7 @@ class DicomParser:
                 dicom=self.dicom,
                 expand_sequences=expand_sequences,
                 seen=self.seen,
+                skip=self.skip,
             )
         return self.fields
 

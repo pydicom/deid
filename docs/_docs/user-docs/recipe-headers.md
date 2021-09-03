@@ -74,6 +74,7 @@ REMOVE ReferringPhysicianName
 
 In the above example, we tell the application exactly how to deal with header fields for dicom. 
 We do that by way of sections (the lines that begin with `%` like `%header` and actions (eg, `KEEP`). 
+The fields above can include those that are specified in the [file-meta](http://dicom.nema.org/dicom/2013/output/chtml/part10/chapter_7.html) section of the dicom, which are a unique namespace.
 Each of these variables will be discussed in detail, next.
 
 <a id="format">
@@ -106,6 +107,34 @@ ADD PatientIdentityRemoved Yes
 #<ACTION> <FIELD>
 KEEP PixelData
 ```
+
+<a id="protected_fields">
+#### Protected Fields
+
+To protect you from replacing fields that might have un-intended consequences for the integrity of the dicom,
+by default we do not let you change a set of protected fields.
+
+- `PixelData`
+- `RedPaletteColorLookupTableData`
+- `GreenPaletteColorLookupTableData`
+- `BluePaletteColorLookupTableData`
+- `VOILUTSequence`
+
+These fields are found within the header, and since we load the file metadata as well, 
+we also protect the following:
+
+- `FileMetaInformationGroupLength`
+- `FileMetaInformationVersion`
+- `TransferSyntaxUID`
+- `ImplementationClassUID`
+
+If you are using `replace_identifiers`, `get_identifiers`, or the `DicomParser`,
+you can provide the boolean `disable_skip=True` to not skip any protected fields.
+If you want to modify the set of skipped fields, then you can create your own
+[config.json](https://github.com/pydicom/deid/blob/master/deid/dicom/config.json) and provide
+the path as the `config` argument to either of these functions/classes.
+
+
 <a id="dynamic-values">
 #### Dynamic Values
 

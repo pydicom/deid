@@ -411,6 +411,7 @@ class TestDicom(unittest.TestCase):
             save=False,
             remove_private=False,
             strip_sequences=False,
+            disable_skip=True,
         )
         self.assertEqual(1, len(result))
         self.assertEqual(2, len(result[0]))
@@ -649,6 +650,7 @@ class TestDicom(unittest.TestCase):
             save=False,
             remove_private=False,
             strip_sequences=False,
+            disable_skip=True,
         )
         self.assertEqual(1, len(result))
         self.assertEqual(139, len(result[0]))

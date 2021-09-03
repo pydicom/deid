@@ -104,7 +104,6 @@ class TestConfig(unittest.TestCase):
             "filter",
             "fields",
             "values",
-            "filemeta",
         ]
         [self.assertTrue(x in sections) for x in default_sections]
         unknown = [x for x in sections if x not in default_sections]

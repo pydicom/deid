@@ -26,7 +26,7 @@ SOFTWARE.
 formats = ["dicom"]
 
 # Supported Sections
-sections = ["header", "labels", "filter", "values", "fields", "filemeta"]
+sections = ["header", "labels", "filter", "values", "fields"]
 
 # Supported Header Actions
 actions = ("ADD", "BLANK", "JITTER", "KEEP", "REPLACE", "REMOVE", "LABEL")

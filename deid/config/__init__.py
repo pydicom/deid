@@ -144,10 +144,6 @@ class DeidRecipe:
         """
         return self._get_actions(action, field)
 
-    def get_filemeta_actions(self, action=None, field=None):
-        """special set of actions for filemeta fields"""
-        return self._get_actions(action, field, "filemeta")
-
     # Boolean properties
 
     def _has_list_content(self, name):
