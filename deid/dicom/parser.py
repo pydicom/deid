@@ -433,7 +433,7 @@ class DicomParser:
                     update_dicom(element, is_filemeta)
                 else:
                     element = DataElement(tag["tag"], tag["VR"], value)
-                    is_filemeta = element.stripped_tag.startswith("0002")
+                    is_filemeta = str(element.tag).startswith("(0002")
                     update_dicom(element, is_filemeta)
                     self.fields[uid] = DicomField(element, name, uid, is_filemeta)
             else:

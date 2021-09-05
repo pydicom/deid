@@ -72,7 +72,9 @@ class TestDicom(unittest.TestCase):
             strip_sequences=False,
         )
         self.assertEqual(1, len(result))
-        self.assertEqual("new-id", result[0]["MediaStorageSOPInstanceUID"].value)
+        self.assertEqual(
+            "new-id", result[0].file_meta["MediaStorageSOPInstanceUID"].value
+        )
 
     def test_replace_protected_field(self):
         """RECIPE RULE
