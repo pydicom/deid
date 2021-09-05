@@ -125,7 +125,10 @@ class DicomParser:
         uids = field.uid.split("__")
 
         # Keep a reference to where we are in dicom (can nest)
-        parent = self.dicom  # dicom is of type Dataset
+        if field.is_filemeta:
+            parent = self.dicom.file_meta
+        else:
+            parent = self.dicom  # dicom is of type Dataset
         desired = field.element.tag
 
         while uids:
@@ -386,6 +389,16 @@ class DicomParser:
             item=self.lookup, value=value, field=field, dicom=self.dicom
         )
 
+        # The addition will be different depending on if we have filemeta
+        is_filemeta = False
+
+        # Helper function to update dicom
+        def update_dicom(element, is_filemeta):
+            if is_filemeta:
+                self.dicom.file_meta.add(element)
+            else:
+                self.dicom.add(element)
+
         # Assume we don't want to add an empty value
         if value is not None:
 
@@ -408,16 +421,21 @@ class DicomParser:
                 if uid in self.fields:
                     element = self.fields[uid]
 
+                    if element.is_filemeta:
+                        is_filemeta = True
+
                     # Nested fields
                     while not hasattr(element, "value"):
                         element = element.element
                     element.value = value
-                    self.dicom.add(element)
 
+                    # Add either to file meta or dicom directly
+                    update_dicom(element, is_filemeta)
                 else:
                     element = DataElement(tag["tag"], tag["VR"], value)
-                    self.dicom.add(element)
-                    self.fields[uid] = DicomField(element, name, uid)
+                    is_filemeta = element.stripped_tag.startswith("0002")
+                    update_dicom(element, is_filemeta)
+                    self.fields[uid] = DicomField(element, name, uid, is_filemeta)
             else:
                 bot.warning("Cannot find tag for field %s, skipping." % name)
 
