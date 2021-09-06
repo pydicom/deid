@@ -86,16 +86,12 @@ def load_combined_deid(deids):
                         deid["filter"] = next_deid["filter"]
                     else:
                         for name, group in next_deid["filter"].items():
-                            if name in deid["filter"]:
-                                deid["filter"][name] = deid["filter"][name] + group
-                            else:
-                                deid["filter"][name] = group
+                            deid["filter"][name] = (
+                                deid["filter"].get("name", []) + group
+                            )
 
                 if "header" in next_deid:
-                    if "header" not in deid:
-                        deid["header"] = next_deid["header"]
-                    else:
-                        deid["header"] = deid["header"] + next_deid["header"]
+                    deid["header"] = deid.get("header", []) + next_deid["header"]
 
         else:
             bot.warning("Problem loading %s, skipping." % single_deid)
@@ -103,8 +99,9 @@ def load_combined_deid(deids):
 
 
 def load_deid(path=None):
-    """load_deid will return a loaded in (user) deid configuration file
-    that can be used to update a default config.json. If a file path is
+    """Load_deid will return a loaded in (user) deid configuration file.
+
+    This can be used to update a default config.json. If a file path is
     specified, it is loaded directly. If a folder is specified, we look
     for a deid file in the folder. If nothing is specified, we assume
     the user wants to load a deid file in the present working directory.
@@ -200,8 +197,9 @@ def load_deid(path=None):
 
 
 def find_deid(path=None):
-    """find_deid is a helper function to load_deid to find a deid file in
-    a folder, or return the path provided if it is the file.
+    """find_deid is a helper function to load_deid to find a deid file.
+
+    It can be in a folder, or return the path provided if it is the file.
 
     Parameters
     ==========
@@ -240,9 +238,10 @@ def find_deid(path=None):
 
 
 def parse_format(line):
-    """given a line that starts with FORMAT, parse the format of the
-    file and check that it is supported. If not, exit on error. If yes,
-    return the format.
+    """given a line that starts with FORMAT, parse the file.
+
+    This means checking the format of the file and checking that it is
+    supported. If not, exit on error. If yes, return the format.
 
     Parameters
     ==========

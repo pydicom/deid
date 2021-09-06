@@ -1,0 +1,5 @@
+FORMAT dicom
+
+%header
+
+REPLACE MediaStorageSOPInstanceUID new-id

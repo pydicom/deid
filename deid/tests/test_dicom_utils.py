@@ -35,6 +35,7 @@ import os
 
 from deid.utils import get_installdir
 from deid.data import get_dataset
+from deid.tests.common import get_file, get_dicom
 
 global generate_uid
 
@@ -144,15 +145,6 @@ class TestDicomUtils(unittest.TestCase):
         actual = jitter_timestamp(field, 10)
         expected = None
         self.assertEqual(actual, expected)
-
-
-def get_dicom(dataset):
-    """helper function to load a dicom"""
-    from deid.dicom import get_files
-    from pydicom import read_file
-
-    dicom_files = get_files(dataset)
-    return read_file(next(dicom_files))
 
 
 if __name__ == "__main__":

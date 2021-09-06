@@ -1,6 +1,7 @@
-"""
+#!/usr/bin/env python
 
-Copyright (c) 2017-2021 Vanessa Sochat
+"""
+Copyright (c) 2016-2021 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,18 +23,38 @@ SOFTWARE.
 
 """
 
-__version__ = "0.2.26"
-AUTHOR = "Vanessa Sochat"
-AUTHOR_EMAIL = "vsochat@stanford.edu"
-NAME = "deid"
-PACKAGE_URL = "https://github.com/pydicom/deid"
-KEYWORDS = "open source, python, anonymize, dicom"
-DESCRIPTION = "deidentify dicom and other images with python and pydicom"
-LICENSE = "LICENSE"
 
-INSTALL_REQUIRES = (
-    ("matplotlib", {"min_version": None}),
-    ("numpy", {"min_version": None}),
-    ("pydicom", {"exact_version": "2.1.1"}),
-    ("python-dateutil", {"min_version": None}),
-)
+def create_recipe(actions, fields=None, values=None):
+    """helper method to create a recipe file"""
+    from deid.config import DeidRecipe
+
+    recipe = DeidRecipe()
+
+    # .clear() only supported Python 3.3 and after
+    del recipe.deid["header"][:]
+    recipe.deid["header"] = actions
+
+    if fields is not None:
+        recipe.deid["fields"] = fields
+
+    if values is not None:
+        recipe.deid["values"] = values
+
+    return recipe
+
+
+def get_dicom(dataset):
+    """helper function to load a dicom"""
+    from deid.dicom import get_files
+    from pydicom import read_file
+
+    dicom_files = get_files(dataset)
+    return read_file(next(dicom_files))
+
+
+def get_file(dataset):
+    """helper to get a dicom file"""
+    from deid.dicom import get_files
+
+    dicom_files = get_files(dataset)
+    return next(dicom_files)

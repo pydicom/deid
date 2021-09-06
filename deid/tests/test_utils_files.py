@@ -33,6 +33,7 @@ import os
 
 from deid.utils import get_installdir
 from deid.data import get_dataset
+from deid.tests.common import get_file
 
 
 class TestDicom(unittest.TestCase):
@@ -82,14 +83,6 @@ class TestDicom(unittest.TestCase):
         found = len(dicom_files)
         expected = 0
         self.assertEqual(found, expected)
-
-
-def get_file(dataset):
-    """helper to get a dicom file"""
-    from deid.dicom import get_files
-
-    dicom_files = get_files(dataset)
-    return next(dicom_files)
 
 
 if __name__ == "__main__":

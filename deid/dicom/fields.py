@@ -24,7 +24,7 @@ SOFTWARE.
 
 from deid.logger import bot
 from pydicom.sequence import Sequence
-from pydicom.dataset import RawDataElement, Dataset
+from pydicom.dataset import RawDataElement, Dataset, FileMetaDataset
 from pydicom.dataelem import DataElement
 import re
 
@@ -34,10 +34,11 @@ class DicomField:
     nested structure (e.g., SequenceName__CodeValue).
     """
 
-    def __init__(self, element, name, uid):
+    def __init__(self, element, name, uid, is_filemeta=False):
         self.element = element
         self.name = name  # nested names (might not be unique)
         self.uid = uid  # unique id includes parent tags
+        self.is_filemeta = is_filemeta
 
     def __str__(self):
         return "%s  [%s]" % (self.element, self.name)
@@ -228,17 +229,17 @@ def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
     if not isinstance(skip, list):
         skip = [skip]
 
-    datasets = [dicom]
+    # Retrieve both dicom and file meta fields
+    datasets = [dicom, dicom.file_meta]
 
-    # helper function to add an element based on tag uid
-    def add_element(element, name, uid):
+    def add_element(element, name, uid, is_filemeta):
         """Add an element to fields, but only if it has not been seen.
         The uid is derived from the tag (group, element) and includes
         nesting, so the "same" tag on different levels is considered
         different.
         """
         if uid not in seen:
-            fields[uid] = DicomField(element, name, uid)
+            fields[uid] = DicomField(element, name, uid, is_filemeta)
             seen.append(uid)
 
     while datasets:
@@ -249,6 +250,7 @@ def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
         # If the dataset does not have a prefix, we are at the start
         dataset.prefix = getattr(dataset, "prefix", None)
         dataset.uid = getattr(dataset, "uid", None)
+        is_filemeta = isinstance(dataset, FileMetaDataset)
 
         # Includes private tags, sequences flattened, non-null values
         for contender in dataset:
@@ -270,7 +272,7 @@ def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
             if isinstance(contender.value, Sequence) and expand_sequences is True:
 
                 # Add the contender (usually type Dataset) to fields
-                add_element(contender, name, uid)
+                add_element(contender, name, uid, is_filemeta)
 
                 # A nested dataset can be parsed as such
                 for idx, item in enumerate(contender.value):
@@ -283,11 +285,11 @@ def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
                     elif isinstance(item, DataElement):
                         name = "%s__%s" % (name, item.keyword)
                         uid = "%s__%s__%s" % (uid, str(item.tag), idx)
-                        add_element(item, name, uid)
+                        add_element(item, name, uid, is_filemeta)
 
             # A DataElement can be extracted as is
             elif isinstance(contender, DataElement):
-                add_element(contender, name, uid)
+                add_element(contender, name, uid, is_filemeta)
 
             else:
                 bot.warning(
