@@ -289,7 +289,7 @@ def parse_label(section, config, section_name, members, label=None):
     section: the section name (e.g., header) must be one in sections
     config: the config (dictionary) parsed thus far
     section_name: an optional name for a section
-    members: the lines beloning to the section/section_name
+    members: the lines belonging to the section/section_name
     label: an optional name for the group of commands
     """
     criteria = {"filters": [], "coordinates": []}

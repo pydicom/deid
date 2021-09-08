@@ -300,7 +300,7 @@ cleaned_dicoms = replace_identifiers(dicom_files=dicom_files)
 ```
 
 The default recipe you can view [here](https://github.com/pydicom/deid/blob/master/deid/data/deid.dicom#L744).
-It's fairly agressive and generally removes times and other identifiers. But *you should not use this verbatim!*
+It's fairly aggressive and generally removes times and other identifiers. But *you should not use this verbatim!*
 It's important that you develop a strategy that is most robust for your datasets.
 The example is provided as a conservative start. If you want to save to temporary
 files, you can specify save=True:

@@ -177,7 +177,7 @@ class DeidRecipe:
     # Init
 
     def _init_deid(self, deid=None, base=False, default_base="dicom"):
-        """initalize the recipe with one or more deids, optionally including
+        """initialize the recipe with one or more deids, optionally including
         the default. This function is called at init time. If you need to add
         or work with already loaded configurations, use add/remove
 
