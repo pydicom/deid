@@ -402,7 +402,7 @@ class DicomParser:
         # Assume we don't want to add an empty value
         if value is not None:
 
-            # If provided a field object, create based on keyword or tag identifer
+            # If provided a field object, create based on keyword or tag identifier
             name = field
             if isinstance(field, DicomField):
                 name = field.element.keyword or field.stripped_tag

@@ -141,7 +141,7 @@ By default, we use a list of rules provided by CTP and other users in [dicom.dei
 There are two operations we can apply to coordinates:
 
  - `keepcoordinates` indicates a set of coordinates that you want to set the mask to a value of 1, to indicate keeping
- - `coordinates` indicates a set of coordintes that you want to set the mask to a value of 0, to indicate cleaning.
+ - `coordinates` indicates a set of coordinates that you want to set the mask to a value of 0, to indicate cleaning.
 
 By default, deid will start with a mask of all 1s, indicating that we keep all coordinates. We then
 apply the list of rules provided by CTP and others in [dicom.deid](https://github.com/pydicom/deid/blob/master/deid/data/deid.dicom)
@@ -341,4 +341,3 @@ client.clean(fix_interpretation=False)
 Please [see the note](https://pydicom.github.io/pydicom/stable/old/image_data_handlers.html#usage)
 on the pydicom documentation for more details. Also, it would be useful to use machine 
 learning to detect text. if you want to develop this or have ideas, please reach out.
-
