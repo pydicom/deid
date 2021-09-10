@@ -26,11 +26,8 @@ SOFTWARE.
 
 
 from deid.logger import bot
-from .tags import remove_sequences
 from .fields import get_fields, expand_field_expression
 from pydicom.multival import MultiValue
-
-import os
 
 
 def extract_values_list(dicom, actions, fields=None):

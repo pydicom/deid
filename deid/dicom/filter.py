@@ -23,7 +23,6 @@ SOFTWARE.
 """
 
 from pydicom.dataset import Dataset
-from pydicom.sequence import Sequence
 from deid.logger import bot
 import re
 
