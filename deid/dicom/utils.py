@@ -64,21 +64,23 @@ def get_files(contenders, check=True, pattern=None, force=False, tempdir=None):
             if dextension == ".zip":
                 with zipfile.ZipFile(dicom_file, "r") as compressedFile:
                     compressedFile.extractall(tempdir)
-                    dicom_file = next(
-                        os.path.join(tempdir, f)
-                        for f in os.listdir(tempdir)
-                        if os.path.isfile(os.path.join(tempdir, f))
-                    )
+                    try:
+                        dicom_file = next(
+                            os.path.join(tempdir, f)
+                            for f in os.listdir(tempdir)
+                            if os.path.isfile(os.path.join(tempdir, f))
+                        )
+                    except StopIteration:
+                        continue  # ZIP file does not contain any file
 
-            if dicom_file is not None:
-                if check:
-                    validated_files = validate_dicoms(dicom_file, force=force)
-                else:
-                    validated_files = [dicom_file]
+            if check:
+                validated_files = validate_dicoms(dicom_file, force=force)
+            else:
+                validated_files = [dicom_file]
 
-                for validated_file in validated_files:
-                    bot.debug("Found contender file %s" % (validated_file))
-                    yield validated_file
+            for validated_file in validated_files:
+                bot.debug("Found contender file %s" % (validated_file))
+                yield validated_file
 
 
 def save_dicom(dicom, dicom_file, output_folder=None, overwrite=False):
