@@ -1,12 +1,15 @@
 {
    "get": { 
-
          
          "skip": ["PixelData",
                   "RedPaletteColorLookupTableData",
                   "GreenPaletteColorLookupTableData",
                   "BluePaletteColorLookupTableData",
-                  "VOILUTSequence"],
+                  "VOILUTSequence",
+                  "FileMetaInformationGroupLength",
+                  "FileMetaInformationVersion",
+                  "TransferSyntaxUID",
+                  "ImplementationClassUID"],
 
          "ids":{
             "entity":"PatientID",

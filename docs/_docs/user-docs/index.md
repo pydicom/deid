@@ -23,6 +23,3 @@ these pages will help you to use the deid software.
 ## Tools
 
  - [Tags]({{ site.baseurl }}/user-docs/tags): A few helpful functions for searching and filtering tags.
-
-
-

@@ -26,7 +26,7 @@ dicom_file = dicom_files[3]
 
 client = DicomCleaner()
 
-# You can set the output folder if you want, otherwis tmpdir is used
+# You can set the output folder if you want, otherwise tmpdir is used
 client = DicomCleaner(output_folder="/home/vanessa/Desktop")
 
 # Steps are to detect, clean, and save in desired format, one image

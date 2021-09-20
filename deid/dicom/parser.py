@@ -53,13 +53,18 @@ class DicomParser:
     file. For each, we store the element and child elements
     """
 
-    def __init__(self, dicom_file, recipe=None, config=None, force=True):
+    def __init__(
+        self, dicom_file, recipe=None, config=None, force=True, disable_skip=False
+    ):
 
         # Lookup for the dicom
         self.lookup = {}
 
         # Will be a list of DicomField
         self.fields = {}
+
+        # Disable skip will load ALL fields, even those protected
+        self.disable_skip = disable_skip
 
         # Load default configuration, or a custom one
         config = config or os.path.join(here, "config.json")
@@ -120,7 +125,10 @@ class DicomParser:
         uids = field.uid.split("__")
 
         # Keep a reference to where we are in dicom (can nest)
-        parent = self.dicom  # dicom is of type Dataset
+        if field.is_filemeta:
+            parent = self.dicom.file_meta
+        else:
+            parent = self.dicom  # dicom is of type Dataset
         desired = field.element.tag
 
         while uids:
@@ -221,6 +229,7 @@ class DicomParser:
                         dicom=self.dicom, actions=actions, fields=fields
                     )
 
+            # actions on the header
             for action in self.recipe.get_actions():
                 self.perform_action(
                     field=action.get("field"),
@@ -250,6 +259,16 @@ class DicomParser:
         )
         return ds
 
+    @property
+    def skip(self):
+        """
+        Return a list of fields to skip, as defined in the self.config
+        """
+        skips = []
+        if self.config and not self.disable_skip:
+            skips = self.config.get("get", {}).get("skip", {})
+        return skips
+
     def get_fields(self, expand_sequences=True):
         """expand all dicom fields into a list, where each entry is
         a DicomField. If we find a sequence, we unwrap it and
@@ -257,7 +276,10 @@ class DicomParser:
         """
         if not self.fields:
             self.fields = get_fields(
-                dicom=self.dicom, expand_sequences=expand_sequences, seen=self.seen,
+                dicom=self.dicom,
+                expand_sequences=expand_sequences,
+                seen=self.seen,
+                skip=self.skip,
             )
         return self.fields
 
@@ -299,7 +321,7 @@ class DicomParser:
 
     # Actions
 
-    def perform_action(self, field, value, action):
+    def perform_action(self, field, value, action, filemeta=False):
         """perform action takes an action (dictionary with field, action, value)
         and performs the action on the loaded dicom.
 
@@ -310,7 +332,7 @@ class DicomParser:
            "field" (eg, PatientID) the header field to process
            "action" (eg, REPLACE) what to do with the field
            "value": if needed, the field from the response to replace with
-
+        filemeta (bool) perform on filemeta
         """
         # Validate the action
         if action not in valid_actions:
@@ -367,10 +389,20 @@ class DicomParser:
             item=self.lookup, value=value, field=field, dicom=self.dicom
         )
 
+        # The addition will be different depending on if we have filemeta
+        is_filemeta = False
+
+        # Helper function to update dicom
+        def update_dicom(element, is_filemeta):
+            if is_filemeta:
+                self.dicom.file_meta.add(element)
+            else:
+                self.dicom.add(element)
+
         # Assume we don't want to add an empty value
         if value is not None:
 
-            # If provided a field object, create based on keyword or tag identifer
+            # If provided a field object, create based on keyword or tag identifier
             name = field
             if isinstance(field, DicomField):
                 name = field.element.keyword or field.stripped_tag
@@ -389,16 +421,21 @@ class DicomParser:
                 if uid in self.fields:
                     element = self.fields[uid]
 
+                    if element.is_filemeta:
+                        is_filemeta = True
+
                     # Nested fields
                     while not hasattr(element, "value"):
                         element = element.element
                     element.value = value
-                    self.dicom.add(element)
 
+                    # Add either to file meta or dicom directly
+                    update_dicom(element, is_filemeta)
                 else:
                     element = DataElement(tag["tag"], tag["VR"], value)
-                    self.dicom.add(element)
-                    self.fields[uid] = DicomField(element, name, uid)
+                    is_filemeta = str(element.tag).startswith("(0002")
+                    update_dicom(element, is_filemeta)
+                    self.fields[uid] = DicomField(element, name, uid, is_filemeta)
             else:
                 bot.warning("Cannot find tag for field %s, skipping." % name)
 

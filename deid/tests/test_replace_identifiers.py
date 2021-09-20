@@ -35,6 +35,7 @@ from deid.utils import get_installdir
 from deid.data import get_dataset
 from deid.dicom.parser import DicomParser
 from deid.dicom import get_identifiers, replace_identifiers
+from deid.tests.common import create_recipe, get_file
 from pydicom import read_file
 from pydicom.sequence import Sequence
 
@@ -410,6 +411,7 @@ class TestDicom(unittest.TestCase):
             save=False,
             remove_private=False,
             strip_sequences=False,
+            disable_skip=True,
         )
         self.assertEqual(1, len(result))
         self.assertEqual(2, len(result[0]))
@@ -648,6 +650,7 @@ class TestDicom(unittest.TestCase):
             save=False,
             remove_private=False,
             strip_sequences=False,
+            disable_skip=True,
         )
         self.assertEqual(1, len(result))
         self.assertEqual(139, len(result[0]))
@@ -753,7 +756,10 @@ class TestDicom(unittest.TestCase):
             items[item]["new_val"] = "modified"
 
         result = replace_identifiers(
-            dicom_files=dicom_file, ids=items, deid=recipe, save=False,
+            dicom_files=dicom_file,
+            ids=items,
+            deid=recipe,
+            save=False,
         )
         self.assertEqual(1, len(result))
         self.assertEqual(result[0].StudyInstanceUID, "modified")
@@ -1020,33 +1026,6 @@ class TestDicom(unittest.TestCase):
 
 
 # MORE TESTS NEED TO BE WRITTEN TO TEST SEQUENCES
-
-
-def create_recipe(actions, fields=None, values=None):
-    """helper method to create a recipe file"""
-    from deid.config import DeidRecipe
-
-    recipe = DeidRecipe()
-
-    # .clear() only supported Python 3.3 and after
-    del recipe.deid["header"][:]
-    recipe.deid["header"] = actions
-
-    if fields is not None:
-        recipe.deid["fields"] = fields
-
-    if values is not None:
-        recipe.deid["values"] = values
-
-    return recipe
-
-
-def get_file(dataset):
-    """helper to get a dicom file"""
-    from deid.dicom import get_files
-
-    dicom_files = get_files(dataset)
-    return next(dicom_files)
 
 
 if __name__ == "__main__":

@@ -58,7 +58,7 @@ recipe.get_format()
 ```
 
 Note that validation of this structure happens at load time. If something is 
-incorrecly labeled or formatted, you will get an error message and it will 
+incorrectly labeled or formatted, you will get an error message and it will 
 fail to load. You can also provide your own deid recipe file, and in 
 doing so, you won't load the default. Here is one from our examples folder
 

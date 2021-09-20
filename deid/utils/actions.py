@@ -84,7 +84,7 @@ def get_func(function_name):
 
 def get_timestamp(item_date, item_time=None, jitter_days=None, format=None):
     """get_timestamp will return (default) a UTC timestamp
-    with some date and (optionall) time. A different format can be
+    with some date and (optional) time. A different format can be
     provided to change default behavior. eg: "%Y%m%d"
     """
     if format is None:

@@ -20,7 +20,7 @@ jobs:
         run: |
           export PATH="/usr/share/miniconda/bin:$PATH"
           source activate black
-          pip install black
+          pip install black --upgrade
           black --check --verbose deid
 
   testing:

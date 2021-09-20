@@ -30,6 +30,7 @@ import os
 
 from deid.utils import get_installdir
 from deid.data import get_dataset
+from deid.tests.common import get_file
 
 
 class TestDicomTags(unittest.TestCase):
@@ -60,15 +61,6 @@ class TestDicomTags(unittest.TestCase):
         print("Case 2: Ask for unknown tag")
         tag = get_tag("KleenexTissue")
         self.assertTrue(not tag)
-
-
-def get_dicom(dataset):
-    """helper function to load a dicom"""
-    from deid.dicom import get_files
-    from pydicom import read_file
-
-    dicom_files = get_files(dataset)
-    return read_file(next(dicom_files))
 
 
 if __name__ == "__main__":

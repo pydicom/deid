@@ -37,6 +37,7 @@ from deid.config import DeidRecipe
 from deid.dicom.fields import get_fields
 from deid.dicom import get_identifiers, replace_identifiers
 from deid.dicom.parser import DicomParser
+from deid.tests.common import get_file, get_dicom
 
 
 class TestDicomGroups(unittest.TestCase):
@@ -120,15 +121,6 @@ class TestDicomGroups(unittest.TestCase):
 
         self.assertEqual(cleaned.get("PatientID"), "new-cookie-id")
         self.assertEqual(cleaned.get("OperatorsName"), "new-operator-id")
-
-
-def get_dicom(dataset):
-    """helper function to load a dicom"""
-    from deid.dicom import get_files
-    from pydicom import read_file
-
-    dicom_files = get_files(dataset)
-    return read_file(next(dicom_files))
 
 
 if __name__ == "__main__":

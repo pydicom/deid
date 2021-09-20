@@ -243,7 +243,7 @@ class DicomCleaner:
                 # apply final 3D mask to 3D pixel data
                 self.cleaned = final_mask * self.original
 
-            # greyscale image: no need to stack into the channel dim since it doesnt exist
+            # greyscale image: no need to stack into the channel dim since it doesn't exist
             elif len(self.original.shape) == 2:
                 self.cleaned = mask * self.original
 

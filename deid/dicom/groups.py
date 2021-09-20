@@ -75,7 +75,7 @@ def extract_values_list(dicom, actions, fields=None):
                     param_name = param_name.strip()
                     param_val = param_val.strip()
 
-                    # Set a custom parameter legnth
+                    # Set a custom parameter length
                     if param_name == "minlength":
                         minlength = int(param_val)
                         bot.debug("Minimum length set to %s" % minlength)

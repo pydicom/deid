@@ -30,4 +30,3 @@ def get_dicom(dataset):
 
 dicom = get_dicom(dataset)
 ```
-
