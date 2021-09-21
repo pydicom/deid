@@ -465,7 +465,7 @@ class DicomParser:
             if value is not None:
                 # Jitter the field by the supplied value
                 new_val = jitter_timestamp(field=field, value=value)
-                if new_val is not None:
+                if new_val not in [None, ""]:
                     self.replace_field(field, new_val)
             else:
                 bot.warning("JITTER %s unsuccessful" % field)
