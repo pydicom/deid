@@ -989,7 +989,6 @@ class TestDicom(unittest.TestCase):
         self.assertEqual("20230102", result[0]["StudyDate"].value)
         self.assertEqual("20230102", result[0]["SeriesDate"].value)
         self.assertEqual("20230102", result[0]["AcquisitionDate"].value)
-        self.assertEqual("20230102", result[0]["ContentDate"].value)
         self.assertEqual("20230102", result[0]["00291019"].value)
         self.assertEqual("20230102011721.621000", result[0]["00291020"].value)
         self.assertEqual(20230102, result[0]["00291021"].value)
@@ -1023,6 +1022,35 @@ class TestDicom(unittest.TestCase):
         self.assertEqual(1, len(result))
         self.assertEqual(len(original_dataset), len(result[0]))
         self.assertEqual("20230102", result[0]["00291019"].value)
+
+    def test_jitter_blank_date(self):
+        """
+        Testing to ensure jittering a date field which contains a blank value does not cause an unhandled exception
+
+        %header
+        JITTER ContentDate 1
+        """
+        import pydicom
+
+        print("Test jitter date field containing space")
+        dicom_file = get_file(self.dataset)
+        original_dataset = pydicom.dcmread(dicom_file)
+
+        actions = [{"action": "JITTER", "field": "ContentDate", "value": "1"}]
+        recipe = create_recipe(actions)
+
+        # Perform action
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+
+        self.assertEqual(1, len(result))
+        self.assertEqual(len(original_dataset), len(result[0]))
+        self.assertEqual("", result[0]["ContentDate"].value)
 
 
 # MORE TESTS NEED TO BE WRITTEN TO TEST SEQUENCES
