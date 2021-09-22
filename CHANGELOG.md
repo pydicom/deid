@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+ - bug fix for exception when attempting to jitter DA/DT which cannot be jittered (space) [#189] (https://github.com/pydicom/deid/issues/189) (0.2.27)
  - adding support to manipulate file meta [#183](https://github.com/pydicom/deid/issues/183) (0.2.26)
  - updated pydicom dependency from 1.3.0 to 2.1.1 [#171](https://github.com/pydicom/deid/issues/171) (0.2.25)
  - bug fix for multivalued fields in %values lists [#174](https://github.com/pydicom/deid/issues/174)
