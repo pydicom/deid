@@ -98,7 +98,7 @@ def get_timestamp(item_date, item_time=None, jitter_days=None, format=None):
 
     try:
         timestamp = dateutil.parser.parse("%s%s" % (item_date, item_time))
-    except:
+    except (dateutil.parser.ParserError, OverflowError):
         timestamp = datetime.strptime("%s%s" % (item_date, item_time), format)
 
     if jitter_days is not None:

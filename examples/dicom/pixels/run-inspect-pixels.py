@@ -7,10 +7,8 @@
 
 # This will get a set of example cookie dicoms
 from deid.dicom import get_files, has_burned_pixels
-from pydicom import read_file
 from deid.data import get_dataset
 from deid.logger import bot
-import os
 
 bot.level = 3
 

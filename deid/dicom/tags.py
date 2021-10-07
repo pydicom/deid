@@ -25,7 +25,6 @@ SOFTWARE.
 from deid.logger import bot
 from pydicom.tag import tag_in_exception
 from pydicom.sequence import Sequence
-from pydicom.dataelem import DataElement
 from pydicom._dicom_dict import DicomDictionary, RepeatersDictionary
 from pydicom.tag import Tag
 import re
