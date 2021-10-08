@@ -186,7 +186,7 @@ def main():
     parser = get_parser()
     try:
         args = parser.parse_args()
-    except:
+    except Exception:
         sys.exit(0)
 
     if args.command == "version" or args.version:

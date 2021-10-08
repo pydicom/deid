@@ -64,7 +64,7 @@ def jitter_timestamp(field, value):
                 new_value = get_timestamp(
                     original, jitter_days=value, format="%Y%m%d%H%M%S.%f%z"
                 )
-            except:
+            except Exception:
                 new_value = get_timestamp(
                     original, jitter_days=value, format="%Y%m%d%H%M%S.%f"
                 )
@@ -78,7 +78,7 @@ def jitter_timestamp(field, value):
                         original, jitter_days=value, format=fmtstr
                     )
                     break
-                except:
+                except Exception:
                     pass
 
             # If nothing works, do nothing and issue a warning.
