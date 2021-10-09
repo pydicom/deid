@@ -30,7 +30,6 @@ from deid.logger import bot
 from pydicom import read_file
 
 from deid.dicom.utils import save_dicom
-from deid.dicom.tags import remove_sequences
 from deid.dicom.parser import DicomParser
 
 import os
