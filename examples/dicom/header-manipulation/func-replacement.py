@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
 from deid.dicom import get_files, replace_identifiers
-from deid.utils import get_installdir
 from deid.data import get_dataset
-import os
 
 # This is an example of replacing fields in dicom headers,
 # but via a function instead of a preset identifier.

@@ -489,7 +489,7 @@ class DicomParser:
         """Remove private tags from the loaded dicom"""
         try:
             self.dicom.remove_private_tags()
-        except:
+        except Exception:
             bot.error(
                 """Private tags for %s could not be completely removed, usually
                          this is due to invalid data type. Removing others."""

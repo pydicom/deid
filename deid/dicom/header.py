@@ -26,16 +26,10 @@ SOFTWARE.
 
 
 from deid.logger import bot
-from deid.utils import read_json
-
-from deid.config import DeidRecipe
 
 from pydicom import read_file
 
 from deid.dicom.utils import save_dicom
-from deid.dicom.tags import remove_sequences, get_private
-from deid.dicom.groups import extract_values_list, extract_fields_list
-from deid.dicom.fields import get_fields
 from deid.dicom.parser import DicomParser
 
 import os

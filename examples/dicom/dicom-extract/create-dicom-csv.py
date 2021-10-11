@@ -3,7 +3,6 @@ import pydicom
 import os
 import platform
 import csv
-import operator
 from collections.abc import Sequence
 from collections import OrderedDict
 
