@@ -5,6 +5,8 @@ build
 pypi.sh
 
 private
+# dev tools
+.idea
 .vscode
 
 # osx
