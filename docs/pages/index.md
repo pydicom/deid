@@ -3,7 +3,7 @@ title: Welcome
 permalink: /
 ---
 
-**Anonymization toward De-identifiction (deid)**
+**Anonymization toward De-identification (deid)**
 
 This Python module is intended for basic coding of medical images, which means 
 "cleaning" image headers and pixel data, and integrating with your own functions 
