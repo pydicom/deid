@@ -5,7 +5,7 @@ from deid.utils import get_installdir
 from deid.data import get_dataset
 import os
 
-# This is a complete example of doing de-identifiction. For details, see our docs
+# This is a complete example of doing de-identification. For details, see our docs
 # https://pydicom.github.io/deid
 
 
