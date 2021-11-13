@@ -516,4 +516,4 @@ You can learn how to define groups of tags based on fields or values in [groups]
 or if you want to write a text file and get going with cleaning your files, you should 
 look at some examples for generating a basic [get]({{ site.baseurl }}/getting-started/dicom-get/).
 This is the action to get a set of fields and values from your dicom files. For a full walk through
-example with a recipe, see the [recipe example]({{ sitebase.url }}/examples/recipe)
+example with a recipe, see the [recipe example]({{ site.baseurl }}/examples/recipe)
