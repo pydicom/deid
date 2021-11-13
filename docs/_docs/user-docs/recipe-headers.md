@@ -15,9 +15,9 @@ and replace header values.
 Cleaning headers in dicom images typically has four parts:
 
  1. define a set of rules for updating values
- 2. [get]({{ site.baseurl }}/getting-started/get) current fields (if you need to use them to look up replacements, etc)
+ 2. [get]({{ site.baseurl }}/getting-started/dicom-get) current fields (if you need to use them to look up replacements, etc)
  3. update these fields as you see needed
- 4. [put]({{ site.baseurl }}/getting-started/put) (possibly updated) identifiers back into the data, and deidentify fully.
+ 4. [put]({{ site.baseurl }}/getting-started/dicom-put) (possibly updated) identifiers back into the data, and deidentify fully.
 
 this document will talk about the first step in this process, 
 how you can configure rules for the software. If you are interested in the command 
@@ -514,6 +514,6 @@ expression. All supported expanders include:
 Now that you know how configuration works, you have a few options.
 You can learn how to define groups of tags based on fields or values in [groups]({{ site.baseurl }}/user-docs/recipe-groups/),
 or if you want to write a text file and get going with cleaning your files, you should 
-look at some examples for generating a basic [get]({{ sitebase.url }}/getting-started/dicom-get/).
+look at some examples for generating a basic [get]({{ site.baseurl }}/getting-started/dicom-get/).
 This is the action to get a set of fields and values from your dicom files. For a full walk through
 example with a recipe, see the [recipe example]({{ sitebase.url }}/examples/recipe)

@@ -147,5 +147,5 @@ REMOVE ALL values:patient_info
 Or you could chose some other field name, or field expander, if you want to limit
 the removal to some subset.
 
-If you haven't yet, take a look at how at generate a basic [get]({{ sitebase.url }}/getting-started/dicom-get/), 
+If you haven't yet, take a look at how at generate a basic [get]({{ site.baseurl }}/getting-started/dicom-get/), 
 which is will get a set of fields and values from your dicom files.
