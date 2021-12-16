@@ -210,6 +210,11 @@ class DicomParser:
         if remove_private:
             self.remove_private()
 
+        # if we loaded a deid recipe, KEEP must overrule REMOVE, adding kept fields to skiplist
+        if self.recipe.deid is not None:
+            for action in self.recipe.get_actions(action="KEEP"):
+                self.skip.append(action.get("field"))
+
         # In the parsing, we generate a list of DicomField objects.
         fields = self.get_fields(expand_sequences=True)
 
@@ -321,18 +326,18 @@ class DicomParser:
 
     # Actions
 
-    def perform_action(self, field, value, action, filemeta=False):
+    def perform_action(self, field, value, action):
         """perform action takes an action (dictionary with field, action, value)
         and performs the action on the loaded dicom.
 
         Parameters
         ==========
-        fields: if provided, a filtered list of fields for expand
+        field: if provided, a field for expand
+        value: field value
         action: the action from the parsed deid to take
            "field" (eg, PatientID) the header field to process
            "action" (eg, REPLACE) what to do with the field
            "value": if needed, the field from the response to replace with
-        filemeta (bool) perform on filemeta
         """
         # Validate the action
         if action not in valid_actions:
@@ -344,7 +349,7 @@ class DicomParser:
             values = self.lookup.get(re.sub("^values:", "", field), [])
             fields = self.find_by_values(values=values)
 
-        # A fields list is used vertabim
+        # A fields list is used verbatim
         # In expand_field_expression below, the stripped_tag is being passed in to field.  At this point,
         # expanders for %fields lists have already been processed and each of the contenders is an
         # identified, unique field.  It is important to use stripped_tag at this point instead of
