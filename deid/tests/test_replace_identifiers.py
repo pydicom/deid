@@ -717,10 +717,10 @@ class TestDicom(unittest.TestCase):
         parser = DicomParser(dicom_file, recipe=recipe)
         parser.parse()
 
-        self.assertEqual("Yes", parser.dicom['PatientIdentityRemoved'].value)
-        self.assertIsNotNone(parser.dicom['PixelData'])
-        self.assertIsNotNone(parser.dicom['StudyDate'])
-        self.assertEqual('20230101', parser.dicom['StudyDate'].value)
+        self.assertEqual("Yes", parser.dicom["PatientIdentityRemoved"].value)
+        self.assertIsNotNone(parser.dicom["PixelData"])
+        self.assertIsNotNone(parser.dicom["StudyDate"])
+        self.assertEqual("20230101", parser.dicom["StudyDate"].value)
 
     def test_remove_except_field_keep_other_field_compounding_should_keep(self):
         """
@@ -740,11 +740,11 @@ class TestDicom(unittest.TestCase):
         parser = DicomParser(dicom_file, recipe=recipe)
         parser.parse()
 
-        self.assertEqual("Yes", parser.dicom['PatientIdentityRemoved'].value)
-        self.assertIsNotNone(parser.dicom['PixelData'])
-        self.assertIsNotNone(parser.dicom['Manufacturer'])
-        self.assertIsNotNone(parser.dicom['ManufacturerModelName'])
-        self.assertIsNotNone(parser.dicom['StudyDate'])
+        self.assertEqual("Yes", parser.dicom["PatientIdentityRemoved"].value)
+        self.assertIsNotNone(parser.dicom["PixelData"])
+        self.assertIsNotNone(parser.dicom["Manufacturer"])
+        self.assertIsNotNone(parser.dicom["ManufacturerModelName"])
+        self.assertIsNotNone(parser.dicom["StudyDate"])
 
     def test_remove_all_add_field_compounding_should_add(self):
         """
@@ -765,9 +765,9 @@ class TestDicom(unittest.TestCase):
         parser = DicomParser(dicom_file, recipe=recipe)
         parser.parse()
 
-        self.assertEqual("Yes", parser.dicom['PatientIdentityRemoved'].value)
-        self.assertIsNotNone(parser.dicom['PixelData'])
-        self.assertEqual("19700101", parser.dicom['StudyDate'].value)
+        self.assertEqual("Yes", parser.dicom["PatientIdentityRemoved"].value)
+        self.assertIsNotNone(parser.dicom["PixelData"])
+        self.assertEqual("19700101", parser.dicom["StudyDate"].value)
 
     def test_remove_keep_add_field_compounding_should_add(self):
         """
@@ -790,9 +790,9 @@ class TestDicom(unittest.TestCase):
         parser = DicomParser(dicom_file, recipe=recipe)
         parser.parse()
 
-        self.assertEqual("Yes", parser.dicom['PatientIdentityRemoved'].value)
-        self.assertIsNotNone(parser.dicom['PixelData'])
-        self.assertEqual("19700101", parser.dicom['StudyDate'].value)
+        self.assertEqual("Yes", parser.dicom["PatientIdentityRemoved"].value)
+        self.assertIsNotNone(parser.dicom["PixelData"])
+        self.assertEqual("19700101", parser.dicom["StudyDate"].value)
 
     def test_remove_field_keep_same_field_compounding_should_keep(self):
         """
@@ -813,9 +813,9 @@ class TestDicom(unittest.TestCase):
         parser = DicomParser(dicom_file, recipe=recipe)
         parser.parse()
 
-        self.assertEqual("Yes", parser.dicom['PatientIdentityRemoved'].value)
-        self.assertIsNotNone(parser.dicom['PixelData'])
-        self.assertEqual("20230101", parser.dicom['StudyDate'].value)
+        self.assertEqual("Yes", parser.dicom["PatientIdentityRemoved"].value)
+        self.assertIsNotNone(parser.dicom["PixelData"])
+        self.assertEqual("20230101", parser.dicom["StudyDate"].value)
 
     def test_remove_except_is_acting_as_substring(self):
         """
@@ -832,8 +832,8 @@ class TestDicom(unittest.TestCase):
         parser = DicomParser(dicom_file, recipe=recipe)
         parser.parse()
 
-        self.assertIsNotNone(parser.dicom['Manufacturer'])
-        self.assertIsNotNone(parser.dicom['ManufacturerModelName'])
+        self.assertIsNotNone(parser.dicom["Manufacturer"])
+        self.assertIsNotNone(parser.dicom["ManufacturerModelName"])
 
     def test_strip_sequences(self):
         """
