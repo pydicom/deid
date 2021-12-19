@@ -276,12 +276,9 @@ class DicomParser:
         """
         keeps = []
         if self.recipe.deid is not None:
-            keeps = list(
-                map(
-                    lambda action: action.get("field"),
-                    self.recipe.get_actions(action="KEEP"),
-                )
-            )
+            keeps = [
+                action.get("field") for action in self.recipe.get_actions(action="KEEP")
+            ]
         return keeps
 
     def get_fields(self, expand_sequences=True):
