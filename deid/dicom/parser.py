@@ -210,11 +210,6 @@ class DicomParser:
         if remove_private:
             self.remove_private()
 
-        # if we loaded a deid recipe, KEEP must overrule REMOVE, adding kept fields to skiplist
-        if self.recipe.deid is not None:
-            for action in self.recipe.get_actions(action="KEEP"):
-                self.skip.append(action.get("field"))
-
         # In the parsing, we generate a list of DicomField objects.
         fields = self.get_fields(expand_sequences=True)
 
@@ -274,6 +269,21 @@ class DicomParser:
             skips = self.config.get("get", {}).get("skip", {})
         return skips
 
+    @property
+    def keep(self):
+        """
+        Return a list of fields to keep, as defined by all KEEP actions in recipe
+        """
+        keeps = []
+        if self.recipe.deid is not None:
+            keeps = list(
+                map(
+                    lambda action: action.get("field"),
+                    self.recipe.get_actions(action="KEEP"),
+                )
+            )
+        return keeps
+
     def get_fields(self, expand_sequences=True):
         """expand all dicom fields into a list, where each entry is
         a DicomField. If we find a sequence, we unwrap it and
@@ -284,7 +294,7 @@ class DicomParser:
                 dicom=self.dicom,
                 expand_sequences=expand_sequences,
                 seen=self.seen,
-                skip=self.skip,
+                skip=self.skip + self.keep,
             )
         return self.fields
 
