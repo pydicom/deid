@@ -277,7 +277,9 @@ class DicomParser:
         keeps = []
         if self.recipe.deid is not None:
             keeps = [
-                action.get("field") for action in self.recipe.get_actions(action="KEEP")
+                action.get("field")
+                for action in self.recipe.get_actions(action="KEEP")
+                if action and action.get("field")
             ]
         return keeps
 
@@ -339,7 +341,7 @@ class DicomParser:
 
         Parameters
         ==========
-        field: if provided, a field for expand
+        field: a field for expand
         value: field value
         action: the action from the parsed deid to take
            "field" (eg, PatientID) the header field to process
