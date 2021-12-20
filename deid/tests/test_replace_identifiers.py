@@ -698,6 +698,190 @@ class TestDicom(unittest.TestCase):
         with self.assertRaises(KeyError):
             check4 = parser.dicom["00331019"].value
 
+    def test_remove_all_keep_field_compounding_should_keep(self):
+        """
+        %header
+        REMOVE ALL
+        KEEP StudyDate
+        ADD PatientIdentityRemoved Yes
+        """
+        dicom_file = get_file(self.dataset)
+
+        actions = [
+            {"action": "REMOVE", "field": "ALL"},
+            {"action": "KEEP", "field": "StudyDate"},
+            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yes"},
+        ]
+        recipe = create_recipe(actions)
+
+        parser = DicomParser(dicom_file, recipe=recipe)
+        parser.parse()
+
+        self.assertEqual("Yes", parser.dicom["PatientIdentityRemoved"].value)
+        self.assertIsNotNone(parser.dicom["PixelData"])
+        self.assertIsNotNone(parser.dicom["StudyDate"])
+        self.assertEqual("20230101", parser.dicom["StudyDate"].value)
+
+    def test_remove_except_field_keep_other_field_compounding_should_keep(self):
+        """
+        %header
+        REMOVE ALL
+        ADD PatientIdentityRemoved Yes
+        """
+        dicom_file = get_file(self.dataset)
+
+        actions = [
+            {"action": "REMOVE", "field": "except:Manufacturer"},
+            {"action": "KEEP", "field": "StudyDate"},
+            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yes"},
+        ]
+        recipe = create_recipe(actions)
+
+        parser = DicomParser(dicom_file, recipe=recipe)
+        parser.parse()
+
+        self.assertEqual("Yes", parser.dicom["PatientIdentityRemoved"].value)
+        self.assertIsNotNone(parser.dicom["PixelData"])
+        self.assertIsNotNone(parser.dicom["Manufacturer"])
+        self.assertIsNotNone(parser.dicom["ManufacturerModelName"])
+        self.assertIsNotNone(parser.dicom["StudyDate"])
+
+    def test_remove_all_add_field_compounding_should_add(self):
+        """
+        %header
+        REMOVE ALL
+        ADD PatientIdentityRemoved Yes
+        ADD StudyDate 19700101
+        """
+        dicom_file = get_file(self.dataset)
+
+        actions = [
+            {"action": "REMOVE", "field": "ALL"},
+            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yes"},
+            {"action": "ADD", "field": "StudyDate", "value": "19700101"},
+        ]
+        recipe = create_recipe(actions)
+
+        parser = DicomParser(dicom_file, recipe=recipe)
+        parser.parse()
+
+        self.assertEqual("Yes", parser.dicom["PatientIdentityRemoved"].value)
+        self.assertIsNotNone(parser.dicom["PixelData"])
+        self.assertEqual("19700101", parser.dicom["StudyDate"].value)
+
+    def test_remove_all_blank_field_compounding_should_remove(self):
+        """
+        %header
+        REMOVE ALL
+        ADD PatientIdentityRemoved Yes
+        BLANK StudyDate
+        """
+        dicom_file = get_file(self.dataset)
+
+        actions = [
+            {"action": "REMOVE", "field": "ALL"},
+            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yes"},
+            {"action": "BLANK", "field": "StudyDate"},
+        ]
+        recipe = create_recipe(actions)
+
+        parser = DicomParser(dicom_file, recipe=recipe)
+        parser.parse()
+
+        self.assertEqual("Yes", parser.dicom["PatientIdentityRemoved"].value)
+        self.assertIsNotNone(parser.dicom["PixelData"])
+        with self.assertRaises(KeyError):
+            check3 = parser.dicom["StudyDate"].value
+
+    def test_blank_field_keep_field_compounding_should_keep(self):
+        """
+        %header
+        ADD PatientIdentityRemoved Yes
+        BLANK StudyDate
+        KEEP StudyDate
+        """
+        dicom_file = get_file(self.dataset)
+
+        actions = [
+            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yes"},
+            {"action": "BLANK", "field": "StudyDate"},
+            {"action": "KEEP", "field": "StudyDate"},
+        ]
+        recipe = create_recipe(actions)
+
+        parser = DicomParser(dicom_file, recipe=recipe)
+        parser.parse()
+
+        self.assertEqual("Yes", parser.dicom["PatientIdentityRemoved"].value)
+        self.assertIsNotNone(parser.dicom["PixelData"])
+        self.assertEqual("20230101", parser.dicom["StudyDate"].value)
+
+    def test_remove_keep_add_field_compounding_should_add(self):
+        """
+        %header
+        REMOVE ALL
+        KEEP StudyDate
+        ADD StudyDate 19700101
+        ADD PatientIdentityRemoved Yes
+        """
+        dicom_file = get_file(self.dataset)
+
+        actions = [
+            {"action": "REMOVE", "field": "ALL"},
+            {"action": "KEEP", "field": "StudyDate"},
+            {"action": "ADD", "field": "StudyDate", "value": "19700101"},
+            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yes"},
+        ]
+        recipe = create_recipe(actions)
+
+        parser = DicomParser(dicom_file, recipe=recipe)
+        parser.parse()
+
+        self.assertEqual("Yes", parser.dicom["PatientIdentityRemoved"].value)
+        self.assertIsNotNone(parser.dicom["PixelData"])
+        self.assertEqual("19700101", parser.dicom["StudyDate"].value)
+
+    def test_remove_field_keep_same_field_compounding_should_keep(self):
+        """
+        %header
+        REMOVE StudyDate
+        KEEP StudyDate
+        ADD PatientIdentityRemoved Yes
+        """
+        dicom_file = get_file(self.dataset)
+
+        actions = [
+            {"action": "REMOVE", "field": "StudyDate"},
+            {"action": "KEEP", "field": "StudyDate"},
+            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yes"},
+        ]
+        recipe = create_recipe(actions)
+
+        parser = DicomParser(dicom_file, recipe=recipe)
+        parser.parse()
+
+        self.assertEqual("Yes", parser.dicom["PatientIdentityRemoved"].value)
+        self.assertIsNotNone(parser.dicom["PixelData"])
+        self.assertEqual("20230101", parser.dicom["StudyDate"].value)
+
+    def test_remove_except_is_acting_as_substring(self):
+        """
+        %header
+        REMOVE except:Manufacturer
+        """
+        dicom_file = get_file(self.dataset)
+
+        actions = [
+            {"action": "REMOVE", "field": "except:Manufacturer"},
+        ]
+        recipe = create_recipe(actions)
+
+        parser = DicomParser(dicom_file, recipe=recipe)
+        parser.parse()
+
+        self.assertIsNotNone(parser.dicom["Manufacturer"])
+        self.assertIsNotNone(parser.dicom["ManufacturerModelName"])
+
     def test_strip_sequences(self):
         """
         Testing strip sequences: Checks to ensure that the strip_sequences removes all tags of type

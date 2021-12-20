@@ -269,6 +269,20 @@ class DicomParser:
             skips = self.config.get("get", {}).get("skip", {})
         return skips
 
+    @property
+    def keep(self):
+        """
+        Return a list of fields to keep, as defined by all KEEP actions in recipe
+        """
+        keeps = []
+        if self.recipe.deid is not None:
+            keeps = [
+                action.get("field")
+                for action in self.recipe.get_actions(action="KEEP")
+                if action and action.get("field")
+            ]
+        return keeps
+
     def get_fields(self, expand_sequences=True):
         """expand all dicom fields into a list, where each entry is
         a DicomField. If we find a sequence, we unwrap it and
@@ -279,7 +293,7 @@ class DicomParser:
                 dicom=self.dicom,
                 expand_sequences=expand_sequences,
                 seen=self.seen,
-                skip=self.skip,
+                skip=self.skip + self.keep,
             )
         return self.fields
 
@@ -321,18 +335,18 @@ class DicomParser:
 
     # Actions
 
-    def perform_action(self, field, value, action, filemeta=False):
+    def perform_action(self, field, value, action):
         """perform action takes an action (dictionary with field, action, value)
         and performs the action on the loaded dicom.
 
         Parameters
         ==========
-        fields: if provided, a filtered list of fields for expand
+        field: a field for expand
+        value: field value
         action: the action from the parsed deid to take
            "field" (eg, PatientID) the header field to process
            "action" (eg, REPLACE) what to do with the field
            "value": if needed, the field from the response to replace with
-        filemeta (bool) perform on filemeta
         """
         # Validate the action
         if action not in valid_actions:
@@ -344,7 +358,7 @@ class DicomParser:
             values = self.lookup.get(re.sub("^values:", "", field), [])
             fields = self.find_by_values(values=values)
 
-        # A fields list is used vertabim
+        # A fields list is used verbatim
         # In expand_field_expression below, the stripped_tag is being passed in to field.  At this point,
         # expanders for %fields lists have already been processed and each of the contenders is an
         # identified, unique field.  It is important to use stripped_tag at this point instead of
