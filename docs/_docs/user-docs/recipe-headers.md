@@ -347,7 +347,7 @@ BLANK except:StudyTime
 
 _except_ is checking field names against given pattern, so if you for example set
 ```
-REMOVE excep:Manufacturer
+REMOVE except:Manufacturer
 ```
 
 following fields will be preserved: `Manufacturer` **and** `ManufacturerModelName`
