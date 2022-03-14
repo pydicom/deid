@@ -14,7 +14,8 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
- - various LGTM alert fixes [#186](https://github.com/pydicom/deid/pull/186)
+ - update CTP deid.dicom up until [this commit](https://github.com/johnperry/CTP/commit/345b05b157c046532e8791a63ababbf6d0dba59b) (0.2.29)
+ - various LGTM alert fixes [#186](https://github.com/pydicom/deid/pull/186) (0.0.28)
  - bug fix for exception when attempting to jitter DA/DT which cannot be jittered (space) [#189] (https://github.com/pydicom/deid/issues/189) (0.2.27)
  - adding support to manipulate file meta [#183](https://github.com/pydicom/deid/issues/183) (0.2.26)
  - updated pydicom dependency from 1.3.0 to 2.1.1 [#171](https://github.com/pydicom/deid/issues/171) (0.2.25)

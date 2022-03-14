@@ -31,7 +31,7 @@ ids = get_identifiers(dicom_files)
 # The process of flagging images comes down to writing a set of filters to
 # check if each image meets some criteria of interest. For example, I might
 # create a filter called "xray" that is triggered when the Modality is CT or XR.
-# We specify these fliters in a simple text file called a "deid recipe." When
+# We specify these filters in a simple text file called a "deid recipe." When
 # you work with the functions, you have the choice to instantiate the object
 # in advance, or just provide a path to a recipe file. We will walk through
 # examples  for both below, starting with working with a DeidRecipe object.

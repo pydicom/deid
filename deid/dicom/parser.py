@@ -2,7 +2,7 @@
 
 parser.py: class that supports dicom extraction and replacement of fields.
 
-Copyright (c) 2017-2021 Vanessa Sochat
+Copyright (c) 2017-2022 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -344,7 +344,7 @@ class DicomParser:
             values = self.lookup.get(re.sub("^values:", "", field), [])
             fields = self.find_by_values(values=values)
 
-        # A fields list is used vertabim
+        # A fields list is used vertbatim
         # In expand_field_expression below, the stripped_tag is being passed in to field.  At this point,
         # expanders for %fields lists have already been processed and each of the contenders is an
         # identified, unique field.  It is important to use stripped_tag at this point instead of
