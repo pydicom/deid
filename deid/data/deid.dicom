@@ -745,6 +745,7 @@ LABEL Burned In Annotation # (CTP)
 
 %header
 
+REMAP contains:((?<!SOPClass)UID)
 REMOVE endswith:Time
 REMOVE endswith:Date
 REMOVE endswith:time
@@ -765,8 +766,7 @@ REMOVE PatientsName
 REMOVE ReasonForStudy
 REMOVE contains:Trial
 REMOVE startswith:PatientTelephoneNumber
-REMOVE endswith:ID
-REMOVE endswith:IDs
+REMOVE contains:([^U]IDs?)
 REMOVE ReferringPhysicianName
 REMOVE ConsultingPhysicianName
 REMOVE EvaluatorName
@@ -799,7 +799,6 @@ REMOVE SourceApplicatorName
 REMOVE ClinicalTrialSponsorName
 REMOVE ContentCreatorName
 REMOVE ClinicalTrialProtocolEthicsCommitteeName
-REMOVE contains:UID
 REMOVE RegionOfResidence
 REMOVE CurrentPatientLocation
 REMOVE PatientComments

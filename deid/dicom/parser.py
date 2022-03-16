@@ -35,7 +35,7 @@ from pydicom.dataset import Dataset
 from deid.config import DeidRecipe
 from deid.config.standards import actions as valid_actions
 from deid.dicom.utils import save_dicom
-from deid.dicom.actions import jitter_timestamp
+from deid.dicom.actions import jitter_timestamp, remap_uid
 from deid.dicom.tags import remove_sequences, get_private, get_tag, add_tag
 from deid.dicom.groups import extract_values_list, extract_fields_list
 from deid.dicom.fields import get_fields, expand_field_expression, DicomField
@@ -445,6 +445,7 @@ class DicomParser:
         Both result in a call to this function. If an action fails or is not
         done, None is returned, and the calling function should handle this.
         """
+        
         # Blank the value
         if action == "BLANK":
             self.blank_field(field)
@@ -469,6 +470,14 @@ class DicomParser:
                     self.replace_field(field, new_val)
             else:
                 bot.warning("JITTER %s unsuccessful" % field)
+
+        # Remap UIDs
+        elif action == "REMAP":
+            if field.element.VR == 'UI':
+                new_val = remap_uid(field.element)
+            else:
+                bot.warning("REMAP called on invalid (non-UID) element %s" % field)
+            self.replace_field(field, new_val)
 
         # elif "KEEP" --> Do nothing. Keep the original
 

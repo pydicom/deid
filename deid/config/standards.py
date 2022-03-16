@@ -29,7 +29,7 @@ formats = ["dicom"]
 sections = ["header", "labels", "filter", "values", "fields"]
 
 # Supported Header Actions
-actions = ("ADD", "BLANK", "JITTER", "KEEP", "REPLACE", "REMOVE", "LABEL")
+actions = ("ADD", "BLANK", "JITTER", "KEEP", "REPLACE", "REMOVE", "REMAP", "LABEL")
 
 # Supported Group actions (SPLIT only supported for values)
 groups = ["values", "fields"]

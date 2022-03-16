@@ -22,6 +22,8 @@ SOFTWARE.
 
 """
 
+from pydicom.uid import generate_uid
+
 from deid.logger import bot
 from deid.utils import get_timestamp
 
@@ -86,3 +88,20 @@ def jitter_timestamp(field, value):
                 bot.warning("JITTER not supported for %s with VR=%s" % (field, dcmvr))
 
     return new_value
+
+
+# UIDs
+
+def remap_uid(field):
+    """Remap existing UID in stable and secure manner
+    
+    Same input UID creates the same output UID, which keeps study / series
+    associations correct (or even FrameOfReferenceUID) provided the full
+    study / series in anonymized. At same time input UID can't be recovered
+    from output so any potential PHI (i.e. dates / times) is eliminated.
+    """
+    if isinstance(field.value, list):
+        # Handle VM > 1 
+        return [generate_uid(entropy_srcs=[x]) for x in field.value]
+    else:
+        return generate_uid(entropy_srcs=[field.value])

@@ -568,7 +568,7 @@ def parse_config_action(section, line, config, section_name=None):
             config[section].append({"action": action, "field": field, "value": value})
 
     # Actions that don't require a value
-    elif action in ["BLANK", "KEEP"]:
+    elif action in ["BLANK", "KEEP", "REMAP"]:
         bot.debug("%s: adding %s" % (section, line))
         config[section].append({"action": action, "field": field})
 
