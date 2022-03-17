@@ -301,7 +301,10 @@ class DicomParser:
             if self.recipe.deid is not None:
                 self._excluded_fields = [
                     action.get("field")
-                    for action in (self.recipe.get_actions(action="JITTER") + self.recipe.get_actions(action="REPLACE"))
+                    for action in (
+                        self.recipe.get_actions(action="JITTER")
+                        + self.recipe.get_actions(action="REPLACE")
+                    )
                     if action and action.get("field")
                 ]
         return self._excluded_fields

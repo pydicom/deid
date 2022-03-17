@@ -89,9 +89,9 @@ recipe.get_actions(field="PatientID", action="REMOVE")
 
 def generate_uid(item, value, field, dicom):
     """This function will generate a dicom uid! You can expect it to be passed
-       the dictionary of items extracted from the dicom (and your function)
-       and variables, the original value (func:generate_uid) and the field
-       object you are applying it to.
+    the dictionary of items extracted from the dicom (and your function)
+    and variables, the original value (func:generate_uid) and the field
+    object you are applying it to.
     """
     import uuid
 
