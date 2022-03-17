@@ -219,14 +219,15 @@ be taken on a header field/value:
 
  - ADD: Add a new field to the dataset(s). If the value is a string, it's assumed to be the value that is desired to be added. If the value is in the form `var:OrdValue` then the application will expect to find the value to replace in a variable in the request called `OrdValue` (more on this later).
  - BLANK: If you want to blank a field instead of remove it, use this option. This is the default action.
- - KEEP: implies that the value should not be replaced, removed, or blanked.
+ - KEEP: implies that the value should not be replaced, jittered, removed, or blanked.
  - REPLACE: implies that the value should be replaced by a string, or a variable in the format `var:FieldName`.
- - REMOVE: completely remove the field from the dataset (if not protected by `KEEP` or is in default skip list).
+ - JITTER: implies that the value should be jittered ("deviated") by a string, or a variable in the format `var:FieldName`.
+ - REMOVE: completely remove the field from the dataset (if not protected by `KEEP`, changed by 'REPLACE' or 'JITTER', or is in default skip list).
 
 For the above, given that there are conflicting commands, the more conservative is given preference. For example:
 
 ```
-KEEP > ADD > REMOVE > BLANK > REPLACE > JITTER
+KEEP > ADD > REPLACE > JITTER > REMOVE > BLANK
 ``` 
 
 For example, if I add or keep a header, and then also specify to blank or remove it, 
