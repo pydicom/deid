@@ -88,6 +88,7 @@ class TestConfig(unittest.TestCase):
             "KEEP",
             "REPLACE",
             "REMOVE",
+            "REMAP",
             "JITTER",
             "LABEL",
         ]

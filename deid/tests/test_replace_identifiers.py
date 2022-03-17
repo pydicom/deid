@@ -360,6 +360,37 @@ class TestDicom(unittest.TestCase):
             "20230102011721.621000", result[0]["AcquisitionDateTime"].value
         )
 
+    def test_remap_uid(self):
+
+        print("Test uid remapping")
+        dicom_file = get_file(self.dataset)
+        dicom = read_file(dicom_file)
+        orig_uid = dicom.StudyInstanceUID
+
+        actions = [{"action": "REMAP", "field": "StudyInstanceUID"}]
+        recipe = create_recipe(actions)
+
+        result1 = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        self.assertEqual(1, len(result1))
+        self.assertNotEqual(
+            orig_uid, result1[0]["StudyInstanceUID"].value
+        )
+        result2 = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=False,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        self.assertEqual(1, len(result2))
+        self.assertEqual(result1[0]["StudyInstanceUID"].value, result2[0]["StudyInstanceUID"].value)
+
     def test_expanders(self):
         """RECIPE RULES
         REMOVE contains:Collimation
