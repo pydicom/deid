@@ -7,7 +7,7 @@ import os
 
 
 def get_lookup():
-    """get version by way of deid.version, returns a 
+    """get version by way of deid.version, returns a
     lookup dictionary with several global variables without
     needing to import singularity
     """

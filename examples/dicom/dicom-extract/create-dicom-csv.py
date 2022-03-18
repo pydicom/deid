@@ -9,7 +9,7 @@ from collections import OrderedDict
 
 def load_tags_in_files(tag_file_path):
     """
-    load tags_in_files reads a csv file containing dicom tags 
+    load tags_in_files reads a csv file containing dicom tags
     and creates a dictionary
 
     Args:
@@ -73,7 +73,7 @@ def get_tags_in_files(dicom_path, tag_file_path):
 def directory_to_csv(dicom_path, csv_file_path, tags_in_files, tags_to_exclude):
     """
     directory_to_csv iterates over a directory, finds dicom files with
-    a .dcm extension and then creates a spreadsheet containing all of 
+    a .dcm extension and then creates a spreadsheet containing all of
     the tag values for the tags in the csv for every dicom file
 
     Args:
@@ -133,10 +133,10 @@ def directory_to_csv(dicom_path, csv_file_path, tags_in_files, tags_to_exclude):
 
 if __name__ == "__main__":
     """
-    Need an easy way to for a person to validate their deidentification worked. 
+    Need an easy way to for a person to validate their deidentification worked.
     This example 1st scans a directory and creates a unique set of dicom tags
     across all files. It then reads the values for all tags in all files and
-    creates a csv file which can be loaded into excel or a database to review. 
+    creates a csv file which can be loaded into excel or a database to review.
     """
     osx = platform.system().lower() == "darwin"
     if osx:
