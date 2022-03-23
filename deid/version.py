@@ -1,6 +1,6 @@
 """
 
-Copyright (c) 2017-2021 Vanessa Sochat
+Copyright (c) 2017-2022 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@ SOFTWARE.
 
 """
 
-__version__ = "0.2.28"
+__version__ = "0.2.29"
 AUTHOR = "Vanessa Sochat"
 AUTHOR_EMAIL = "vsochat@stanford.edu"
 NAME = "deid"

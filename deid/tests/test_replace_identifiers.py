@@ -3,7 +3,7 @@
 """
 Test replace_identifiers
 
-Copyright (c) 2016-2021 Vanessa Sochat
+Copyright (c) 2016-2022 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -167,7 +167,7 @@ class TestDicom(unittest.TestCase):
 
     def test_jitter_replace_compounding(self):
         """RECIPE RULE
-        JITTER AcquisitonDate 1
+        JITTER AcquisitionDate 1
         REPLACE AcquisitionDate 20210330
         """
 

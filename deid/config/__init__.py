@@ -2,7 +2,7 @@
 
 DeidRecipe
 
-Copyright (c) 2017-2021 Vanessa Sochat
+Copyright (c) 2017-2022 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,8 +32,6 @@ from deid.config.utils import load_deid, get_deid, load_combined_deid
 from deid.config.standards import actions, sections, formats
 
 from deid.logger import bot
-import os
-import re
 
 
 class DeidRecipe:

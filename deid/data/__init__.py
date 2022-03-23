@@ -4,7 +4,7 @@ Simple loading functions for datasets
 
    from deid.data import get_dataset
 
-Copyright (c) 2017-2021 Vanessa Sochat
+Copyright (c) 2017-2022 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -76,7 +76,7 @@ The expression above would say:
 
 The pixels with bounding boxes (0,0,100,20) and (480,200,32,250) should be removed if:
    - the modality is CT AND
-   - the Manufacterer contains text "manufacturer1" (and ignore the case) AND
+   - the Manufacturer contains text "manufacturer1" (and ignore the case) AND
    - the Manufacturer model name text contains "modelA" (and ignore the case)
 
 
