@@ -26,19 +26,11 @@ SOFTWARE.
 import unittest
 import tempfile
 import shutil
-import json
 import os
-import numpy as np
 
 from deid.utils import get_installdir
 from deid.data import get_dataset
-from deid.dicom.parser import DicomParser
-from deid.dicom import get_identifiers, replace_identifiers
-from pydicom import read_file
-from pydicom.sequence import Sequence
 from deid.tests.common import get_file
-
-from collections import OrderedDict
 
 
 class TestFilterDetect(unittest.TestCase):

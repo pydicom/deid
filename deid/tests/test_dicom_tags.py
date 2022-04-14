@@ -25,12 +25,10 @@ SOFTWARE.
 import unittest
 import tempfile
 import shutil
-import json
 import os
 
 from deid.utils import get_installdir
 from deid.data import get_dataset
-from deid.tests.common import get_file
 
 
 class TestDicomTags(unittest.TestCase):

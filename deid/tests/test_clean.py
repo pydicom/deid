@@ -27,7 +27,6 @@ import unittest
 import tempfile
 import shutil
 import os
-import numpy as np
 
 from deid.utils import get_installdir
 from deid.data import get_dataset

@@ -45,7 +45,9 @@ def get_identifiers(
     remove_private=False,
     disable_skip=False,
 ):
-    """extract all identifiers from a dicom image.
+    """
+    Extract all identifiers from a dicom image.
+
     This function returns a lookup by file name, where each value indexed
     includes a dictionary of nested fields (indexed by nested tag).
 

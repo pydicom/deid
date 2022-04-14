@@ -84,7 +84,7 @@ class TestUtils(unittest.TestCase):
         bad_json = {"Wakkawakkawakka'}": [{True}, "2", 3]}
         tmpfile = tempfile.mkstemp()[1]
         os.remove(tmpfile)
-        with self.assertRaises(TypeError) as cm:
+        with self.assertRaises(TypeError):
             write_json(bad_json, tmpfile)
 
         print("Case 2: Providing good json")
