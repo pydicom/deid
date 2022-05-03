@@ -33,7 +33,7 @@ import re
 from deid.utils import get_installdir
 from deid.data import get_dataset
 from deid.dicom.parser import DicomParser
-from deid.tests.common import get_file, create_recipe
+from deid.tests.common import get_file, get_same_file, create_recipe
 
 uuid_regex = "[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"
 
@@ -110,6 +110,75 @@ class TestDicomFuncs(unittest.TestCase):
         # 8905e722-8103-4823-bc8f-8aed967e272d
         print(parser.dicom["ReferringPhysicianName"].value)
         assert re.search(uuid_regex, str(parser.dicom["ReferringPhysicianName"].value))
+
+    def test_pydicom_uuid(self):
+        """
+        %header
+        REPLACE ReferringPhysicianName deid_func:pydicom_uuid
+        """
+        print("Test deid_func:pydicom_uuid")
+
+        dicom_file = get_file(self.dataset)
+        actions = [
+            {
+                "action": "REPLACE",
+                "field": "ReferringPhysicianName",
+                "value": "deid_func:pydicom_uuid",
+            }
+        ]
+        recipe = create_recipe(actions)
+
+        # Create a parser, define function for it
+        parser = DicomParser(dicom_file, recipe=recipe)
+        parser.parse()
+
+        # Randomness is anything, but should be all numbers
+        print(parser.dicom["ReferringPhysicianName"].value)
+        name = str(parser.dicom["ReferringPhysicianName"].value)
+        assert re.search("([0-9]|.)+", name)
+
+        # This is the pydicom default, and we default to stable remapping
+        assert (
+            name == "2.25.39101090714049289438893821151950032074223798085258118413707"
+        )
+
+        # Add a custom prefix
+        # must match '^(0|[1-9][0-9]*)(\\.(0|[1-9][0-9]*))*\\.$'
+        actions = [
+            {
+                "action": "REPLACE",
+                "field": "ReferringPhysicianName",
+                "value": "deid_func:pydicom_uuid prefix=1.55.",
+            }
+        ]
+        recipe = create_recipe(actions)
+        parser = DicomParser(dicom_file, recipe=recipe)
+        parser.parse()
+
+        # Randomness is anything, but should be all numbers
+        print(parser.dicom["ReferringPhysicianName"].value)
+        name = str(parser.dicom["ReferringPhysicianName"].value)
+        assert name.startswith("1.55.")
+
+        # This should always be consistent if we use the original as entropy
+        dicom_file = get_same_file(self.dataset)
+        actions = [
+            {
+                "action": "REPLACE",
+                "field": "ReferringPhysicianName",
+                "value": "deid_func:pydicom_uuid stable_remapping=false",
+            }
+        ]
+        recipe = create_recipe(actions)
+        parser = DicomParser(dicom_file, recipe=recipe)
+        parser.parse()
+
+        # Randomness is anything, but should be all numbers
+        print(parser.dicom["ReferringPhysicianName"].value)
+        name = str(parser.dicom["ReferringPhysicianName"].value)
+        assert (
+            name != "2.25.39101090714049289438893821151950032074223798085258118413707"
+        )
 
     def test_suffix_uuid(self):
         """

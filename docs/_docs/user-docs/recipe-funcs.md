@@ -48,6 +48,33 @@ The only change is that we replaced `func` with `deid_func`. Deid will see this 
 is provided in its library, and grab it for use.
 
 
+## A Pydicom UUID
+
+Pydicom provides [a function to generate a UUID](https://pydicom.github.io/pydicom/dev/reference/generated/pydicom.uid.generate_uid.html)
+and for most this is likely a good approach to take. The most basic usage (for one run) is to generate a random valid
+unique identifier:
+
+```
+%header
+
+REPLACE ReferringPhysicianName deid_func:pydicom_uuid
+```
+
+The default uses `stable_remapping=true`, which means we use the original UUID as entropy
+to be able to consistently return the same value between runs. You can disable it, however
+we do not recommended it (but maybe could be appropriate for your use case).
+
+You can also optionally define a custom prefix. Note that it needs to match the 
+regular expression `^(0|[1-9][0-9]*)(\\.(0|[1-9][0-9]*))*\\.$` which (in spoken terms)
+is a number followed by a period, another number, and ending also in a period (e.g, `1.55.`).
+
+
+```
+%header
+
+REPLACE ReferringPhysicianName deid_func:pydicom_uuid prefix=1.55.
+```
+
 ## A Dicom UUID
 
 A more "formal" uuid function was added that requires an organization root. Your

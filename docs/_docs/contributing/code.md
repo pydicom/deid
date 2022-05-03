@@ -16,7 +16,7 @@ See the repository `CONTRIBUTING.md` for these same details.
 ## Contributing a Custom Function
 
 Deid ships (as of version 0.2.3) with deid-provided functions that can be used in
-header parsing. To contribute a recipe you should do the following:
+header parsing. To contribute a custom function you should do the following:
 
 
 1. Add a function to deid/dicom/actions, ideally in the appropriate file (e.g., uid functions in uuid.py, etc)

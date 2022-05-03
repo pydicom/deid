@@ -100,7 +100,16 @@ def parse_keyvalue_pairs(pairs):
         if "=" not in pair:
             continue
         key, value = pair.split("=", 1)
-        values[key.strip()] = value.strip()
+        value = value.strip()
+
+        # Ensure we convert booleans and none/null
+        if value == "true":
+            value = True
+        if value == "false":
+            value = False
+        if value in ["none", "null"]:
+            value = None
+        values[key.strip()] = value
     return values
 
 

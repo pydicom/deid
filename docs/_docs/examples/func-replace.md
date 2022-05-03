@@ -11,7 +11,7 @@ was derived based on a prompt in [this pull request](https://github.com/pydicom/
 If you are interested in the code for this example, it's available
 [here](https://github.com/pydicom/deid/tree/master/examples/dicom/header-manipulation).
 If you are interested in the functions provided by deid (and you don't want to write your
-own function) see [this documentation](https://pydicom.github.io/deid/user-docs/recipe-groups/).
+own function) see [this documentation](https://pydicom.github.io/deid/user-docs/recipe-funcs/).
 Let's get started!
 
 <a id="imports">
