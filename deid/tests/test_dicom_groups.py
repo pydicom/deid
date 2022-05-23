@@ -28,16 +28,14 @@ SOFTWARE.
 import unittest
 import tempfile
 import shutil
-import json
 import os
 
 from deid.utils import get_installdir
 from deid.data import get_dataset
-from deid.config import DeidRecipe
 from deid.dicom.fields import get_fields
 from deid.dicom import get_identifiers, replace_identifiers
 from deid.dicom.parser import DicomParser
-from deid.tests.common import get_file, get_dicom
+from deid.tests.common import get_dicom
 
 
 class TestDicomGroups(unittest.TestCase):

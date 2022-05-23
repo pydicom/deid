@@ -22,13 +22,13 @@ SOFTWARE.
 
 """
 
-__version__ = "0.2.29"
+__version__ = "0.2.3"
 AUTHOR = "Vanessa Sochat"
-AUTHOR_EMAIL = "vsochat@stanford.edu"
+AUTHOR_EMAIL = "vsoch@users.noreply.github.com"
 NAME = "deid"
 PACKAGE_URL = "https://github.com/pydicom/deid"
 KEYWORDS = "open source, python, anonymize, dicom"
-DESCRIPTION = "deidentify dicom and other images with python and pydicom"
+DESCRIPTION = "best effort deidentify dicom with python and pydicom"
 LICENSE = "LICENSE"
 
 INSTALL_REQUIRES = (

@@ -28,12 +28,10 @@ SOFTWARE.
 import unittest
 import tempfile
 import shutil
-import json
 import os
 
 from deid.utils import get_installdir
 from deid.data import get_dataset
-from deid.tests.common import get_file
 
 
 class TestDicom(unittest.TestCase):
@@ -52,7 +50,6 @@ class TestDicom(unittest.TestCase):
         print("Test test_get_files")
         print("Case 1: Test get files from dataset")
         from deid.dicom import get_files
-        from deid.config import load_deid
 
         found = 0
         for dicom_file in get_files(self.dataset):
@@ -71,7 +68,6 @@ class TestDicom(unittest.TestCase):
         print("Test test_get_files_as_list")
         print("Case 1: Test get files from dataset")
         from deid.dicom import get_files
-        from deid.config import load_deid
 
         dicom_files = list(get_files(self.dataset))
         found = len(dicom_files)

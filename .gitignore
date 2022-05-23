@@ -3,6 +3,7 @@ dist
 deid.egg-info
 build
 pypi.sh
+env
 
 private
 .vscode

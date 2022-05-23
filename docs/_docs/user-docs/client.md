@@ -1,7 +1,7 @@
 ---
 title: Deid Client
 category: User Documentation
-order: 5
+order: 6
 ---
 
 After you [install deid]({{ site.baseurl }}/install/) you will notice a command line application has been placed in your bin:

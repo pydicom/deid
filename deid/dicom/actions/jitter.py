@@ -24,20 +24,37 @@ SOFTWARE.
 
 from deid.logger import bot
 from deid.utils import get_timestamp
+from deid.utils import parse_keyvalue_pairs
 
 # Timestamps
 
 
+def jitter_timestamp_func(item, value, field, **kwargs):
+    """
+    A wrapper to jitter_timestamp so it works as a custom function.
+    """
+    opts = parse_keyvalue_pairs(kwargs.get("extras"))
+
+    # Default to jitter by one day
+    value = int(opts.get("days", 1))
+
+    # The user can optionally provide years
+    if "years" in opts:
+        value = (int(opts["years"]) * 365) + value
+    return jitter_timestamp(field, value)
+
+
 def jitter_timestamp(field, value):
-    """if present, jitter a timestamp in dicom
-    field "field" by number of days specified by "value"
-    The value can be positive or negative.
+    """Jitter a timestamp "field" by number of days specified by "value"
+
+    The value can be positive or negative. This function is grandfathered
+    into deid custom funcs, as it existed before they did. Since a custom
+    func requires an item, we have a wrapper above to support this use case.
 
     Parameters
     ==========
     field: the field with the timestamp
     value: number of days to jitter by. Jitter bug!
-
     """
     if not isinstance(value, int):
         value = int(value)

@@ -52,8 +52,20 @@ def get_dicom(dataset):
     return read_file(next(dicom_files))
 
 
+def get_same_file(dataset):
+    """
+    get a consistent dicom file
+    """
+    from deid.dicom import get_files
+
+    dicom_files = list(get_files(dataset))
+    return dicom_files[0]
+
+
 def get_file(dataset):
-    """helper to get a dicom file"""
+    """
+    get a dicom file
+    """
     from deid.dicom import get_files
 
     dicom_files = get_files(dataset)

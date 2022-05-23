@@ -12,8 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: codespell-project/actions-codespell@de089481bd65b71b4d02e34ffb3566b6d189333e
-        uses: crate-ci/typos@592b36d23c62cb378f6097a292bc902ee73f93ef # version 1.0.4
+      - uses: actions/checkout@v3
+      - uses: crate-ci/typos@592b36d23c62cb378f6097a292bc902ee73f93ef # version 1.0.4
         with: 
           files: ./deid ./docs/_docs ./docs/README.md ./docs/pages ./examples

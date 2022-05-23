@@ -30,7 +30,6 @@ SOFTWARE.
 import unittest
 import tempfile
 import shutil
-import json
 import os
 
 from deid.utils import get_installdir

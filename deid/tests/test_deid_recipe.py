@@ -28,7 +28,6 @@ SOFTWARE.
 import unittest
 import tempfile
 import shutil
-import json
 import os
 
 from deid.config import DeidRecipe
