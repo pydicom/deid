@@ -237,7 +237,7 @@ def expand_field_expression(field, dicom, contenders=None):
     return fields
 
 
-def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
+def get_fields(dicom, skip=None, expand_sequences=True, seen=None, from_file=True):
     """Expand all dicom fields into a list.
 
     Each entry is a DicomField. If we find a sequence, we unwrap it and
@@ -250,8 +250,9 @@ def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
     if not isinstance(skip, list):
         skip = [skip]
 
-    # Retrieve both dicom and file meta fields
-    datasets = [dicom, dicom.file_meta]
+    # Retrieve both dicom and file meta fields if dicom came from a file
+    datasets = [dicom, dicom.file_meta] if from_file else [dicom]
+
 
     def add_element(element, name, uid, is_filemeta):
         """
