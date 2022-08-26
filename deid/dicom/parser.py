@@ -57,16 +57,16 @@ class DicomParser:
     """
 
     def __init__(
-        self, dicom_file, recipe=None, config=None, force=True, disable_skip=False):
-        """Create new instance of DicomParser
+        self, dicom_file, recipe=None, config=None, force=True, disable_skip=False
+    ):
+        """
+        Create new instance of DicomParser
 
         :param dicom_file: Path to a dicom file or instance of a pydicom.Dataset
         :param recipe: a deid recipe, defaults to None
         :param config: deid config, defaults to None
         :param force: ignore errors when reading a dicom file, defaults to True
         :param disable_skip: _description_, defaults to False
-        :param from_file: the dicom_file comes from an actual file, defaults to True. 
-          If set to False, some operations that extract file details are skipped.
         """
 
         # Lookup for the dicom
@@ -120,7 +120,7 @@ class DicomParser:
             self.dicom = read_file(dicom_file, force=force)
 
         # Set class variables that might be helpful later
-        if self.dicom.get('filename', None) is not None:
+        if self.dicom.get("filename", None) is not None:
             self.dicom_file = self.dicom.filename
             self.dicom_name = os.path.basename(self.dicom_file)
 
@@ -311,7 +311,7 @@ class DicomParser:
                 dicom=self.dicom,
                 expand_sequences=expand_sequences,
                 seen=self.seen,
-                skip=self.skip
+                skip=self.skip,
             )
         return self.fields
 

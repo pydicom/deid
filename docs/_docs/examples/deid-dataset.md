@@ -1,7 +1,7 @@
 ---
 title: Deidentify a Pydicom Dataset
 category: Examples
-order: 3
+order: 6
 ---
 
 In this example we will create a custom class to deidentify a single instance of a `pydicom.Dataset` with a custom recipe.
