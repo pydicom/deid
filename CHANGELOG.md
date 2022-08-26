@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+ - custom class example for using dicom.Dataset, not requiring on client init [#211](https://github.com/pydicom/deid/pull/211) (0.2.31)
  - adding support for deid provided functions [#207](https://github.com/pydicom/deid/issues/207) (0.2.3)
  - update CTP deid.dicom up until [this commit](https://github.com/johnperry/CTP/commit/345b05b157c046532e8791a63ababbf6d0dba59b) (0.2.29)
  - various LGTM alert fixes [#186](https://github.com/pydicom/deid/pull/186) (0.0.28)
