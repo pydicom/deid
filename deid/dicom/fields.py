@@ -250,8 +250,8 @@ def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
     if not isinstance(skip, list):
         skip = [skip]
 
-    # Retrieve both dicom and file meta fields
-    datasets = [dicom, dicom.file_meta]
+    # Retrieve both dicom and file meta fields if dicom came from a file
+    datasets = [d for d in [dicom, dicom.get("file_meta")] if d]
 
     def add_element(element, name, uid, is_filemeta):
         """
