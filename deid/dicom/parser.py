@@ -57,8 +57,7 @@ class DicomParser:
     """
 
     def __init__(
-        self, dicom_file, recipe=None, config=None, force=True, disable_skip=False, from_file=True
-    ):
+        self, dicom_file, recipe=None, config=None, force=True, disable_skip=False):
         """Create new instance of DicomParser
 
         :param dicom_file: Path to a dicom file or instance of a pydicom.Dataset
@@ -92,7 +91,6 @@ class DicomParser:
         if not isinstance(recipe, DeidRecipe):
             recipe = DeidRecipe(recipe)
 
-        self.from_file = from_file
         self.load(dicom_file, force=force)
         self.recipe = recipe
 
@@ -116,15 +114,14 @@ class DicomParser:
         if isinstance(dicom_file, Dataset):
             self.dicom = dicom_file
         else:
-
             # If we must read the file, the path must exist
             if not os.path.exists(dicom_file):
                 bot.exit("%s does not exist." % dicom_file)
             self.dicom = read_file(dicom_file, force=force)
 
         # Set class variables that might be helpful later
-        if self.from_file:
-            self.dicom_file = os.path.abspath(self.dicom.filename)
+        if self.dicom.get('filename', None) is not None:
+            self.dicom_file = self.dicom.filename
             self.dicom_name = os.path.basename(self.dicom_file)
 
     def define(self, name, value):
@@ -314,8 +311,7 @@ class DicomParser:
                 dicom=self.dicom,
                 expand_sequences=expand_sequences,
                 seen=self.seen,
-                skip=self.skip,
-                from_file=self.from_file
+                skip=self.skip
             )
         return self.fields
 

@@ -140,7 +140,7 @@ class DeidDataset:
         :param dataset: dataset that will be pseudonymized
         :returns: pseudonymized dataset
         """
-        parser = DicomParser(dataset, self.recipe, from_file=False)
+        parser = DicomParser(dataset, self.recipe)
         # register functions that are specified in the recipe
         parser.define('replace_name', self.replace_name)
         parser.define('hash_func', self.deid_hash_func)
