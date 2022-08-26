@@ -120,9 +120,9 @@ class DicomParser:
             self.dicom = read_file(dicom_file, force=force)
 
         # Set class variables that might be helpful later
-        if self.dicom.get("filename", None) is not None:
-            self.dicom_file = self.dicom.filename
-            self.dicom_name = os.path.basename(self.dicom_file)
+        df = self.dicom.get("filename")
+        self.dicom_file = None if not df else os.path.abspath(df)
+        self.dicom_name = None if not df else os.path.basename(self.dicom_file)
 
     def define(self, name, value):
         """
