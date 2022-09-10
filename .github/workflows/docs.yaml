@@ -40,4 +40,4 @@ jobs:
           git config --global pull.rebase true
           git commit -a -m "Adding changed documentation files"
           git status
-          git push origin gh-pages
+          git push origin gh-pages || echo "up to date"
