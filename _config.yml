@@ -11,9 +11,9 @@ show_full_navigation: false
 logo: /siteicon.png
 description: Documentation for Deid
 author:
-  name:
-  email: vsochat@stanford.edu
-  twitter: # twitter username without the @ symbol
+  name: Vanessa Sochat
+  email: vsochat@users.noreply.github.com
+  twitter: vsoch
 social:
   name: vsoch
   links:
