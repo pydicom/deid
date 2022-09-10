@@ -110,6 +110,7 @@ class DicomField:
         """
         return self.element.tag.group == group
 
+
 def extract_item(item, prefix=None, entry=None):
     """
     Extract values from a dicom sequence depending on the type.
