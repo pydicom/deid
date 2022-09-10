@@ -4,6 +4,7 @@ deid.egg-info
 build
 pypi.sh
 env
+_build
 
 private
 .vscode

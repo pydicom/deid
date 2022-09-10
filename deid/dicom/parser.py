@@ -1,49 +1,25 @@
-"""
-
-parser.py: class that supports dicom extraction and replacement of fields.
-
-Copyright (c) 2017-2022 Vanessa Sochat
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-"""
-
-
-from deid.logger import bot
-
-from pydicom import read_file
-from pydicom.tag import Tag
-from pydicom.dataelem import DataElement
-from pydicom.dataset import Dataset
-
-from deid.config import DeidRecipe
-from deid.config.standards import actions as valid_actions
-from deid.dicom.utils import save_dicom
-from deid.dicom.actions import jitter_timestamp, deid_funcs
-from deid.dicom.tags import remove_sequences, get_private, get_tag, add_tag
-from deid.dicom.groups import extract_values_list, extract_fields_list
-from deid.dicom.fields import get_fields, expand_field_expression, DicomField
-from deid.utils import parse_value, read_json
+__author__ = "Vanessa Sochat"
+__copyright__ = "Copyright 2016-2022, Vanessa Sochat"
+__license__ = "MIT"
 
 import os
 import re
 from copy import deepcopy
+
+from pydicom import read_file
+from pydicom.dataelem import DataElement
+from pydicom.dataset import Dataset
+from pydicom.tag import Tag
+
+from deid.config import DeidRecipe
+from deid.config.standards import actions as valid_actions
+from deid.dicom.actions import deid_funcs, jitter_timestamp
+from deid.dicom.fields import DicomField, expand_field_expression, get_fields
+from deid.dicom.groups import extract_fields_list, extract_values_list
+from deid.dicom.tags import add_tag, get_private, get_tag, remove_sequences
+from deid.dicom.utils import save_dicom
+from deid.logger import bot
+from deid.utils import parse_value, read_json
 
 here = os.path.dirname(os.path.abspath(__file__))
 
@@ -219,6 +195,7 @@ class DicomParser:
     def replace_field(self, field, value):
         """
         Replace a value in a field.
+
         This uses the same function as ADD, but likely the dicom has the value.
         """
         self.add_field(field, value)
@@ -281,7 +258,9 @@ class DicomParser:
         # The user can save, or take other action
 
     def save(self, filename, overwrite=False):
-        """After a parse action, the user can choose to save the dicom to file."""
+        """
+        Save a dicom to file.
+        """
         filename = filename or self.dicom_file
         ds = save_dicom(
             dicom=self.dicom,
@@ -316,7 +295,10 @@ class DicomParser:
         return self.fields
 
     def find_by_values(self, values):
-        """Given a list of values, find fields in the dicom that contain any
+        """
+        Find fields by values.
+
+        Given a list of values, find fields in the dicom that contain any
         of those values, as determined by a regular expression search.
         """
         # Values must be strings
@@ -336,7 +318,10 @@ class DicomParser:
         return fields
 
     def find_by_name(self, name):
-        """Given a string, find all field objects that contain the name.
+        """
+        Find fields by name.
+
+        Given a string, find all field objects that contain the name.
         Name can correspond to:
          - a string of the tag, with or without the parens and comma/space
          - a keyword

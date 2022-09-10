@@ -1,13 +1,12 @@
 from setuptools import setup, find_packages
 import os
 
-################################################################################
-# HELPER FUNCTIONS #############################################################
-################################################################################
-
 
 def get_lookup():
-    """get version by way of deid.version, returns a 
+    """
+    Get version lookup
+
+    get version by way of deid.version, returns a
     lookup dictionary with several global variables without
     needing to import singularity
     """
@@ -20,8 +19,12 @@ def get_lookup():
 
 # Read in requirements
 def get_requirements(lookup=None):
-    """get_requirements reads in requirements and versions from
-    the lookup obtained with get_lookup"""
+    """
+    Get install requirements.
+
+    get_requirements reads in requirements and versions from
+    the lookup obtained with get_lookup
+    """
 
     if lookup is None:
         lookup = get_lookup()

@@ -1,27 +1,9 @@
+__author__ = "Vanessa Sochat"
+__copyright__ = "Copyright 2016-2022, Vanessa Sochat"
+__license__ = "MIT"
+
 """
-
 logger/message.py: Python logger base
-
-Copyright (c) 2016-2022 Vanessa Sochat
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
 """
 
 import os
@@ -73,7 +55,10 @@ class DeidMessage:
     # Colors --------------------------------------------
 
     def useColor(self):
-        """useColor will determine if color should be added
+        """
+        Determine if we should add color to a print.
+
+        useColor will determine if color should be added
         to a print. Will check if being run in a terminal, and
         if has support for asci
         """
@@ -89,7 +74,10 @@ class DeidMessage:
         return True
 
     def addColor(self, level, text):
-        """addColor to the prompt (usually prefix) if terminal
+        """
+        Add color to the prompt.
+
+        addColor to the prompt (usually prefix) if terminal
         supports, and specified to do so
         """
         if self.colorize:
@@ -98,8 +86,10 @@ class DeidMessage:
         return text
 
     def emitError(self, level):
-        """determine if a level should print to
-        stderr, includes all levels but INFO and QUIET
+        """
+        Determine if we should emit an error message to stderr.
+
+        This includes all levels but INFO and QUIET
         """
         if level in [
             ABORT,
@@ -115,21 +105,26 @@ class DeidMessage:
         return False
 
     def emitOutput(self, level):
-        """determine if a level should print to stdout
-        only includes INFO
+        """
+        Determine if a level should print to stdout.
         """
         if level in [LOG, INFO, CUSTOM]:
             return True
         return False
 
     def isEnabledFor(self, messageLevel):
-        """check if a messageLevel is enabled to emit a level"""
+        """
+        Check if a messageLevel is enabled to emit a level
+        """
         if messageLevel <= self.level:
             return True
         return False
 
     def emit(self, level, message, prefix=None, color=None):
-        """emit is the main function to print the message
+        """
+        Emit a message.
+
+        Emit is the main function to print the message
         optionally with a prefix
 
         Parameters
@@ -168,16 +163,16 @@ class DeidMessage:
         self.history.append(message)
 
     def write(self, stream, message):
-        """write will write a message to a stream,
-        first checking the encoding
+        """
+        Write a message to a stream.
         """
         if isinstance(message, bytes):
             message = message.decode("utf-8")
         stream.write(message)
 
     def get_logs(self, join_newline=True):
-        """'get_logs will return the complete history, joined by newline
-        (default) or as is.
+        """
+        Return the complete logging history.
         """
         if join_newline:
             return "\n".join(self.history)
@@ -194,7 +189,8 @@ class DeidMessage:
         suffix=None,
         symbol=None,
     ):
-        """create a terminal progress bar, default bar shows for verbose+
+        """
+        Create a terminal progress bar.
         :param iteration: current iteration (Int)
         :param total: total iterations (Int)
         :param length: character length of bar (Int)
@@ -285,7 +281,10 @@ class DeidMessage:
     # Terminal ------------------------------------------
 
     def table(self, rows, col_width=2):
-        """table will print a table of entries. If the rows is
+        """
+        Print a table of entries.
+
+        Table will print a table of entries. If the rows is
         a dictionary, the keys are interpreted as column names. if
         not, a numbered list is used.
         """
@@ -303,7 +302,10 @@ class DeidMessage:
 
 
 def get_logging_level():
-    """get_logging_level will configure a logging to standard out based on the user's
+    """
+    Get the logging level.
+
+    get_logging_level will configure a logging to standard out based on the user's
     selected level, which should be in an environment variable called
     MESSAGELEVEL. if MESSAGELEVEL is not set, the maximum level
     (5) is assumed (all messages).
@@ -346,7 +348,10 @@ def get_user_color_preference():
 
 
 def convert2boolean(arg):
-    """convert2boolean is used for environmental variables that must be
+    """
+    Convert envars to boolean.
+
+    convert2boolean is used for environmental variables that must be
     returned as boolean
     """
     if not isinstance(arg, bool):
