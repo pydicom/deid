@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deid.dicom.pixels.detect &mdash; deid 0.2.31 documentation</title><link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/sphinx-argparse.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/theme.css" type="text/css" /><link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> deid<img src="../../../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.2.31
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/deid.config.html">deid.config package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.config.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.config.html#module-deid.config.standards">deid.config.standards module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.config.html#module-deid.config.utils">deid.config.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.config.html#module-deid.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/deid.data.html">deid.data package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.data.html#module-deid.data">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/deid.dicom.actions.html">deid.dicom.actions package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.actions.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.actions.html#module-deid.dicom.actions.jitter">deid.dicom.actions.jitter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.actions.html#module-deid.dicom.actions.uids">deid.dicom.actions.uids module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.actions.html#module-deid.dicom.actions">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/deid.dicom.pixels.html">deid.dicom.pixels package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.pixels.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.pixels.html#module-deid.dicom.pixels.clean">deid.dicom.pixels.clean module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.pixels.html#module-deid.dicom.pixels.detect">deid.dicom.pixels.detect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.pixels.html#module-deid.dicom.pixels">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/deid.dicom.html">deid.dicom package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../source/deid.dicom.actions.html">deid.dicom.actions package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../source/deid.dicom.pixels.html">deid.dicom.pixels package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#module-deid.dicom.fields">deid.dicom.fields module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#module-deid.dicom.filter">deid.dicom.filter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#module-deid.dicom.groups">deid.dicom.groups module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#module-deid.dicom.header">deid.dicom.header module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#module-deid.dicom.parser">deid.dicom.parser module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#module-deid.dicom.tags">deid.dicom.tags module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#module-deid.dicom.utils">deid.dicom.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#module-deid.dicom.validate">deid.dicom.validate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#module-deid.dicom">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/deid.logger.html">deid.logger package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.logger.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.logger.html#module-deid.logger.message">deid.logger.message module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.logger.html#module-deid.logger.progress">deid.logger.progress module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../source/deid.logger.html#clint-textui-progress">clint.textui.progress</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.logger.html#module-deid.logger">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/deid.main.html">deid.main package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.main.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.main.html#module-deid.main.identifiers">deid.main.identifiers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.main.html#module-deid.main.inspect">deid.main.inspect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.main.html#module-deid.main">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/deid.utils.html">deid.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.utils.html#module-deid.utils.actions">deid.utils.actions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.utils.html#module-deid.utils.fileio">deid.utils.fileio module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.utils.html#module-deid.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">deid</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>deid.dicom.pixels.detect</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for deid.dicom.pixels.detect</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Vanessa Sochat&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright 2016-2022, Vanessa Sochat&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">detect.py: functions for pixel scrubbing</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">pydicom</span> <span class="kn">import</span> <span class="n">read_file</span>
+<span class="kn">from</span> <span class="nn">pydicom.sequence</span> <span class="kn">import</span> <span class="n">Sequence</span>
+
+<span class="kn">from</span> <span class="nn">deid.config</span> <span class="kn">import</span> <span class="n">DeidRecipe</span>
+<span class="kn">from</span> <span class="nn">deid.dicom.filter</span> <span class="kn">import</span> <span class="n">apply_filter</span>
+<span class="kn">from</span> <span class="nn">deid.logger</span> <span class="kn">import</span> <span class="n">bot</span>
+
+
+<div class="viewcode-block" id="has_burned_pixels"><a class="viewcode-back" href="../../../../source/deid.dicom.pixels.html#deid.dicom.pixels.detect.has_burned_pixels">[docs]</a><span class="k">def</span> <span class="nf">has_burned_pixels</span><span class="p">(</span><span class="n">dicom_files</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">deid</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;has burned pixels is an entrypoint for has_burned_pixels_multi (for</span>
+<span class="sd">    multiple images) or has_burned_pixels_single (for one detailed repor)</span>
+<span class="sd">    We will use the MIRCTP criteria (see ref folder with the</span>
+<span class="sd">    original scripts used by CTP) to determine if an image is likely to have</span>
+<span class="sd">    PHI, based on fields in the header alone. This script does NOT perform</span>
+<span class="sd">    pixel cleaning, but returns a dictionary of results (for multi) or one</span>
+<span class="sd">    detailed result (for single)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># if the user has provided a custom deid, load it</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">deid</span><span class="p">,</span> <span class="n">DeidRecipe</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">deid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">deid</span> <span class="o">=</span> <span class="s2">&quot;dicom&quot;</span>
+        <span class="n">deid</span> <span class="o">=</span> <span class="n">DeidRecipe</span><span class="p">(</span><span class="n">deid</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dicom_files</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_has_burned_pixels_multi</span><span class="p">(</span><span class="n">dicom_files</span><span class="p">,</span> <span class="n">force</span><span class="p">,</span> <span class="n">deid</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_has_burned_pixels_single</span><span class="p">(</span><span class="n">dicom_files</span><span class="p">,</span> <span class="n">force</span><span class="p">,</span> <span class="n">deid</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_has_burned_pixels_multi</span><span class="p">(</span><span class="n">dicom_files</span><span class="p">,</span> <span class="n">force</span><span class="p">,</span> <span class="n">deid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;return a summary dictionary with lists of clean, and then lookups</span>
+<span class="sd">    for flagged images with reasons. The deid should be a deid recipe</span>
+<span class="sd">    instantiated from deid.config.DeidRecipe. This function should not</span>
+<span class="sd">    be called directly, but should be called from has_burned_pixels</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Store decisions in lookup based on filter groups</span>
+    <span class="n">decision</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;clean&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;flagged&quot;</span><span class="p">:</span> <span class="p">{}}</span>
+
+    <span class="k">for</span> <span class="n">dicom_file</span> <span class="ow">in</span> <span class="n">dicom_files</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_has_burned_pixels_single</span><span class="p">(</span>
+            <span class="n">dicom_file</span><span class="o">=</span><span class="n">dicom_file</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">deid</span><span class="o">=</span><span class="n">deid</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;flagged&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="c1"># In this case, group is None</span>
+            <span class="n">decision</span><span class="p">[</span><span class="s2">&quot;clean&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dicom_file</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">decision</span><span class="p">[</span><span class="s2">&quot;flagged&quot;</span><span class="p">][</span><span class="n">dicom_file</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+
+    <span class="k">return</span> <span class="n">decision</span>
+
+
+<span class="k">def</span> <span class="nf">_has_burned_pixels_single</span><span class="p">(</span><span class="n">dicom_file</span><span class="p">,</span> <span class="n">force</span><span class="p">,</span> <span class="n">deid</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;has burned pixels single will evaluate one dicom file for burned in</span>
+<span class="sd">    pixels based on &#39;filter&#39; criteria in a deid. If deid is not provided,</span>
+<span class="sd">    will use application default. The method proceeds as follows:</span>
+
+<span class="sd">    1. deid is loaded, with criteria groups ordered from specific --&gt; general</span>
+<span class="sd">    2. image is run down the criteria, stops when hits and reports FLAG</span>
+<span class="sd">    3. passing through the entire list gives status of pass</span>
+
+<span class="sd">    The default deid has a greylist, whitelist, then blacklist</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    =========</span>
+<span class="sd">    dicom_file: the fullpath to the file to evaluate</span>
+<span class="sd">    force: force reading of a potentially erroneous file</span>
+<span class="sd">    deid: the full path to a deid specification. if not defined, only default used</span>
+
+<span class="sd">    deid[&#39;filter&#39;][&#39;dangerouscookie&#39;] &lt;-- filter list &quot;dangerouscookie&quot;</span>
+
+<span class="sd">    --&gt; This is what an item in the criteria looks like</span>
+<span class="sd">         [{&#39;coordinates&#39;: [&#39;0,0,512,110&#39;],</span>
+<span class="sd">           &#39;filters&#39;: [{&#39;InnerOperators&#39;: [],</span>
+<span class="sd">           &#39;action&#39;: [&#39;notequals&#39;],</span>
+<span class="sd">           &#39;field&#39;: [&#39;OperatorsName&#39;],</span>
+<span class="sd">           &#39;operator&#39;: &#39;and&#39;,</span>
+<span class="sd">           &#39;value&#39;: [&#39;bold bread&#39;]}],</span>
+<span class="sd">         &#39;name&#39;: &#39;criteria for dangerous cookie&#39;}]</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    =======</span>
+<span class="sd">    --&gt; This is what a clean image looks like:</span>
+<span class="sd">        {&#39;flagged&#39;: False, &#39;results&#39;: []}</span>
+
+<span class="sd">    --&gt; This is what a flagged image looks like:</span>
+<span class="sd">       {&#39;flagged&#39;: True,</span>
+<span class="sd">        &#39;results&#39;: [</span>
+<span class="sd">               {&#39;reason&#39;: &#39; ImageType missing  or ImageType empty &#39;,</span>
+<span class="sd">                &#39;group&#39;: &#39;blacklist&#39;,</span>
+<span class="sd">                &#39;coordinates&#39;: []}</span>
+<span class="sd">            ]</span>
+<span class="sd">        }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dicom</span> <span class="o">=</span> <span class="n">read_file</span><span class="p">(</span><span class="n">dicom_file</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
+
+    <span class="c1"># Return list with lookup as dicom_file</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">global_flagged</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># Load criteria (actions) for flagging</span>
+    <span class="n">filters</span> <span class="o">=</span> <span class="n">deid</span><span class="o">.</span><span class="n">get_filters</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">filters</span><span class="p">:</span>
+        <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Deid provided does not have </span><span class="si">%f</span><span class="s2">ilter.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;flagged&quot;</span><span class="p">:</span> <span class="n">global_flagged</span><span class="p">,</span> <span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="n">results</span><span class="p">}</span>
+
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">items</span> <span class="ow">in</span> <span class="n">filters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+            <span class="n">flags</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="n">descriptions</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># description for each group across items</span>
+
+            <span class="c1"># If there aren&#39;t any filters but we have coordinates, assume True</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;filters&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;coordinates&quot;</span><span class="p">):</span>
+                <span class="n">group_flags</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span>
+                <span class="n">group_descriptions</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)]</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">group_flags</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># evaluation for a single line</span>
+                <span class="n">group_descriptions</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;filters&quot;</span><span class="p">]:</span>
+
+                    <span class="c1"># You cannot pop from the list</span>
+                    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">])):</span>
+
+                        <span class="n">action</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;action&quot;</span><span class="p">][</span><span class="n">a</span><span class="p">]</span>
+                        <span class="n">field</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;field&quot;</span><span class="p">][</span><span class="n">a</span><span class="p">]</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">a</span><span class="p">:</span>
+                            <span class="n">value</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="n">a</span><span class="p">]</span>
+
+                        <span class="n">flag</span> <span class="o">=</span> <span class="n">apply_filter</span><span class="p">(</span>
+                            <span class="n">dicom</span><span class="o">=</span><span class="n">dicom</span><span class="p">,</span>
+                            <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span>
+                            <span class="n">filter_name</span><span class="o">=</span><span class="n">action</span><span class="p">,</span>
+                            <span class="n">value</span><span class="o">=</span><span class="n">value</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="n">group_flags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+                        <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="s2">&quot;InnerOperators&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">a</span><span class="p">:</span>
+                            <span class="n">inner_operator</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;InnerOperators&quot;</span><span class="p">][</span><span class="n">a</span><span class="p">]</span>
+                            <span class="n">group_flags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inner_operator</span><span class="p">)</span>
+                            <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">inner_operator</span><span class="p">)</span>
+
+                        <span class="n">group_descriptions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+
+            <span class="c1"># At the end of a group, evaluate the inner group</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="n">evaluate_group</span><span class="p">(</span><span class="n">group_flags</span><span class="p">)</span>
+
+            <span class="c1"># &quot;Operator&quot; is relevant for the outcome of the list of actions</span>
+            <span class="n">operator</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">if</span> <span class="s2">&quot;operator&quot;</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;operator&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">operator</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;operator&quot;</span><span class="p">]</span>
+                    <span class="n">flags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operator</span><span class="p">)</span>
+
+            <span class="n">flags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+            <span class="n">reason</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">operator</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">group_descriptions</span><span class="p">)))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span>
+            <span class="p">)</span>
+            <span class="n">descriptions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reason</span><span class="p">)</span>
+
+            <span class="c1"># When we parse through a group, we evaluate based on all flags</span>
+            <span class="n">flagged</span> <span class="o">=</span> <span class="n">evaluate_group</span><span class="p">(</span><span class="n">flags</span><span class="o">=</span><span class="n">flags</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">flagged</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">global_flagged</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">reason</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">descriptions</span><span class="p">)</span>
+
+                <span class="c1"># Each coordinate is a list with [value, [coordinate]]</span>
+                <span class="c1"># and if from: in the coordinate value, it indicates we get</span>
+                <span class="c1"># the coordinate from some field (done here)</span>
+                <span class="k">for</span> <span class="n">coordset</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="s2">&quot;from:&quot;</span> <span class="ow">in</span> <span class="n">coordset</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="n">coordset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">extract_coordinates</span><span class="p">(</span><span class="n">dicom</span><span class="p">,</span> <span class="n">coordset</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+                <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="n">reason</span><span class="p">,</span>
+                    <span class="s2">&quot;group&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                    <span class="s2">&quot;coordinates&quot;</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">],</span>
+                <span class="p">}</span>
+
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;flagged&quot;</span><span class="p">:</span> <span class="n">global_flagged</span><span class="p">,</span> <span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="n">results</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">results</span>
+
+
+<div class="viewcode-block" id="evaluate_group"><a class="viewcode-back" href="../../../../source/deid.dicom.pixels.html#deid.dicom.pixels.detect.evaluate_group">[docs]</a><span class="k">def</span> <span class="nf">evaluate_group</span><span class="p">(</span><span class="n">flags</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;evaluate group will take a list of flags (eg:</span>
+
+<span class="sd">     [True, and, False, or, True]</span>
+
+<span class="sd">    And read through the logic to determine if the image result</span>
+<span class="sd">    is to be flagged. This is how we combine a set of criteria in</span>
+<span class="sd">    a group to come to a final decision.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">flagged</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">first_entry</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># If it starts with and and/or, remove it</span>
+    <span class="k">if</span> <span class="n">flags</span> <span class="ow">and</span> <span class="n">flags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;and&quot;</span><span class="p">,</span> <span class="s2">&quot;or&quot;</span><span class="p">]:</span>
+        <span class="n">flags</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">flags</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">flag</span> <span class="o">=</span> <span class="n">flags</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="s2">&quot;and&quot;</span><span class="p">:</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="n">flags</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">flagged</span> <span class="o">=</span> <span class="n">flag</span> <span class="ow">and</span> <span class="n">flagged</span>
+        <span class="k">elif</span> <span class="n">flag</span> <span class="o">==</span> <span class="s2">&quot;or&quot;</span><span class="p">:</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="n">flags</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">flagged</span> <span class="o">=</span> <span class="n">flag</span> <span class="ow">or</span> <span class="n">flagged</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If it&#39;s the first entry</span>
+            <span class="k">if</span> <span class="n">first_entry</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">flagged</span> <span class="o">=</span> <span class="n">flag</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flagged</span> <span class="o">=</span> <span class="n">flagged</span> <span class="ow">and</span> <span class="n">flag</span>
+        <span class="n">first_entry</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="n">flagged</span></div>
+
+
+<div class="viewcode-block" id="extract_coordinates"><a class="viewcode-back" href="../../../../source/deid.dicom.pixels.html#deid.dicom.pixels.detect.extract_coordinates">[docs]</a><span class="k">def</span> <span class="nf">extract_coordinates</span><span class="p">(</span><span class="n">dicom</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Given a field that is provided for a dicom, extract coordinates&quot;&quot;&quot;</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;from:&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">coordinates</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dicom</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">coordinates</span>
+
+    <span class="n">regions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">region</span> <span class="o">=</span> <span class="n">dicom</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+    <span class="c1"># First put list of attributes together</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">region</span><span class="p">:</span>
+            <span class="n">regions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">regions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
+
+    <span class="c1"># Now extract coordinates</span>
+    <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">regions</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="s2">&quot;RegionLocationMinX0&quot;</span> <span class="ow">in</span> <span class="n">region</span>
+            <span class="ow">and</span> <span class="s2">&quot;RegionLocationMinY0&quot;</span> <span class="ow">in</span> <span class="n">region</span>
+            <span class="ow">and</span> <span class="s2">&quot;RegionLocationMaxX1&quot;</span> <span class="ow">in</span> <span class="n">region</span>
+            <span class="ow">and</span> <span class="s2">&quot;RegionLocationMaxY1&quot;</span> <span class="ow">in</span> <span class="n">region</span>
+        <span class="p">):</span>
+
+            <span class="c1"># https://gist.github.com/vsoch/df6957be12c34e62b21000603f1687e5</span>
+            <span class="c1"># minr, minc, maxr, maxc = coordinate</span>
+            <span class="c1"># self.cleaned[minc:maxc, minr:maxr] = 0  # should fill with black</span>
+            <span class="c1"># self.cleaned[A:B, C:D]</span>
+            <span class="c1"># image[A:B,C:D]</span>
+            <span class="c1"># A: refers to ymin</span>
+            <span class="c1"># B: refers to ymax</span>
+            <span class="c1"># C: refers xmin</span>
+            <span class="c1"># D: refers to xmax</span>
+            <span class="c1"># self.cleaned[ymin:ymax, xmin:xmax]</span>
+            <span class="c1"># coordinate must be [xmin, ymin, xmax, ymax]</span>
+            <span class="c1"># x0,y0,x1,y1.</span>
+            <span class="n">coordinates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">,</span><span class="si">%s</span><span class="s2">,</span><span class="si">%s</span><span class="s2">,</span><span class="si">%s</span><span class="s2">&quot;</span>
+                <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">region</span><span class="o">.</span><span class="n">RegionLocationMinX0</span><span class="p">,</span>
+                    <span class="n">region</span><span class="o">.</span><span class="n">RegionLocationMinY0</span><span class="p">,</span>
+                    <span class="n">region</span><span class="o">.</span><span class="n">RegionLocationMaxX1</span><span class="p">,</span>
+                    <span class="n">region</span><span class="o">.</span><span class="n">RegionLocationMaxY1</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+    <span class="k">return</span> <span class="n">coordinates</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2022, Vanessa Sochat.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

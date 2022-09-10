@@ -1,5 +1,0 @@
-FORMAT dicom
-
-%header
-
-REPLACE InstanceCreationDate func:generate_date

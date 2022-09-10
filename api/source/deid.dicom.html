@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deid.dicom package &mdash; deid 0.2.31 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-argparse.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme.css" type="text/css" /><link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="deid.logger package" href="deid.logger.html" />
+    <link rel="prev" title="deid.dicom.pixels package" href="deid.dicom.pixels.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> deid<img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.2.31
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="deid.config.html">deid.config package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.config.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.config.html#module-deid.config.standards">deid.config.standards module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.config.html#module-deid.config.utils">deid.config.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.config.html#module-deid.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.data.html">deid.data package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.data.html#module-deid.data">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.dicom.actions.html">deid.dicom.actions package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.actions.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.actions.html#module-deid.dicom.actions.jitter">deid.dicom.actions.jitter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.actions.html#module-deid.dicom.actions.uids">deid.dicom.actions.uids module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.actions.html#module-deid.dicom.actions">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.dicom.pixels.html">deid.dicom.pixels package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.pixels.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.pixels.html#module-deid.dicom.pixels.clean">deid.dicom.pixels.clean module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.pixels.html#module-deid.dicom.pixels.detect">deid.dicom.pixels.detect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.pixels.html#module-deid.dicom.pixels">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">deid.dicom package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deid.dicom.actions.html">deid.dicom.actions package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deid.dicom.pixels.html">deid.dicom.pixels package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-deid.dicom.fields">deid.dicom.fields module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-deid.dicom.filter">deid.dicom.filter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-deid.dicom.groups">deid.dicom.groups module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-deid.dicom.header">deid.dicom.header module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-deid.dicom.parser">deid.dicom.parser module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-deid.dicom.tags">deid.dicom.tags module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-deid.dicom.utils">deid.dicom.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-deid.dicom.validate">deid.dicom.validate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-deid.dicom">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.logger.html">deid.logger package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.logger.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.logger.html#module-deid.logger.message">deid.logger.message module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.logger.html#module-deid.logger.progress">deid.logger.progress module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deid.logger.html#clint-textui-progress">clint.textui.progress</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deid.logger.html#module-deid.logger">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.main.html">deid.main package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.main.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.main.html#module-deid.main.identifiers">deid.main.identifiers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.main.html#module-deid.main.inspect">deid.main.inspect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.main.html#module-deid.main">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.utils.html">deid.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.utils.html#module-deid.utils.actions">deid.utils.actions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.utils.html#module-deid.utils.fileio">deid.utils.fileio module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.utils.html#module-deid.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">deid</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>deid.dicom package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/source/deid.dicom.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="deid-dicom-package">
+<h1>deid.dicom package<a class="headerlink" href="#deid-dicom-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deid.dicom.actions.html">deid.dicom.actions package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.actions.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.actions.html#module-deid.dicom.actions.jitter">deid.dicom.actions.jitter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.actions.html#module-deid.dicom.actions.uids">deid.dicom.actions.uids module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.actions.html#module-deid.dicom.actions">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.dicom.pixels.html">deid.dicom.pixels package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.pixels.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.pixels.html#module-deid.dicom.pixels.clean">deid.dicom.pixels.clean module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.pixels.html#module-deid.dicom.pixels.detect">deid.dicom.pixels.detect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.pixels.html#module-deid.dicom.pixels">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-deid.dicom.fields">
+<span id="deid-dicom-fields-module"></span><h2>deid.dicom.fields module<a class="headerlink" href="#module-deid.dicom.fields" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="deid.dicom.fields.DicomField">
+<em class="property"><span class="pre">class</span> </em><code class="descclassname"><span class="pre">deid.dicom.fields.</span></code><code class="descname"><span class="pre">DicomField</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">element</span></span></em>, <em><span class="n"><span class="pre">name</span></span></em>, <em><span class="n"><span class="pre">uid</span></span></em>, <em><span class="n"><span class="pre">is_filemeta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/fields.html#DicomField"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.fields.DicomField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A dicom field.</p>
+<p>A dicom field holds the element, and a string that represents the entire
+nested structure (e.g., SequenceName__CodeValue).</p>
+<dl class="py method">
+<dt id="deid.dicom.fields.DicomField.name_contains">
+<code class="descname"><span class="pre">name_contains</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">expression</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/fields.html#DicomField.name_contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.fields.DicomField.name_contains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if a name contains a pattern or expression.</p>
+<p>Use re to search a field for a regular expression, meaning
+the name, the keyword (nested) or the string tag.</p>
+<p>name.lower: includes nested keywords (e.g., Sequence_Child)
+self.tag: is the string version of the tag
+self.element.name: is the human friendly name “Sequence Child”
+self.element.keyword: is the name without nesting “Child”</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.fields.DicomField.stripped_tag">
+<em class="property"><span class="pre">property</span> </em><code class="descname"><span class="pre">stripped_tag</span></code><a class="headerlink" href="#deid.dicom.fields.DicomField.stripped_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the stripped element tag</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.fields.DicomField.tag">
+<em class="property"><span class="pre">property</span> </em><code class="descname"><span class="pre">tag</span></code><a class="headerlink" href="#deid.dicom.fields.DicomField.tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a string of the element tag.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.fields.DicomField.value_contains">
+<code class="descname"><span class="pre">value_contains</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">expression</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/fields.html#DicomField.value_contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.fields.DicomField.value_contains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use re to search a field value for a regular expression</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.fields.expand_field_expression">
+<code class="descclassname"><span class="pre">deid.dicom.fields.</span></code><code class="descname"><span class="pre">expand_field_expression</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">field</span></span></em>, <em><span class="n"><span class="pre">dicom</span></span></em>, <em><span class="n"><span class="pre">contenders</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/fields.html#expand_field_expression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.fields.expand_field_expression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of fields based on an expression.</p>
+<p>If no expression found, return single field. Options for fields include:</p>
+<p>endswith: filter to fields that end with the expression
+startswith: filter to fields that start with the expression
+contains: filter to fields that contain the expression
+allfields: include all fields
+exceptfields: filter to all fields except those listed ( | separated)</p>
+<p>Returns: a list of DicomField objects</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.fields.extract_item">
+<code class="descclassname"><span class="pre">deid.dicom.fields.</span></code><code class="descname"><span class="pre">extract_item</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">item</span></span></em>, <em><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">entry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/fields.html#extract_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.fields.extract_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract values from a dicom sequence depending on the type.</p>
+<p>A helper function to extract sequence, will extract values from
+a dicom sequence depending on the type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> (<em>an item from a sequence.</em>) – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.fields.extract_sequence">
+<code class="descclassname"><span class="pre">deid.dicom.fields.</span></code><code class="descname"><span class="pre">extract_sequence</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">sequence</span></span></em>, <em><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/fields.html#extract_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.fields.extract_sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract a sequence recursively.</p>
+<p>return a pydicom.sequence.Sequence recursively
+as a flattened list of items. For example, a nested FieldA and FieldB
+would return as:</p>
+<p>{‘FieldA__FieldB’: ‘111111’}</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sequence</strong> (<em>the sequence to extract</em><em>, </em><em>should be pydicom.sequence.Sequence</em>) – </li>
+<li><strong>prefix</strong> (<em>the parent name</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.fields.get_fields">
+<code class="descclassname"><span class="pre">deid.dicom.fields.</span></code><code class="descname"><span class="pre">get_fields</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">dicom</span></span></em>, <em><span class="n"><span class="pre">skip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">expand_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em><span class="n"><span class="pre">seen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/fields.html#get_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.fields.get_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expand all dicom fields into a list.</p>
+<p>Each entry is a DicomField. If we find a sequence, we unwrap it and
+represent the location with the name (e.g., Sequence__Child)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-deid.dicom.filter">
+<span id="deid-dicom-filter-module"></span><h2>deid.dicom.filter module<a class="headerlink" href="#module-deid.dicom.filter" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="deid.dicom.filter.apply_filter">
+<code class="descclassname"><span class="pre">deid.dicom.filter.</span></code><code class="descname"><span class="pre">apply_filter</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">dicom</span></span></em>, <em><span class="n"><span class="pre">field</span></span></em>, <em><span class="n"><span class="pre">filter_name</span></span></em>, <em><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/filter.html#apply_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.filter.apply_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>essentially a switch statement to apply a filter to a dicom file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dicom</strong> (<em>the pydicom.dataset Dataset</em><em> (</em><em>pydicom.read_file</em><em>)</em>) – </li>
+<li><strong>field</strong> (<em>the name of the field to apply the filter to</em>) – </li>
+<li><strong>filer_name</strong> (<em>the name of the filter to apply</em><em> (</em><em>e.g.</em><em>, </em><em>contains</em><em>)</em>) – </li>
+<li><strong>value</strong> (<em>the value to set</em><em>, </em><em>if filter_name is valid</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.filter.compareBase">
+<code class="descclassname"><span class="pre">deid.dicom.filter.</span></code><code class="descname"><span class="pre">compareBase</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">self</span></span></em>, <em><span class="n"><span class="pre">field</span></span></em>, <em><span class="n"><span class="pre">expression</span></span></em>, <em><span class="n"><span class="pre">func</span></span></em>, <em><span class="n"><span class="pre">ignore_case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/filter.html#compareBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.filter.compareBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search a field for an expression.</p>
+<p>compareBase takes either re.search (for contains) or
+re.match (for matches) and returns True if the given regular
+expression is contained or matched</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.filter.contains">
+<code class="descclassname"><span class="pre">deid.dicom.filter.</span></code><code class="descname"><span class="pre">contains</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">self</span></span></em>, <em><span class="n"><span class="pre">field</span></span></em>, <em><span class="n"><span class="pre">expression</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/filter.html#contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.filter.contains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if a field value contains an expression.</p>
+<p>contains returns true if the value of the identifier
+contains the the string argument anywhere within it;
+otherwise, it returns false.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.filter.empty">
+<code class="descclassname"><span class="pre">deid.dicom.filter.</span></code><code class="descname"><span class="pre">empty</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">self</span></span></em>, <em><span class="n"><span class="pre">field</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/filter.html#empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.filter.empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if the value is empty.</p>
+<p>Empty returns True if the value is found to be “”. If the field
+is not present for the dicom, then we return False (missing != empty)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.filter.endsWith">
+<code class="descclassname"><span class="pre">deid.dicom.filter.</span></code><code class="descname"><span class="pre">endsWith</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">self</span></span></em>, <em><span class="n"><span class="pre">field</span></span></em>, <em><span class="n"><span class="pre">term</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/filter.html#endsWith"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.filter.endsWith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if a field value ends with an expression.</p>
+<p>endsWith returns true if the value of the identifier ends with
+the string argument; otherwise, it returns false.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.filter.equals">
+<code class="descclassname"><span class="pre">deid.dicom.filter.</span></code><code class="descname"><span class="pre">equals</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">self</span></span></em>, <em><span class="n"><span class="pre">field</span></span></em>, <em><span class="n"><span class="pre">term</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/filter.html#equals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.filter.equals" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns true if the value of the identifier exactly
+equals the string argument; otherwise, it returns false.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.filter.equalsBase">
+<code class="descclassname"><span class="pre">deid.dicom.filter.</span></code><code class="descname"><span class="pre">equalsBase</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">self</span></span></em>, <em><span class="n"><span class="pre">field</span></span></em>, <em><span class="n"><span class="pre">term</span></span></em>, <em><span class="n"><span class="pre">ignore_case</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em><span class="n"><span class="pre">not_equals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/filter.html#equalsBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.filter.equalsBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>base of equals, with variable for ignore case (default True)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.filter.matches">
+<code class="descclassname"><span class="pre">deid.dicom.filter.</span></code><code class="descname"><span class="pre">matches</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">self</span></span></em>, <em><span class="n"><span class="pre">field</span></span></em>, <em><span class="n"><span class="pre">expression</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/filter.html#matches"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.filter.matches" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if a field value matches an expression.</p>
+<p>matches returns true if the value of the identifier matches
+the regular expression specified in the string argument;
+otherwise, it returns false.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.filter.missing">
+<code class="descclassname"><span class="pre">deid.dicom.filter.</span></code><code class="descname"><span class="pre">missing</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">self</span></span></em>, <em><span class="n"><span class="pre">field</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/filter.html#missing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.filter.missing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if the dicom is missing a field.</p>
+<p>Missing returns True if the dicom is missing the field entirely
+This means that the entire field is None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.filter.notContains">
+<code class="descclassname"><span class="pre">deid.dicom.filter.</span></code><code class="descname"><span class="pre">notContains</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">self</span></span></em>, <em><span class="n"><span class="pre">field</span></span></em>, <em><span class="n"><span class="pre">expression</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/filter.html#notContains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.filter.notContains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if a field value does not contain an expression.</p>
+<p>notContains returns true if the value of the identifier
+does not contain the the string argument anywhere within it;</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.filter.notEquals">
+<code class="descclassname"><span class="pre">deid.dicom.filter.</span></code><code class="descname"><span class="pre">notEquals</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">self</span></span></em>, <em><span class="n"><span class="pre">field</span></span></em>, <em><span class="n"><span class="pre">term</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/filter.html#notEquals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.filter.notEquals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.filter.startsWith">
+<code class="descclassname"><span class="pre">deid.dicom.filter.</span></code><code class="descname"><span class="pre">startsWith</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">self</span></span></em>, <em><span class="n"><span class="pre">field</span></span></em>, <em><span class="n"><span class="pre">term</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/filter.html#startsWith"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.filter.startsWith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if a field value starts with an expression.</p>
+<p>startsWith returns true if the value of the identifier
+starts with the string argument; otherwise, it returns false.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-deid.dicom.groups">
+<span id="deid-dicom-groups-module"></span><h2>deid.dicom.groups module<a class="headerlink" href="#module-deid.dicom.groups" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="deid.dicom.groups.extract_fields_list">
+<code class="descclassname"><span class="pre">deid.dicom.groups.</span></code><code class="descname"><span class="pre">extract_fields_list</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">dicom</span></span></em>, <em><span class="n"><span class="pre">actions</span></span></em>, <em><span class="n"><span class="pre">fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/groups.html#extract_fields_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.groups.extract_fields_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a list of actions for a named group (a list) extract values from
+the dicom based on the list of actions provided. This function
+always returns a list intended to update some lookup to be used
+to further process the dicom.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.groups.extract_values_list">
+<code class="descclassname"><span class="pre">deid.dicom.groups.</span></code><code class="descname"><span class="pre">extract_values_list</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">dicom</span></span></em>, <em><span class="n"><span class="pre">actions</span></span></em>, <em><span class="n"><span class="pre">fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/groups.html#extract_values_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.groups.extract_values_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a list of actions for a named group (a list) extract values from
+the dicom based on the list of actions provided. This function
+always returns a list intended to update some lookup to be used
+to further process the dicom.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-deid.dicom.header">
+<span id="deid-dicom-header-module"></span><h2>deid.dicom.header module<a class="headerlink" href="#module-deid.dicom.header" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="deid.dicom.header.get_identifiers">
+<code class="descclassname"><span class="pre">deid.dicom.header.</span></code><code class="descname"><span class="pre">get_identifiers</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">dicom_files</span></span></em>, <em><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">strip_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em><span class="n"><span class="pre">remove_private</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em><span class="n"><span class="pre">disable_skip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/header.html#get_identifiers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.header.get_identifiers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract all identifiers from a dicom image.</p>
+<p>This function returns a lookup by file name, where each value indexed
+includes a dictionary of nested fields (indexed by nested tag).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dicom_files</strong> (<em>the dicom file</em><em>(</em><em>s</em><em>) </em><em>to extract from</em>) – </li>
+<li><strong>force</strong> (<em>force reading the file</em><em> (</em><em>default True</em><em>)</em>) – </li>
+<li><strong>config</strong> (<em>if None</em><em>, </em><em>uses default in provided module folder</em>) – </li>
+<li><strong>strip_sequences</strong> (<em>if True</em><em>, </em><em>remove all sequences</em>) – </li>
+<li><strong>remove_private</strong> (<em>remove private tags</em>) – </li>
+<li><strong>disable_skip</strong> (<em>do not skip over protected fields</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.header.remove_private_identifiers">
+<code class="descclassname"><span class="pre">deid.dicom.header.</span></code><code class="descname"><span class="pre">remove_private_identifiers</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">dicom_files</span></span></em>, <em><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em><span class="n"><span class="pre">output_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/header.html#remove_private_identifiers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.header.remove_private_identifiers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove private identifiers.</p>
+<p>remove_private_identifiers is a wrapper for the
+simple call to dicom.remove_private_tags, it simply
+reads in the files for the user and saves accordingly</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.header.replace_identifiers">
+<code class="descclassname"><span class="pre">deid.dicom.header.</span></code><code class="descname"><span class="pre">replace_identifiers</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">dicom_files</span></span></em>, <em><span class="n"><span class="pre">ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">deid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em><span class="n"><span class="pre">output_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">strip_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em><span class="n"><span class="pre">remove_private</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em><span class="n"><span class="pre">disable_skip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/header.html#replace_identifiers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.header.replace_identifiers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace identifiers.</p>
+<p>replace identifiers using pydicom, can be slow when writing
+and saving new files. If you want to replace sequences, they need
+to be extracted with get_identifiers and expand_sequences to True.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-deid.dicom.parser">
+<span id="deid-dicom-parser-module"></span><h2>deid.dicom.parser module<a class="headerlink" href="#module-deid.dicom.parser" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="deid.dicom.parser.DicomParser">
+<em class="property"><span class="pre">class</span> </em><code class="descclassname"><span class="pre">deid.dicom.parser.</span></code><code class="descname"><span class="pre">DicomParser</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">dicom_file</span></span></em>, <em><span class="n"><span class="pre">recipe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em><span class="n"><span class="pre">disable_skip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/parser.html#DicomParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.parser.DicomParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Parse a dicom, performing one or more actions on fields.</p>
+<p>A dicom parser serves as a cache to read in all fields from a dicom
+file. For each, we store the element and child elements</p>
+<dl class="py method">
+<dt id="deid.dicom.parser.DicomParser.add_field">
+<code class="descname"><span class="pre">add_field</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">field</span></span></em>, <em><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/parser.html#DicomParser.add_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.parser.DicomParser.add_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a field to the dicom.</p>
+<p>If it’s already present, update the value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.parser.DicomParser.blank_field">
+<code class="descname"><span class="pre">blank_field</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">field</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/parser.html#DicomParser.blank_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.parser.DicomParser.blank_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Blank a field</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.parser.DicomParser.define">
+<code class="descname"><span class="pre">define</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">name</span></span></em>, <em><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/parser.html#DicomParser.define"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.parser.DicomParser.define" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a function or variable to the lookup for later usage.</p>
+<p>This can be used for functions, lists, or variables.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.parser.DicomParser.delete_field">
+<code class="descname"><span class="pre">delete_field</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">field</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/parser.html#DicomParser.delete_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.parser.DicomParser.delete_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a field from the dicom.</p>
+<p>We do this by way of parsing all nested levels of a tag into actual tags,
+and deleting the child node.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.parser.DicomParser.find_by_name">
+<code class="descname"><span class="pre">find_by_name</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/parser.html#DicomParser.find_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.parser.DicomParser.find_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find fields by name.</p>
+<p>Given a string, find all field objects that contain the name.
+Name can correspond to:</p>
+<blockquote>
+<div><ul class="simple">
+<li>a string of the tag, with or without the parens and comma/space</li>
+<li>a keyword</li>
+<li>a field name</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.parser.DicomParser.find_by_values">
+<code class="descname"><span class="pre">find_by_values</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/parser.html#DicomParser.find_by_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.parser.DicomParser.find_by_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find fields by values.</p>
+<p>Given a list of values, find fields in the dicom that contain any
+of those values, as determined by a regular expression search.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.parser.DicomParser.get_fields">
+<code class="descname"><span class="pre">get_fields</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">expand_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/parser.html#DicomParser.get_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.parser.DicomParser.get_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>expand all dicom fields into a list, where each entry is
+a DicomField. If we find a sequence, we unwrap it and
+represent the location with the name (e.g., Sequence__Child)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.parser.DicomParser.get_nested_field">
+<code class="descname"><span class="pre">get_nested_field</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">field</span></span></em>, <em><span class="n"><span class="pre">return_parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/parser.html#DicomParser.get_nested_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.parser.DicomParser.get_nested_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve a nested field.</p>
+<p>Based on a DicomField, return the one referenced in self.dicom.
+If a delete is needed, then the parent should be returned as well.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.parser.DicomParser.load">
+<code class="descname"><span class="pre">load</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">dicom_file</span></span></em>, <em><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/parser.html#DicomParser.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.parser.DicomParser.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the dicom file.</p>
+<p>Ensure that the dicom file exists, and use full path. Here
+we load the file, and save the dicom, dicom_file, and dicom_name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.parser.DicomParser.parse">
+<code class="descname"><span class="pre">parse</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">strip_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em><span class="n"><span class="pre">remove_private</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/parser.html#DicomParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.parser.DicomParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the dicom.</p>
+<p>The parse action corresponds to iterating through fields, and
+for each one, saving a data structure with the full element,
+the string (with nested representation of the keywords)
+and the tag. We want to save all three in a flat list that is
+easy to search over, and also build up actions for the lookup
+on the first parsing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.parser.DicomParser.perform_action">
+<code class="descname"><span class="pre">perform_action</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">field</span></span></em>, <em><span class="n"><span class="pre">value</span></span></em>, <em><span class="n"><span class="pre">action</span></span></em>, <em><span class="n"><span class="pre">filemeta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/parser.html#DicomParser.perform_action"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.parser.DicomParser.perform_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform an action on a field.</p>
+<p>perform action takes an action (dictionary with field, action, value)
+and performs the action on the loaded dicom.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fields</strong> (<em>if provided</em><em>, </em><em>a filtered list of fields for expand</em>) – </li>
+<li><strong>action</strong> (<em>the action from the parsed deid to take</em>) – “field” (eg, PatientID) the header field to process
+“action” (eg, REPLACE) what to do with the field
+“value”: if needed, the field from the response to replace with</li>
+<li><strong>(</strong><strong>bool</strong><strong>) </strong><strong>perform on filemeta</strong> (<em>filemeta</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.parser.DicomParser.remove_private">
+<code class="descname"><span class="pre">remove_private</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/parser.html#DicomParser.remove_private"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.parser.DicomParser.remove_private" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove private tags from the loaded dicom</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.parser.DicomParser.replace_field">
+<code class="descname"><span class="pre">replace_field</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">field</span></span></em>, <em><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/parser.html#DicomParser.replace_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.parser.DicomParser.replace_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace a value in a field.</p>
+<p>This uses the same function as ADD, but likely the dicom has the value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.parser.DicomParser.reset_preamble">
+<code class="descname"><span class="pre">reset_preamble</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/parser.html#DicomParser.reset_preamble"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.parser.DicomParser.reset_preamble" title="Permalink to this definition">¶</a></dt>
+<dd><p>reset the preamble</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.parser.DicomParser.save">
+<code class="descname"><span class="pre">save</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">filename</span></span></em>, <em><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/parser.html#DicomParser.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.parser.DicomParser.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a dicom to file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.parser.DicomParser.skip">
+<em class="property"><span class="pre">property</span> </em><code class="descname"><span class="pre">skip</span></code><a class="headerlink" href="#deid.dicom.parser.DicomParser.skip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of fields to skip, as defined in the self.config</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-deid.dicom.tags">
+<span id="deid-dicom-tags-module"></span><h2>deid.dicom.tags module<a class="headerlink" href="#module-deid.dicom.tags" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="deid.dicom.tags.add_tag">
+<code class="descclassname"><span class="pre">deid.dicom.tags.</span></code><code class="descname"><span class="pre">add_tag</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">identifier</span></span></em>, <em><span class="n"><span class="pre">VR</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ST'</span></span></em>, <em><span class="n"><span class="pre">VM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">keyword</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/tags.html#add_tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.tags.add_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add tag will take a string for a tag (e.g., ) and define a new tag for it.
+By default, we give the type “Short Text.”</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.tags.find_tag">
+<code class="descclassname"><span class="pre">deid.dicom.tags.</span></code><code class="descname"><span class="pre">find_tag</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">term</span></span></em>, <em><span class="n"><span class="pre">VR</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">VM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">retired</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/tags.html#find_tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.tags.find_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>find_tag will search over tags in the DicomDictionary and return the tags found
+to match some term.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.tags.get_private">
+<code class="descclassname"><span class="pre">deid.dicom.tags.</span></code><code class="descname"><span class="pre">get_private</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">dicom</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/tags.html#get_private"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.tags.get_private" title="Permalink to this definition">¶</a></dt>
+<dd><p>get private tags</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dicom</strong> (<em>the pydicom.dataset Dataset</em><em> (</em><em>pydicom.read_file</em><em>)</em>) – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.tags.get_tag">
+<code class="descclassname"><span class="pre">deid.dicom.tags.</span></code><code class="descname"><span class="pre">get_tag</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">field</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/tags.html#get_tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.tags.get_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>get_tag will return a dictionary with tag indexed by field. For each entry,
+a dictionary lookup is included with VR.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>field</strong> (<em>the keyword to get tag for</em><em>, </em><em>eg &quot;PatientIdentityRemoved&quot;</em>) – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.tags.has_private">
+<code class="descclassname"><span class="pre">deid.dicom.tags.</span></code><code class="descname"><span class="pre">has_private</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">dicom</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/tags.html#has_private"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.tags.has_private" title="Permalink to this definition">¶</a></dt>
+<dd><p>has_private will return True if the header has private tags</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dicom</strong> (<em>the pydicom.dataset Dataset</em><em> (</em><em>pydicom.read_file</em><em>)</em>) – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.tags.remove_sequences">
+<code class="descclassname"><span class="pre">deid.dicom.tags.</span></code><code class="descname"><span class="pre">remove_sequences</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">dicom</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/tags.html#remove_sequences"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.tags.remove_sequences" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove sequences from a dicom by removing the associated tag.
+We use dicom.iterall() to get all nested sequences.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dicom</strong> (<em>the loaded dicom to remove sequences</em>) – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.tags.update_tag">
+<code class="descclassname"><span class="pre">deid.dicom.tags.</span></code><code class="descname"><span class="pre">update_tag</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">dicom</span></span></em>, <em><span class="n"><span class="pre">field</span></span></em>, <em><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/tags.html#update_tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.tags.update_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>update tag will update a value in the header, if it exists
+if not, nothing is added. This check is the only difference
+between this function and change_tag.
+If the user wants to add a value (that might not exist)
+the function add_tag should be used with a private identifier
+as a string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dicom</strong> (<em>the pydicom.dataset Dataset</em><em> (</em><em>pydicom.read_file</em><em>)</em>) – </li>
+<li><strong>field</strong> (<em>the name of the field to update</em>) – </li>
+<li><strong>value</strong> (<em>the value to set</em><em>, </em><em>if name is a valid tag</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-deid.dicom.utils">
+<span id="deid-dicom-utils-module"></span><h2>deid.dicom.utils module<a class="headerlink" href="#module-deid.dicom.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="deid.dicom.utils.get_files">
+<code class="descclassname"><span class="pre">deid.dicom.utils.</span></code><code class="descname"><span class="pre">get_files</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">contenders</span></span></em>, <em><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em><span class="n"><span class="pre">pattern</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em><span class="n"><span class="pre">tempdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/utils.html#get_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.utils.get_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a generator for files.</p>
+<p>get_files will take a list of single dicom files or directories,
+and return a generator that yields complete paths to all files</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>contenders</strong> (<em>a list of files</em><em> or </em><em>directories</em><em> (</em><em>contenders!</em><em>)</em>) – </li>
+<li><strong>check</strong> (<em>boolean to indicate if we should validate dicoms</em><em> (</em><em>default True</em><em>)</em>) – </li>
+<li><strong>pattern</strong> (<em>A pattern to use with fnmatch. If None</em><em>, </em><em>* is used</em>) – </li>
+<li><strong>force</strong> (<em>force reading of the files</em><em>, </em><em>if some headers invalid.</em>) – Not recommended, as many non-dicom will come through</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.utils.save_dicom">
+<code class="descclassname"><span class="pre">deid.dicom.utils.</span></code><code class="descname"><span class="pre">save_dicom</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">dicom</span></span></em>, <em><span class="n"><span class="pre">dicom_file</span></span></em>, <em><span class="n"><span class="pre">output_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/utils.html#save_dicom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.utils.save_dicom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a dicom file to an output folder.</p>
+<p>We make sure to not overwrite unless the user has enforced it</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dicom</strong> (<em>the pydicon Dataset to save</em>) – </li>
+<li><strong>dicom_file</strong> (<em>the path to the dicom file to save</em><em> (</em><em>we only use basename</em><em>)</em>) – </li>
+<li><strong>output_folder</strong> (<em>the folder to save the file to</em>) – </li>
+<li><strong>overwrite</strong> (<em>overwrite any existing file?</em><em> (</em><em>default is False</em><em>)</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-deid.dicom.validate">
+<span id="deid-dicom-validate-module"></span><h2>deid.dicom.validate module<a class="headerlink" href="#module-deid.dicom.validate" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="deid.dicom.validate.validate_dicoms">
+<code class="descclassname"><span class="pre">deid.dicom.validate.</span></code><code class="descname"><span class="pre">validate_dicoms</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">dcm_files</span></span></em>, <em><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/validate.html#validate_dicoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.validate.validate_dicoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate that dicom files can open and return valid set.</p>
+<p>validate dicoms will test opening one or more dicom files,
+and return a list of valid files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dcm_files</strong> (<em>one</em><em> or </em><em>more dicom files to test</em>) – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-deid.dicom">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-deid.dicom" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="deid.dicom.pixels.html" class="btn btn-neutral float-left" title="deid.dicom.pixels package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="deid.logger.html" class="btn btn-neutral float-right" title="deid.logger package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2022, Vanessa Sochat.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

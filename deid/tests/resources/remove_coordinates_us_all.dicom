@@ -1,9 +1,0 @@
-FORMAT dicom
-
-%filter greylist
-LABEL by Modality
-  contains Modality US
-  coordinates all
-
-%header
-ADD PatientIdentityRemoved No 

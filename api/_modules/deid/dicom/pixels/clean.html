@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deid.dicom.pixels.clean &mdash; deid 0.2.31 documentation</title><link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/sphinx-argparse.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/theme.css" type="text/css" /><link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> deid<img src="../../../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.2.31
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/deid.config.html">deid.config package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.config.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.config.html#module-deid.config.standards">deid.config.standards module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.config.html#module-deid.config.utils">deid.config.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.config.html#module-deid.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/deid.data.html">deid.data package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.data.html#module-deid.data">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/deid.dicom.actions.html">deid.dicom.actions package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.actions.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.actions.html#module-deid.dicom.actions.jitter">deid.dicom.actions.jitter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.actions.html#module-deid.dicom.actions.uids">deid.dicom.actions.uids module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.actions.html#module-deid.dicom.actions">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/deid.dicom.pixels.html">deid.dicom.pixels package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.pixels.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.pixels.html#module-deid.dicom.pixels.clean">deid.dicom.pixels.clean module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.pixels.html#module-deid.dicom.pixels.detect">deid.dicom.pixels.detect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.pixels.html#module-deid.dicom.pixels">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/deid.dicom.html">deid.dicom package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../source/deid.dicom.actions.html">deid.dicom.actions package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../source/deid.dicom.pixels.html">deid.dicom.pixels package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#module-deid.dicom.fields">deid.dicom.fields module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#module-deid.dicom.filter">deid.dicom.filter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#module-deid.dicom.groups">deid.dicom.groups module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#module-deid.dicom.header">deid.dicom.header module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#module-deid.dicom.parser">deid.dicom.parser module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#module-deid.dicom.tags">deid.dicom.tags module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#module-deid.dicom.utils">deid.dicom.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#module-deid.dicom.validate">deid.dicom.validate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.dicom.html#module-deid.dicom">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/deid.logger.html">deid.logger package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.logger.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.logger.html#module-deid.logger.message">deid.logger.message module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.logger.html#module-deid.logger.progress">deid.logger.progress module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../source/deid.logger.html#clint-textui-progress">clint.textui.progress</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.logger.html#module-deid.logger">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/deid.main.html">deid.main package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.main.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.main.html#module-deid.main.identifiers">deid.main.identifiers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.main.html#module-deid.main.inspect">deid.main.inspect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.main.html#module-deid.main">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../source/deid.utils.html">deid.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.utils.html#module-deid.utils.actions">deid.utils.actions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.utils.html#module-deid.utils.fileio">deid.utils.fileio module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/deid.utils.html#module-deid.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">deid</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>deid.dicom.pixels.clean</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for deid.dicom.pixels.clean</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Vanessa Sochat&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright 2016-2022, Vanessa Sochat&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">clean.py: functions for pixel scrubbing</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">pydicom</span> <span class="kn">import</span> <span class="n">read_file</span>
+<span class="kn">from</span> <span class="nn">pydicom.pixel_data_handlers.util</span> <span class="kn">import</span> <span class="n">get_expected_length</span>
+
+<span class="kn">from</span> <span class="nn">deid.config</span> <span class="kn">import</span> <span class="n">DeidRecipe</span>
+<span class="kn">from</span> <span class="nn">deid.logger</span> <span class="kn">import</span> <span class="n">bot</span>
+<span class="kn">from</span> <span class="nn">deid.utils</span> <span class="kn">import</span> <span class="n">get_temporary_name</span>
+
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">&quot;pdf&quot;</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="n">bot</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="mi">3</span>
+
+
+<div class="viewcode-block" id="DicomCleaner"><a class="viewcode-back" href="../../../../source/deid.dicom.pixels.html#deid.dicom.pixels.clean.DicomCleaner">[docs]</a><span class="k">class</span> <span class="nc">DicomCleaner</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Clean a dicom file of burned pixels.</span>
+
+<span class="sd">    take an input dicom file, check for burned pixels, and then clean,</span>
+<span class="sd">    with option to save / output in multiple formats. This object should</span>
+<span class="sd">    map to one dicom file, and the usage flow is the following:</span>
+<span class="sd">    cleaner = DicomCleaner()</span>
+<span class="sd">    summary = cleaner.detect(dicom_file)</span>
+
+<span class="sd">    cleaner.clean()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">output_folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">add_padding</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">margin</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">deid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">font</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">output_folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">output_folder</span> <span class="o">=</span> <span class="n">get_temporary_name</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;clean&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">font</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">font</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_font</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font</span> <span class="o">=</span> <span class="n">font</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmap</span> <span class="o">=</span> <span class="s2">&quot;gray&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">output_folder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recipe</span> <span class="o">=</span> <span class="n">DeidRecipe</span><span class="p">(</span><span class="n">deid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">force</span> <span class="o">=</span> <span class="n">force</span>
+
+<div class="viewcode-block" id="DicomCleaner.default_font"><a class="viewcode-back" href="../../../../source/deid.dicom.pixels.html#deid.dicom.pixels.clean.DicomCleaner.default_font">[docs]</a>    <span class="k">def</span> <span class="nf">default_font</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the default font to use for a title.</span>
+
+<span class="sd">        define the font style for saving png figures</span>
+<span class="sd">        if a title is provided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;family&quot;</span><span class="p">:</span> <span class="s2">&quot;serif&quot;</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;darkred&quot;</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="s2">&quot;normal&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">16</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="DicomCleaner.detect"><a class="viewcode-back" href="../../../../source/deid.dicom.pixels.html#deid.dicom.pixels.clean.DicomCleaner.detect">[docs]</a>    <span class="k">def</span> <span class="nf">detect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dicom_file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initiate the cleaner for a new dicom file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">deid.dicom.pixels.detect</span> <span class="kn">import</span> <span class="n">has_burned_pixels</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">has_burned_pixels</span><span class="p">(</span>
+            <span class="n">dicom_file</span><span class="p">,</span> <span class="n">deid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">deid</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">force</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dicom_file</span> <span class="o">=</span> <span class="n">dicom_file</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span></div>
+
+<div class="viewcode-block" id="DicomCleaner.clean"><a class="viewcode-back" href="../../../../source/deid.dicom.pixels.html#deid.dicom.pixels.clean.DicomCleaner.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fix_interpretation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pixel_data_attribute</span><span class="o">=</span><span class="s2">&quot;PixelData&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clean a dicom file.</span>
+
+<span class="sd">        take a dicom image and a list of pixel coordinates, and return</span>
+<span class="sd">        a cleaned file (if output file is specified) or simply plot</span>
+<span class="sd">        the cleaned result (if no file is specified)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ==========</span>
+<span class="sd">            add_padding: add N=margin pixels of padding</span>
+<span class="sd">            margin: pixels of padding to add, if add_padding True</span>
+<span class="sd">            fix_interpretation: fix the photometric interpretation if found off</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Use </span><span class="si">%s</span><span class="s2">.detect() to find coordinates first.&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Scrubbing </span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">dicom_file</span><span class="p">)</span>
+
+            <span class="c1"># Load in dicom file, and image data</span>
+            <span class="n">dicom</span> <span class="o">=</span> <span class="n">read_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dicom_file</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">pixel_data</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dicom</span><span class="p">,</span> <span class="n">pixel_data_attribute</span><span class="p">)</span>
+
+            <span class="c1"># Get expected and actual length of the pixel data (bytes, expected does not include trailing null byte)</span>
+            <span class="n">expected_length</span> <span class="o">=</span> <span class="n">get_expected_length</span><span class="p">(</span><span class="n">dicom</span><span class="p">)</span>
+            <span class="n">actual_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pixel_data</span><span class="p">)</span>
+            <span class="n">full_length</span> <span class="o">=</span> <span class="n">expected_length</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">3</span>  <span class="c1"># upsampled data is a third larger</span>
+            <span class="n">full_length</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="mi">1</span> <span class="k">if</span> <span class="n">full_length</span> <span class="o">%</span> <span class="mi">2</span> <span class="k">else</span> <span class="mi">0</span>
+            <span class="p">)</span>  <span class="c1"># trailing padding byte if even length</span>
+
+            <span class="c1"># If we have YBR_FULL_2, must be RGB to obtain pixel data</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="ow">not</span> <span class="n">dicom</span><span class="o">.</span><span class="n">file_meta</span><span class="o">.</span><span class="n">TransferSyntaxUID</span><span class="o">.</span><span class="n">is_compressed</span>
+                <span class="ow">and</span> <span class="n">dicom</span><span class="o">.</span><span class="n">PhotometricInterpretation</span> <span class="o">==</span> <span class="s2">&quot;YBR_FULL_422&quot;</span>
+                <span class="ow">and</span> <span class="n">fix_interpretation</span>
+                <span class="ow">and</span> <span class="n">actual_length</span> <span class="o">&gt;=</span> <span class="n">full_length</span>
+            <span class="p">):</span>
+                <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;Updating dicom.PhotometricInterpretation to RGB, set fix_interpretation to False to skip.&quot;</span>
+                <span class="p">)</span>
+                <span class="n">photometric_original</span> <span class="o">=</span> <span class="n">dicom</span><span class="o">.</span><span class="n">PhotometricInterpretation</span>
+                <span class="n">dicom</span><span class="o">.</span><span class="n">PhotometricInterpretation</span> <span class="o">=</span> <span class="s2">&quot;RGB&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">original</span> <span class="o">=</span> <span class="n">dicom</span><span class="o">.</span><span class="n">pixel_array</span>
+                <span class="n">dicom</span><span class="o">.</span><span class="n">PhotometricInterpretation</span> <span class="o">=</span> <span class="n">photometric_original</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">original</span> <span class="o">=</span> <span class="n">dicom</span><span class="o">.</span><span class="n">pixel_array</span>
+
+            <span class="c1"># Compile coordinates from result, generate list of tuples with coordinate and value</span>
+            <span class="c1"># keepcoordinates == 1 (included in mask) and coordinates == 0 (remove).</span>
+            <span class="n">coordinates</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">]:</span>
+
+                <span class="c1"># We iterate through coordinates in order specified in file</span>
+                <span class="k">for</span> <span class="n">coordinate_set</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;coordinates&quot;</span><span class="p">,</span> <span class="p">[]):</span>
+
+                    <span class="c1"># Each is a list with [value, coordinate]</span>
+                    <span class="n">mask_value</span><span class="p">,</span> <span class="n">new_coordinates</span> <span class="o">=</span> <span class="n">coordinate_set</span>
+
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_coordinates</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                        <span class="n">new_coordinates</span> <span class="o">=</span> <span class="p">[</span><span class="n">new_coordinates</span><span class="p">]</span>
+
+                    <span class="k">for</span> <span class="n">new_coordinate</span> <span class="ow">in</span> <span class="n">new_coordinates</span><span class="p">:</span>
+
+                        <span class="c1"># Case 1: an &quot;all&quot; indicates applying to entire image</span>
+                        <span class="k">if</span> <span class="n">new_coordinate</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+
+                            <span class="c1"># 2D - Greyscale Image - Shape = (X, Y) OR 3D - RGB Image - Shape = (X, Y, Channel)</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">or</span> <span class="p">(</span>
+                                <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+                                <span class="ow">and</span> <span class="n">dicom</span><span class="o">.</span><span class="n">SamplesPerPixel</span> <span class="o">==</span> <span class="mi">3</span>
+                            <span class="p">):</span>
+                                <span class="c1"># minr, minc, maxr, maxc = [0, 0, Y, X]</span>
+                                <span class="n">new_coordinate</span> <span class="o">=</span> <span class="p">[</span>
+                                    <span class="mi">0</span><span class="p">,</span>
+                                    <span class="mi">0</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                <span class="p">]</span>
+
+                            <span class="c1"># 4D - RGB Cine Clip - Shape = (frames, X, Y, channel) OR 3D - Greyscale Cine Clip - Shape = (frames, X, Y)</span>
+                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span> <span class="ow">or</span> <span class="p">(</span>
+                                <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+                                <span class="ow">and</span> <span class="n">dicom</span><span class="o">.</span><span class="n">SamplesPerPixel</span> <span class="o">==</span> <span class="mi">1</span>
+                            <span class="p">):</span>
+                                <span class="n">new_coordinate</span> <span class="o">=</span> <span class="p">[</span>
+                                    <span class="mi">0</span><span class="p">,</span>
+                                    <span class="mi">0</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                <span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">new_coordinate</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">new_coordinate</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)]</span>
+                        <span class="n">coordinates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="p">(</span><span class="n">mask_value</span><span class="p">,</span> <span class="n">new_coordinate</span><span class="p">)</span>
+                        <span class="p">)</span>  <span class="c1"># [(1, [1,2,3,4]),...(0, [1,2,3,4])]</span>
+
+            <span class="c1"># Instead of writing directly to data, create a mask of 1s (start keeping all)</span>
+            <span class="c1"># For 4D RGB Cine - (frames, X, Y, channel) or 3D Greyscale Cine - (frames, X, Y)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">dicom</span><span class="o">.</span><span class="n">SamplesPerPixel</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="p">):</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+            <span class="c1"># For 2D Greyscale image (X, Y) or 3D RGB Image (X, Y channel)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+
+            <span class="c1"># Here we apply the coordinates to the mask, 1==keep, 0==clean</span>
+            <span class="k">for</span> <span class="n">coordinate_value</span><span class="p">,</span> <span class="n">coordinate</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">:</span>
+                <span class="n">minr</span><span class="p">,</span> <span class="n">minc</span><span class="p">,</span> <span class="n">maxr</span><span class="p">,</span> <span class="n">maxc</span> <span class="o">=</span> <span class="n">coordinate</span>
+
+                <span class="c1"># Update the mask: values set to 0 to be black</span>
+                <span class="n">mask</span><span class="p">[</span><span class="n">minc</span><span class="p">:</span><span class="n">maxc</span><span class="p">,</span> <span class="n">minr</span><span class="p">:</span><span class="n">maxr</span><span class="p">]</span> <span class="o">=</span> <span class="n">coordinate_value</span>
+
+            <span class="c1"># Now apply finished mask to the data</span>
+            <span class="c1"># RGB cine clip</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+
+                <span class="c1"># np.tile does the copying and stacking of masks into the channel dim to produce 3D masks</span>
+                <span class="c1"># transposition to convert tile output (channel, X, Y)  into (X, Y, channel)</span>
+                <span class="c1"># see: https://github.com/nquach/anonymize/blob/master/anonymize.py#L154</span>
+                <span class="n">channel3mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+                <span class="c1"># use numpy.tile to copy and stack the 3D masks into 4D array to apply to 4D pixel data</span>
+                <span class="c1"># tile converts (X, Y, channels) -&gt; (frames, X, Y, channels), presumed ordering for 4D pixel data</span>
+                <span class="n">final_mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">channel3mask</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+                <span class="c1"># apply final 4D mask to 4D pixel data</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cleaned</span> <span class="o">=</span> <span class="n">final_mask</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">original</span>
+
+            <span class="c1"># RGB image or Greyscale cine clip</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+
+                <span class="c1"># This condition is ambiguous.  If the image shape is 3, we may have a single frame RGB image: size (X, Y, channel)</span>
+                <span class="c1"># or a multiframe greyscale image: size (frames, X, Y).  Interrogate the SamplesPerPixel field.</span>
+                <span class="k">if</span> <span class="n">dicom</span><span class="o">.</span><span class="n">SamplesPerPixel</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="c1"># RGB Image</span>
+                    <span class="c1"># Convert (X, Y) -&gt; (X, Y, channel)</span>
+                    <span class="n">final_mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span>
+                        <span class="n">numpy</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Greyscale cine clip</span>
+                    <span class="c1"># Convert (X, Y) -&gt; (frames, X, Y)</span>
+                    <span class="n">final_mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+                <span class="c1"># apply final 3D mask to 3D pixel data</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cleaned</span> <span class="o">=</span> <span class="n">final_mask</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">original</span>
+
+            <span class="c1"># greyscale image: no need to stack into the channel dim since it doesn&#39;t exist</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cleaned</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">original</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;Pixel array dimension </span><span class="si">%s</span><span class="s2"> is not recognized.&quot;</span>
+                    <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+                <span class="p">)</span></div>
+
+<div class="viewcode-block" id="DicomCleaner.get_figure"><a class="viewcode-back" href="../../../../source/deid.dicom.pixels.html#deid.dicom.pixels.clean.DicomCleaner.get_figure">[docs]</a>    <span class="k">def</span> <span class="nf">get_figure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">image_type</span><span class="o">=</span><span class="s2">&quot;cleaned&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a figure for an original or cleaned image.</span>
+
+<span class="sd">        If the image was already clean, it is simply a copy of the original.</span>
+<span class="sd">        If show is True, plot the image. If a 4d image is discovered, we use</span>
+<span class="sd">        randomly choose a slice.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_type</span><span class="p">):</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+            <span class="c1"># Retrieve full image</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_type</span><span class="p">)</span>
+
+            <span class="c1"># Handle 4d data by choosing one dimension</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="n">channel</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+                <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;Image detected as 4d, will sample channel </span><span class="si">%s</span><span class="s2"> and middle slice&quot;</span>
+                    <span class="o">%</span> <span class="n">channel</span>
+                <span class="p">)</span>
+                <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">channel</span><span class="p">]</span>
+
+            <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cmap</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">fontdict</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">font</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">show</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">plt</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_clean_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_folder</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="s2">&quot;dcm&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get path to a cleaned output file.</span>
+
+<span class="sd">        Return a full path to an output file, with custom folder and</span>
+<span class="sd">        extension. If the output folder isn&#39;t yet created, make it.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ==========</span>
+<span class="sd">        output_folder: the output folder to create, will be created if doesn&#39;t</span>
+<span class="sd">        exist.</span>
+<span class="sd">        extension: the extension of the file to create a name for, should</span>
+<span class="sd">        not start with &quot;.&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">output_folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">output_folder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_folder</span><span class="p">):</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating output folder </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">output_folder</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span>
+
+        <span class="n">basename</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;[.]dicom|[.]dcm&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dicom_file</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/cleaned-</span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">output_folder</span><span class="p">,</span> <span class="n">basename</span><span class="p">,</span> <span class="n">extension</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DicomCleaner.save_png"><a class="viewcode-back" href="../../../../source/deid.dicom.pixels.html#deid.dicom.pixels.clean.DicomCleaner.save_png">[docs]</a>    <span class="k">def</span> <span class="nf">save_png</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">image_type</span><span class="o">=</span><span class="s2">&quot;cleaned&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save an original or cleaned dicom as png to disk.</span>
+
+<span class="sd">        Default image_format is &quot;cleaned&quot; and can be set to &quot;original.&quot; If the</span>
+<span class="sd">        image was already clean (not flagged) the cleaned image is just a</span>
+<span class="sd">        copy of original. If a 4d image is provided, we save the dimension</span>
+<span class="sd">        specified (or if not provided, a randomly chosen dimension).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_type</span><span class="p">):</span>
+            <span class="n">png_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_clean_name</span><span class="p">(</span><span class="n">output_folder</span><span class="p">,</span> <span class="s2">&quot;png&quot;</span><span class="p">)</span>
+            <span class="n">plt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_figure</span><span class="p">(</span><span class="n">image_type</span><span class="o">=</span><span class="n">image_type</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">png_file</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">png_file</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;use detect() --&gt; clean() before saving is possible.&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DicomCleaner.save_animation"><a class="viewcode-back" href="../../../../source/deid.dicom.pixels.html#deid.dicom.pixels.clean.DicomCleaner.save_animation">[docs]</a>    <span class="k">def</span> <span class="nf">save_animation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">image_type</span><span class="o">=</span><span class="s2">&quot;cleaned&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save an original or cleaned animation of a dicom.</span>
+
+<span class="sd">        If there are not enough frames, then save_png should be used instead.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_type</span><span class="p">):</span>
+            <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">animation</span>
+
+            <span class="n">animation</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;animation.writer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ffmpeg&quot;</span>
+
+            <span class="n">image</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_type</span><span class="p">)</span>
+
+            <span class="c1"># If we have rgb, choose a channel</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="n">channel</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+                <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Selecting channel </span><span class="si">%s</span><span class="s2"> for rendering&quot;</span> <span class="o">%</span> <span class="n">channel</span><span class="p">)</span>
+                <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">channel</span><span class="p">]</span>
+
+            <span class="c1"># Now we expect 3D, we can animate one dimension over time</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">movie_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_clean_name</span><span class="p">(</span><span class="n">output_folder</span><span class="p">,</span> <span class="s2">&quot;mp4&quot;</span><span class="p">)</span>
+
+                <span class="c1"># First set up the figure, the axis, and the plot element we want to animate</span>
+                <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">xlim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">ylim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">)</span>
+                <span class="n">img</span><span class="o">.</span><span class="n">set_interpolation</span><span class="p">(</span><span class="s2">&quot;nearest&quot;</span><span class="p">)</span>
+
+                <span class="c1"># The animation function should take an index i</span>
+                <span class="k">def</span> <span class="nf">animate</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+                    <span class="n">img</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+                    <span class="k">return</span> <span class="p">(</span><span class="n">img</span><span class="p">,)</span>
+
+                <span class="n">bot</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Generating animation...&quot;</span><span class="p">)</span>
+                <span class="n">anim</span> <span class="o">=</span> <span class="n">animation</span><span class="o">.</span><span class="n">FuncAnimation</span><span class="p">(</span>
+                    <span class="n">fig</span><span class="p">,</span> <span class="n">animate</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">interval</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">blit</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+                <span class="n">anim</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+                    <span class="n">movie_file</span><span class="p">,</span>
+                    <span class="n">writer</span><span class="o">=</span><span class="s2">&quot;ffmpeg&quot;</span><span class="p">,</span>
+                    <span class="n">fps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                    <span class="n">dpi</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                    <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">title</span> <span class="ow">or</span> <span class="s2">&quot;deid-animation&quot;</span><span class="p">},</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="n">movie_file</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;save_animation() is only for 4D data. Use save_png instead.&quot;</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;use detect() --&gt; clean() before saving is possible.&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DicomCleaner.save_dicom"><a class="viewcode-back" href="../../../../source/deid.dicom.pixels.html#deid.dicom.pixels.clean.DicomCleaner.save_dicom">[docs]</a>    <span class="k">def</span> <span class="nf">save_dicom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">image_type</span><span class="o">=</span><span class="s2">&quot;cleaned&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save a cleaned dicom to disk.</span>
+
+<span class="sd">        We expose an option to save an original (change image_type to &quot;original&quot;</span>
+<span class="sd">        to be consistent, although this is not incredibly useful given it would</span>
+<span class="sd">        duplicate the original data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Having clean also means has dicom image</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_type</span><span class="p">):</span>
+            <span class="n">dicom_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_clean_name</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span>
+            <span class="n">dicom</span> <span class="o">=</span> <span class="n">read_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dicom_file</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="c1"># If going from compressed, change TransferSyntax</span>
+            <span class="k">if</span> <span class="n">dicom</span><span class="o">.</span><span class="n">file_meta</span><span class="o">.</span><span class="n">TransferSyntaxUID</span><span class="o">.</span><span class="n">is_compressed</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">dicom</span><span class="o">.</span><span class="n">decompress</span><span class="p">()</span>
+            <span class="n">dicom</span><span class="o">.</span><span class="n">PixelData</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned</span><span class="o">.</span><span class="n">tostring</span><span class="p">()</span>
+            <span class="n">dicom</span><span class="o">.</span><span class="n">save_as</span><span class="p">(</span><span class="n">dicom_name</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">dicom_name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;use detect() --&gt; clean() before saving is possible.&quot;</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2022, Vanessa Sochat.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

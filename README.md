@@ -1,38 +1,23 @@
-# Deidentify (deid)
+# Deid Documentation
 
-Best effort anonymization for medical images in Python.
+![assets/img/logo.png](assets/img/logo.png)
 
-[![DOI](https://zenodo.org/badge/94163984.svg)](https://zenodo.org/badge/latestdoi/94163984)
-[![Build Status](https://travis-ci.org/pydicom/deid.svg?branch=master)](https://travis-ci.org/pydicom/deid)
+This is a documentation site for [deid](https://www.github.com/pydicom/deid). 
+It is part of the [pydicom](https://www.github.com/pydicom) family of tools.
 
-Please see our [Documentation](https://pydicom.github.io/deid/).
+## Setup
 
-These are basic Python based tools for working with medical images and text, specifically for de-identification.
-The cleaning method used here mirrors the one by CTP in that we can identify images based on known
-locations. We are looking for collaborators to develop and validate an OCR cleaning method! Please reach out if you would like to help work on this.
+ 1. Install [Jekyll](https://jekyllrb.com/docs/installation/) locally. For Ruby, I recommend [rbenv](https://github.com/rbenv/rbenv).
+ 2. Install Jekyll dependencies with `bundle install`
+ 3. To serve the development server run `bundle exec jekyll serve`
 
+## Folders Included
+If you aren't familiar with the structure of a Jekyll site, here is a quick overview:
 
-## Installation
-
-### Local
-For the stable release, install via pip:
-
-```bash
-pip install deid
-```
-
-For the development version, install from Github:
-
-```bash
-pip install git+git://github.com/pydicom/deid
-```
-
-### Docker
-
-```bash
-docker build -t pydicom/deid .
-docker run pydicom/deid --help
-```
-
-## Issues
-If you have an issue, or want to request a feature, please do so on our [issues board](https://www.github.com/pydicom/deid/issues).
+ - [_config.yml](_config.yml) is the primary configuration file for the site. Variables in this file render as `{{ site.var }}` in the various html includes and templates.
+ - [_layouts](_layouts) are base html templates for pages
+ - [_includes](_includes) are snippets of html added to layouts
+ - [pages](pages) are generic pages (e.g., changelog) that aren't considered docs
+ - [_docs](_docs) is a collection of folders that get rendered into the docs sidebar and pages
+ - [assets](assets) includes all static assets
+ - [_data](_data) has different data files (they can be in `.yml` or `.csv` to render into the site.

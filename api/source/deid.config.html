@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deid.config package &mdash; deid 0.2.31 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-argparse.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme.css" type="text/css" /><link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="deid.data package" href="deid.data.html" />
+    <link rel="prev" title="Deid" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> deid<img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.2.31
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">deid.config package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-deid.config.standards">deid.config.standards module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-deid.config.utils">deid.config.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-deid.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.data.html">deid.data package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.data.html#module-deid.data">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.dicom.actions.html">deid.dicom.actions package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.actions.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.actions.html#module-deid.dicom.actions.jitter">deid.dicom.actions.jitter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.actions.html#module-deid.dicom.actions.uids">deid.dicom.actions.uids module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.actions.html#module-deid.dicom.actions">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.dicom.pixels.html">deid.dicom.pixels package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.pixels.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.pixels.html#module-deid.dicom.pixels.clean">deid.dicom.pixels.clean module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.pixels.html#module-deid.dicom.pixels.detect">deid.dicom.pixels.detect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.pixels.html#module-deid.dicom.pixels">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.dicom.html">deid.dicom package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deid.dicom.actions.html">deid.dicom.actions package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deid.dicom.pixels.html">deid.dicom.pixels package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.fields">deid.dicom.fields module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.filter">deid.dicom.filter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.groups">deid.dicom.groups module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.header">deid.dicom.header module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.parser">deid.dicom.parser module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.tags">deid.dicom.tags module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.utils">deid.dicom.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.validate">deid.dicom.validate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.logger.html">deid.logger package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.logger.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.logger.html#module-deid.logger.message">deid.logger.message module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.logger.html#module-deid.logger.progress">deid.logger.progress module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deid.logger.html#clint-textui-progress">clint.textui.progress</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deid.logger.html#module-deid.logger">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.main.html">deid.main package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.main.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.main.html#module-deid.main.identifiers">deid.main.identifiers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.main.html#module-deid.main.inspect">deid.main.inspect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.main.html#module-deid.main">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.utils.html">deid.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.utils.html#module-deid.utils.actions">deid.utils.actions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.utils.html#module-deid.utils.fileio">deid.utils.fileio module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.utils.html#module-deid.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">deid</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>deid.config package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/source/deid.config.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="deid-config-package">
+<h1>deid.config package<a class="headerlink" href="#deid-config-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-deid.config.standards">
+<span id="deid-config-standards-module"></span><h2>deid.config.standards module<a class="headerlink" href="#module-deid.config.standards" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-deid.config.utils">
+<span id="deid-config-utils-module"></span><h2>deid.config.utils module<a class="headerlink" href="#module-deid.config.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="deid.config.utils.add_section">
+<code class="descclassname"><span class="pre">deid.config.utils.</span></code><code class="descname"><span class="pre">add_section</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">config</span></span></em>, <em><span class="n"><span class="pre">section</span></span></em>, <em><span class="n"><span class="pre">section_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config/utils.html#add_section"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.utils.add_section" title="Permalink to this definition">¶</a></dt>
+<dd><p>add section will add a section (and optionally)
+section name to a config</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>config</strong> (<em>the config</em><em> (</em><em>dict</em><em>) </em><em>parsed thus far</em>) – </li>
+<li><strong>section</strong> (<em>the section name to add</em>) – </li>
+<li><strong>section_name</strong> (<em>an optional name</em><em>, </em><em>added as a level</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.config.utils.find_deid">
+<code class="descclassname"><span class="pre">deid.config.utils.</span></code><code class="descname"><span class="pre">find_deid</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config/utils.html#find_deid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.utils.find_deid" title="Permalink to this definition">¶</a></dt>
+<dd><p>find_deid is a helper function to load_deid to find a deid file.</p>
+<p>It can be in a folder, or return the path provided if it is the file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>a path on the filesystem. If not provided</em><em>, </em><em>will assume PWD.</em>) – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.config.utils.get_deid">
+<code class="descclassname"><span class="pre">deid.config.utils.</span></code><code class="descname"><span class="pre">get_deid</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">exit_on_fail</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em><span class="n"><span class="pre">load</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config/utils.html#get_deid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.utils.get_deid" title="Permalink to this definition">¶</a></dt>
+<dd><p>get deid is intended to retrieve the full path of a deid file provided with
+the software, based on a tag. For example, under deid/data if a file is called
+“deid.dicom”, the tag would be “dicom”.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tag</strong> (<em>the text that comes after deid to indicate the tag of the file in deid/data</em>) – </li>
+<li><strong>exit_on_fail</strong> (<em>if None is an acceptable return value</em><em>, </em><em>this should be set to False</em>) – (default is True).</li>
+<li><strong>quiet</strong> (<em>Default False. If None is acceptable</em><em>, </em><em>quiet can be set to True</em>) – </li>
+<li><strong>load</strong> (<em>also load the deid</em><em>, </em><em>if resulting path</em><em> (</em><em>from path</em><em> or </em><em>tag</em><em>) </em><em>is not None</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.config.utils.load_combined_deid">
+<code class="descclassname"><span class="pre">deid.config.utils.</span></code><code class="descname"><span class="pre">load_combined_deid</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">deids</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config/utils.html#load_combined_deid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.utils.load_combined_deid" title="Permalink to this definition">¶</a></dt>
+<dd><p>load one or more deids, either based on a path or a tag</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>deids</strong> (<em>should be a custom list of deids</em>) – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.config.utils.load_deid">
+<code class="descclassname"><span class="pre">deid.config.utils.</span></code><code class="descname"><span class="pre">load_deid</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config/utils.html#load_deid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.utils.load_deid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load_deid will return a loaded in (user) deid configuration file.</p>
+<p>This can be used to update a default config.json. If a file path is
+specified, it is loaded directly. If a folder is specified, we look
+for a deid file in the folder. If nothing is specified, we assume
+the user wants to load a deid file in the present working directory.
+If the user wants to have multiple deid files in a directory, this
+can be done with an extension that specifies the module, eg;</p>
+<blockquote>
+<div>deid.dicom
+deid.nifti</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>a path to a deid file</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>config</strong></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">a parsed deid (dictionary) with valid sections</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.config.utils.parse_config_action">
+<code class="descclassname"><span class="pre">deid.config.utils.</span></code><code class="descname"><span class="pre">parse_config_action</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">section</span></span></em>, <em><span class="n"><span class="pre">line</span></span></em>, <em><span class="n"><span class="pre">config</span></span></em>, <em><span class="n"><span class="pre">section_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config/utils.html#parse_config_action"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.utils.parse_config_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>add action will take a line from a deid config file, a config (dictionary), and
+an active section name (eg header) and add an entry to the config file to perform
+the action.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>section</strong> (<em>a valid section name from the deid config file</em>) – </li>
+<li><strong>line</strong> (<em>the line content to parse for the section/action</em>) – </li>
+<li><strong>config</strong> (<em>the growing/current config dictionary</em>) – </li>
+<li><strong>section_name</strong> (<em>optionally</em><em>, </em><em>a section name</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.config.utils.parse_filter_group">
+<code class="descclassname"><span class="pre">deid.config.utils.</span></code><code class="descname"><span class="pre">parse_filter_group</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">spec</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config/utils.html#parse_filter_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.utils.parse_filter_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>given the specification (a list of lines) continue parsing lines
+until the filter group ends, as indicated by the start of a new LABEL,
+(case 1), the start of a new section (case 2) or the end of the spec
+file (case 3). Returns a list of members (lines) that belong to the
+filter group. The list (by way of using pop) is updated in the calling
+function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>spec</strong> (<em>unparsed lines of the deid recipe file</em>) – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.config.utils.parse_format">
+<code class="descclassname"><span class="pre">deid.config.utils.</span></code><code class="descname"><span class="pre">parse_format</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config/utils.html#parse_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.utils.parse_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>given a line that starts with FORMAT, parse the file.</p>
+<p>This means checking the format of the file and checking that it is
+supported. If not, exit on error. If yes, return the format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>line</strong> (<em>the line that starts with format.</em>) – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.config.utils.parse_group_action">
+<code class="descclassname"><span class="pre">deid.config.utils.</span></code><code class="descname"><span class="pre">parse_group_action</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">section</span></span></em>, <em><span class="n"><span class="pre">line</span></span></em>, <em><span class="n"><span class="pre">config</span></span></em>, <em><span class="n"><span class="pre">section_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config/utils.html#parse_group_action"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.utils.parse_group_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>parse a group action, either FIELD or SPLIT, which must belong to
+either a fields or values section.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>section</strong> (<em>a valid section name from the deid config file</em>) – </li>
+<li><strong>line</strong> (<em>the line content to parse for the section/action</em>) – </li>
+<li><strong>config</strong> (<em>the growing/current config dictionary</em>) – </li>
+<li><strong>section_name</strong> (<em>optionally</em><em>, </em><em>a section name</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.config.utils.parse_label">
+<code class="descclassname"><span class="pre">deid.config.utils.</span></code><code class="descname"><span class="pre">parse_label</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">section</span></span></em>, <em><span class="n"><span class="pre">config</span></span></em>, <em><span class="n"><span class="pre">section_name</span></span></em>, <em><span class="n"><span class="pre">members</span></span></em>, <em><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config/utils.html#parse_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.utils.parse_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>parse label will add a (optionally named) label to the filter
+section, including one or more criteria</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>section</strong> (<em>the section name</em><em> (</em><em>e.g.</em><em>, </em><em>header</em><em>) </em><em>must be one in sections</em>) – </li>
+<li><strong>config</strong> (<em>the config</em><em> (</em><em>dictionary</em><em>) </em><em>parsed thus far</em>) – </li>
+<li><strong>section_name</strong> (<em>an optional name for a section</em>) – </li>
+<li><strong>members</strong> (<em>the lines belonging to the section/section_name</em>) – </li>
+<li><strong>label</strong> (<em>an optional name for the group of commands</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.config.utils.parse_member">
+<code class="descclassname"><span class="pre">deid.config.utils.</span></code><code class="descname"><span class="pre">parse_member</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">members</span></span></em>, <em><span class="n"><span class="pre">operator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config/utils.html#parse_member"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.utils.parse_member" title="Permalink to this definition">¶</a></dt>
+<dd><p>a parsing function for a filter member. Will return a single member
+with fields, values, and an operator. In the case of multiple and/or
+statements that are chained, will instead return a list.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-deid.config">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-deid.config" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="deid.config.DeidRecipe">
+<em class="property"><span class="pre">class</span> </em><code class="descclassname"><span class="pre">deid.config.</span></code><code class="descname"><span class="pre">DeidRecipe</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">deid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em><span class="n"><span class="pre">default_base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dicom'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config.html#DeidRecipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.DeidRecipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Create a deid recipe to filter and perform operations on a dicom header.</p>
+<p>Usage typically looks like:</p>
+<p>deid = ‘dicom.deid’
+recipe = DeidRecipe(deid)</p>
+<p>If deid is None, the default provided by the application is used.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>deid</strong> (<em>the deid recipe</em><em> (or </em><em>recipes</em><em>) </em><em>files to use. If more than one</em>) – is provided, should be done in order of preference for load
+(later in the list overrides earlier loaded).</li>
+<li><strong>base</strong> (<em>if True</em><em>, </em><em>load a default base</em><em> (</em><em>default_base</em><em>) </em><em>before custom</em>) – </li>
+<li><strong>default_base</strong> (<em>the default base to load if &quot;base&quot; is True</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="deid.config.DeidRecipe.get_actions">
+<code class="descname"><span class="pre">get_actions</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">action</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config.html#DeidRecipe.get_actions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.DeidRecipe.get_actions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get deid actions to perform on a header, or a subset based on a type</p>
+<p>A header action is a list with the following:
+{‘action’: ‘REMOVE’, ‘field’: ‘AssignedLocation’},</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>action</strong> (<em>if not None</em><em>, </em><em>filter to action specified</em>) – </li>
+<li><strong>field</strong> (<em>if not None</em><em>, </em><em>filter to field specified</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.config.DeidRecipe.get_fields_lists">
+<code class="descname"><span class="pre">get_fields_lists</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config.html#DeidRecipe.get_fields_lists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.DeidRecipe.get_fields_lists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a values list by name</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.config.DeidRecipe.get_filters">
+<code class="descname"><span class="pre">get_filters</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config.html#DeidRecipe.get_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.DeidRecipe.get_filters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all filters for a deid recipe, or a set based on a name</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.config.DeidRecipe.get_format">
+<code class="descname"><span class="pre">get_format</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config.html#DeidRecipe.get_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.DeidRecipe.get_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the format of the loaded deid, if one exists</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.config.DeidRecipe.get_values_lists">
+<code class="descname"><span class="pre">get_values_lists</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config.html#DeidRecipe.get_values_lists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.DeidRecipe.get_values_lists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a values list by name</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.config.DeidRecipe.has_actions">
+<code class="descname"><span class="pre">has_actions</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config.html#DeidRecipe.has_actions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.DeidRecipe.has_actions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="deid.config.DeidRecipe.has_fields_lists">
+<code class="descname"><span class="pre">has_fields_lists</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config.html#DeidRecipe.has_fields_lists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.DeidRecipe.has_fields_lists" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="deid.config.DeidRecipe.has_values_lists">
+<code class="descname"><span class="pre">has_values_lists</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config.html#DeidRecipe.has_values_lists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.DeidRecipe.has_values_lists" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="deid.config.DeidRecipe.listof">
+<code class="descname"><span class="pre">listof</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">section</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config.html#DeidRecipe.listof"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.DeidRecipe.listof" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of keys for a section</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.config.DeidRecipe.load">
+<code class="descname"><span class="pre">load</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">deid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config.html#DeidRecipe.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.DeidRecipe.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a deid recipe into the object.</p>
+<p>If a deid configuration is already defined, append to that.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.config.DeidRecipe.ls_fieldlists">
+<code class="descname"><span class="pre">ls_fieldlists</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config.html#DeidRecipe.ls_fieldlists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.DeidRecipe.ls_fieldlists" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="deid.config.DeidRecipe.ls_filters">
+<code class="descname"><span class="pre">ls_filters</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config.html#DeidRecipe.ls_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.DeidRecipe.ls_filters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="deid.config.DeidRecipe.ls_valuelists">
+<code class="descname"><span class="pre">ls_valuelists</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/config.html#DeidRecipe.ls_valuelists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.config.DeidRecipe.ls_valuelists" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Deid" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="deid.data.html" class="btn btn-neutral float-right" title="deid.data package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2022, Vanessa Sochat.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

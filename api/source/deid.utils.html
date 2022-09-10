@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deid.utils package &mdash; deid 0.2.31 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-argparse.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme.css" type="text/css" /><link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="deid.main package" href="deid.main.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> deid<img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.2.31
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="deid.config.html">deid.config package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.config.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.config.html#module-deid.config.standards">deid.config.standards module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.config.html#module-deid.config.utils">deid.config.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.config.html#module-deid.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.data.html">deid.data package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.data.html#module-deid.data">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.dicom.actions.html">deid.dicom.actions package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.actions.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.actions.html#module-deid.dicom.actions.jitter">deid.dicom.actions.jitter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.actions.html#module-deid.dicom.actions.uids">deid.dicom.actions.uids module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.actions.html#module-deid.dicom.actions">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.dicom.pixels.html">deid.dicom.pixels package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.pixels.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.pixels.html#module-deid.dicom.pixels.clean">deid.dicom.pixels.clean module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.pixels.html#module-deid.dicom.pixels.detect">deid.dicom.pixels.detect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.pixels.html#module-deid.dicom.pixels">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.dicom.html">deid.dicom package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deid.dicom.actions.html">deid.dicom.actions package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="deid.dicom.pixels.html">deid.dicom.pixels package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.fields">deid.dicom.fields module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.filter">deid.dicom.filter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.groups">deid.dicom.groups module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.header">deid.dicom.header module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.parser">deid.dicom.parser module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.tags">deid.dicom.tags module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.utils">deid.dicom.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.validate">deid.dicom.validate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.logger.html">deid.logger package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.logger.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.logger.html#module-deid.logger.message">deid.logger.message module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.logger.html#module-deid.logger.progress">deid.logger.progress module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deid.logger.html#clint-textui-progress">clint.textui.progress</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deid.logger.html#module-deid.logger">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.main.html">deid.main package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.main.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.main.html#module-deid.main.identifiers">deid.main.identifiers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.main.html#module-deid.main.inspect">deid.main.inspect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.main.html#module-deid.main">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">deid.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-deid.utils.actions">deid.utils.actions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-deid.utils.fileio">deid.utils.fileio module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-deid.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">deid</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>deid.utils package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/source/deid.utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="deid-utils-package">
+<h1>deid.utils package<a class="headerlink" href="#deid-utils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-deid.utils.actions">
+<span id="deid-utils-actions-module"></span><h2>deid.utils.actions module<a class="headerlink" href="#module-deid.utils.actions" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="deid.utils.actions.get_func">
+<code class="descclassname"><span class="pre">deid.utils.actions.</span></code><code class="descname"><span class="pre">get_func</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">function_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/utils/actions.html#get_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.utils.actions.get_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get_func will return a function that is defined from a string.</p>
+<p>the function is assumed to be in this file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>a function from globals based on a name string</strong> (<em>return</em>) – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.utils.actions.get_timestamp">
+<code class="descclassname"><span class="pre">deid.utils.actions.</span></code><code class="descname"><span class="pre">get_timestamp</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">item_date</span></span></em>, <em><span class="n"><span class="pre">item_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">jitter_days</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/utils/actions.html#get_timestamp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.utils.actions.get_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get_timestamp will return (default) a UTC timestamp.</p>
+<p>This will have some date and (optional) time. A different format can be
+provided to change default behavior. eg: “%Y%m%d”</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.utils.actions.parse_keyvalue_pairs">
+<code class="descclassname"><span class="pre">deid.utils.actions.</span></code><code class="descname"><span class="pre">parse_keyvalue_pairs</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">pairs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/utils/actions.html#parse_keyvalue_pairs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.utils.actions.parse_keyvalue_pairs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a listing of extra arguments, parse into lookup dict.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.utils.actions.parse_value">
+<code class="descclassname"><span class="pre">deid.utils.actions.</span></code><code class="descname"><span class="pre">parse_value</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">dicom</span></span></em>, <em><span class="n"><span class="pre">value</span></span></em>, <em><span class="n"><span class="pre">item</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">funcs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/utils/actions.html#parse_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.utils.actions.parse_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse_value will parse the value field of an action.</p>
+<p>This function returns either:
+1. the string (string or from function)
+2. a variable looked up (var:FieldName)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-deid.utils.fileio">
+<span id="deid-utils-fileio-module"></span><h2>deid.utils.fileio module<a class="headerlink" href="#module-deid.utils.fileio" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="deid.utils.fileio.get_installdir">
+<code class="descclassname"><span class="pre">deid.utils.fileio.</span></code><code class="descname"><span class="pre">get_installdir</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/utils/fileio.html#get_installdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.utils.fileio.get_installdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get installation directory of the application</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.utils.fileio.get_temporary_name">
+<code class="descclassname"><span class="pre">deid.utils.fileio.</span></code><code class="descname"><span class="pre">get_temporary_name</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/utils/fileio.html#get_temporary_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.utils.fileio.get_temporary_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a temporary name.</p>
+<p>Get a temporary name, can be used for a directory or file. This does so
+without creating the file, and adds an optional prefix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>prefix</strong> (<em>if defined</em><em>, </em><em>add the prefix after deid</em>) – </li>
+<li><strong>ext</strong> (<em>if defined</em><em>, </em><em>return the file extension appended. Do not specify &quot;.&quot;</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.utils.fileio.is_number">
+<code class="descclassname"><span class="pre">deid.utils.fileio.</span></code><code class="descname"><span class="pre">is_number</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/utils/fileio.html#is_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.utils.fileio.is_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if the value for a field is numeric</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.utils.fileio.read_file">
+<code class="descclassname"><span class="pre">deid.utils.fileio.</span></code><code class="descname"><span class="pre">read_file</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">filename</span></span></em>, <em><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/utils/fileio.html#read_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.utils.fileio.read_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> (<em>the name of the file to write to</em>) – </li>
+<li><strong>mode</strong> (<em>the mode to open the file</em><em>, </em><em>defaults to read</em><em> (</em><em>r</em><em>)</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.utils.fileio.read_json">
+<code class="descclassname"><span class="pre">deid.utils.fileio.</span></code><code class="descname"><span class="pre">read_json</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">filename</span></span></em>, <em><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em><span class="n"><span class="pre">ordered_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/utils/fileio.html#read_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.utils.fileio.read_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open a file, “filename” and read the string as json</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> (<em>the name of the file to write to</em>) – </li>
+<li><strong>mode</strong> (<em>the mode to open the file</em><em>, </em><em>defaults to read</em><em> (</em><em>r</em><em>)</em>) – </li>
+<li><strong>ordered_dict</strong> (<em>If true</em><em>, </em><em>return an OrderedDict</em><em> (</em><em>default is False</em><em>)</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.utils.fileio.recursive_find">
+<code class="descclassname"><span class="pre">deid.utils.fileio.</span></code><code class="descname"><span class="pre">recursive_find</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">base</span></span></em>, <em><span class="n"><span class="pre">pattern</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/utils/fileio.html#recursive_find"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.utils.fileio.recursive_find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursively find files that match a pattern.</p>
+<p>recursive find will yield dicom files in all directory levels
+below a base path. It uses get_dcm_files to find the files in the bases.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>base</strong> (<em>the base directory to search</em>) – </li>
+<li><strong>pattern</strong> (<em>a pattern to match. If None</em><em>, </em><em>defaults to &quot;*&quot;</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.utils.fileio.to_int">
+<code class="descclassname"><span class="pre">deid.utils.fileio.</span></code><code class="descname"><span class="pre">to_int</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/utils/fileio.html#to_int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.utils.fileio.to_int" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a value (value) to int, if found to be otherwise</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.utils.fileio.write_file">
+<code class="descclassname"><span class="pre">deid.utils.fileio.</span></code><code class="descname"><span class="pre">write_file</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">filename</span></span></em>, <em><span class="n"><span class="pre">content</span></span></em>, <em><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/utils/fileio.html#write_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.utils.fileio.write_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write to file.</p>
+<p>write_file will open a file, “filename” and write content, “content”
+and properly close the file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> (<em>the name of the file to write to</em>) – </li>
+<li><strong>content</strong> (<em>the content to write to file</em>) – </li>
+<li><strong>mode</strong> (<em>the mode to open the file</em><em>, </em><em>defaults to write</em><em> (</em><em>w</em><em>)</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.utils.fileio.write_json">
+<code class="descclassname"><span class="pre">deid.utils.fileio.</span></code><code class="descname"><span class="pre">write_json</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">json_obj</span></span></em>, <em><span class="n"><span class="pre">filename</span></span></em>, <em><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em>, <em><span class="n"><span class="pre">print_pretty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/utils/fileio.html#write_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.utils.fileio.write_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a json object to file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>json_obj</strong> (<em>the dict to print to json</em>) – </li>
+<li><strong>filename</strong> (<em>the output file to write to</em>) – </li>
+<li><strong>pretty_print</strong> (<em>if True</em><em>, </em><em>will use nicer formatting</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-deid.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-deid.utils" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="deid.main.html" class="btn btn-neutral float-left" title="deid.main package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2022, Vanessa Sochat.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

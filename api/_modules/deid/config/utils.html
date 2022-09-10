@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deid.config.utils &mdash; deid 0.2.31 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sphinx-argparse.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/theme.css" type="text/css" /><link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> deid<img src="../../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.2.31
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.config.html">deid.config package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.config.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.config.html#module-deid.config.standards">deid.config.standards module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.config.html#module-deid.config.utils">deid.config.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.config.html#module-deid.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.data.html">deid.data package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.data.html#module-deid.data">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.dicom.actions.html">deid.dicom.actions package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.actions.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.actions.html#module-deid.dicom.actions.jitter">deid.dicom.actions.jitter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.actions.html#module-deid.dicom.actions.uids">deid.dicom.actions.uids module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.actions.html#module-deid.dicom.actions">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.dicom.pixels.html">deid.dicom.pixels package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.pixels.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.pixels.html#module-deid.dicom.pixels.clean">deid.dicom.pixels.clean module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.pixels.html#module-deid.dicom.pixels.detect">deid.dicom.pixels.detect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.pixels.html#module-deid.dicom.pixels">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.dicom.html">deid.dicom package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/deid.dicom.actions.html">deid.dicom.actions package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/deid.dicom.pixels.html">deid.dicom.pixels package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.fields">deid.dicom.fields module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.filter">deid.dicom.filter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.groups">deid.dicom.groups module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.header">deid.dicom.header module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.parser">deid.dicom.parser module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.tags">deid.dicom.tags module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.utils">deid.dicom.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.validate">deid.dicom.validate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.logger.html">deid.logger package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.logger.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.logger.html#module-deid.logger.message">deid.logger.message module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.logger.html#module-deid.logger.progress">deid.logger.progress module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/deid.logger.html#clint-textui-progress">clint.textui.progress</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.logger.html#module-deid.logger">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.main.html">deid.main package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.main.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.main.html#module-deid.main.identifiers">deid.main.identifiers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.main.html#module-deid.main.inspect">deid.main.inspect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.main.html#module-deid.main">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.utils.html">deid.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.utils.html#module-deid.utils.actions">deid.utils.actions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.utils.html#module-deid.utils.fileio">deid.utils.fileio module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.utils.html#module-deid.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">deid</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../config.html">deid.config</a> &raquo;</li>
+      <li>deid.config.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for deid.config.utils</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Vanessa Sochat&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright 2016-2022, Vanessa Sochat&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
+
+<span class="c1"># pylint: skip-file</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+
+<span class="kn">from</span> <span class="nn">deid.config.standards</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">actions</span><span class="p">,</span>
+    <span class="n">filters</span><span class="p">,</span>
+    <span class="n">formats</span><span class="p">,</span>
+    <span class="n">group_actions</span><span class="p">,</span>
+    <span class="n">groups</span><span class="p">,</span>
+    <span class="n">sections</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">deid.data</span> <span class="kn">import</span> <span class="n">data_base</span>
+<span class="kn">from</span> <span class="nn">deid.logger</span> <span class="kn">import</span> <span class="n">bot</span>
+<span class="kn">from</span> <span class="nn">deid.utils</span> <span class="kn">import</span> <span class="n">get_installdir</span><span class="p">,</span> <span class="n">read_file</span>
+
+
+<div class="viewcode-block" id="load_combined_deid"><a class="viewcode-back" href="../../../source/deid.config.html#deid.config.utils.load_combined_deid">[docs]</a><span class="k">def</span> <span class="nf">load_combined_deid</span><span class="p">(</span><span class="n">deids</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;load one or more deids, either based on a path or a tag</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+<span class="sd">    deids: should be a custom list of deids</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">deids</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;load_combined_deids expects a list.&quot;</span><span class="p">)</span>
+
+    <span class="n">found_format</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">deid</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">for</span> <span class="n">single_deid</span> <span class="ow">in</span> <span class="n">deids</span><span class="p">:</span>
+
+        <span class="c1"># If not a tag or path, returns None</span>
+        <span class="n">next_deid</span> <span class="o">=</span> <span class="n">get_deid</span><span class="p">(</span><span class="n">tag</span><span class="o">=</span><span class="n">single_deid</span><span class="p">,</span> <span class="n">exit_on_fail</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">load</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">next_deid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Formats must match</span>
+            <span class="k">if</span> <span class="n">found_format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">found_format</span> <span class="o">=</span> <span class="n">next_deid</span><span class="p">[</span><span class="s2">&quot;format&quot;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">found_format</span> <span class="o">!=</span> <span class="n">next_deid</span><span class="p">[</span><span class="s2">&quot;format&quot;</span><span class="p">]:</span>
+                    <span class="n">bot</span><span class="o">.</span><span class="n">exis</span><span class="p">(</span>
+                        <span class="s2">&quot;Mismatch in deid formats, </span><span class="si">%s</span><span class="s2"> and </span><span class="si">%s</span><span class="s2">&quot;</span>
+                        <span class="o">%</span> <span class="p">(</span><span class="n">found_format</span><span class="p">,</span> <span class="n">next_deid</span><span class="p">[</span><span class="s2">&quot;format&quot;</span><span class="p">])</span>
+                    <span class="p">)</span>
+
+            <span class="c1"># If it&#39;s the first one, use as starter template</span>
+            <span class="k">if</span> <span class="n">deid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">deid</span> <span class="o">=</span> <span class="n">next_deid</span>
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="c1"># Update filter, appending to end to give first preference</span>
+                <span class="k">if</span> <span class="s2">&quot;filter&quot;</span> <span class="ow">in</span> <span class="n">next_deid</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s2">&quot;filter&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">deid</span><span class="p">:</span>
+                        <span class="n">deid</span><span class="p">[</span><span class="s2">&quot;filter&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">next_deid</span><span class="p">[</span><span class="s2">&quot;filter&quot;</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">next_deid</span><span class="p">[</span><span class="s2">&quot;filter&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                            <span class="n">deid</span><span class="p">[</span><span class="s2">&quot;filter&quot;</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="n">deid</span><span class="p">[</span><span class="s2">&quot;filter&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="p">[])</span> <span class="o">+</span> <span class="n">group</span>
+                            <span class="p">)</span>
+
+                <span class="k">if</span> <span class="s2">&quot;header&quot;</span> <span class="ow">in</span> <span class="n">next_deid</span><span class="p">:</span>
+                    <span class="n">deid</span><span class="p">[</span><span class="s2">&quot;header&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">deid</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;header&quot;</span><span class="p">,</span> <span class="p">[])</span> <span class="o">+</span> <span class="n">next_deid</span><span class="p">[</span><span class="s2">&quot;header&quot;</span><span class="p">]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Problem loading </span><span class="si">%s</span><span class="s2">, skipping.&quot;</span> <span class="o">%</span> <span class="n">single_deid</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">deid</span></div>
+
+
+<div class="viewcode-block" id="load_deid"><a class="viewcode-back" href="../../../source/deid.config.html#deid.config.utils.load_deid">[docs]</a><span class="k">def</span> <span class="nf">load_deid</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load_deid will return a loaded in (user) deid configuration file.</span>
+
+<span class="sd">    This can be used to update a default config.json. If a file path is</span>
+<span class="sd">    specified, it is loaded directly. If a folder is specified, we look</span>
+<span class="sd">    for a deid file in the folder. If nothing is specified, we assume</span>
+<span class="sd">    the user wants to load a deid file in the present working directory.</span>
+<span class="sd">    If the user wants to have multiple deid files in a directory, this</span>
+<span class="sd">    can be done with an extension that specifies the module, eg;</span>
+
+<span class="sd">          deid.dicom</span>
+<span class="sd">          deid.nifti</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+<span class="sd">    path: a path to a deid file</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    =======</span>
+<span class="sd">    config: a parsed deid (dictionary) with valid sections</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">find_deid</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="c1"># Read in spec, clean up extra spaces and newlines</span>
+    <span class="n">spec</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">read_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span>
+    <span class="p">]</span>
+
+    <span class="n">spec</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">spec</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="n">section</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">while</span> <span class="n">spec</span><span class="p">:</span>
+
+        <span class="c1"># Clean up white trailing/leading space</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="c1"># Comment</span>
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Set format</span>
+        <span class="k">elif</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;^format&quot;</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">)):</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;format&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parse_format</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+        <span class="c1"># A new section?</span>
+        <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;%&quot;</span><span class="p">):</span>
+
+            <span class="c1"># Remove any comments</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+            <span class="c1"># Is there a section name?</span>
+            <span class="n">section_name</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">section_name</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+            <span class="n">section</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;[%]|(\s+)&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">section</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sections</span><span class="p">:</span>
+                <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> is not a valid section.&quot;</span> <span class="o">%</span> <span class="n">section</span><span class="p">)</span>
+
+            <span class="n">config</span> <span class="o">=</span> <span class="n">add_section</span><span class="p">(</span>
+                <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span> <span class="n">section</span><span class="o">=</span><span class="n">section</span><span class="p">,</span> <span class="n">section_name</span><span class="o">=</span><span class="n">section_name</span>
+            <span class="p">)</span>
+
+        <span class="c1"># A %fields action (only field allowed), %values allows split</span>
+        <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">group_actions</span><span class="p">)</span> <span class="ow">and</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">parse_group_action</span><span class="p">(</span>
+                <span class="n">section</span><span class="o">=</span><span class="n">section</span><span class="p">,</span> <span class="n">section_name</span><span class="o">=</span><span class="n">section_name</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="n">line</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span>
+            <span class="p">)</span>
+
+        <span class="c1"># An action (ADD, BLANK, JITTER, KEEP, REPLACE, REMOVE, LABEL)</span>
+        <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">actions</span><span class="p">):</span>
+
+            <span class="c1"># Start of a filter group</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;LABEL&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">section</span> <span class="o">==</span> <span class="s2">&quot;filter&quot;</span><span class="p">:</span>
+                <span class="n">members</span> <span class="o">=</span> <span class="n">parse_filter_group</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+
+                <span class="c1"># Add the filter label to the config</span>
+                <span class="n">config</span> <span class="o">=</span> <span class="n">parse_label</span><span class="p">(</span>
+                    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+                    <span class="n">section</span><span class="o">=</span><span class="n">section</span><span class="p">,</span>
+                    <span class="n">label</span><span class="o">=</span><span class="n">line</span><span class="p">,</span>
+                    <span class="n">section_name</span><span class="o">=</span><span class="n">section_name</span><span class="p">,</span>
+                    <span class="n">members</span><span class="o">=</span><span class="n">members</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="c1"># Parse the action</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">config</span> <span class="o">=</span> <span class="n">parse_config_action</span><span class="p">(</span>
+                    <span class="n">section</span><span class="o">=</span><span class="n">section</span><span class="p">,</span> <span class="n">section_name</span><span class="o">=</span><span class="n">section_name</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="n">line</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> not recognized to be in valid format, skipping.&quot;</span> <span class="o">%</span> <span class="n">line</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">config</span></div>
+
+
+<div class="viewcode-block" id="find_deid"><a class="viewcode-back" href="../../../source/deid.config.html#deid.config.utils.find_deid">[docs]</a><span class="k">def</span> <span class="nf">find_deid</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;find_deid is a helper function to load_deid to find a deid file.</span>
+
+<span class="sd">    It can be in a folder, or return the path provided if it is the file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+<span class="sd">    path: a path on the filesystem. If not provided, will assume PWD.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># A default deid will be loaded if all else fails</span>
+    <span class="n">default_deid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_installdir</span><span class="p">(),</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;deid.dicom&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+
+    <span class="c1"># The user has provided a directory</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">contenders</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;deid&quot;</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">contenders</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;No deid settings files found in </span><span class="si">%s</span><span class="s2">, will use default dicom.deid.&quot;</span>
+                <span class="o">%</span> <span class="n">path</span>
+            <span class="p">)</span>
+            <span class="n">contenders</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">default_deid</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">contenders</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Multiple deid files found in </span><span class="si">%s</span><span class="s2">, will use first.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">path</span><span class="p">))</span>
+
+        <span class="n">path</span> <span class="o">=</span> <span class="n">contenders</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># We have a file path at this point</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;Cannot find deid file </span><span class="si">%s</span><span class="s2">, exiting.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">path</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">path</span></div>
+
+
+<div class="viewcode-block" id="parse_format"><a class="viewcode-back" href="../../../source/deid.config.html#deid.config.utils.parse_format">[docs]</a><span class="k">def</span> <span class="nf">parse_format</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;given a line that starts with FORMAT, parse the file.</span>
+
+<span class="sd">    This means checking the format of the file and checking that it is</span>
+<span class="sd">    supported. If not, exit on error. If yes, return the format.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+<span class="sd">    line: the line that starts with format.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fmt</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;FORMAT|(\s+)&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">fmt</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">formats</span><span class="p">:</span>
+        <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> is not a valid format.&quot;</span> <span class="o">%</span> <span class="n">fmt</span><span class="p">)</span>
+    <span class="n">bot</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;FORMAT set to </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">fmt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fmt</span></div>
+
+
+<div class="viewcode-block" id="parse_filter_group"><a class="viewcode-back" href="../../../source/deid.config.html#deid.config.utils.parse_filter_group">[docs]</a><span class="k">def</span> <span class="nf">parse_filter_group</span><span class="p">(</span><span class="n">spec</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;given the specification (a list of lines) continue parsing lines</span>
+<span class="sd">    until the filter group ends, as indicated by the start of a new LABEL,</span>
+<span class="sd">    (case 1), the start of a new section (case 2) or the end of the spec</span>
+<span class="sd">    file (case 3). Returns a list of members (lines) that belong to the</span>
+<span class="sd">    filter group. The list (by way of using pop) is updated in the calling</span>
+<span class="sd">    function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+<span class="sd">    spec: unparsed lines of the deid recipe file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">members</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">keep_going</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">while</span> <span class="n">keep_going</span> <span class="ow">and</span> <span class="n">spec</span><span class="p">:</span>
+        <span class="n">next_line</span> <span class="o">=</span> <span class="n">spec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">next_line</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;LABEL&quot;</span><span class="p">):</span>
+            <span class="n">keep_going</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">next_line</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;%&quot;</span><span class="p">):</span>
+            <span class="n">keep_going</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_member</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">members</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_member</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">members</span></div>
+
+
+<div class="viewcode-block" id="parse_label"><a class="viewcode-back" href="../../../source/deid.config.html#deid.config.utils.parse_label">[docs]</a><span class="k">def</span> <span class="nf">parse_label</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">section_name</span><span class="p">,</span> <span class="n">members</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;parse label will add a (optionally named) label to the filter</span>
+<span class="sd">    section, including one or more criteria</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+<span class="sd">    section: the section name (e.g., header) must be one in sections</span>
+<span class="sd">    config: the config (dictionary) parsed thus far</span>
+<span class="sd">    section_name: an optional name for a section</span>
+<span class="sd">    members: the lines belonging to the section/section_name</span>
+<span class="sd">    label: an optional name for the group of commands</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">criteria</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;filters&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;coordinates&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+
+    <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">criteria</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
+
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">members</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">member</span> <span class="o">=</span> <span class="n">members</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="c1"># We have a coordinate line (coordinates to remove, mask 0)</span>
+        <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;coordinates&quot;</span><span class="p">):</span>
+            <span class="n">coordinate</span> <span class="o">=</span> <span class="n">member</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;coordinates&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">criteria</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">coordinate</span><span class="p">])</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Coordinates to keep (mask 1)</span>
+        <span class="k">elif</span> <span class="n">member</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;keepcoordinates&quot;</span><span class="p">):</span>
+            <span class="n">coordinate</span> <span class="o">=</span> <span class="n">member</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;keepcoordinates&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">criteria</span><span class="p">[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">coordinate</span><span class="p">])</span>
+            <span class="k">continue</span>
+
+        <span class="n">operator</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">entry</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">):</span>
+            <span class="n">operator</span> <span class="o">=</span> <span class="s2">&quot;and&quot;</span>
+            <span class="n">member</span> <span class="o">=</span> <span class="n">member</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">member</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;||&quot;</span><span class="p">):</span>
+            <span class="n">operator</span> <span class="o">=</span> <span class="s2">&quot;or&quot;</span>
+            <span class="n">member</span> <span class="o">=</span> <span class="n">member</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;||&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="c1"># Skip over comments</span>
+        <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Now that operators removed, parse member</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">member</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">filters</span><span class="p">):</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> filter is not valid, skipping.&quot;</span> <span class="o">%</span> <span class="n">member</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="c1"># Returns single member with field, values, operator,</span>
+            <span class="c1"># Or if multiple or/and in statement, a list</span>
+            <span class="n">entry</span> <span class="o">=</span> <span class="n">parse_member</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="n">operator</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">entry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">criteria</span><span class="p">[</span><span class="s2">&quot;filters&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+
+    <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">section_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">criteria</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">config</span></div>
+
+
+<div class="viewcode-block" id="parse_member"><a class="viewcode-back" href="../../../source/deid.config.html#deid.config.utils.parse_member">[docs]</a><span class="k">def</span> <span class="nf">parse_member</span><span class="p">(</span><span class="n">members</span><span class="p">,</span> <span class="n">operator</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;a parsing function for a filter member. Will return a single member</span>
+<span class="sd">    with fields, values, and an operator. In the case of multiple and/or</span>
+<span class="sd">    statements that are chained, will instead return a list.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">main_operator</span> <span class="o">=</span> <span class="n">operator</span>
+
+    <span class="n">actions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">operators</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">members</span> <span class="o">=</span> <span class="p">[</span><span class="n">members</span><span class="p">]</span>
+
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">members</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+        <span class="n">operator</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">member</span> <span class="o">=</span> <span class="n">members</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="c1"># Find the first || or +</span>
+        <span class="n">match_or</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;\|\|&quot;</span><span class="p">,</span> <span class="n">member</span><span class="p">)</span>
+        <span class="n">match_and</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;\+&quot;</span><span class="p">,</span> <span class="n">member</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">match_or</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">operator</span> <span class="o">=</span> <span class="s2">&quot;||&quot;</span>
+        <span class="k">if</span> <span class="n">match_and</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">match_or</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">match_or</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">match_and</span><span class="o">.</span><span class="n">start</span><span class="p">():</span>
+                    <span class="n">operator</span> <span class="o">=</span> <span class="s2">&quot;+&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">operator</span> <span class="o">=</span> <span class="s2">&quot;+&quot;</span>
+
+        <span class="k">if</span> <span class="n">operator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">member</span><span class="p">,</span> <span class="n">rest</span> <span class="o">=</span> <span class="n">member</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">operator</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># The rest is only valid if contains a filter statement</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">word</span> <span class="ow">in</span> <span class="n">rest</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">filters</span><span class="p">):</span>
+                <span class="n">members</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rest</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+
+                <span class="c1"># Split the statement based on found operator</span>
+                <span class="n">operator</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;||&quot;</span><span class="p">,</span> <span class="s2">&quot;or&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;and&quot;</span><span class="p">)</span>
+                <span class="n">operators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">operator</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">member</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">member</span><span class="p">,</span> <span class="n">rest</span><span class="p">])</span>
+
+        <span class="c1"># Parse the member</span>
+        <span class="n">action</span><span class="p">,</span> <span class="n">member</span> <span class="o">=</span> <span class="n">member</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="c1"># Contains, notcontains, equals, not equals expects FieldName Values</span>
+        <span class="k">if</span> <span class="n">action</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;contains&quot;</span><span class="p">,</span> <span class="s2">&quot;notcontains&quot;</span><span class="p">,</span> <span class="s2">&quot;equals&quot;</span><span class="p">,</span> <span class="s2">&quot;notequals&quot;</span><span class="p">]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">field</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">member</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> for line </span><span class="si">%s</span><span class="s2"> must have field and values, exiting.&quot;</span>
+                    <span class="o">%</span> <span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">member</span><span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="c1"># Missing, empty, expect only a field</span>
+        <span class="k">elif</span> <span class="n">action</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;missing&quot;</span><span class="p">,</span> <span class="s2">&quot;empty&quot;</span><span class="p">,</span> <span class="s2">&quot;present&quot;</span><span class="p">]:</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="n">member</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> is not a valid filter action.&quot;</span> <span class="o">%</span> <span class="n">action</span><span class="p">)</span>
+
+        <span class="n">actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+
+    <span class="n">entry</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="n">actions</span><span class="p">,</span>
+        <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="n">fields</span><span class="p">,</span>
+        <span class="s2">&quot;operator&quot;</span><span class="p">:</span> <span class="n">main_operator</span><span class="p">,</span>
+        <span class="s2">&quot;InnerOperators&quot;</span><span class="p">:</span> <span class="n">operators</span><span class="p">,</span>
+        <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">values</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">entry</span></div>
+
+
+<div class="viewcode-block" id="add_section"><a class="viewcode-back" href="../../../source/deid.config.html#deid.config.utils.add_section">[docs]</a><span class="k">def</span> <span class="nf">add_section</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">section_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;add section will add a section (and optionally)</span>
+<span class="sd">    section name to a config</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+<span class="sd">    config: the config (dict) parsed thus far</span>
+<span class="sd">    section: the section name to add</span>
+<span class="sd">    section_name: an optional name, added as a level</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">section</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;You must define a section (e.g. </span><span class="si">%he</span><span class="s2">ader) before any action.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">section</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;filter&quot;</span><span class="p">,</span> <span class="s2">&quot;values&quot;</span><span class="p">,</span> <span class="s2">&quot;fields&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">section_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;You must provide a name for a filter section.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">section</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sections</span><span class="p">:</span>
+        <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> is not a valid section.&quot;</span> <span class="o">%</span> <span class="n">section</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">section</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+
+        <span class="c1"># If a section is named, we have more one level (dict)</span>
+        <span class="k">if</span> <span class="n">section_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">]</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+            <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">section_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Adding section </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">section_name</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Adding section </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">section</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span>
+
+    <span class="c1"># Section is in config</span>
+    <span class="k">if</span> <span class="n">section_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">section_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">]:</span>
+        <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">section_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">return</span> <span class="n">config</span></div>
+
+
+<span class="k">def</span> <span class="nf">_remove_comments</span><span class="p">(</span><span class="n">parts</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;given a list of parts, and that the action and field are removed,</span>
+<span class="sd">    get the remainder of the line and clean up any trailing comments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">:])</span>  <span class="c1"># get remained of line</span>
+    <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># remove comments</span>
+
+
+<div class="viewcode-block" id="parse_group_action"><a class="viewcode-back" href="../../../source/deid.config.html#deid.config.utils.parse_group_action">[docs]</a><span class="k">def</span> <span class="nf">parse_group_action</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">section_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;parse a group action, either FIELD or SPLIT, which must belong to</span>
+<span class="sd">    either a fields or values section.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    =========</span>
+<span class="sd">    section: a valid section name from the deid config file</span>
+<span class="sd">    line: the line content to parse for the section/action</span>
+<span class="sd">    config: the growing/current config dictionary</span>
+<span class="sd">    section_name: optionally, a section name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">group_actions</span><span class="p">):</span>
+        <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> is not a valid group action.&quot;</span> <span class="o">%</span> <span class="n">line</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;FIELD&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">section</span> <span class="o">==</span> <span class="s2">&quot;fields&quot;</span><span class="p">:</span>
+        <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%f</span><span class="s2">ields only supports FIELD actions.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># We may have to deal with cases of spaces</span>
+    <span class="n">bot</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: adding </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+    <span class="n">action</span> <span class="o">=</span> <span class="n">parts</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Both require some parts</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">parts</span><span class="p">:</span>
+        <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> action </span><span class="si">%s</span><span class="s2"> requires additional arguments&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">action</span><span class="p">))</span>
+
+    <span class="c1"># For both, the second is always a field or field expander</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="n">parts</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Fields supports one or more fields with expanders (no third arguments)</span>
+    <span class="k">if</span> <span class="n">section</span> <span class="o">==</span> <span class="s2">&quot;fields&quot;</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">section_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="n">action</span><span class="p">,</span> <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="n">field</span><span class="p">})</span>
+
+    <span class="c1"># Values supports FIELD or SPLIT</span>
+    <span class="k">elif</span> <span class="n">section</span> <span class="o">==</span> <span class="s2">&quot;values&quot;</span><span class="p">:</span>
+
+        <span class="c1"># If we have a third set of arguments</span>
+        <span class="k">if</span> <span class="n">parts</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">_remove_comments</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+            <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">section_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="n">action</span><span class="p">,</span> <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">section_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="n">action</span><span class="p">,</span> <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="n">field</span><span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">config</span></div>
+
+
+<div class="viewcode-block" id="parse_config_action"><a class="viewcode-back" href="../../../source/deid.config.html#deid.config.utils.parse_config_action">[docs]</a><span class="k">def</span> <span class="nf">parse_config_action</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">section_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;add action will take a line from a deid config file, a config (dictionary), and</span>
+<span class="sd">    an active section name (eg header) and add an entry to the config file to perform</span>
+<span class="sd">    the action.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    =========</span>
+<span class="sd">    section: a valid section name from the deid config file</span>
+<span class="sd">    line: the line content to parse for the section/action</span>
+<span class="sd">    config: the growing/current config dictionary</span>
+<span class="sd">    section_name: optionally, a section name</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">actions</span><span class="p">):</span>
+        <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> is not a valid action line.&quot;</span> <span class="o">%</span> <span class="n">line</span><span class="p">)</span>
+
+    <span class="c1"># We may have to deal with cases of spaces</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+    <span class="n">action</span> <span class="o">=</span> <span class="n">parts</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># What field is the action for?</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> requires a FIELD value, but not found.&quot;</span> <span class="o">%</span> <span class="n">action</span><span class="p">)</span>
+
+    <span class="n">field</span> <span class="o">=</span> <span class="n">parts</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Actions that require a value</span>
+    <span class="k">if</span> <span class="n">action</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;ADD&quot;</span><span class="p">,</span> <span class="s2">&quot;REPLACE&quot;</span><span class="p">,</span> <span class="s2">&quot;JITTER&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> requires a VALUE, but not found&quot;</span> <span class="o">%</span> <span class="n">action</span><span class="p">)</span>
+
+        <span class="n">value</span> <span class="o">=</span> <span class="n">_remove_comments</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+        <span class="n">bot</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: adding </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span>
+        <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="n">action</span><span class="p">,</span> <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+
+    <span class="c1"># Actions that can optionally have a value</span>
+    <span class="k">elif</span> <span class="n">action</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;REMOVE&quot;</span><span class="p">]:</span>
+        <span class="n">bot</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: adding </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span>
+
+        <span class="c1"># Case 1: removing without any criteria</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="n">action</span><span class="p">,</span> <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="n">field</span><span class="p">})</span>
+
+        <span class="c1"># Case 2: REMOVE can have a func:is_thing to return boolean</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">_remove_comments</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+            <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="n">action</span><span class="p">,</span> <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+
+    <span class="c1"># Actions that don&#39;t require a value</span>
+    <span class="k">elif</span> <span class="n">action</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;BLANK&quot;</span><span class="p">,</span> <span class="s2">&quot;KEEP&quot;</span><span class="p">]:</span>
+        <span class="n">bot</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: adding </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span>
+        <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="n">action</span><span class="p">,</span> <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="n">field</span><span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">config</span></div>
+
+
+<div class="viewcode-block" id="get_deid"><a class="viewcode-back" href="../../../source/deid.config.html#deid.config.utils.get_deid">[docs]</a><span class="k">def</span> <span class="nf">get_deid</span><span class="p">(</span><span class="n">tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exit_on_fail</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">load</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;get deid is intended to retrieve the full path of a deid file provided with</span>
+<span class="sd">    the software, based on a tag. For example, under deid/data if a file is called</span>
+<span class="sd">    &quot;deid.dicom&quot;, the tag would be &quot;dicom&quot;.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+<span class="sd">    tag: the text that comes after deid to indicate the tag of the file in deid/data</span>
+<span class="sd">    exit_on_fail: if None is an acceptable return value, this should be set to False</span>
+<span class="sd">                  (default is True).</span>
+<span class="sd">    quiet: Default False. If None is acceptable, quiet can be set to True</span>
+<span class="sd">    load: also load the deid, if resulting path (from path or tag) is not None</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># no tag/path means load default</span>
+    <span class="k">if</span> <span class="n">tag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">tag</span> <span class="o">=</span> <span class="s2">&quot;dicom&quot;</span>
+
+    <span class="c1"># If it&#39;s already loaded</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">bot</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;deid is already loaded.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tag</span>
+
+    <span class="c1"># If it&#39;s a path, get full path</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">tag</span><span class="p">):</span>
+        <span class="n">deid</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">deid</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/deid.</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">data_base</span><span class="p">,</span> <span class="n">tag</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">deid</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">quiet</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Cannot find </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">deid</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">exit_on_fail</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">load</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">load_deid</span><span class="p">(</span><span class="n">deid</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">deid</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2022, Vanessa Sochat.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

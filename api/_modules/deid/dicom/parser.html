@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deid.dicom.parser &mdash; deid 0.2.31 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sphinx-argparse.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/theme.css" type="text/css" /><link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> deid<img src="../../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.2.31
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.config.html">deid.config package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.config.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.config.html#module-deid.config.standards">deid.config.standards module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.config.html#module-deid.config.utils">deid.config.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.config.html#module-deid.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.data.html">deid.data package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.data.html#module-deid.data">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.dicom.actions.html">deid.dicom.actions package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.actions.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.actions.html#module-deid.dicom.actions.jitter">deid.dicom.actions.jitter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.actions.html#module-deid.dicom.actions.uids">deid.dicom.actions.uids module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.actions.html#module-deid.dicom.actions">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.dicom.pixels.html">deid.dicom.pixels package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.pixels.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.pixels.html#module-deid.dicom.pixels.clean">deid.dicom.pixels.clean module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.pixels.html#module-deid.dicom.pixels.detect">deid.dicom.pixels.detect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.pixels.html#module-deid.dicom.pixels">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.dicom.html">deid.dicom package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/deid.dicom.actions.html">deid.dicom.actions package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/deid.dicom.pixels.html">deid.dicom.pixels package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.fields">deid.dicom.fields module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.filter">deid.dicom.filter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.groups">deid.dicom.groups module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.header">deid.dicom.header module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.parser">deid.dicom.parser module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.tags">deid.dicom.tags module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.utils">deid.dicom.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.validate">deid.dicom.validate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.logger.html">deid.logger package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.logger.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.logger.html#module-deid.logger.message">deid.logger.message module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.logger.html#module-deid.logger.progress">deid.logger.progress module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/deid.logger.html#clint-textui-progress">clint.textui.progress</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.logger.html#module-deid.logger">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.main.html">deid.main package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.main.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.main.html#module-deid.main.identifiers">deid.main.identifiers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.main.html#module-deid.main.inspect">deid.main.inspect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.main.html#module-deid.main">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.utils.html">deid.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.utils.html#module-deid.utils.actions">deid.utils.actions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.utils.html#module-deid.utils.fileio">deid.utils.fileio module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.utils.html#module-deid.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">deid</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>deid.dicom.parser</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for deid.dicom.parser</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Vanessa Sochat&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright 2016-2022, Vanessa Sochat&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+
+<span class="kn">from</span> <span class="nn">pydicom</span> <span class="kn">import</span> <span class="n">read_file</span>
+<span class="kn">from</span> <span class="nn">pydicom.dataelem</span> <span class="kn">import</span> <span class="n">DataElement</span>
+<span class="kn">from</span> <span class="nn">pydicom.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
+<span class="kn">from</span> <span class="nn">pydicom.tag</span> <span class="kn">import</span> <span class="n">Tag</span>
+
+<span class="kn">from</span> <span class="nn">deid.config</span> <span class="kn">import</span> <span class="n">DeidRecipe</span>
+<span class="kn">from</span> <span class="nn">deid.config.standards</span> <span class="kn">import</span> <span class="n">actions</span> <span class="k">as</span> <span class="n">valid_actions</span>
+<span class="kn">from</span> <span class="nn">deid.dicom.actions</span> <span class="kn">import</span> <span class="n">deid_funcs</span><span class="p">,</span> <span class="n">jitter_timestamp</span>
+<span class="kn">from</span> <span class="nn">deid.dicom.fields</span> <span class="kn">import</span> <span class="n">DicomField</span><span class="p">,</span> <span class="n">expand_field_expression</span><span class="p">,</span> <span class="n">get_fields</span>
+<span class="kn">from</span> <span class="nn">deid.dicom.groups</span> <span class="kn">import</span> <span class="n">extract_fields_list</span><span class="p">,</span> <span class="n">extract_values_list</span>
+<span class="kn">from</span> <span class="nn">deid.dicom.tags</span> <span class="kn">import</span> <span class="n">add_tag</span><span class="p">,</span> <span class="n">get_private</span><span class="p">,</span> <span class="n">get_tag</span><span class="p">,</span> <span class="n">remove_sequences</span>
+<span class="kn">from</span> <span class="nn">deid.dicom.utils</span> <span class="kn">import</span> <span class="n">save_dicom</span>
+<span class="kn">from</span> <span class="nn">deid.logger</span> <span class="kn">import</span> <span class="n">bot</span>
+<span class="kn">from</span> <span class="nn">deid.utils</span> <span class="kn">import</span> <span class="n">parse_value</span><span class="p">,</span> <span class="n">read_json</span>
+
+<span class="n">here</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="DicomParser"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.parser.DicomParser">[docs]</a><span class="k">class</span> <span class="nc">DicomParser</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse a dicom, performing one or more actions on fields.</span>
+
+<span class="sd">    A dicom parser serves as a cache to read in all fields from a dicom</span>
+<span class="sd">    file. For each, we store the element and child elements</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">dicom_file</span><span class="p">,</span> <span class="n">recipe</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">disable_skip</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create new instance of DicomParser</span>
+
+<span class="sd">        :param dicom_file: Path to a dicom file or instance of a pydicom.Dataset</span>
+<span class="sd">        :param recipe: a deid recipe, defaults to None</span>
+<span class="sd">        :param config: deid config, defaults to None</span>
+<span class="sd">        :param force: ignore errors when reading a dicom file, defaults to True</span>
+<span class="sd">        :param disable_skip: _description_, defaults to False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Lookup for the dicom</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Will be a list of DicomField</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Disable skip will load ALL fields, even those protected</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">disable_skip</span> <span class="o">=</span> <span class="n">disable_skip</span>
+
+        <span class="c1"># Load default configuration, or a custom one</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">config</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">here</span><span class="p">,</span> <span class="s2">&quot;config.json&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Cannot find config </span><span class="si">%s</span><span class="s2">, exiting&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">config</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">read_json</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">ordered_dict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Keep a lookup of deid provided functions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deid_funcs</span> <span class="o">=</span> <span class="n">deid_funcs</span>
+
+        <span class="c1"># Deid can be a recipe or filename</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">recipe</span><span class="p">,</span> <span class="n">DeidRecipe</span><span class="p">):</span>
+            <span class="n">recipe</span> <span class="o">=</span> <span class="n">DeidRecipe</span><span class="p">(</span><span class="n">recipe</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">dicom_file</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recipe</span> <span class="o">=</span> <span class="n">recipe</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;[dicom-parser:</span><span class="si">%s</span><span class="s2">]&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">dicom_name</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="DicomParser.load"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.parser.DicomParser.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dicom_file</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the dicom file.</span>
+
+<span class="sd">        Ensure that the dicom file exists, and use full path. Here</span>
+<span class="sd">        we load the file, and save the dicom, dicom_file, and dicom_name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Reset seen, which is generated when we parse</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seen</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># The user might already have provided a dataset</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dicom_file</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dicom</span> <span class="o">=</span> <span class="n">dicom_file</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If we must read the file, the path must exist</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dicom_file</span><span class="p">):</span>
+                <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> does not exist.&quot;</span> <span class="o">%</span> <span class="n">dicom_file</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dicom</span> <span class="o">=</span> <span class="n">read_file</span><span class="p">(</span><span class="n">dicom_file</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
+
+        <span class="c1"># Set class variables that might be helpful later</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dicom</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;filename&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dicom_file</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">df</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dicom_name</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">df</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dicom_file</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DicomParser.define"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.parser.DicomParser.define">[docs]</a>    <span class="k">def</span> <span class="nf">define</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a function or variable to the lookup for later usage.</span>
+
+<span class="sd">        This can be used for functions, lists, or variables.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
+
+<div class="viewcode-block" id="DicomParser.reset_preamble"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.parser.DicomParser.reset_preamble">[docs]</a>    <span class="k">def</span> <span class="nf">reset_preamble</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;reset the preamble&quot;&quot;&quot;</span>
+        <span class="c1"># We aren&#39;t including preamble, we will reset to be empty 128 bytes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dicom</span><span class="o">.</span><span class="n">preamble</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span> <span class="o">*</span> <span class="mi">128</span></div>
+
+<div class="viewcode-block" id="DicomParser.get_nested_field"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.parser.DicomParser.get_nested_field">[docs]</a>    <span class="k">def</span> <span class="nf">get_nested_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">return_parent</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve a nested field.</span>
+
+<span class="sd">        Based on a DicomField, return the one referenced in self.dicom.</span>
+<span class="sd">        If a delete is needed, then the parent should be returned as well.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># The field provided will be last in the list, the one we want</span>
+        <span class="c1"># It is not be nested because fields are stored flat</span>
+        <span class="n">uids</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">uid</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;__&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Keep a reference to where we are in dicom (can nest)</span>
+        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">is_filemeta</span><span class="p">:</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dicom</span><span class="o">.</span><span class="n">file_meta</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dicom</span>  <span class="c1"># dicom is of type Dataset</span>
+        <span class="n">desired</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">tag</span>
+
+        <span class="k">while</span> <span class="n">uids</span><span class="p">:</span>
+            <span class="n">uid</span> <span class="o">=</span> <span class="n">uids</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="c1"># If if&#39;s a uid for a tag, has parens</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;[(]|[)]&quot;</span><span class="p">,</span> <span class="n">uid</span><span class="p">):</span>
+                <span class="n">group</span><span class="p">,</span> <span class="n">element</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;[(]|[)]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">uid</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+                <span class="p">]</span>
+                <span class="n">group</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+                <span class="n">element</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+                <span class="n">tag</span> <span class="o">=</span> <span class="n">Tag</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
+
+                <span class="c1"># We keep going until we find the desired tag</span>
+                <span class="k">if</span> <span class="n">tag</span> <span class="o">!=</span> <span class="n">desired</span><span class="p">:</span>
+
+                    <span class="c1"># If the parent has been removed, we can&#39;t continue</span>
+                    <span class="k">if</span> <span class="n">tag</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parent</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="n">desired</span>
+
+                    <span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span>
+
+            <span class="c1"># Otherwise it&#39;s an index into a sequence</span>
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="c1"># If the parent has been removed, we can&#39;t continue</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">(</span><span class="n">uid</span><span class="p">)</span> <span class="ow">in</span> <span class="n">parent</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="n">desired</span>
+                <span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">uid</span><span class="p">)]</span>
+
+        <span class="k">if</span> <span class="n">return_parent</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">parent</span><span class="p">,</span> <span class="n">desired</span>
+        <span class="k">return</span> <span class="n">desired</span></div>
+
+<div class="viewcode-block" id="DicomParser.delete_field"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.parser.DicomParser.delete_field">[docs]</a>    <span class="k">def</span> <span class="nf">delete_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete a field from the dicom.</span>
+
+<span class="sd">        We do this by way of parsing all nested levels of a tag into actual tags,</span>
+<span class="sd">        and deleting the child node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Returns the parent, and a DataElement (indexes into parent by tag)</span>
+        <span class="n">parent</span><span class="p">,</span> <span class="n">desired</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_nested_field</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">return_parent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">and</span> <span class="n">desired</span> <span class="ow">in</span> <span class="n">parent</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">parent</span><span class="p">[</span><span class="n">desired</span><span class="p">]</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">uid</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="DicomParser.blank_field"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.parser.DicomParser.blank_field">[docs]</a>    <span class="k">def</span> <span class="nf">blank_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Blank a field</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_nested_field</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+        <span class="c1"># Assert we have a data element, and can blank a string</span>
+        <span class="k">if</span> <span class="n">element</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">DataElement</span><span class="p">):</span>
+                <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Issue parsing </span><span class="si">%s</span><span class="s2"> as a DataElement, not blanked.&quot;</span> <span class="o">%</span> <span class="n">field</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">element</span><span class="o">.</span><span class="n">VR</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;US&quot;</span><span class="p">,</span> <span class="s2">&quot;SS&quot;</span><span class="p">]:</span>
+                <span class="n">element</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Unrecognized VR for </span><span class="si">%s</span><span class="s2">, skipping blank.&quot;</span> <span class="o">%</span> <span class="n">field</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DicomParser.replace_field"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.parser.DicomParser.replace_field">[docs]</a>    <span class="k">def</span> <span class="nf">replace_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Replace a value in a field.</span>
+
+<span class="sd">        This uses the same function as ADD, but likely the dicom has the value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DicomParser.parse"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.parser.DicomParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strip_sequences</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">remove_private</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse the dicom.</span>
+
+<span class="sd">        The parse action corresponds to iterating through fields, and</span>
+<span class="sd">        for each one, saving a data structure with the full element,</span>
+<span class="sd">        the string (with nested representation of the keywords)</span>
+<span class="sd">        and the tag. We want to save all three in a flat list that is</span>
+<span class="sd">        easy to search over, and also build up actions for the lookup</span>
+<span class="sd">        on the first parsing.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Remove sequences first, maintained in DataStore</span>
+        <span class="k">if</span> <span class="n">strip_sequences</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">remove_sequences</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dicom</span><span class="p">)</span>
+
+        <span class="c1"># Remove private tags at the onset, if requested</span>
+        <span class="k">if</span> <span class="n">remove_private</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_private</span><span class="p">()</span>
+
+        <span class="c1"># In the parsing, we generate a list of DicomField objects.</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">expand_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># if we loaded a deid recipe</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">deid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Prepare additional lists of values and lookup fields (index by nested uid)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">has_values_lists</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">actions</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">get_values_lists</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">extract_values_list</span><span class="p">(</span>
+                        <span class="n">dicom</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dicom</span><span class="p">,</span> <span class="n">actions</span><span class="o">=</span><span class="n">actions</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="n">fields</span>
+                    <span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">has_fields_lists</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">actions</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">get_fields_lists</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">extract_fields_list</span><span class="p">(</span>
+                        <span class="n">dicom</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dicom</span><span class="p">,</span> <span class="n">actions</span><span class="o">=</span><span class="n">actions</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="n">fields</span>
+                    <span class="p">)</span>
+
+            <span class="c1"># actions on the header</span>
+            <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">recipe</span><span class="o">.</span><span class="n">get_actions</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">perform_action</span><span class="p">(</span>
+                    <span class="n">field</span><span class="o">=</span><span class="n">action</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;field&quot;</span><span class="p">),</span>
+                    <span class="n">value</span><span class="o">=</span><span class="n">action</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">),</span>
+                    <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;action&quot;</span><span class="p">),</span>
+                <span class="p">)</span>
+
+        <span class="c1"># Next perform actions in default config, only if not done</span>
+        <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;put&quot;</span><span class="p">][</span><span class="s2">&quot;actions&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">perform_action</span><span class="p">(</span>
+                <span class="n">field</span><span class="o">=</span><span class="n">action</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;field&quot;</span><span class="p">),</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">action</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">),</span>
+                <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;action&quot;</span><span class="p">),</span>
+            <span class="p">)</span></div>
+
+        <span class="c1"># At this point the self.dicom should be updated fully</span>
+        <span class="c1"># The user can save, or take other action</span>
+
+<div class="viewcode-block" id="DicomParser.save"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.parser.DicomParser.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save a dicom to file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">dicom_file</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">save_dicom</span><span class="p">(</span>
+            <span class="n">dicom</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dicom</span><span class="p">,</span>
+            <span class="n">dicom_file</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span>
+            <span class="n">output_folder</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span>
+            <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">ds</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">skip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a list of fields to skip, as defined in the self.config</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">skips</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">disable_skip</span><span class="p">:</span>
+            <span class="n">skips</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;get&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;skip&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="k">return</span> <span class="n">skips</span>
+
+<div class="viewcode-block" id="DicomParser.get_fields"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.parser.DicomParser.get_fields">[docs]</a>    <span class="k">def</span> <span class="nf">get_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expand_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;expand all dicom fields into a list, where each entry is</span>
+<span class="sd">        a DicomField. If we find a sequence, we unwrap it and</span>
+<span class="sd">        represent the location with the name (e.g., Sequence__Child)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="n">get_fields</span><span class="p">(</span>
+                <span class="n">dicom</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dicom</span><span class="p">,</span>
+                <span class="n">expand_sequences</span><span class="o">=</span><span class="n">expand_sequences</span><span class="p">,</span>
+                <span class="n">seen</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">seen</span><span class="p">,</span>
+                <span class="n">skip</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">skip</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span></div>
+
+<div class="viewcode-block" id="DicomParser.find_by_values"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.parser.DicomParser.find_by_values">[docs]</a>    <span class="k">def</span> <span class="nf">find_by_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find fields by values.</span>
+
+<span class="sd">        Given a list of values, find fields in the dicom that contain any</span>
+<span class="sd">        of those values, as determined by a regular expression search.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Values must be strings</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
+
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">values</span><span class="p">:</span>
+            <span class="c1"># Create single regular expression to search by</span>
+            <span class="n">regexp</span> <span class="o">=</span> <span class="s2">&quot;(</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="s2">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">uid</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">value_contains</span><span class="p">(</span><span class="n">regexp</span><span class="p">):</span>
+                    <span class="n">fields</span><span class="p">[</span><span class="n">uid</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Empty values list encountered.  No fields will be identified.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">fields</span></div>
+
+<div class="viewcode-block" id="DicomParser.find_by_name"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.parser.DicomParser.find_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">find_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find fields by name.</span>
+
+<span class="sd">        Given a string, find all field objects that contain the name.</span>
+<span class="sd">        Name can correspond to:</span>
+<span class="sd">         - a string of the tag, with or without the parens and comma/space</span>
+<span class="sd">         - a keyword</span>
+<span class="sd">         - a field name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Create single regular expression to search by</span>
+        <span class="k">for</span> <span class="n">uid</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name_contains</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+                <span class="n">fields</span><span class="p">[</span><span class="n">uid</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span>
+
+        <span class="k">return</span> <span class="n">fields</span></div>
+
+    <span class="c1"># Actions</span>
+
+<div class="viewcode-block" id="DicomParser.perform_action"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.parser.DicomParser.perform_action">[docs]</a>    <span class="k">def</span> <span class="nf">perform_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">filemeta</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform an action on a field.</span>
+
+<span class="sd">        perform action takes an action (dictionary with field, action, value)</span>
+<span class="sd">        and performs the action on the loaded dicom.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ==========</span>
+<span class="sd">        fields: if provided, a filtered list of fields for expand</span>
+<span class="sd">        action: the action from the parsed deid to take</span>
+<span class="sd">           &quot;field&quot; (eg, PatientID) the header field to process</span>
+<span class="sd">           &quot;action&quot; (eg, REPLACE) what to do with the field</span>
+<span class="sd">           &quot;value&quot;: if needed, the field from the response to replace with</span>
+<span class="sd">        filemeta (bool) perform on filemeta</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Validate the action</span>
+        <span class="k">if</span> <span class="n">action</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_actions</span><span class="p">:</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> in not a valid choice. Defaulting to blanked.&quot;</span> <span class="o">%</span> <span class="n">action</span><span class="p">)</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;BLANK&quot;</span>
+
+        <span class="c1"># A values list returns fields with the value (can be private tags if not removed)</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;^values&quot;</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;^values:&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">field</span><span class="p">),</span> <span class="p">[])</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_by_values</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">)</span>
+
+        <span class="c1"># A fields list is used vertbatim</span>
+        <span class="c1"># In expand_field_expression below, the stripped_tag is being passed in to field.  At this point,</span>
+        <span class="c1"># expanders for %fields lists have already been processed and each of the contenders is an</span>
+        <span class="c1"># identified, unique field.  It is important to use stripped_tag at this point instead of</span>
+        <span class="c1"># element.keyword as private tags will not have a keyword and can only be identified by tag number.</span>
+        <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;^fields&quot;</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+            <span class="n">listing</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">uid</span><span class="p">,</span> <span class="n">contender</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;^fields:&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">field</span><span class="p">),</span> <span class="p">{}</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">listing</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                    <span class="n">expand_field_expression</span><span class="p">(</span>
+                        <span class="n">field</span><span class="o">=</span><span class="n">contender</span><span class="o">.</span><span class="n">stripped_tag</span><span class="p">,</span>
+                        <span class="n">dicom</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dicom</span><span class="p">,</span>
+                        <span class="n">contenders</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">listing</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If there is an expander applied to field, we iterate over</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">expand_field_expression</span><span class="p">(</span>
+                <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">dicom</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dicom</span><span class="p">,</span> <span class="n">contenders</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span>
+            <span class="p">)</span>
+
+        <span class="c1"># If it&#39;s an addition, we might not have fields</span>
+        <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;ADD&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="c1"># Otherwise, these are operations on existing fields</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># without deepcopy - &quot;dictionary changed size during iterations&quot;</span>
+            <span class="n">temp_fields</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">uid</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">temp_fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_run_action</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">action</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DicomParser.add_field"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.parser.DicomParser.add_field">[docs]</a>    <span class="k">def</span> <span class="nf">add_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a field to the dicom.</span>
+
+<span class="sd">        If it&#39;s already present, update the value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">parse_value</span><span class="p">(</span>
+            <span class="n">item</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+            <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span>
+            <span class="n">dicom</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dicom</span><span class="p">,</span>
+            <span class="n">funcs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">deid_funcs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># The addition will be different depending on if we have filemeta</span>
+        <span class="n">is_filemeta</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Helper function to update dicom</span>
+        <span class="k">def</span> <span class="nf">update_dicom</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">is_filemeta</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">is_filemeta</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dicom</span><span class="o">.</span><span class="n">file_meta</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dicom</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+
+        <span class="c1"># Assume we don&#39;t want to add an empty value</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># If provided a field object, create based on keyword or tag identifier</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">field</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">DicomField</span><span class="p">):</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">keyword</span> <span class="ow">or</span> <span class="n">field</span><span class="o">.</span><span class="n">stripped_tag</span>
+
+            <span class="c1"># Generate a tag item, add if it&#39;s a name found in the dicom dictionary</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="n">get_tag</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+            <span class="c1"># Second try, it might be a private (or other numerical) string identifier</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">tag</span><span class="p">:</span>
+                <span class="n">tag</span> <span class="o">=</span> <span class="n">add_tag</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">tag</span><span class="p">:</span>
+                <span class="n">uid</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="s2">&quot;uid&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">str</span><span class="p">(</span><span class="n">tag</span><span class="p">[</span><span class="s2">&quot;tag&quot;</span><span class="p">])</span>
+
+                <span class="c1"># For a replacement, this is likely</span>
+                <span class="k">if</span> <span class="n">uid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+                    <span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">uid</span><span class="p">]</span>
+
+                    <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">is_filemeta</span><span class="p">:</span>
+                        <span class="n">is_filemeta</span> <span class="o">=</span> <span class="kc">True</span>
+
+                    <span class="c1"># Nested fields</span>
+                    <span class="k">while</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">):</span>
+                        <span class="n">element</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">element</span>
+                    <span class="n">element</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+                    <span class="c1"># Add either to file meta or dicom directly</span>
+                    <span class="n">update_dicom</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">is_filemeta</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">element</span> <span class="o">=</span> <span class="n">DataElement</span><span class="p">(</span><span class="n">tag</span><span class="p">[</span><span class="s2">&quot;tag&quot;</span><span class="p">],</span> <span class="n">tag</span><span class="p">[</span><span class="s2">&quot;VR&quot;</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+                    <span class="n">is_filemeta</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;(0002&quot;</span><span class="p">)</span>
+                    <span class="n">update_dicom</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">is_filemeta</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">uid</span><span class="p">]</span> <span class="o">=</span> <span class="n">DicomField</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">uid</span><span class="p">,</span> <span class="n">is_filemeta</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Cannot find tag for field </span><span class="si">%s</span><span class="s2">, skipping.&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_run_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Underlying function to run an action.</span>
+
+<span class="sd">        perform_action (above) typically is called using a loaded deid,</span>
+<span class="sd">        and _run_addition is typically done via an addition in a config</span>
+<span class="sd">        Both result in a call to this function. If an action fails or is not</span>
+<span class="sd">        done, None is returned, and the calling function should handle this.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Blank the value</span>
+        <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;BLANK&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">blank_field</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+        <span class="c1"># Unlikely to be called from perform_action</span>
+        <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;ADD&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="c1"># Code the value with something in the response</span>
+        <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;REPLACE&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">replace_field</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="c1"># Code the value with something in the response</span>
+        <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;JITTER&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">parse_value</span><span class="p">(</span>
+                <span class="n">item</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="p">,</span>
+                <span class="n">dicom</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dicom</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+                <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span>
+                <span class="n">funcs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">deid_funcs</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Jitter the field by the supplied value</span>
+                <span class="n">new_val</span> <span class="o">=</span> <span class="n">jitter_timestamp</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">new_val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">replace_field</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">new_val</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;JITTER </span><span class="si">%s</span><span class="s2"> unsuccessful&quot;</span> <span class="o">%</span> <span class="n">field</span><span class="p">)</span>
+
+        <span class="c1"># elif &quot;KEEP&quot; --&gt; Do nothing. Keep the original</span>
+
+        <span class="c1"># Remove the field entirely</span>
+        <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;REMOVE&quot;</span><span class="p">:</span>
+
+            <span class="c1"># If a value is defined, parse it (could be filter)</span>
+            <span class="n">do_removal</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">do_removal</span> <span class="o">=</span> <span class="n">parse_value</span><span class="p">(</span>
+                    <span class="n">item</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="p">,</span>
+                    <span class="n">dicom</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dicom</span><span class="p">,</span>
+                    <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+                    <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span>
+                    <span class="n">funcs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">deid_funcs</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">do_removal</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">delete_field</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DicomParser.remove_private"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.parser.DicomParser.remove_private">[docs]</a>    <span class="k">def</span> <span class="nf">remove_private</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove private tags from the loaded dicom</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dicom</span><span class="o">.</span><span class="n">remove_private_tags</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sd">&quot;&quot;&quot;Private tags for %s could not be completely removed, usually</span>
+<span class="sd">                         this is due to invalid data type. Removing others.&quot;&quot;&quot;</span>
+                <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">dicom_name</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">ptag</span> <span class="ow">in</span> <span class="n">get_private</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dicom</span><span class="p">):</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">dicom</span><span class="p">[</span><span class="n">ptag</span><span class="o">.</span><span class="n">tag</span><span class="p">]</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2022, Vanessa Sochat.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deid.dicom.fields &mdash; deid 0.2.31 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sphinx-argparse.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/theme.css" type="text/css" /><link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> deid<img src="../../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.2.31
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.config.html">deid.config package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.config.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.config.html#module-deid.config.standards">deid.config.standards module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.config.html#module-deid.config.utils">deid.config.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.config.html#module-deid.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.data.html">deid.data package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.data.html#module-deid.data">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.dicom.actions.html">deid.dicom.actions package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.actions.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.actions.html#module-deid.dicom.actions.jitter">deid.dicom.actions.jitter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.actions.html#module-deid.dicom.actions.uids">deid.dicom.actions.uids module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.actions.html#module-deid.dicom.actions">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.dicom.pixels.html">deid.dicom.pixels package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.pixels.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.pixels.html#module-deid.dicom.pixels.clean">deid.dicom.pixels.clean module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.pixels.html#module-deid.dicom.pixels.detect">deid.dicom.pixels.detect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.pixels.html#module-deid.dicom.pixels">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.dicom.html">deid.dicom package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/deid.dicom.actions.html">deid.dicom.actions package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/deid.dicom.pixels.html">deid.dicom.pixels package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.fields">deid.dicom.fields module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.filter">deid.dicom.filter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.groups">deid.dicom.groups module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.header">deid.dicom.header module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.parser">deid.dicom.parser module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.tags">deid.dicom.tags module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.utils">deid.dicom.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.validate">deid.dicom.validate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.logger.html">deid.logger package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.logger.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.logger.html#module-deid.logger.message">deid.logger.message module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.logger.html#module-deid.logger.progress">deid.logger.progress module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/deid.logger.html#clint-textui-progress">clint.textui.progress</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.logger.html#module-deid.logger">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.main.html">deid.main package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.main.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.main.html#module-deid.main.identifiers">deid.main.identifiers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.main.html#module-deid.main.inspect">deid.main.inspect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.main.html#module-deid.main">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.utils.html">deid.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.utils.html#module-deid.utils.actions">deid.utils.actions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.utils.html#module-deid.utils.fileio">deid.utils.fileio module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.utils.html#module-deid.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">deid</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>deid.dicom.fields</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for deid.dicom.fields</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Vanessa Sochat&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright 2016-2022, Vanessa Sochat&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">pydicom.dataelem</span> <span class="kn">import</span> <span class="n">DataElement</span>
+<span class="kn">from</span> <span class="nn">pydicom.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">FileMetaDataset</span><span class="p">,</span> <span class="n">RawDataElement</span>
+<span class="kn">from</span> <span class="nn">pydicom.sequence</span> <span class="kn">import</span> <span class="n">Sequence</span>
+
+<span class="kn">from</span> <span class="nn">deid.logger</span> <span class="kn">import</span> <span class="n">bot</span>
+
+
+<div class="viewcode-block" id="DicomField"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.fields.DicomField">[docs]</a><span class="k">class</span> <span class="nc">DicomField</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A dicom field.</span>
+
+<span class="sd">    A dicom field holds the element, and a string that represents the entire</span>
+<span class="sd">    nested structure (e.g., SequenceName__CodeValue).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">uid</span><span class="p">,</span> <span class="n">is_filemeta</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">element</span> <span class="o">=</span> <span class="n">element</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>  <span class="c1"># nested names (might not be unique)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uid</span> <span class="o">=</span> <span class="n">uid</span>  <span class="c1"># unique id includes parent tags</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_filemeta</span> <span class="o">=</span> <span class="n">is_filemeta</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">  [</span><span class="si">%s</span><span class="s2">]&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a string of the element tag.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">stripped_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the stripped element tag</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;([(]|[)]|,| )&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">tag</span><span class="p">))</span>
+
+    <span class="c1"># Contains</span>
+
+<div class="viewcode-block" id="DicomField.name_contains"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.fields.DicomField.name_contains">[docs]</a>    <span class="k">def</span> <span class="nf">name_contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine if a name contains a pattern or expression.</span>
+
+<span class="sd">        Use re to search a field for a regular expression, meaning</span>
+<span class="sd">        the name, the keyword (nested) or the string tag.</span>
+
+<span class="sd">        name.lower: includes nested keywords (e.g., Sequence_Child)</span>
+<span class="sd">        self.tag: is the string version of the tag</span>
+<span class="sd">        self.element.name: is the human friendly name &quot;Sequence Child&quot;</span>
+<span class="sd">        self.element.keyword: is the name without nesting &quot;Child&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+            <span class="ow">or</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stripped_tag</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">keyword</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="DicomField.value_contains"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.fields.DicomField.value_contains">[docs]</a>    <span class="k">def</span> <span class="nf">value_contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Use re to search a field value for a regular expression</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="c1"># If we are not dealing with a list</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">values</span><span class="p">]</span>
+
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div></div>
+
+
+<div class="viewcode-block" id="extract_item"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.fields.extract_item">[docs]</a><span class="k">def</span> <span class="nf">extract_item</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">entry</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract values from a dicom sequence depending on the type.</span>
+
+<span class="sd">    A helper function to extract sequence, will extract values from</span>
+<span class="sd">    a dicom sequence depending on the type.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+<span class="sd">    item: an item from a sequence.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># First call, we define entry to be a lookup dictionary</span>
+    <span class="k">if</span> <span class="n">entry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">entry</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Skip raw data elements</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">RawDataElement</span><span class="p">):</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">keyword</span>
+
+        <span class="c1"># If there is no header or field, we can&#39;t evaluate</span>
+        <span class="k">if</span> <span class="n">header</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">entry</span>
+
+        <span class="k">if</span> <span class="n">prefix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">__</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">header</span><span class="p">)</span>
+
+        <span class="n">value</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">extract_sequence</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
+
+        <span class="n">entry</span><span class="p">[</span><span class="n">header</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">return</span> <span class="n">entry</span></div>
+
+
+<div class="viewcode-block" id="extract_sequence"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.fields.extract_sequence">[docs]</a><span class="k">def</span> <span class="nf">extract_sequence</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract a sequence recursively.</span>
+
+<span class="sd">    return a pydicom.sequence.Sequence recursively</span>
+<span class="sd">    as a flattened list of items. For example, a nested FieldA and FieldB</span>
+<span class="sd">    would return as:</span>
+
+<span class="sd">    {&#39;FieldA__FieldB&#39;: &#39;111111&#39;}</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+<span class="sd">    sequence: the sequence to extract, should be pydicom.sequence.Sequence</span>
+<span class="sd">    prefix: the parent name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">:</span>
+
+        <span class="c1"># If it&#39;s a Dataset, we need to further unwrap it</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">subitem</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+                <span class="n">items</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">extract_item</span><span class="p">(</span><span class="n">subitem</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span><span class="p">))</span>
+
+        <span class="c1"># Private tags are DataElements</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">DataElement</span><span class="p">):</span>
+            <span class="n">items</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">extract_item</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Unrecognized type </span><span class="si">%s</span><span class="s2"> in extract sequences, skipping.&quot;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="p">)</span>
+    <span class="k">return</span> <span class="n">items</span></div>
+
+
+<div class="viewcode-block" id="expand_field_expression"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.fields.expand_field_expression">[docs]</a><span class="k">def</span> <span class="nf">expand_field_expression</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">dicom</span><span class="p">,</span> <span class="n">contenders</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a list of fields based on an expression.</span>
+
+<span class="sd">    If no expression found, return single field. Options for fields include:</span>
+
+<span class="sd">    endswith: filter to fields that end with the expression</span>
+<span class="sd">    startswith: filter to fields that start with the expression</span>
+<span class="sd">    contains: filter to fields that contain the expression</span>
+<span class="sd">    allfields: include all fields</span>
+<span class="sd">    exceptfields: filter to all fields except those listed ( | separated)</span>
+
+<span class="sd">    Returns: a list of DicomField objects</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Expanders that don&#39;t have a : must be checked for</span>
+    <span class="n">expanders</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">]</span>
+
+    <span class="c1"># if no contenders provided, use top level of dicom headers</span>
+    <span class="k">if</span> <span class="n">contenders</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">contenders</span> <span class="o">=</span> <span class="n">get_fields</span><span class="p">(</span><span class="n">dicom</span><span class="p">)</span>
+
+    <span class="c1"># Case 1: field is an expander without an argument (e.g., no :)</span>
+    <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">expanders</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">contenders</span>
+        <span class="k">return</span> <span class="n">fields</span>
+
+    <span class="c1"># Case 2: The field is a specific field OR an expander with argument (A:B)</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">uid</span><span class="p">:</span> <span class="n">field</span>
+            <span class="k">for</span> <span class="n">uid</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">contenders</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name_contains</span><span class="p">(</span><span class="s2">&quot;^&quot;</span> <span class="o">+</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;$&quot;</span><span class="p">)</span>
+        <span class="p">}</span>
+
+    <span class="c1"># if we get down here, we have an expander and expression</span>
+    <span class="n">expander</span><span class="p">,</span> <span class="n">expression</span> <span class="o">=</span> <span class="n">fields</span>
+    <span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Derive expression based on field expander</span>
+    <span class="k">if</span> <span class="n">expander</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;endswith&quot;</span><span class="p">:</span>
+        <span class="n">expression</span> <span class="o">=</span> <span class="s2">&quot;(</span><span class="si">%s</span><span class="s2">)$&quot;</span> <span class="o">%</span> <span class="n">expression</span>
+    <span class="k">elif</span> <span class="n">expander</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;startswith&quot;</span><span class="p">:</span>
+        <span class="n">expression</span> <span class="o">=</span> <span class="s2">&quot;^(</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="n">expression</span>
+
+    <span class="c1"># Loop through fields, all are strings STOPPED HERE NEED TO ADDRESS EMPTY NAME</span>
+    <span class="k">for</span> <span class="n">uid</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">contenders</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+        <span class="c1"># Apply expander to string for name OR to tag string</span>
+        <span class="k">if</span> <span class="n">expander</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;endswith&quot;</span><span class="p">,</span> <span class="s2">&quot;startswith&quot;</span><span class="p">,</span> <span class="s2">&quot;contains&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name_contains</span><span class="p">(</span><span class="n">expression</span><span class="p">):</span>
+                <span class="n">fields</span><span class="p">[</span><span class="n">uid</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span>
+
+        <span class="k">elif</span> <span class="n">expander</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;except&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">field</span><span class="o">.</span><span class="n">name_contains</span><span class="p">(</span><span class="n">expression</span><span class="p">):</span>
+                <span class="n">fields</span><span class="p">[</span><span class="n">uid</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span>
+
+    <span class="k">return</span> <span class="n">fields</span></div>
+
+
+<div class="viewcode-block" id="get_fields"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.fields.get_fields">[docs]</a><span class="k">def</span> <span class="nf">get_fields</span><span class="p">(</span><span class="n">dicom</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">expand_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seen</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Expand all dicom fields into a list.</span>
+
+<span class="sd">    Each entry is a DicomField. If we find a sequence, we unwrap it and</span>
+<span class="sd">    represent the location with the name (e.g., Sequence__Child)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">skip</span> <span class="o">=</span> <span class="n">skip</span> <span class="ow">or</span> <span class="p">[]</span>
+    <span class="n">seen</span> <span class="o">=</span> <span class="n">seen</span> <span class="ow">or</span> <span class="p">[]</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># indexed by nested tag</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">skip</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">skip</span> <span class="o">=</span> <span class="p">[</span><span class="n">skip</span><span class="p">]</span>
+
+    <span class="c1"># Retrieve both dicom and file meta fields if dicom came from a file</span>
+    <span class="n">datasets</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">[</span><span class="n">dicom</span><span class="p">,</span> <span class="n">dicom</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;file_meta&quot;</span><span class="p">)]</span> <span class="k">if</span> <span class="n">d</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">add_element</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">uid</span><span class="p">,</span> <span class="n">is_filemeta</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add an element to fields, but only if it has not been seen.</span>
+
+<span class="sd">        The uid is derived from the tag (group, element) and includes</span>
+<span class="sd">        nesting, so the &quot;same&quot; tag on different levels is considered</span>
+<span class="sd">        different.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">uid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+            <span class="n">fields</span><span class="p">[</span><span class="n">uid</span><span class="p">]</span> <span class="o">=</span> <span class="n">DicomField</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">uid</span><span class="p">,</span> <span class="n">is_filemeta</span><span class="p">)</span>
+            <span class="n">seen</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">uid</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="n">datasets</span><span class="p">:</span>
+
+        <span class="c1"># Grab the first dataset, usually just the dicom</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># If the dataset does not have a prefix, we are at the start</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">&quot;prefix&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">uid</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">&quot;uid&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">is_filemeta</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">FileMetaDataset</span><span class="p">)</span>
+
+        <span class="c1"># Includes private tags, sequences flattened, non-null values</span>
+        <span class="k">for</span> <span class="n">contender</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
+
+            <span class="c1"># All items should be data elements, skip based on keyword or tag</span>
+            <span class="k">if</span> <span class="n">contender</span><span class="o">.</span><span class="n">keyword</span> <span class="ow">in</span> <span class="n">skip</span> <span class="ow">or</span> <span class="nb">str</span><span class="p">(</span><span class="n">contender</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span> <span class="ow">in</span> <span class="n">skip</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># The name represents nesting</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">contender</span><span class="o">.</span><span class="n">keyword</span>
+            <span class="n">uid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">contender</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">prefix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">__</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">uid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">uid</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">__</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span> <span class="n">uid</span><span class="p">)</span>
+
+            <span class="c1"># if it&#39;s a sequence, extract with prefix and index</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">contender</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">)</span> <span class="ow">and</span> <span class="n">expand_sequences</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+
+                <span class="c1"># Add the contender (usually type Dataset) to fields</span>
+                <span class="n">add_element</span><span class="p">(</span><span class="n">contender</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">uid</span><span class="p">,</span> <span class="n">is_filemeta</span><span class="p">)</span>
+
+                <span class="c1"># A nested dataset can be parsed as such</span>
+                <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">contender</span><span class="o">.</span><span class="n">value</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">):</span>
+                        <span class="n">item</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">name</span>
+                        <span class="n">item</span><span class="o">.</span><span class="n">uid</span> <span class="o">=</span> <span class="n">uid</span> <span class="o">+</span> <span class="s2">&quot;__</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">idx</span>
+                        <span class="n">datasets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+                    <span class="c1"># A Raw data element we can add to our list</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">DataElement</span><span class="p">):</span>
+                        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">__</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">keyword</span><span class="p">)</span>
+                        <span class="n">uid</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">__</span><span class="si">%s</span><span class="s2">__</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">uid</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">tag</span><span class="p">),</span> <span class="n">idx</span><span class="p">)</span>
+                        <span class="n">add_element</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">uid</span><span class="p">,</span> <span class="n">is_filemeta</span><span class="p">)</span>
+
+            <span class="c1"># A DataElement can be extracted as is</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">contender</span><span class="p">,</span> <span class="n">DataElement</span><span class="p">):</span>
+                <span class="n">add_element</span><span class="p">(</span><span class="n">contender</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">uid</span><span class="p">,</span> <span class="n">is_filemeta</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;Unrecognized type </span><span class="si">%s</span><span class="s2"> in extract sequences, skipping.&quot;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+                <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fields</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2022, Vanessa Sochat.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

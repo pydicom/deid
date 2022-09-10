@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deid.dicom.filter &mdash; deid 0.2.31 documentation</title><link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sphinx-argparse.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/theme.css" type="text/css" /><link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> deid<img src="../../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.2.31
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.config.html">deid.config package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.config.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.config.html#module-deid.config.standards">deid.config.standards module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.config.html#module-deid.config.utils">deid.config.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.config.html#module-deid.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.data.html">deid.data package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.data.html#module-deid.data">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.dicom.actions.html">deid.dicom.actions package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.actions.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.actions.html#module-deid.dicom.actions.jitter">deid.dicom.actions.jitter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.actions.html#module-deid.dicom.actions.uids">deid.dicom.actions.uids module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.actions.html#module-deid.dicom.actions">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.dicom.pixels.html">deid.dicom.pixels package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.pixels.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.pixels.html#module-deid.dicom.pixels.clean">deid.dicom.pixels.clean module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.pixels.html#module-deid.dicom.pixels.detect">deid.dicom.pixels.detect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.pixels.html#module-deid.dicom.pixels">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.dicom.html">deid.dicom package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/deid.dicom.actions.html">deid.dicom.actions package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/deid.dicom.pixels.html">deid.dicom.pixels package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.fields">deid.dicom.fields module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.filter">deid.dicom.filter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.groups">deid.dicom.groups module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.header">deid.dicom.header module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.parser">deid.dicom.parser module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.tags">deid.dicom.tags module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.utils">deid.dicom.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom.validate">deid.dicom.validate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.dicom.html#module-deid.dicom">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.logger.html">deid.logger package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.logger.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.logger.html#module-deid.logger.message">deid.logger.message module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.logger.html#module-deid.logger.progress">deid.logger.progress module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/deid.logger.html#clint-textui-progress">clint.textui.progress</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.logger.html#module-deid.logger">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.main.html">deid.main package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.main.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.main.html#module-deid.main.identifiers">deid.main.identifiers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.main.html#module-deid.main.inspect">deid.main.inspect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.main.html#module-deid.main">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/deid.utils.html">deid.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.utils.html#module-deid.utils.actions">deid.utils.actions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.utils.html#module-deid.utils.fileio">deid.utils.fileio module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/deid.utils.html#module-deid.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">deid</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>deid.dicom.filter</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for deid.dicom.filter</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Vanessa Sochat&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright 2016-2022, Vanessa Sochat&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">pydicom.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
+
+<span class="kn">from</span> <span class="nn">deid.logger</span> <span class="kn">import</span> <span class="n">bot</span>
+
+<span class="c1"># These filters are based off the the CTP Dicom Filter</span>
+<span class="c1"># http://mircwiki.rsna.org/index.php?title=The_CTP_DICOM_Filter</span>
+<span class="c1"># We don&#39;t apply them to the tag, as in their examples:</span>
+
+<span class="c1"># !ImageType.contains(&quot;SECONDARY&quot;)</span>
+
+<span class="c1"># we apply them to the dataset, with the tag as an argument:</span>
+<span class="c1"># dicom.contains(&quot;ImageType&quot;,&quot;SECONDARY&quot;)</span>
+
+
+<div class="viewcode-block" id="apply_filter"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.filter.apply_filter">[docs]</a><span class="k">def</span> <span class="nf">apply_filter</span><span class="p">(</span><span class="n">dicom</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">filter_name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;essentially a switch statement to apply a filter to a dicom file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+<span class="sd">    dicom: the pydicom.dataset Dataset (pydicom.read_file)</span>
+<span class="sd">    field: the name of the field to apply the filter to</span>
+<span class="sd">    filer_name: the name of the filter to apply (e.g., contains)</span>
+<span class="sd">    value: the value to set, if filter_name is valid</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">filter_name</span> <span class="o">=</span> <span class="n">filter_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">filter_name</span> <span class="o">==</span> <span class="s2">&quot;contains&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dicom</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">filter_name</span> <span class="o">==</span> <span class="s2">&quot;notcontains&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dicom</span><span class="o">.</span><span class="n">notContains</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">filter_name</span> <span class="o">==</span> <span class="s2">&quot;equals&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dicom</span><span class="o">.</span><span class="n">equals</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">filter_name</span> <span class="o">==</span> <span class="s2">&quot;missing&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dicom</span><span class="o">.</span><span class="n">missing</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">filter_name</span> <span class="o">==</span> <span class="s2">&quot;present&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="n">dicom</span><span class="o">.</span><span class="n">missing</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">filter_name</span> <span class="o">==</span> <span class="s2">&quot;empty&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dicom</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">filter_name</span> <span class="o">==</span> <span class="s2">&quot;notequals&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dicom</span><span class="o">.</span><span class="n">notEquals</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="n">bot</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> is not a valid filter name, returning False&quot;</span> <span class="o">%</span> <span class="n">filter_name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<span class="c1">################################################################################</span>
+<span class="c1"># Equals</span>
+<span class="c1">################################################################################</span>
+
+
+<div class="viewcode-block" id="equalsBase"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.filter.equalsBase">[docs]</a><span class="k">def</span> <span class="nf">equalsBase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">term</span><span class="p">,</span> <span class="n">ignore_case</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">not_equals</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;base of equals, with variable for ignore case (default True)&quot;&quot;&quot;</span>
+
+    <span class="n">is_equal</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">contenders</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">contenders</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">contenders</span> <span class="o">=</span> <span class="p">[</span><span class="n">contenders</span><span class="p">]</span>
+
+    <span class="c1"># In this loop we can only switch to True</span>
+    <span class="k">for</span> <span class="n">contender</span> <span class="ow">in</span> <span class="n">contenders</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">contender</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># both converted to string (handles tags)</span>
+                <span class="n">contender</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">contender</span><span class="p">)</span>
+                <span class="n">term</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">term</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">ignore_case</span><span class="p">:</span>
+                    <span class="n">contender</span> <span class="o">=</span> <span class="n">contender</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="n">term</span> <span class="o">=</span> <span class="n">term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">contender</span> <span class="o">==</span> <span class="n">term</span><span class="p">:</span>
+                    <span class="n">is_equal</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>  <span class="c1"># we are dealing with number or sequence</span>
+
+    <span class="c1"># If we want to know not_equals, reverse</span>
+    <span class="k">if</span> <span class="n">not_equals</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">is_equal</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">is_equal</span>
+
+    <span class="k">return</span> <span class="n">is_equal</span></div>
+
+
+<div class="viewcode-block" id="equals"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.filter.equals">[docs]</a><span class="k">def</span> <span class="nf">equals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">term</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;returns true if the value of the identifier exactly</span>
+<span class="sd">    equals the string argument; otherwise, it returns false.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">equalsBase</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">term</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="notEquals"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.filter.notEquals">[docs]</a><span class="k">def</span> <span class="nf">notEquals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">term</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">equalsBase</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">term</span><span class="o">=</span><span class="n">term</span><span class="p">,</span> <span class="n">not_equals</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<span class="n">Dataset</span><span class="o">.</span><span class="n">equalsBase</span> <span class="o">=</span> <span class="n">equalsBase</span>
+<span class="n">Dataset</span><span class="o">.</span><span class="n">equals</span> <span class="o">=</span> <span class="n">equals</span>
+<span class="n">Dataset</span><span class="o">.</span><span class="n">notEquals</span> <span class="o">=</span> <span class="n">notEquals</span>
+
+<span class="c1">################################################################################</span>
+<span class="c1"># Empty and Null</span>
+<span class="c1">#</span>
+<span class="c1"># missing: means the field is not present (None)</span>
+<span class="c1"># empty: means the field is present and empty</span>
+<span class="c1">################################################################################</span>
+
+
+<div class="viewcode-block" id="missing"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.filter.missing">[docs]</a><span class="k">def</span> <span class="nf">missing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determine if the dicom is missing a field.</span>
+
+<span class="sd">    Missing returns True if the dicom is missing the field entirely</span>
+<span class="sd">    This means that the entire field is None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">content</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="empty"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.filter.empty">[docs]</a><span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determine if the value is empty.</span>
+
+<span class="sd">    Empty returns True if the value is found to be &quot;&quot;. If the field</span>
+<span class="sd">    is not present for the dicom, then we return False (missing != empty)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+    <span class="c1"># Case 1: No content (empty list or none)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">content</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="s2">&quot;_list&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+
+    <span class="c1"># This is the case of a data element</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">if</span> <span class="n">content</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<span class="n">Dataset</span><span class="o">.</span><span class="n">empty</span> <span class="o">=</span> <span class="n">empty</span>
+<span class="n">Dataset</span><span class="o">.</span><span class="n">missing</span> <span class="o">=</span> <span class="n">missing</span>
+
+
+<span class="c1">################################################################################</span>
+<span class="c1"># Matches and Contains</span>
+<span class="c1">#</span>
+<span class="c1"># contains: searches across entire field</span>
+<span class="c1"># matches: looks for exact match</span>
+<span class="c1">################################################################################</span>
+
+
+<div class="viewcode-block" id="compareBase"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.filter.compareBase">[docs]</a><span class="k">def</span> <span class="nf">compareBase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">expression</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">ignore_case</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Search a field for an expression.</span>
+
+<span class="sd">    compareBase takes either re.search (for contains) or</span>
+<span class="sd">    re.match (for matches) and returns True if the given regular</span>
+<span class="sd">    expression is contained or matched</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">is_match</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">contenders</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">contenders</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">contenders</span> <span class="o">=</span> <span class="p">[</span><span class="n">contenders</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">contender</span> <span class="ow">in</span> <span class="n">contenders</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">contender</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">contender</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">contender</span><span class="p">)</span>
+                <span class="n">expression</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">ignore_case</span><span class="p">:</span>
+                    <span class="n">contender</span> <span class="o">=</span> <span class="n">contender</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="n">expression</span> <span class="o">=</span> <span class="n">expression</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">func</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">contender</span><span class="p">):</span>
+                    <span class="n">is_match</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>  <span class="c1"># we are dealing with number or sequence</span>
+
+    <span class="k">return</span> <span class="n">is_match</span></div>
+
+
+<div class="viewcode-block" id="matches"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.filter.matches">[docs]</a><span class="k">def</span> <span class="nf">matches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">expression</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determine if a field value matches an expression.</span>
+
+<span class="sd">    matches returns true if the value of the identifier matches</span>
+<span class="sd">    the regular expression specified in the string argument;</span>
+<span class="sd">    otherwise, it returns false.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">compareBase</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">expression</span><span class="o">=</span><span class="n">expression</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="contains"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.filter.contains">[docs]</a><span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">expression</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determine if a field value contains an expression.</span>
+
+<span class="sd">    contains returns true if the value of the identifier</span>
+<span class="sd">    contains the the string argument anywhere within it;</span>
+<span class="sd">    otherwise, it returns false.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">compareBase</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">expression</span><span class="o">=</span><span class="n">expression</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="notContains"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.filter.notContains">[docs]</a><span class="k">def</span> <span class="nf">notContains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">expression</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determine if a field value does not contain an expression.</span>
+
+<span class="sd">    notContains returns true if the value of the identifier</span>
+<span class="sd">    does not contain the the string argument anywhere within it;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">compareBase</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">expression</span><span class="o">=</span><span class="n">expression</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">)</span></div>
+
+
+<span class="n">Dataset</span><span class="o">.</span><span class="n">compareBase</span> <span class="o">=</span> <span class="n">compareBase</span>
+<span class="n">Dataset</span><span class="o">.</span><span class="n">matches</span> <span class="o">=</span> <span class="n">matches</span>
+<span class="n">Dataset</span><span class="o">.</span><span class="n">contains</span> <span class="o">=</span> <span class="n">contains</span>
+<span class="n">Dataset</span><span class="o">.</span><span class="n">notContains</span> <span class="o">=</span> <span class="n">notContains</span>
+
+<span class="c1">################################################################################</span>
+<span class="c1"># Starts and Endswith</span>
+<span class="c1">################################################################################</span>
+
+
+<div class="viewcode-block" id="startsWith"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.filter.startsWith">[docs]</a><span class="k">def</span> <span class="nf">startsWith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">term</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determine if a field value starts with an expression.</span>
+
+<span class="sd">    startsWith returns true if the value of the identifier</span>
+<span class="sd">    starts with the string argument; otherwise, it returns false.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">expression</span> <span class="o">=</span> <span class="s2">&quot;^</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">term</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">compareBase</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">expression</span><span class="o">=</span><span class="n">expression</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="endsWith"><a class="viewcode-back" href="../../../source/deid.dicom.html#deid.dicom.filter.endsWith">[docs]</a><span class="k">def</span> <span class="nf">endsWith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">term</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determine if a field value ends with an expression.</span>
+
+<span class="sd">    endsWith returns true if the value of the identifier ends with</span>
+<span class="sd">    the string argument; otherwise, it returns false.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">expression</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">$&quot;</span> <span class="o">%</span> <span class="n">term</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">compareBase</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">expression</span><span class="o">=</span><span class="n">expression</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">)</span></div>
+
+
+<span class="n">Dataset</span><span class="o">.</span><span class="n">startsWith</span> <span class="o">=</span> <span class="n">startsWith</span>
+<span class="n">Dataset</span><span class="o">.</span><span class="n">endsWith</span> <span class="o">=</span> <span class="n">endsWith</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2022, Vanessa Sochat.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

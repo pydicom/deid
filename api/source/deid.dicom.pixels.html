@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>deid.dicom.pixels package &mdash; deid 0.2.31 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-argparse.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/theme.css" type="text/css" /><link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="deid.dicom package" href="deid.dicom.html" />
+    <link rel="prev" title="deid.dicom.actions package" href="deid.dicom.actions.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> deid<img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.2.31
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="deid.config.html">deid.config package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.config.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.config.html#module-deid.config.standards">deid.config.standards module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.config.html#module-deid.config.utils">deid.config.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.config.html#module-deid.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.data.html">deid.data package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.data.html#module-deid.data">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.dicom.actions.html">deid.dicom.actions package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.actions.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.actions.html#module-deid.dicom.actions.jitter">deid.dicom.actions.jitter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.actions.html#module-deid.dicom.actions.uids">deid.dicom.actions.uids module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.actions.html#module-deid.dicom.actions">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">deid.dicom.pixels package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-deid.dicom.pixels.clean">deid.dicom.pixels.clean module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-deid.dicom.pixels.detect">deid.dicom.pixels.detect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-deid.dicom.pixels">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="deid.dicom.html">deid.dicom package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="deid.dicom.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="deid.dicom.actions.html">deid.dicom.actions package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">deid.dicom.pixels package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.fields">deid.dicom.fields module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.filter">deid.dicom.filter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.groups">deid.dicom.groups module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.header">deid.dicom.header module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.parser">deid.dicom.parser module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.tags">deid.dicom.tags module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.utils">deid.dicom.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom.validate">deid.dicom.validate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.dicom.html#module-deid.dicom">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.logger.html">deid.logger package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.logger.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.logger.html#module-deid.logger.message">deid.logger.message module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.logger.html#module-deid.logger.progress">deid.logger.progress module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="deid.logger.html#clint-textui-progress">clint.textui.progress</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="deid.logger.html#module-deid.logger">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.main.html">deid.main package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.main.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.main.html#module-deid.main.identifiers">deid.main.identifiers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.main.html#module-deid.main.inspect">deid.main.inspect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.main.html#module-deid.main">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deid.utils.html">deid.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deid.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.utils.html#module-deid.utils.actions">deid.utils.actions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.utils.html#module-deid.utils.fileio">deid.utils.fileio module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deid.utils.html#module-deid.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">deid</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>deid.dicom.pixels package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/source/deid.dicom.pixels.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="deid-dicom-pixels-package">
+<h1>deid.dicom.pixels package<a class="headerlink" href="#deid-dicom-pixels-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-deid.dicom.pixels.clean">
+<span id="deid-dicom-pixels-clean-module"></span><h2>deid.dicom.pixels.clean module<a class="headerlink" href="#module-deid.dicom.pixels.clean" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="deid.dicom.pixels.clean.DicomCleaner">
+<em class="property"><span class="pre">class</span> </em><code class="descclassname"><span class="pre">deid.dicom.pixels.clean.</span></code><code class="descname"><span class="pre">DicomCleaner</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">output_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">add_padding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em><span class="n"><span class="pre">deid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">font</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/pixels/clean.html#DicomCleaner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.pixels.clean.DicomCleaner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Clean a dicom file of burned pixels.</p>
+<p>take an input dicom file, check for burned pixels, and then clean,
+with option to save / output in multiple formats. This object should
+map to one dicom file, and the usage flow is the following:
+cleaner = DicomCleaner()
+summary = cleaner.detect(dicom_file)</p>
+<p>cleaner.clean()</p>
+<dl class="py method">
+<dt id="deid.dicom.pixels.clean.DicomCleaner.clean">
+<code class="descname"><span class="pre">clean</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">fix_interpretation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em><span class="n"><span class="pre">pixel_data_attribute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'PixelData'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/pixels/clean.html#DicomCleaner.clean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.pixels.clean.DicomCleaner.clean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean a dicom file.</p>
+<p>take a dicom image and a list of pixel coordinates, and return
+a cleaned file (if output file is specified) or simply plot
+the cleaned result (if no file is specified)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>add_padding</strong> (<em>add N=margin pixels of padding</em>) – </li>
+<li><strong>margin</strong> (<em>pixels of padding to add</em><em>, </em><em>if add_padding True</em>) – </li>
+<li><strong>fix_interpretation</strong> (<em>fix the photometric interpretation if found off</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.pixels.clean.DicomCleaner.default_font">
+<code class="descname"><span class="pre">default_font</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/pixels/clean.html#DicomCleaner.default_font"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.pixels.clean.DicomCleaner.default_font" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the default font to use for a title.</p>
+<p>define the font style for saving png figures
+if a title is provided</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.pixels.clean.DicomCleaner.detect">
+<code class="descname"><span class="pre">detect</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">dicom_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/pixels/clean.html#DicomCleaner.detect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.pixels.clean.DicomCleaner.detect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiate the cleaner for a new dicom file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.pixels.clean.DicomCleaner.get_figure">
+<code class="descname"><span class="pre">get_figure</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em><span class="n"><span class="pre">image_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cleaned'</span></span></em>, <em><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/pixels/clean.html#DicomCleaner.get_figure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.pixels.clean.DicomCleaner.get_figure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a figure for an original or cleaned image.</p>
+<p>If the image was already clean, it is simply a copy of the original.
+If show is True, plot the image. If a 4d image is discovered, we use
+randomly choose a slice.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.pixels.clean.DicomCleaner.save_animation">
+<code class="descname"><span class="pre">save_animation</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">output_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">image_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cleaned'</span></span></em>, <em><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/pixels/clean.html#DicomCleaner.save_animation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.pixels.clean.DicomCleaner.save_animation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save an original or cleaned animation of a dicom.</p>
+<p>If there are not enough frames, then save_png should be used instead.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.pixels.clean.DicomCleaner.save_dicom">
+<code class="descname"><span class="pre">save_dicom</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">output_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">image_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cleaned'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/pixels/clean.html#DicomCleaner.save_dicom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.pixels.clean.DicomCleaner.save_dicom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a cleaned dicom to disk.</p>
+<p>We expose an option to save an original (change image_type to “original”
+to be consistent, although this is not incredibly useful given it would
+duplicate the original data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="deid.dicom.pixels.clean.DicomCleaner.save_png">
+<code class="descname"><span class="pre">save_png</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">output_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em><span class="n"><span class="pre">image_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cleaned'</span></span></em>, <em><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/pixels/clean.html#DicomCleaner.save_png"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.pixels.clean.DicomCleaner.save_png" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save an original or cleaned dicom as png to disk.</p>
+<p>Default image_format is “cleaned” and can be set to “original.” If the
+image was already clean (not flagged) the cleaned image is just a
+copy of original. If a 4d image is provided, we save the dimension
+specified (or if not provided, a randomly chosen dimension).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-deid.dicom.pixels.detect">
+<span id="deid-dicom-pixels-detect-module"></span><h2>deid.dicom.pixels.detect module<a class="headerlink" href="#module-deid.dicom.pixels.detect" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="deid.dicom.pixels.detect.evaluate_group">
+<code class="descclassname"><span class="pre">deid.dicom.pixels.detect.</span></code><code class="descname"><span class="pre">evaluate_group</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">flags</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/pixels/detect.html#evaluate_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.pixels.detect.evaluate_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluate group will take a list of flags (eg:</p>
+<blockquote>
+<div>[True, and, False, or, True]</div></blockquote>
+<p>And read through the logic to determine if the image result
+is to be flagged. This is how we combine a set of criteria in
+a group to come to a final decision.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.pixels.detect.extract_coordinates">
+<code class="descclassname"><span class="pre">deid.dicom.pixels.detect.</span></code><code class="descname"><span class="pre">extract_coordinates</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">dicom</span></span></em>, <em><span class="n"><span class="pre">field</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/pixels/detect.html#extract_coordinates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.pixels.detect.extract_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a field that is provided for a dicom, extract coordinates</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="deid.dicom.pixels.detect.has_burned_pixels">
+<code class="descclassname"><span class="pre">deid.dicom.pixels.detect.</span></code><code class="descname"><span class="pre">has_burned_pixels</span></code><span class="sig-paren">(</span><em><span class="n"><span class="pre">dicom_files</span></span></em>, <em><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em><span class="n"><span class="pre">deid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/deid/dicom/pixels/detect.html#has_burned_pixels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#deid.dicom.pixels.detect.has_burned_pixels" title="Permalink to this definition">¶</a></dt>
+<dd><p>has burned pixels is an entrypoint for has_burned_pixels_multi (for
+multiple images) or has_burned_pixels_single (for one detailed repor)
+We will use the MIRCTP criteria (see ref folder with the
+original scripts used by CTP) to determine if an image is likely to have
+PHI, based on fields in the header alone. This script does NOT perform
+pixel cleaning, but returns a dictionary of results (for multi) or one
+detailed result (for single)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-deid.dicom.pixels">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-deid.dicom.pixels" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="deid.dicom.actions.html" class="btn btn-neutral float-left" title="deid.dicom.actions package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="deid.dicom.html" class="btn btn-neutral float-right" title="deid.dicom package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2022, Vanessa Sochat.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
