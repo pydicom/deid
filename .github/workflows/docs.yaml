@@ -21,7 +21,7 @@ jobs:
           root=$PWD
           source activate deid
           cd /tmp
-          git clone -b add/api-docs https://github.com/pydicom/deid
+          git clone https://github.com/pydicom/deid
           cd deid
           pip install -e .
           cd ./docs
