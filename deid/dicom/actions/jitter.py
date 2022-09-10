@@ -1,30 +1,9 @@
-"""
-
-Copyright (c) 2017-2022 Vanessa Sochat
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-"""
+__author__ = "Vanessa Sochat"
+__copyright__ = "Copyright 2016-2022, Vanessa Sochat"
+__license__ = "MIT"
 
 from deid.logger import bot
-from deid.utils import get_timestamp
-from deid.utils import parse_keyvalue_pairs
+from deid.utils import get_timestamp, parse_keyvalue_pairs
 
 # Timestamps
 
@@ -45,7 +24,8 @@ def jitter_timestamp_func(item, value, field, **kwargs):
 
 
 def jitter_timestamp(field, value):
-    """Jitter a timestamp "field" by number of days specified by "value"
+    """
+    Jitter a timestamp "field" by number of days specified by "value"
 
     The value can be positive or negative. This function is grandfathered
     into deid custom funcs, as it existed before they did. Since a custom

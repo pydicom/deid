@@ -1,0 +1,43 @@
+name: Update Docs
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  generate-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: "gh-pages"
+
+      - name: Create conda environment
+        run: conda create --quiet -c conda-forge --name deid
+
+      - name: Install deid
+        run: |
+          export PATH="/usr/share/miniconda/bin:$PATH"
+          root=$PWD
+          source activate deid
+          cd /tmp
+          git clone -b add/api-docs https://github.com/pydicom/deid
+          cd deid
+          pip install -e .
+          cd ./docs
+          pip install -r api_docs/requirements.txt
+          /bin/bash ./apidoc.sh
+          cd ../
+          mv $root/.git ./docs/api_docs/.git
+          rm -rf $root
+          mv ./docs/api_docs $root
+          cd $root
+          ls -a
+          git add .
+          git status
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@users.noreply.github.com"
+          git config --global pull.rebase true
+          git commit -a -m "Adding changed documentation files"
+          git status
+          git push origin gh-pages

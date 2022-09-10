@@ -1,39 +1,20 @@
 #!/usr/bin/env python
 
+__author__ = "Vanessa Sochat"
+__copyright__ = "Copyright 2016-2022, Vanessa Sochat"
+__license__ = "MIT"
+
 """
 Test dicom header
-
-The MIT License (MIT)
-
-Copyright (c) 2016-2022 Vanessa Sochat
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
 """
 
-import unittest
-import tempfile
-import shutil
 import os
+import shutil
+import tempfile
+import unittest
 
-from deid.utils import get_installdir
 from deid.data import get_dataset
+from deid.utils import get_installdir
 
 
 class TestDicomHeader(unittest.TestCase):
@@ -69,10 +50,9 @@ class TestDicomHeader(unittest.TestCase):
 
     def test_replace_identifiers(self):
         print("Testing deid.dicom replace_identifiers")
-        from deid.dicom import replace_identifiers
-        from deid.dicom import get_identifiers
-
         from pydicom import read_file
+
+        from deid.dicom import get_identifiers, replace_identifiers
 
         dicom_files = get_dicom(self.dataset, return_dir=True)
         ids = get_identifiers(dicom_files)
@@ -94,8 +74,9 @@ class TestDicomHeader(unittest.TestCase):
 
 def get_dicom(dataset, return_dir=False):
     """helper function to load a dicom"""
-    from deid.dicom import get_files
     from pydicom import read_file
+
+    from deid.dicom import get_files
 
     dicom_files = get_files(dataset)
     if return_dir:
