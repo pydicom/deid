@@ -12,6 +12,9 @@
 						</ul>
 						</li>{% endif %}{% else %}{{ group.name }}|{{ navitem.name }}{% endfor %}{% endfor %}
 
+
+                                      {% for navitem in site.data.links.external_navigation %}
+                                      <li class="nav-item top-level"><a target="_blank" href="{{ navitem.url }}">{{ navitem.name }}</a></li>{% endfor %}
 				</ul>
 
 				<ul>

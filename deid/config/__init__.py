@@ -1,41 +1,15 @@
-"""
+__author__ = "Vanessa Sochat"
+__copyright__ = "Copyright 2016-2022, Vanessa Sochat"
+__license__ = "MIT"
 
-DeidRecipe
-
-Copyright (c) 2017-2022 Vanessa Sochat
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-The functions below assume a configuration file called deid, although the
-user can specify a custom name.
-
-
-"""
-
-from deid.config.utils import load_deid, get_deid, load_combined_deid
-from deid.config.standards import actions, sections, formats
-
+from deid.config.standards import actions, formats, sections
+from deid.config.utils import get_deid, load_combined_deid, load_deid
 from deid.logger import bot
 
 
 class DeidRecipe:
-    """Create a deid recipe to filter and perform operations on a dicom header.
+    """
+    Create a deid recipe to filter and perform operations on a dicom header.
 
     Usage typically looks like:
 
@@ -51,7 +25,6 @@ class DeidRecipe:
           (later in the list overrides earlier loaded).
     base: if True, load a default base (default_base) before custom
     default_base: the default base to load if "base" is True
-
     """
 
     def __init__(self, deid=None, base=False, default_base="dicom"):
@@ -102,7 +75,8 @@ class DeidRecipe:
         return self._get_section("format")
 
     def _get_named_section(self, section_name, name=None):
-        """Get a named section from the deid recipe.
+        """
+        Get a named section from the deid recipe.
 
         a helper function to return an entire section, or if a name is
         provided, a named section under it. If the section is not
@@ -146,7 +120,8 @@ class DeidRecipe:
         return header
 
     def get_actions(self, action=None, field=None):
-        """Get deid actions to perform on a header, or a subset based on a type
+        """
+        Get deid actions to perform on a header, or a subset based on a type
 
         A header action is a list with the following:
         {'action': 'REMOVE', 'field': 'AssignedLocation'},
@@ -194,7 +169,8 @@ class DeidRecipe:
     # Init
 
     def _init_deid(self, deid=None, base=False, default_base="dicom"):
-        """Initialize a recipe.
+        """
+        Initialize a recipe.
 
         initialize the recipe with one or more deids, optionally including
         the default. This function is called at init time. If you need to add

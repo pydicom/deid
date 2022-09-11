@@ -1,5 +1,5 @@
 from .jitter import jitter_timestamp, jitter_timestamp_func
-from .uids import basic_uuid, dicom_uuid, suffix_uuid, pydicom_uuid
+from .uids import basic_uuid, dicom_uuid, pydicom_uuid, suffix_uuid
 
 # Function lookup
 # Functions here must take an item, field, and value

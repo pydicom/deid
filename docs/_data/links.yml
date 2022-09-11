@@ -14,3 +14,8 @@ navigation:
   url: development/
 - name: Contributing
   url: contributing/
+  
+external_navigation:
+- name: API Documentation
+  url: https://deid.readthedocs.io/en/latest/
+
