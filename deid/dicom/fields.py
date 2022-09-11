@@ -183,8 +183,7 @@ def expand_field_expression(field, dicom, contenders=None):
     endswith: filter to fields that end with the expression
     startswith: filter to fields that start with the expression
     contains: filter to fields that contain the expression
-    group: filter to fields matching DICOM group
-    vr: filter to elements with a specified VR
+    select: filter based on DICOM element properties
     allfields: include all fields
     exceptfields: filter to all fields except those listed ( | separated)
 
