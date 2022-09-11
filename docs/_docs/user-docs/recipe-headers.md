@@ -283,7 +283,7 @@ JITTER endswith:Date var:jitter
 and this is the idea of an `expander`. And expander is an optional filter 
 applied to a header field (the middle value) to select some subset of header 
 values. Currently, we support `startswith`, `endswith`, `contains`, `group`,
-`allexcept`, and `allfields`.
+`vr`, `allexcept`, and `allfields`.
  
 The following examples show what fields are selected based on each filter. For
 all examples, the test is done making the values lowercase.
@@ -326,7 +326,7 @@ it can appear anywhere in the field.
 
 **group**
 
-The group filter selects fields based on their DICOM group. Groups are
+The `group:` filter selects fields based on their DICOM group. Groups are
 specified as hexadecimal numbers (of up to four digits). For example,
 the following rules will keep all elements contained within DICOM
 groups 0x0018, 0x0020 and 0x0020:
@@ -335,6 +335,16 @@ groups 0x0018, 0x0020 and 0x0020:
 KEEP group:0018
 KEEP group:0020
 KEEP group:0028
+```
+
+**vr**
+
+The `vr:` filter selects fields based on the value representation (VR)
+of the element. For example, the following rules will blank all
+elements that have a VR of TM (time):
+
+```
+BLANK vr:TM
 ```
 
 **all**

@@ -92,6 +92,12 @@ class DicomField:
         """
         return self.element.tag.group == group
 
+    def vr_matches(self, vr):
+        """
+        Determine whether the element has a specific value-representation
+        """
+        return self.element.VR == vr
+
 
 def extract_item(item, prefix=None, entry=None):
     """
@@ -173,6 +179,7 @@ def expand_field_expression(field, dicom, contenders=None):
     startswith: filter to fields that start with the expression
     contains: filter to fields that contain the expression
     group: filter to fields matching DICOM group
+    vr: filter to elements with a specified VR
     allfields: include all fields
     exceptfields: filter to all fields except those listed ( | separated)
 
@@ -212,6 +219,8 @@ def expand_field_expression(field, dicom, contenders=None):
         expression = "^(%s)" % expression
     elif expander.lower() == "group":
         expression = int(expression, 16)
+    elif expander.lower() == "vr":
+        expression = expression[0:2].upper()
 
     # Loop through fields, all are strings STOPPED HERE NEED TO ADDRESS EMPTY NAME
     for uid, field in contenders.items():
@@ -227,6 +236,10 @@ def expand_field_expression(field, dicom, contenders=None):
 
         elif expander.lower() == "group":
             if field.tag_within_group(expression):
+                fields[uid] = field
+
+        elif expander.lower() == "vr":
+            if field.vr_matches(expression):
                 fields[uid] = field
 
     return fields
