@@ -327,7 +327,7 @@ it can appear anywhere in the field.
 **group**
 
 The group filter selects fields based on their DICOM group. Groups are
-specified as hexidecimal numbers (of up to four digits). For example,
+specified as hexadecimal numbers (of up to four digits). For example,
 the following rules will keep all elements contained within DICOM
 groups 0x0018, 0x0020 and 0x0020:
 
