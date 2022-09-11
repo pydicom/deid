@@ -25,7 +25,7 @@ jobs:
           cd deid
           pip install -e .
           cd ./docs
-          pip install -r api_docs/requirements.txt
+          pip install -r api_docs/docs-requirements.txt
           /bin/bash ./apidoc.sh
           cd ../
           mv $root/.git ./docs/api_docs/.git
@@ -38,6 +38,12 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@users.noreply.github.com"
           git config --global pull.rebase true
-          git commit -a -m "Adding changed documentation files"
-          git status
-          git push origin gh-pages || echo "up to date"
+
+          if git diff-index --quiet HEAD --; then
+             printf "No changes\n"
+          else
+             printf "Changes\n"
+             git commit -a -m "Adding changed documentation files"
+             git push origin gh-pages || echo "up to date"
+          fi
+
