@@ -50,7 +50,7 @@ class TestDicomFields(unittest.TestCase):
 
         print("Testing that field expansion works for groups")
         fields = expand_field_expression(
-            dicom=dicom, field="group:0020", contenders=contenders
+            dicom=dicom, field="select:group:0020", contenders=contenders
         )
 
         # The fields returned should be tag group 0020
@@ -59,7 +59,7 @@ class TestDicomFields(unittest.TestCase):
 
         print("Testing that field expansion works for VR")
         fields = expand_field_expression(
-            dicom=dicom, field="vr:TM", contenders=contenders
+            dicom=dicom, field="select:VR:TM", contenders=contenders
         )
 
         # The fields returned should end in time
