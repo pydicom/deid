@@ -888,10 +888,10 @@ REMOVE ScheduledStudyLocationAETitle
 REMOVE OrderEntererLocation
 REMOVE AssignedLocation
 
-ADD IssuerOfPatientID STARR. In an effort to remove PHI all dates are offset from their original values.
+ADD IssuerOfPatientID STARR
 ADD PatientBirthDate var:entity_timestamp
 ADD StudyDate var:item_timestamp
 ADD PatientID var:entity_id
 ADD AccessionNumber var:item_id
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 REMOVE jitter

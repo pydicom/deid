@@ -83,15 +83,13 @@ class TestDicom(unittest.TestCase):
 
     def test_add_public_constant(self):
         """RECIPE RULE
-        ADD PatientIdentityRemoved Yeppers!
+        ADD PatientIdentityRemoved YES
         """
 
         print("Test add public tag constant value")
         dicom_file = get_file(self.dataset)
 
-        actions = [
-            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yeppers!"}
-        ]
+        actions = [{"action": "ADD", "field": "PatientIdentityRemoved", "value": "YES"}]
         recipe = create_recipe(actions)
 
         result = replace_identifiers(
@@ -102,7 +100,7 @@ class TestDicom(unittest.TestCase):
             strip_sequences=False,
         )
         self.assertEqual(1, len(result))
-        self.assertEqual("Yeppers!", result[0].PatientIdentityRemoved)
+        self.assertEqual("YES", result[0].PatientIdentityRemoved)
 
     def test_replace_with_constant(self):
         """RECIPE RULE
@@ -686,14 +684,12 @@ class TestDicom(unittest.TestCase):
         caused exceptions to be thrown when child (or duplicate) sequences existed within the header.
 
         %header
-        ADD PatientIdentityRemoved Yeppers!
+        ADD PatientIdentityRemoved YES
         """
         print("Test strip_sequences")
         dicom_file = get_file(self.dataset)
 
-        actions = [
-            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yeppers!"}
-        ]
+        actions = [{"action": "ADD", "field": "PatientIdentityRemoved", "value": "YES"}]
         recipe = create_recipe(actions)
         result = replace_identifiers(
             dicom_files=dicom_file,
@@ -731,10 +727,11 @@ class TestDicom(unittest.TestCase):
             }
         ]
         recipe = create_recipe(actions)
+        new_uid = "1.2.3.4.5.4.3.2.1"
 
         items = get_identifiers([dicom_file])
         for item in items:
-            items[item]["new_val"] = "modified"
+            items[item]["new_val"] = new_uid
 
         result = replace_identifiers(
             dicom_files=dicom_file,
@@ -743,9 +740,9 @@ class TestDicom(unittest.TestCase):
             save=False,
         )
         self.assertEqual(1, len(result))
-        self.assertEqual(result[0].StudyInstanceUID, "modified")
+        self.assertEqual(result[0].StudyInstanceUID, new_uid)
         self.assertEqual(
-            result[0].RequestAttributesSequence[0].StudyInstanceUID, "modified"
+            result[0].RequestAttributesSequence[0].StudyInstanceUID, new_uid
         )
 
     def test_jitter_compounding(self):
@@ -787,14 +784,14 @@ class TestDicom(unittest.TestCase):
         recipes are built in that manner.  This test ensures consistency with prior versions.
 
         %header
-        ADD PatientIdentityRemoved Yeppers!
+        ADD PatientIdentityRemoved YES
         REMOVE PatientIdentityRemoved
         """
         print("Test addremove compounding")
         dicom_file = get_file(self.dataset)
 
         actions = [
-            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yeppers!"},
+            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "YES"},
             {"action": "REMOVE", "field": "PatientIdentityRemoved"},
         ]
         recipe = create_recipe(actions)

@@ -23,7 +23,7 @@ class TestDicom(unittest.TestCase):
 
     def test_replace_filemeta(self):
         """RECIPE RULE
-        REPLACE MediaStorageSOPInstanceUID new-id
+        REPLACE MediaStorageSOPInstanceUID 1.2.3.4.5.4.3.2.1
         """
         print("Test replace filemeta")
         dicom_file = get_file(self.dataset)
@@ -32,7 +32,7 @@ class TestDicom(unittest.TestCase):
             {
                 "action": "REPLACE",
                 "field": "MediaStorageSOPInstanceUID",
-                "value": "new-id",
+                "value": "1.2.3.4.5.4.3.2.1",
             }
         ]
         recipe = create_recipe(actions)
@@ -46,12 +46,12 @@ class TestDicom(unittest.TestCase):
         )
         self.assertEqual(1, len(result))
         self.assertEqual(
-            "new-id", result[0].file_meta["MediaStorageSOPInstanceUID"].value
+            "1.2.3.4.5.4.3.2.1", result[0].file_meta["MediaStorageSOPInstanceUID"].value
         )
 
     def test_replace_protected_field(self):
         """RECIPE RULE
-        REPLACE TransferSyntaxUID new-id
+        REPLACE TransferSyntaxUID 1.2.3.4.5.4.3.2.1
         """
         print("Test replace filemeta")
         dicom_file = get_file(self.dataset)
@@ -60,7 +60,7 @@ class TestDicom(unittest.TestCase):
             {
                 "action": "REPLACE",
                 "field": "TransferSyntaxUID",
-                "value": "new-id",
+                "value": "1.2.3.4.5.4.3.2.1",
             }
         ]
         recipe = create_recipe(actions)
@@ -75,7 +75,7 @@ class TestDicom(unittest.TestCase):
 
         # Here the field is protected by default
         self.assertEqual(1, len(result))
-        self.assertNotEqual("new-id", result[0].file_meta.TransferSyntaxUID)
+        self.assertNotEqual("1.2.3.4.5.4.3.2.1", result[0].file_meta.TransferSyntaxUID)
 
         # Now we will unprotect it!
         result = replace_identifiers(
@@ -89,7 +89,7 @@ class TestDicom(unittest.TestCase):
 
         # Here the field is protected by default
         self.assertEqual(1, len(result))
-        self.assertEqual("new-id", result[0].file_meta.TransferSyntaxUID)
+        self.assertEqual("1.2.3.4.5.4.3.2.1", result[0].file_meta.TransferSyntaxUID)
 
 
 if __name__ == "__main__":
