@@ -64,7 +64,7 @@ FORMAT dicom
 
 %header
 
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 ADD DeidentificationMethod my_deid_recipe.dicom.v1.0
 
 # Specify what we want to keep

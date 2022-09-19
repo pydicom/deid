@@ -358,7 +358,7 @@ FIELD contains:Instance
 
 %header
 
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 REPLACE values:cookie_names var:id
 REPLACE values:operator_names var:source_id
 REMOVE fields:instance_fields

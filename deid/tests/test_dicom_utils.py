@@ -99,7 +99,7 @@ class TestDicomUtils(unittest.TestCase):
         print("Case 3: Testing with non-standard DICOM date (DA)")
         name = "StudyDate"
         tag = get_tag(name)
-        dicom.StudyDate = "2013/12/10"
+        dicom.StudyDate = "20131210"
         dicom.data_element(name).VR = "DA"
         field = DicomField(dicom.data_element(name), name, str(tag["tag"]))
         actual = jitter_timestamp(field, 10)

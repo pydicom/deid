@@ -13,7 +13,7 @@ FORMAT dicom
 
 %header
 
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 BLANK OrdValue
 KEEP Modality
 REPLACE id var:entity_id

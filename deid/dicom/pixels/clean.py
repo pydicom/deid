@@ -392,7 +392,7 @@ class DicomCleaner:
             # If going from compressed, change TransferSyntax
             if dicom.file_meta.TransferSyntaxUID.is_compressed is True:
                 dicom.decompress()
-            dicom.PixelData = self.cleaned.tostring()
+            dicom.PixelData = self.cleaned.tobytes()
             dicom.save_as(dicom_name)
             return dicom_name
         else:

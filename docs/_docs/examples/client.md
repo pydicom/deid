@@ -132,7 +132,7 @@ deid = load_deid('examples/deid')
 DEBUG FORMAT set to dicom
 DEBUG Adding section filter dangerouscookie
 DEBUG Adding section header
-DEBUG Adding ADD PatientIdentityRemoved Yes
+DEBUG Adding ADD PatientIdentityRemoved YES
 DEBUG Adding REPLACE PatientID var:id
 DEBUG Adding REPLACE SOPInstanceUID var:source_id
 ```
@@ -163,7 +163,7 @@ equals Rows 2048
 
 %header
 
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 REPLACE PatientID var:id
 REPLACE SOPInstanceUID var:source_id
 ```

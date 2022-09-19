@@ -13,7 +13,7 @@ FORMAT dicom
 
 %header
 
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 REPLACE PatientID cookie-monster
 
 %labels

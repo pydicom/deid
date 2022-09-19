@@ -64,7 +64,7 @@ FORMAT dicom
 
 %header
 
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 BLANK OrdValue
 KEEP Modality
 REPLACE id var:entity_id
@@ -103,7 +103,7 @@ in the case of binary actions, just `<ACTION> <VALUE>`. For example, both of the
 
 ```
 #<ACTION> <FIELD> <VALUE>
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 #<ACTION> <FIELD>
 KEEP PixelData
 ```
@@ -240,7 +240,7 @@ FORMAT dicom
 
 %header
 
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 REMOVE ALL
 KEEP PixelData
 KEEP SamplesPerPixel
@@ -451,7 +451,7 @@ FORMAT dicom
 
 %header
 
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 REPLACE PatientID var:id
 ```
 
@@ -462,7 +462,7 @@ FORMAT dicom
 
 %header
 
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 REPLACE PatientID var:id
 REPLACE SOPInstanceUID var:source_id
 ```
@@ -483,7 +483,7 @@ FORMAT dicom
 
 %header
 
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 REPLACE PatientID var:id
 REPLACE InstanceSOPUID var:source_id
 
@@ -491,7 +491,7 @@ FORMAT nifti
 
 %header
 
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 REPLACE PatientID var:id
 REPLACE InstanceSOPUID var:source_id
 ```
