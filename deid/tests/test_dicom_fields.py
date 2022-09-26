@@ -50,12 +50,22 @@ class TestDicomFields(unittest.TestCase):
 
         print("Testing that field expansion works for groups")
         fields = expand_field_expression(
-            dicom=dicom, field="group:0020", contenders=contenders
+            dicom=dicom, field="select:group:0020", contenders=contenders
         )
 
         # The fields returned should be tag group 0020
         for uid, field in fields.items():
             assert field.element.tag.group == 0x0020
+
+        print("Testing that field expansion works for VR")
+        fields = expand_field_expression(
+            dicom=dicom, field="select:VR:TM", contenders=contenders
+        )
+
+        # The fields returned should end in time
+        for uid, field in fields.items():
+            assert field.name.endswith("Time")
+            assert field.element.VR == "TM"
 
         print("Testing that we can also search private tags based on numbers.")
         fields = expand_field_expression(

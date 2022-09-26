@@ -14,6 +14,8 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+ - add select:vr:XX field expander to select elements by VR (0.2.33)
+ - rename group:XXXX field expander to select:group:XXXX
  - add group:XXXX field expander to select all elements with a specified DICOM tag group (0.2.32)
  - custom class example for using dicom.Dataset, not requiring on client init [#211](https://github.com/pydicom/deid/pull/211) (0.2.31)
  - adding support for deid provided functions [#207](https://github.com/pydicom/deid/issues/207) (0.2.3)

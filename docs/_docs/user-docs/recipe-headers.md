@@ -282,7 +282,7 @@ JITTER endswith:Date var:jitter
 
 and this is the idea of an `expander`. And expander is an optional filter 
 applied to a header field (the middle value) to select some subset of header 
-values. Currently, we support `startswith`, `endswith`, `contains`, `group`,
+values. Currently, we support `startswith`, `endswith`, `contains`, `select`,
 `allexcept`, and `allfields`.
  
 The following examples show what fields are selected based on each filter. For
@@ -324,17 +324,35 @@ BLANK contains:Name
 Notice how we get Name in uppercase (when our search string was lowercase) and
 it can appear anywhere in the field.
 
-**group**
+**select**
 
-The group filter selects fields based on their DICOM group. Groups are
-specified as hexadecimal numbers (of up to four digits). For example,
-the following rules will keep all elements contained within DICOM
-groups 0x0018, 0x0020 and 0x0020:
+The `select` filter can be used to select fields based on properties
+of the DICOM element. These filters have the form
+`select:property:value`.
+
+Currently implemented property filters are `select:group:` to select
+elements by tag group and `select:VR:` to select elements by value
+representation.
+
+The `select:group:` filter selects fields based on their DICOM
+group. Groups values for the filter are specified as hexadecimal
+numbers (of up to four digits). For example, the following rules will
+keep all elements contained within DICOM groups 0x0018, 0x0020 and
+0x0020:
 
 ```
-KEEP group:0018
-KEEP group:0020
-KEEP group:0028
+KEEP select:group:0018
+KEEP select:group:0020
+KEEP select:group:0028
+```
+
+The `select:VR:` filter selects fields based on the value
+representation (VR) of the element. VR values are specified as the two
+character strings. For example, the following rules will blank all
+elements that have a VR of TM (time):
+
+```
+BLANK select:VR:TM
 ```
 
 **all**

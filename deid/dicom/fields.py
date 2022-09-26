@@ -86,11 +86,22 @@ class DicomField:
                 return True
         return False
 
-    def tag_within_group(self, group):
+    def select_matches(self, expression):
         """
-        Determine whether the element tag belongs to a group
+        Determine whether the element has a specific selected attribute
         """
-        return self.element.tag.group == group
+        attribute, value = expression.split(":", 1)
+        attribute = attribute.upper()
+
+        if attribute == "VR":
+            value = value[0:2].upper()
+            return self.element.VR == value
+
+        elif attribute == "GROUP":
+            value = int(value, 16)
+            return self.element.tag.group == value
+
+        return False
 
 
 def extract_item(item, prefix=None, entry=None):
@@ -172,7 +183,7 @@ def expand_field_expression(field, dicom, contenders=None):
     endswith: filter to fields that end with the expression
     startswith: filter to fields that start with the expression
     contains: filter to fields that contain the expression
-    group: filter to fields matching DICOM group
+    select: filter based on DICOM element properties
     allfields: include all fields
     exceptfields: filter to all fields except those listed ( | separated)
 
@@ -210,8 +221,6 @@ def expand_field_expression(field, dicom, contenders=None):
         expression = "(%s)$" % expression
     elif expander.lower() == "startswith":
         expression = "^(%s)" % expression
-    elif expander.lower() == "group":
-        expression = int(expression, 16)
 
     # Loop through fields, all are strings STOPPED HERE NEED TO ADDRESS EMPTY NAME
     for uid, field in contenders.items():
@@ -225,8 +234,8 @@ def expand_field_expression(field, dicom, contenders=None):
             if not field.name_contains(expression):
                 fields[uid] = field
 
-        elif expander.lower() == "group":
-            if field.tag_within_group(expression):
+        elif expander.lower() == "select":
+            if field.select_matches(expression):
                 fields[uid] = field
 
     return fields
