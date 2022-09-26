@@ -52,11 +52,6 @@ def get_requirements(lookup=None):
             else:
                 dependency = "%s<=%s" % (module_name, module_meta["max_version"])
 
-        # Restrict max version
-        if "before_version" in module_meta:
-            if module_meta["before_version"]:
-                dependency += ",<%s" % (module_meta["before_version"])
-
         install_requires.append(dependency)
     return install_requires
 
