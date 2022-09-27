@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+ - Add function to clean datasets without `DicomCleaner` [#223](https://github.com/pydicom/deid/pull/223) (0.2.34)
  - add select:vr:XX field expander to select elements by VR (0.2.33)
  - rename group:XXXX field expander to select:group:XXXX
  - add group:XXXX field expander to select all elements with a specified DICOM tag group (0.2.32)

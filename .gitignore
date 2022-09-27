@@ -37,3 +37,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 .cache
+
+# PyCharm
+.idea/
+

@@ -341,3 +341,26 @@ client.clean(fix_interpretation=False)
 Please [see the note](https://pydicom.github.io/pydicom/stable/old/image_data_handlers.html#usage)
 on the pydicom documentation for more details. Also, it would be useful to use machine 
 learning to detect text. if you want to develop this or have ideas, please reach out.
+
+<a id="no-client">
+### Usage without the client
+
+There are some cases when using the client won't be handy (multiprocessing) or working on PyDicom files directly would be preferred.
+In that case, you can skip client initialization and do:
+
+```python
+import pydicom
+import matplotlib.pyplot as plt
+
+from deid.dicom.pixels import clean_pixel_data, has_burned_pixels
+
+dicom_file_data = pydicom.read_file(DICOM_FILE)
+
+burned_pixels_results = has_burned_pixels(dicom_file_data)
+cleaned_pixels = clean_pixel_data(
+    dicom_file=dicom_file_data, 
+    results=burned_pixels_results
+)
+
+plt.imshow(cleaned_pixels)
+```
