@@ -14,6 +14,15 @@ If you are interested in the functions provided by deid (and you don't want to w
 own function) see [this documentation](https://pydicom.github.io/deid/user-docs/recipe-funcs/).
 Let's get started!
 
+<a id="data">
+## Data
+
+To run these examples, you'll need to install external deid-data.
+
+```bash
+$ pip install deid-data
+```
+
 <a id="imports">
 ## Imports
 We first import the functions that we need

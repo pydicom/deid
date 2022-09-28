@@ -8,13 +8,9 @@ Simple loading functions for datasets
    from deid.data import get_dataset
 """
 
-
 import os
 
-from deid.logger import bot
-from deid.utils import get_installdir
-
-data_base = os.path.dirname(os.path.abspath(__file__))
+data_base = os.path.abspath(os.path.dirname(__file__))
 
 
 def get_dataset(dataset=None):
@@ -25,18 +21,9 @@ def get_dataset(dataset=None):
     based on a user-provided label. In the future, we can add https endpoints
     to retrieve online datasets.
     """
-    data_base = get_installdir()
-    valid_datasets = {
-        "dicom-cookies": os.path.join(data_base, "data", "dicom-cookies"),
-        "animals": os.path.join(data_base, "data", "animals"),
-        "humans": os.path.join(data_base, "data", "humans"),
-        "ultrasounds": os.path.join(data_base, "data", "ultrasounds"),
-    }
+    try:
+        from deid_data import data
+    except:
+        raise ValueError("install deid data with `pip install deid-data`")
 
-    if dataset is not None:
-        # In case the user gave an extension
-        dataset = os.path.splitext(dataset)[0].lower()
-        if dataset in valid_datasets:
-            return valid_datasets[dataset]
-
-    bot.info("Valid datasets include: %s" % (",".join(list(valid_datasets.keys()))))
+    return data.get_dataset(dataset)

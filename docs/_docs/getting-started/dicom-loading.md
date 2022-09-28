@@ -4,6 +4,20 @@ category: Getting Started
 order: 3
 ---
 
+<a id="data">
+## Data
+
+To run these examples, you'll need to install external deid-data.
+
+```bash
+$ pip install deid-data
+```
+
+
+<a id="loading">
+## Loading
+
+
 While they are different file organizations for dicom, we are going to take a simple 
 approach of assuming some top level directory with some number of files within 
 (yes, including subdirectories). For example, if you retrieved your data using a 

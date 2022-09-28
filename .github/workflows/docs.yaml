@@ -24,6 +24,7 @@ jobs:
           git clone https://github.com/pydicom/deid
           cd deid
           pip install -e .
+          pip install deid-data
           cd ./docs
           pip install -r api_docs/docs-requirements.txt
           /bin/bash ./apidoc.sh
