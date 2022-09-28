@@ -20,4 +20,4 @@ install:
   - python setup.py install
 
 script:
-  - python -m unittest discover -s $TRAVIS_BUILD_DIR/deid/tests/ -p '[t|T]est*.py'
+  - python -m unittest discover -s $TRAVIS_BUILD_DIR/tests/ -p '[t|T]est*.py'

@@ -12,15 +12,14 @@ import shutil
 import tempfile
 import unittest
 
-from deid.data import get_dataset
-from deid.tests.common import get_file
+from tests.common import get_file, get_dataset
 from deid.utils import get_installdir
 
 
 class TestFilterDetect(unittest.TestCase):
     def setUp(self):
         self.pwd = get_installdir()
-        self.deidpath = os.path.abspath("%s/tests/resources/" % self.pwd)
+        self.deidpath = os.path.abspath("%s/../tests/resources/" % self.pwd)
         self.dataset = get_dataset("animals")
         self.tmpdir = tempfile.mkdtemp()
         print("\n######################START######################")

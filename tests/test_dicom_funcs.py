@@ -13,9 +13,8 @@ import shutil
 import tempfile
 import unittest
 
-from deid.data import get_dataset
 from deid.dicom.parser import DicomParser
-from deid.tests.common import create_recipe, get_file, get_same_file
+from tests.common import create_recipe, get_file, get_same_file, get_dataset
 from deid.utils import get_installdir
 
 uuid_regex = "[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"

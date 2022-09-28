@@ -14,12 +14,10 @@ import shutil
 import tempfile
 import unittest
 
-from deid.utils import get_installdir
-
 
 class TestUtils(unittest.TestCase):
     def setUp(self):
-        self.pwd = get_installdir()
+        self.pwd = os.path.dirname(__file__)
         self.tmpdir = tempfile.mkdtemp()
         print("\n######################START######################")
 

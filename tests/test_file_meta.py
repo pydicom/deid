@@ -10,9 +10,8 @@ Test file meta
 
 import unittest
 
-from deid.data import get_dataset
 from deid.dicom import replace_identifiers
-from deid.tests.common import create_recipe, get_file
+from tests.common import create_recipe, get_file, get_dataset
 from deid.utils import get_installdir
 
 

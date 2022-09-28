@@ -4,6 +4,8 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2022, Vanessa Sochat"
 __license__ = "MIT"
 
+from tests.common import get_dataset
+
 """
 Test dicom header
 """
@@ -13,7 +15,6 @@ import shutil
 import tempfile
 import unittest
 
-from deid.data import get_dataset
 from deid.utils import get_installdir
 
 

@@ -13,11 +13,10 @@ import shutil
 import tempfile
 import unittest
 
-from deid.data import get_dataset
 from deid.dicom import get_identifiers, replace_identifiers
 from deid.dicom.fields import get_fields
 from deid.dicom.parser import DicomParser
-from deid.tests.common import get_dicom
+from tests.common import get_dicom, get_dataset
 from deid.utils import get_installdir
 
 

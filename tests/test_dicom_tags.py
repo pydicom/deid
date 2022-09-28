@@ -7,8 +7,8 @@ import shutil
 import tempfile
 import unittest
 
-from deid.data import get_dataset
 from deid.utils import get_installdir
+from tests.common import get_dataset
 
 
 class TestDicomTags(unittest.TestCase):

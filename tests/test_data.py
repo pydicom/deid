@@ -4,6 +4,8 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2022, Vanessa Sochat"
 __license__ = "MIT"
 
+from tests.common import get_dataset
+
 """
 Test data functions
 """
@@ -22,7 +24,6 @@ class TestUtils(unittest.TestCase):
     def test_get_dataset(self):
         """test_get_dataset will make sure we can load provided datasets"""
         print("Case 1: Ask for existing dataset.")
-        from deid.data import get_dataset
 
         dataset = get_dataset("dicom-cookies")
         self.assertTrue(os.path.exists(dataset))
