@@ -1,0 +1,94 @@
+FORMAT dicom
+
+%filter whitelist
+
+LABEL Marked as Clean Catch All # (Vanessa Sochat)
+  contains BurnedInAnnotation No
+
+%filter graylist
+
+# Coordinates from fields
+
+LABEL Blank Image
+    coordinates all
+
+LABEL Clean Ultrasound Regions
+    present SequenceOfUltrasoundRegions
+    keepcoordinates from:SequenceOfUltrasoundRegions
+
+%header
+
+REMOVE endswith:Time
+REMOVE endswith:Date
+REMOVE endswith:time
+REMOVE AdditionalPatientHistory
+REMOVE AccessionNumber
+REMOVE PatientID
+REMOVE startswith:IssueDate
+REMOVE IssuerOfPatientID
+REMOVE FillerOrderNumberImagingServiceRequest
+REMOVE OtherPatientIDs
+REMOVE OtherPatientNames
+REMOVE OtherPatientIDsSequence
+REMOVE PatientAddress
+REMOVE PatientBirthName
+REMOVE PatientMotherBirthName
+REMOVE PatientName
+REMOVE PatientsName
+REMOVE ReasonForStudy
+REMOVE contains:Trial
+REMOVE startswith:PatientTelephoneNumber
+REMOVE endswith:ID
+REMOVE endswith:IDs
+REMOVE ReferringPhysicianName
+REMOVE ConsultingPhysicianName
+REMOVE EvaluatorName
+REMOVE PerformedStationName
+REMOVE SecondaryReviewerName
+REMOVE PersonName
+REMOVE PersonAddress
+REMOVE ReferringPhysicianAddress
+REMOVE ReferringPhysicianTelephoneNumbers
+REMOVE ReferringPhysicianIdentificationSequence
+REMOVE ConsultingPhysicianIdentificationSequence
+REMOVE PhysicianApprovingInterpretation
+REMOVE PhysiciansOfRecord
+REMOVE PhysiciansOfRecordIdentificationSequence
+REMOVE PerformingPhysicianName
+REMOVE PerformingPhysicianIdentificationSequence
+REMOVE PhysiciansReadingStudyIdentificationSequence
+REMOVE RequestingPhysician
+REMOVE ScheduledPerformingPhysicianIdentificationSequence
+REMOVE RequestingPhysicianIdentificationSequence
+REMOVE HumanPerformerName
+REMOVE ContactDisplayName
+REMOVE PerformingPhysicianName
+REMOVE NameOfPhysiciansReadingStudy
+REMOVE OperatorsName
+REMOVE ScheduledPerformingPhysicianName
+REMOVE ReviewerName
+REMOVE NamesOfIntendedRecipientsOfResults
+REMOVE SourceApplicatorName
+REMOVE ClinicalTrialSponsorName
+REMOVE ContentCreatorName
+REMOVE ClinicalTrialProtocolEthicsCommitteeName
+REMOVE contains:UID
+REMOVE RegionOfResidence
+REMOVE CurrentPatientLocation
+REMOVE PatientComments
+REMOVE PatientTransportArrangements
+REMOVE PatientDeathDateInAlternativeCalendar
+REMOVE PatientInstitutionResidence
+REMOVE PerformedLocation
+REMOVE ScheduledStudyLocation
+REMOVE ScheduledStudyLocationAETitle
+REMOVE OrderEntererLocation
+REMOVE AssignedLocation
+
+ADD IssuerOfPatientID STARR
+ADD PatientBirthDate var:entity_timestamp
+ADD StudyDate var:item_timestamp
+ADD PatientID var:entity_id
+ADD AccessionNumber var:item_id
+ADD PatientIdentityRemoved YES
+REMOVE jitter

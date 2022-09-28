@@ -1,0 +1,24 @@
+FORMAT dicom
+
+%filter whitelist
+
+LABEL Matt Lungren CHEST 
+  contains Modality CR|DX|PR
+  || contains StudyDescription DX|PR
+  + contains StudyDescription CHEST || contains BodyPartExamined CHEST
+
+LABEL Matt Lungren CHEST Missing
+  contains Modality CR|DX|PR
+  || contains StudyDescription DX|PR
+  + contains StudyDescription CHEST || contains BodyPartExamined CHEST
+
+
+%filter blacklist
+
+LABEL Matt Lungren Only Accept X-ray
+  contains Modality RF|XA
+
+LABEL Matt Lungren Filter Known notChest
+  contains StudyDescription ANKLE|WRIST|PELVIS|EXTREMETY|KNEE|SHOULDER|CSPINE|LSPINE|FOOT|HAND|ELBOW
+  || contains SeriesDescription ANKLE|WRIST|PELVIS|EXTREMETY|KNEE|SHOULDER|CSPINE|LSPINE|FOOT|HAND|ELBOW
+  || contains BodyPartExamined ANKLE|WRIST|PELVIS|EXTREMETY|KNEE|SHOULDER|CSPINE|LSPINE|FOOT|HAND|ELBOW

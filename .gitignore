@@ -5,7 +5,6 @@ build
 pypi.sh
 env
 _build
-deid/data
 
 private
 .vscode
