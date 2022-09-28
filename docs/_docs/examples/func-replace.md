@@ -40,12 +40,7 @@ from deid.dicom import get_identifiers
 items = get_identifiers(dicom_files)
 ```
 
-If you want to expand sequences, ask for it:
-
-```python
-items = get_identifiers(dicom_files, expand_sequences=True)
-```
-
+Note that the default is to expand sequences.
 When you expand sequences, they are flattened out in the data structure.
 For example:
 
@@ -59,6 +54,13 @@ For example:
  'ReferencedPerformedProcedureStepSequence__ReferencedSOPClassUID': 'xxxxxxxxxx',
  'ReferencedPerformedProcedureStepSequence__ReferencedSOPInstanceUID': 'xxxxxxxx',
 ```
+
+If desired, you can ask for different:
+
+```python
+items = get_identifiers(dicom_files, expand_sequences=False)
+```
+
 
 The function we will use for the example will perform an action to generate a uid, 
 but you can also use it to communicate with databases, APIs, or do something like 
