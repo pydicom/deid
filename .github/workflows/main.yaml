@@ -40,4 +40,4 @@ jobs:
         run: |
           export PATH="/usr/share/miniconda/bin:$PATH"
           source activate testing
-          python -m unittest discover -s deid/tests/ -p '[t|T]est*.py'
+          python -m unittest discover -s tests/ -p '[t|T]est*.py'

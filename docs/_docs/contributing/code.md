@@ -21,7 +21,7 @@ header parsing. To contribute a custom function you should do the following:
 
 1. Add a function to deid/dicom/actions, ideally in the appropriate file (e.g., uid functions in uuid.py, etc)
 2. Ensure your function is added to the lookup in `deid/dicom/actions/__init__.py` so it can be found.
-3. Add a test to `deid/tests/test_dicom_funcs.py` that ensures your function works, with or without custom variables.
+3. Add a test to `tests/test_dicom_funcs.py` that ensures your function works, with or without custom variables.
 
 
 Generally, a custom function should accept the following variables:

@@ -1,7 +1,7 @@
 include README.md LICENSE
 graft deid
 prune *.pyc
-prune deid/tests
+prune tests
 prune *OLD
 global-exclude __pycache__
 global-exclude *.py[co]

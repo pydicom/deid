@@ -12,5 +12,3 @@ Simple loading functions for datasets
 import os
 
 data_base = os.path.dirname(os.path.abspath(__file__))
-
-
