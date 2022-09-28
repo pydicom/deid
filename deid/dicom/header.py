@@ -25,6 +25,7 @@ def get_identifiers(
     strip_sequences=False,
     remove_private=False,
     disable_skip=False,
+    expand_sequences=True,
 ):
     """
     Extract all identifiers from a dicom image.
@@ -40,6 +41,7 @@ def get_identifiers(
     strip_sequences: if True, remove all sequences
     remove_private: remove private tags
     disable_skip: do not skip over protected fields
+    expand_sequences: if True, expand sequences. otherwise, skips
     """
     if not isinstance(dicom_files, list):
         dicom_files = [dicom_files]
@@ -50,7 +52,7 @@ def get_identifiers(
     # Parse each dicom file
     for dicom_file in dicom_files:
         parser = DicomParser(dicom_file, force=force, config=config, disable_skip=False)
-        lookup[parser.dicom_file] = parser.get_fields()
+        lookup[parser.dicom_file] = parser.get_fields(expand_sequences=expand_sequences)
 
     return lookup
 
