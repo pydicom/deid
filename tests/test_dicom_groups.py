@@ -16,13 +16,12 @@ import unittest
 from deid.dicom import get_identifiers, replace_identifiers
 from deid.dicom.fields import get_fields
 from deid.dicom.parser import DicomParser
-from tests.common import get_dicom, get_dataset
-from deid.utils import get_installdir
+from tests_commons import get_dicom, get_dataset
 
 
 class TestDicomGroups(unittest.TestCase):
     def setUp(self):
-        self.pwd = get_installdir()
+        self.pwd = os.path.abspath(os.path.dirname(__file__))
         self.deid = os.path.abspath("%s/../examples/deid/deid.dicom-groups" % self.pwd)
         self.dataset = get_dataset("dicom-cookies")
         self.tmpdir = tempfile.mkdtemp()

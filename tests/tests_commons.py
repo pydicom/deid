@@ -8,8 +8,6 @@ import os
 
 from deid.logger import bot
 
-from deid.utils import get_installdir
-
 
 def create_recipe(actions, fields=None, values=None):
     """

@@ -14,12 +14,11 @@ import tempfile
 import unittest
 
 from deid.config import DeidRecipe
-from deid.utils import get_installdir
 
 
 class TestDeidRecipe(unittest.TestCase):
     def setUp(self):
-        self.pwd = get_installdir()
+        self.pwd = os.path.abspath(os.path.dirname(__file__))
         self.deid = os.path.abspath("%s/../examples/deid/deid.dicom" % self.pwd)
         self.tmpdir = tempfile.mkdtemp()
         print("\n######################START######################")

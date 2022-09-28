@@ -4,6 +4,8 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2022, Vanessa Sochat"
 __license__ = "MIT"
 
+import os
+
 """
 Testing deid provided functions
 """
@@ -14,15 +16,14 @@ import tempfile
 import unittest
 
 from deid.dicom.parser import DicomParser
-from tests.common import create_recipe, get_file, get_same_file, get_dataset
-from deid.utils import get_installdir
+from tests_commons import create_recipe, get_file, get_same_file, get_dataset
 
 uuid_regex = "[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"
 
 
 class TestDicomFuncs(unittest.TestCase):
     def setUp(self):
-        self.pwd = get_installdir()
+        self.pwd = os.path.abspath(os.path.dirname(__file__))
         self.dataset = get_dataset("humans")
         self.tmpdir = tempfile.mkdtemp()
         print("\n######################START######################")

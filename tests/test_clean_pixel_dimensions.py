@@ -15,14 +15,13 @@ import unittest
 
 from pydicom import read_file
 
-from deid.utils import get_installdir
-from tests.common import get_dataset
+from tests_commons import get_dataset
 
 
 class TestCleanPizelDimensions(unittest.TestCase):
     def setUp(self):
-        self.pwd = get_installdir()
-        self.deidpath = os.path.abspath("%s/../tests/resources/" % self.pwd)
+        self.pwd = os.path.abspath(os.path.dirname(__file__))
+        self.deidpath = os.path.abspath("%s/resources/" % self.pwd)
         self.dataset = get_dataset("ultrasounds")
         self.tmpdir = tempfile.mkdtemp()
         print("\n######################START######################")

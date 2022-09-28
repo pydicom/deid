@@ -14,13 +14,12 @@ import tempfile
 import unittest
 
 from deid.dicom.fields import get_fields
-from tests.common import get_dicom, get_dataset
-from deid.utils import get_installdir
+from tests_commons import get_dicom, get_dataset
 
 
 class TestDicomFields(unittest.TestCase):
     def setUp(self):
-        self.pwd = get_installdir()
+        self.pwd = os.path.abspath(os.path.dirname(__file__))
         self.deid = os.path.abspath("%s/../examples/deid/deid.dicom" % self.pwd)
         self.dataset = get_dataset("animals")  # includes private tags
         self.tmpdir = tempfile.mkdtemp()

@@ -20,16 +20,15 @@ from pydicom import read_file
 
 from deid.config import DeidRecipe
 from deid.dicom.pixels import clean_pixel_data, has_burned_pixels
-from tests.common import get_file, get_dataset
-from deid.utils import get_installdir
+from tests_commons import get_file, get_dataset
 
 global generate_uid
 
 
 class TestClean(unittest.TestCase):
     def setUp(self):
-        self.pwd = get_installdir()
-        self.deidpath = os.path.abspath("%s/../tests/resources/" % self.pwd)
+        self.pwd = os.path.abspath(os.path.dirname(__file__))
+        self.deidpath = os.path.abspath("%s/resources/" % self.pwd)
         self.dataset = get_dataset("animals")
         self.tmpdir = tempfile.mkdtemp()
         print("\n######################START######################")

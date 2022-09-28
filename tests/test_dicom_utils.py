@@ -13,15 +13,14 @@ import shutil
 import tempfile
 import unittest
 
-from tests.common import get_dicom, get_dataset
-from deid.utils import get_installdir
+from tests_commons import get_dicom, get_dataset
 
 global generate_uid
 
 
 class TestDicomUtils(unittest.TestCase):
     def setUp(self):
-        self.pwd = get_installdir()
+        self.pwd = os.path.abspath(os.path.dirname(__file__))
         self.deid = os.path.abspath("%s/../examples/deid/deid.dicom" % self.pwd)
         self.dataset = get_dataset("dicom-cookies")
         self.tmpdir = tempfile.mkdtemp()

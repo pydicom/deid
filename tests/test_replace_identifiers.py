@@ -19,15 +19,14 @@ from pydicom.sequence import Sequence
 
 from deid.dicom import get_identifiers, replace_identifiers
 from deid.dicom.parser import DicomParser
-from tests.common import create_recipe, get_file, get_dataset
-from deid.utils import get_installdir
+from tests_commons import create_recipe, get_file, get_dataset
 
 global generate_uid
 
 
 class TestDicom(unittest.TestCase):
     def setUp(self):
-        self.pwd = get_installdir()
+        self.pwd = os.path.abspath(os.path.dirname(__file__))
         self.deid = os.path.abspath("%s/../examples/deid/deid.dicom" % self.pwd)
         self.dataset = get_dataset("humans")
         self.tmpdir = tempfile.mkdtemp()

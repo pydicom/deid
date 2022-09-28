@@ -12,7 +12,7 @@ Test data functions
 import os
 import unittest
 
-from tests.common import get_dataset
+from tests_commons import get_dataset
 
 
 class TestUtils(unittest.TestCase):

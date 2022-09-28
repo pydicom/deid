@@ -4,6 +4,8 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2022, Vanessa Sochat"
 __license__ = "MIT"
 
+import os
+
 """
 Test file meta
 """
@@ -11,13 +13,12 @@ Test file meta
 import unittest
 
 from deid.dicom import replace_identifiers
-from tests.common import create_recipe, get_file, get_dataset
-from deid.utils import get_installdir
+from tests_commons import create_recipe, get_file, get_dataset
 
 
 class TestDicom(unittest.TestCase):
     def setUp(self):
-        self.pwd = get_installdir()
+        self.pwd = os.path.abspath(os.path.dirname(__file__))
         self.dataset = get_dataset("animals")
 
     def test_replace_filemeta(self):
