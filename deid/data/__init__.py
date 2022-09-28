@@ -9,7 +9,9 @@ Simple loading functions for datasets
 """
 
 import os
+
 data_base = os.path.abspath(os.path.dirname(__file__))
+
 
 def get_dataset(dataset=None):
     """
