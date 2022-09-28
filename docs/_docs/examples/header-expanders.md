@@ -65,6 +65,15 @@ If you want to use the expanders in your code, that's easy too! Here
 are the same examples. Let's first start with reading in a dicom file, 
 such as one of the dicom-cookies examples provided with deid.
 
+<a id="data">
+## Data
+
+To run these examples, you'll need to install external deid-data.
+
+```bash
+$ pip install deid-data
+```
+
 <a id="imports">
 ## Imports
 We first import the functions that we need

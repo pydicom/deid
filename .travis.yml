@@ -14,7 +14,7 @@ matrix:
     python: "2.7"
 
 install:
-  - pip install pydicom matplotlib
+  - pip install pydicom matplotlib deid-data
   - cd $TRAVIS_BUILD_DIR/
   - python setup.py sdist
   - python setup.py install

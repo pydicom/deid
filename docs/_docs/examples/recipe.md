@@ -20,6 +20,16 @@ interacting with it, and then using it to replace identifiers. If you want to
 jump in, then go straight to the [script](https://github.com/pydicom/deid/blob/master/examples/dicom/recipe/deid-dicom-example.py) 
 that describes this example.
 
+<a id="data">
+## Data
+
+To run these examples, you'll need to install external deid-data.
+
+```bash
+$ pip install deid-data
+```
+
+
 <a id="recipe-management">
 ## Recipe Management
 

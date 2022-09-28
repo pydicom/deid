@@ -10,12 +10,24 @@ into the data. If you don't want the detalis, jump into our
 [example script](https://github.com/pydicom/deid/blob/master/examples/dicom/pixels/run-cleaner-client.py). 
 Here we will walk through how this cleaner was derived, and how it works.
 
+ - [Data](#data)
  - [Inspiration from CTP](#inspiration-from-ctp)
  - [Deid Implementation](#deid-implementation)
  - [Client](#client) to control the cleaning process
  - [Detect](#detect) areas in the image likely to need cleaning
  - [Clean and Save](#clean-and-save)
  - [Debugging](#debugging) and other important notes
+
+
+<a id="data">
+## Data
+
+To run these examples, you'll need to install external deid-data.
+
+```bash
+$ pip install deid-data
+```
+
 
 <a id="inspiration-from-ctp">
 ## Inspiration from CTP

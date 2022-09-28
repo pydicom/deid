@@ -95,22 +95,9 @@ class TestUtils(unittest.TestCase):
         print("Testing recursive find.")
         from deid.utils import recursive_find
 
-        found = 0
-        expected = 11
-        for file in recursive_find(self.pwd, pattern="*.dcm"):
-            found += 1
-        print("Found %s files" % (found))
-        self.assertTrue(found == expected)
-
-    def test_recursive_find_as_list(self):
-        """test_recursive_find_as_list should detect 7 dicoms"""
-        print("Testing recursive find as lit.")
-        from deid.utils import recursive_find
-
-        expected = 11
-        files = list(recursive_find(self.pwd, pattern="*.dcm"))
-        found = len(files)
-        print("Found %s files" % (len(files)))
+        expected = 3
+        found = len(list(recursive_find(self.pwd, pattern="deid*")))
+        print("Found %s deid files" % (found))
         self.assertTrue(found == expected)
 
 

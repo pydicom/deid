@@ -7,6 +7,15 @@ order: 3
 Here is a quick example of using the deid executable. For more information on this
 client, see the [user docs]({{ site.baseurl }}/user-docs/client/) page.
 
+<a id="data">
+## Data
+
+To run these examples, you'll need to install external deid-data.
+
+```bash
+$ pip install deid-data
+```
+
 <a id="deid-executable">
 ### Deid Executable
 The deid executable is installed automatically with the module. Just running `deid` we see:
