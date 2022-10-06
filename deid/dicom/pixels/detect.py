@@ -14,14 +14,11 @@ from pydicom.sequence import Sequence
 
 from deid.config import DeidRecipe
 from deid.dicom.filter import apply_filter
-from deid.dicom.types import DcmOrStr
 from deid.logger import bot
 
 
 def has_burned_pixels(
-    dicom_files: Union[list[DcmOrStr], DcmOrStr],
-    force: bool = True,
-    deid: Optional[DeidRecipe] = None,
+    dicom_files, force: bool = True, deid: Optional[DeidRecipe] = None
 ):
     """has burned pixels is an entrypoint for has_burned_pixels_multi (for
     multiple images) or has_burned_pixels_single (for one detailed repor)
@@ -66,7 +63,7 @@ def _has_burned_pixels_multi(dicom_files: List[Union[str, FileDataset]], force, 
     return decision
 
 
-def _has_burned_pixels_single(dicom_file: DcmOrStr, force: bool, deid):
+def _has_burned_pixels_single(dicom_file, force: bool, deid):
 
     """has burned pixels single will evaluate one dicom file for burned in
     pixels based on 'filter' criteria in a deid. If deid is not provided,
