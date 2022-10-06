@@ -11,7 +11,7 @@ import os
 import random
 import re
 import sys
-from typing import Union, Dict, Optional
+from typing import Optional
 
 import matplotlib
 import numpy
@@ -21,7 +21,6 @@ from pydicom.pixel_data_handlers.util import get_expected_length
 
 from deid.config import DeidRecipe
 from deid.dicom import utils
-from deid.dicom.types import DcmOrStr
 from deid.logger import bot
 from deid.utils import get_temporary_name
 
@@ -78,7 +77,7 @@ class DicomCleaner:
         """
         return {"family": "serif", "color": "darkred", "weight": "normal", "size": 16}
 
-    def detect(self, dicom_file: DcmOrStr) -> Dict[str, Union[bool, list]]:
+    def detect(self, dicom_file):
         """
         Initiate the cleaner for a new dicom file.
         """
@@ -261,11 +260,11 @@ class DicomCleaner:
 
 
 def clean_pixel_data(
-    dicom_file: DcmOrStr,
+    dicom_file,
     results: dict,
     fix_interpretation: bool = True,
     pixel_data_attribute: str = "PixelData",
-) -> Optional[NDArray]:
+):
     """
     Clean a dicom file.
 

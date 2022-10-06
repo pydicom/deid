@@ -11,7 +11,6 @@ from pydicom import FileDataset
 
 from deid.logger import bot
 from deid.utils import recursive_find
-from .types import DcmOrStr
 from .validate import validate_dicoms
 
 
@@ -107,7 +106,7 @@ def save_dicom(dicom, dicom_file, output_folder=None, overwrite=False):
     return output_dicom
 
 
-def load_dicom(dcm_file: DcmOrStr) -> FileDataset:
+def load_dicom(dcm_file):
     if isinstance(dcm_file, FileDataset):
         return dcm_file
     else:

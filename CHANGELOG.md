@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+ - Remove unecessary typing - adds bugs (0.2.37)
  - Provide data as an external package (0.2.36)
  - Restore expand_sequences to get_identifiers (0.2.35)
  - Add function to clean datasets without `DicomCleaner` [#223](https://github.com/pydicom/deid/pull/223) (0.2.34)
