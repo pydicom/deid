@@ -70,14 +70,14 @@ If we look at the [DicomPixelAnonymizer.script](https://github.com/johnperry/CTP
 it also contains criteria (and additionally, locations) for pixel areas that are known/likely 
 to have annotations. The general format looks like this:
 
-```
+```console
 { signature }
 (region) (region) ... (region)
 ```
 and the signature looks similar to an expression used in the `BurnedInPixels.script`, 
 but the difference is that groups of logic are then paired with one or more regions:
 
-```
+```console
 { Modality.equals("CT") 
     * Manufacturer.containsIgnoreCase("manufacturer1") 
         * ManufacturerModelName.containsIgnoreCase("modelA") }
@@ -149,8 +149,13 @@ The basic steps we will take are the following:
 
 ### Coordinates from Fields
 
+Deid has two ways of representing coordinates:
+
+ - The [ctp standard](https://mircwiki.rsna.org/index.php?title=The_CTP_DICOM_Pixel_Anonymizer) with `ctpcoordinate` or `ctpkeepcoordinate`
+ - Our coordinate standard (xmin, ymin, xmax, ymax) with `coordinate` or `keepcoordinate`
+ 
 By default, we use a list of rules provided by CTP and other users in [dicom.deid](https://github.com/pydicom/deid/blob/master/deid/data/deid.dicom), and these are based on finding known locations based on dicom header values.
-There are two operations we can apply to coordinates:
+With and without the `ctp` prefix to determine the coordinate convention used, there are two operations we can apply to coordinates:
 
  - `keepcoordinates` indicates a set of coordinates that you want to set the mask to a value of 1, to indicate keeping
  - `coordinates` indicates a set of coordinates that you want to set the mask to a value of 0, to indicate cleaning.
@@ -160,7 +165,7 @@ apply the list of rules provided by CTP and others in [dicom.deid](https://githu
 to add regions with 0s, indicating regions to be cleaned. For example, here is a rule to scrub a box of pixels
 based on finding a particular set of metadata:
 
-```
+```console
 LABEL LightSpeed Dose Report # (Susan Weber)
   contains ManufacturerModelName LightSpeed VCT
   + contains Modality CT
@@ -173,7 +178,7 @@ if there is a large region to remove, but then a smaller region inside of it to 
 You can do this with the `keepcoordinate` attribute, which might look the same as above
 but instead of `coordinates` you would have:
 
-```
+```console
   keepcoordinates 0,0,512,121
 ```
 
@@ -187,7 +192,7 @@ to indicate it. In fact, you want to go further and extract the coordinates from
 In this case you can use a smiliar snippet. In the example below, we take
  the coordinates defined based on the [SequenceOfUltrasoundRegions](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.8.5.5.html#table_C.8-17) identifier, and tell deid to keep that region.
 
-```
+```console
 LABEL Clean Ultrasound
     present SequenceOfUltrasoundRegions
     keepcoordinates from:SequenceOfUltrasoundRegions
@@ -196,7 +201,7 @@ LABEL Clean Ultrasound
 And since the default value of the mask is all 1s, we need to start with the inverse, 
 all zeros! We can do that as follows:
 
-```
+```console
 LABEL Blank Mask
     coordinates all
 
@@ -212,7 +217,7 @@ from that field, and set then to a value of 1 (keep) in our mask.
 These actions is added to the provided deid.dicom.ultrasound recipe, a subset shown
 below:
 
-```
+```console
 FORMAT dicom
 
 %filter whitelist

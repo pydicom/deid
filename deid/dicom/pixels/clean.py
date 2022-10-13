@@ -94,7 +94,9 @@ class DicomCleaner:
     ) -> Optional[NDArray]:
 
         if not self.results:
-            bot.warning("Use %s.detect() to find coordinates first." % self)
+            bot.warning(
+                "Use %s.detect() with a dicom file to find coordinates first." % self
+            )
             return
 
         bot.info("Scrubbing %s." % self.dicom_file)

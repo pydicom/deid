@@ -33,6 +33,7 @@ While you are free to define your own groups and criteria, we provide a [default
 
 <a id="filter-example">
 #### Filter Example
+
 I'll again show you the previous example, but give more detail this time. 
 The start of a filter might look like this:
 
