@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+ - Add `ctpcoordinates` and `ctpkeepcoordinates` to handle different formats (0.2.38)
  - Remove unecessary typing - adds bugs (0.2.37)
  - Provide data as an external package (0.2.36)
  - Restore expand_sequences to get_identifiers (0.2.35)
