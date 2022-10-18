@@ -1,9 +1,4 @@
-from .header import (
-    get_identifiers,
-    replace_identifiers,
-    remove_private_identifiers,
-)
-
-from .utils import get_files
 from .fields import extract_sequence
-from .pixels import has_burned_pixels, DicomCleaner
+from .header import get_identifiers, remove_private_identifiers, replace_identifiers
+from .pixels import DicomCleaner, has_burned_pixels, clean_pixel_data
+from .utils import get_files

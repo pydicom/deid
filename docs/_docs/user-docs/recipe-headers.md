@@ -15,9 +15,9 @@ and replace header values.
 Cleaning headers in dicom images typically has four parts:
 
  1. define a set of rules for updating values
- 2. [get]({{ site.baseurl }}/getting-started/get) current fields (if you need to use them to look up replacements, etc)
+ 2. [get]({{ site.baseurl }}/getting-started/dicom-get) current fields (if you need to use them to look up replacements, etc)
  3. update these fields as you see needed
- 4. [put]({{ site.baseurl }}/getting-started/put) (possibly updated) identifiers back into the data, and deidentify fully.
+ 4. [put]({{ site.baseurl }}/getting-started/dicom-put) (possibly updated) identifiers back into the data, and deidentify fully.
 
 this document will talk about the first step in this process, 
 how you can configure rules for the software. If you are interested in the command 
@@ -64,7 +64,7 @@ FORMAT dicom
 
 %header
 
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 BLANK OrdValue
 KEEP Modality
 REPLACE id var:entity_id
@@ -103,7 +103,7 @@ in the case of binary actions, just `<ACTION> <VALUE>`. For example, both of the
 
 ```
 #<ACTION> <FIELD> <VALUE>
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 #<ACTION> <FIELD>
 KEEP PixelData
 ```
@@ -240,7 +240,7 @@ FORMAT dicom
 
 %header
 
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 REMOVE ALL
 KEEP PixelData
 KEEP SamplesPerPixel
@@ -282,8 +282,8 @@ JITTER endswith:Date var:jitter
 
 and this is the idea of an `expander`. And expander is an optional filter 
 applied to a header field (the middle value) to select some subset of header 
-values. Currently, we support `startswith`, `endswith`, `contains`, `allexcept`,
-and `allfields`.
+values. Currently, we support `startswith`, `endswith`, `contains`, `select`,
+`allexcept`, and `allfields`.
  
 The following examples show what fields are selected based on each filter. For
 all examples, the test is done making the values lowercase.
@@ -323,6 +323,37 @@ BLANK contains:Name
 
 Notice how we get Name in uppercase (when our search string was lowercase) and
 it can appear anywhere in the field.
+
+**select**
+
+The `select` filter can be used to select fields based on properties
+of the DICOM element. These filters have the form
+`select:property:value`.
+
+Currently implemented property filters are `select:group:` to select
+elements by tag group and `select:VR:` to select elements by value
+representation.
+
+The `select:group:` filter selects fields based on their DICOM
+group. Groups values for the filter are specified as hexadecimal
+numbers (of up to four digits). For example, the following rules will
+keep all elements contained within DICOM groups 0x0018, 0x0020 and
+0x0020:
+
+```
+KEEP select:group:0018
+KEEP select:group:0020
+KEEP select:group:0028
+```
+
+The `select:VR:` filter selects fields based on the value
+representation (VR) of the element. VR values are specified as the two
+character strings. For example, the following rules will blank all
+elements that have a VR of TM (time):
+
+```
+BLANK select:VR:TM
+```
 
 **all**
 
@@ -438,7 +469,7 @@ FORMAT dicom
 
 %header
 
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 REPLACE PatientID var:id
 ```
 
@@ -449,7 +480,7 @@ FORMAT dicom
 
 %header
 
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 REPLACE PatientID var:id
 REPLACE SOPInstanceUID var:source_id
 ```
@@ -470,7 +501,7 @@ FORMAT dicom
 
 %header
 
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 REPLACE PatientID var:id
 REPLACE InstanceSOPUID var:source_id
 
@@ -478,7 +509,7 @@ FORMAT nifti
 
 %header
 
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 REPLACE PatientID var:id
 REPLACE InstanceSOPUID var:source_id
 ```
@@ -514,6 +545,6 @@ expression. All supported expanders include:
 Now that you know how configuration works, you have a few options.
 You can learn how to define groups of tags based on fields or values in [groups]({{ site.baseurl }}/user-docs/recipe-groups/),
 or if you want to write a text file and get going with cleaning your files, you should 
-look at some examples for generating a basic [get]({{ sitebase.url }}/getting-started/dicom-get/).
+look at some examples for generating a basic [get]({{ site.baseurl }}/getting-started/dicom-get/).
 This is the action to get a set of fields and values from your dicom files. For a full walk through
-example with a recipe, see the [recipe example]({{ sitebase.url }}/examples/recipe)
+example with a recipe, see the [recipe example]({{ site.baseurl }}/examples/recipe)

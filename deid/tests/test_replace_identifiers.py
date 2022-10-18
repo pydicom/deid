@@ -1,45 +1,27 @@
 #!/usr/bin/env python
 
+__author__ = "Vanessa Sochat"
+__copyright__ = "Copyright 2016-2022, Vanessa Sochat"
+__license__ = "MIT"
+
 """
 Test replace_identifiers
-
-Copyright (c) 2016-2021 Vanessa Sochat
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
 """
 
-import unittest
-import tempfile
-import shutil
-import json
 import os
+import shutil
+import tempfile
+import unittest
+from collections import OrderedDict
 
-from deid.utils import get_installdir
-from deid.data import get_dataset
-from deid.dicom.parser import DicomParser
-from deid.dicom import get_identifiers, replace_identifiers
-from deid.tests.common import create_recipe, get_file
 from pydicom import read_file
 from pydicom.sequence import Sequence
 
-from collections import OrderedDict
+from deid.data import get_dataset
+from deid.dicom import get_identifiers, replace_identifiers
+from deid.dicom.parser import DicomParser
+from deid.tests.common import create_recipe, get_file
+from deid.utils import get_installdir
 
 global generate_uid
 
@@ -101,15 +83,13 @@ class TestDicom(unittest.TestCase):
 
     def test_add_public_constant(self):
         """RECIPE RULE
-        ADD PatientIdentityRemoved Yeppers!
+        ADD PatientIdentityRemoved YES
         """
 
         print("Test add public tag constant value")
         dicom_file = get_file(self.dataset)
 
-        actions = [
-            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yeppers!"}
-        ]
+        actions = [{"action": "ADD", "field": "PatientIdentityRemoved", "value": "YES"}]
         recipe = create_recipe(actions)
 
         result = replace_identifiers(
@@ -120,7 +100,7 @@ class TestDicom(unittest.TestCase):
             strip_sequences=False,
         )
         self.assertEqual(1, len(result))
-        self.assertEqual("Yeppers!", result[0].PatientIdentityRemoved)
+        self.assertEqual("YES", result[0].PatientIdentityRemoved)
 
     def test_replace_with_constant(self):
         """RECIPE RULE
@@ -167,7 +147,7 @@ class TestDicom(unittest.TestCase):
 
     def test_jitter_replace_compounding(self):
         """RECIPE RULE
-        JITTER AcquisitonDate 1
+        JITTER AcquisitionDate 1
         REPLACE AcquisitionDate 20210330
         """
 
@@ -217,7 +197,6 @@ class TestDicom(unittest.TestCase):
             {"action": "REMOVE", "field": field2name},
         ]
         recipe = create_recipe(actions)
-        dicom = read_file(dicom_file)
 
         # Create a DicomParser to easily find fields
         parser = DicomParser(dicom_file)
@@ -248,9 +227,9 @@ class TestDicom(unittest.TestCase):
 
         self.assertEqual(1, len(result))
         with self.assertRaises(KeyError):
-            check1 = result[0][field1name].value
+            result[0][field1name].value
         with self.assertRaises(KeyError):
-            check2 = result[0][field2name].value
+            result[0][field2name].value
 
     def test_add_tag_variable(self):
         """RECIPE RULE
@@ -387,11 +366,11 @@ class TestDicom(unittest.TestCase):
         self.assertEqual(1, len(result))
         self.assertEqual(157, len(result[0]))
         with self.assertRaises(KeyError):
-            check1 = result[0]["ExposureTime"].value
+            result[0]["ExposureTime"].value
         with self.assertRaises(KeyError):
-            check2 = result[0]["TotalCollimationWidth"].value
+            result[0]["TotalCollimationWidth"].value
         with self.assertRaises(KeyError):
-            check3 = result[0]["DataCollectionDiameter"].value
+            result[0]["DataCollectionDiameter"].value
 
     def test_expander_except(self):
         # Remove all fields except Manufacturer
@@ -418,11 +397,11 @@ class TestDicom(unittest.TestCase):
 
         self.assertEqual("SIEMENS", result[0]["Manufacturer"].value)
         with self.assertRaises(KeyError):
-            check1 = result[0]["ExposureTime"].value
+            result[0]["ExposureTime"].value
         with self.assertRaises(KeyError):
-            check2 = result[0]["TotalCollimationWidth"].value
+            result[0]["TotalCollimationWidth"].value
         with self.assertRaises(KeyError):
-            check3 = result[0]["DataCollectionDiameter"].value
+            result[0]["DataCollectionDiameter"].value
 
     def test_fieldset_remove(self):
         """RECIPE
@@ -471,11 +450,11 @@ class TestDicom(unittest.TestCase):
         print(len(result[0]))
         self.assertEqual(expected_number, len(result[0]))
         with self.assertRaises(KeyError):
-            check1 = result[0]["Manufacturer"].value
+            result[0]["Manufacturer"].value
         with self.assertRaises(KeyError):
-            check2 = result[0]["TotalCollimationWidth"].value
+            result[0]["TotalCollimationWidth"].value
         with self.assertRaises(KeyError):
-            check3 = result[0]["SingleCollimationWidth"].value
+            result[0]["SingleCollimationWidth"].value
 
     def test_valueset_remove(self):
         """
@@ -516,11 +495,11 @@ class TestDicom(unittest.TestCase):
         )
         self.assertEqual(1, len(result))
         with self.assertRaises(KeyError):
-            check1 = result[0]["00090010"].value
+            result[0]["00090010"].value
         with self.assertRaises(KeyError):
-            check2 = result[0]["Manufacturer"].value
+            result[0]["Manufacturer"].value
         with self.assertRaises(KeyError):
-            check3 = result[0]["PhysiciansOfRecord"].value
+            result[0]["PhysiciansOfRecord"].value
 
     def test_fieldset_remove_private(self):
         """
@@ -550,9 +529,9 @@ class TestDicom(unittest.TestCase):
         self.assertEqual(162, len(parser.dicom))
         self.assertEqual("SIEMENS CT VA0  COAD", parser.dicom["00190010"].value)
         with self.assertRaises(KeyError):
-            check1 = parser.dicom["00090010"].value
+            parser.dicom["00090010"].value
         with self.assertRaises(KeyError):
-            check2 = parser.dicom["PatientID"].value
+            parser.dicom["PatientID"].value
 
     def test_valueset_private(self):
         """
@@ -580,11 +559,11 @@ class TestDicom(unittest.TestCase):
             assert entry in parser.lookup["value_set2_private"]
 
         with self.assertRaises(KeyError):
-            check1 = parser.dicom["OtherPatientIDs"].value
+            parser.dicom["OtherPatientIDs"].value
         with self.assertRaises(KeyError):
-            check2 = parser.dicom["Manufacturer"].value
+            parser.dicom["Manufacturer"].value
         with self.assertRaises(KeyError):
-            check3 = parser.dicom["00190010"].value
+            parser.dicom["00190010"].value
 
     def test_tag_expanders_taggroup(self):
         # This tests targets the group portion of a tag identifier - 0009 in (0009, 0001)
@@ -606,7 +585,7 @@ class TestDicom(unittest.TestCase):
         )
         self.assertEqual(1, len(result))
         with self.assertRaises(KeyError):
-            check1 = result[0]["00090010"].value
+            result[0]["00090010"].value
 
     def test_tag_expanders_midtag(self):
         """REMOVE contains:8103
@@ -655,9 +634,9 @@ class TestDicom(unittest.TestCase):
         self.assertEqual(1, len(result))
         self.assertEqual(139, len(result[0]))
         with self.assertRaises(KeyError):
-            check1 = result[0]["00090010"].value
+            result[0]["00090010"].value
         with self.assertRaises(KeyError):
-            check2 = result[0]["PatientID"].value
+            result[0]["PatientID"].value
 
     def test_remove_all_func(self):
         """
@@ -690,13 +669,13 @@ class TestDicom(unittest.TestCase):
 
         self.assertEqual(160, len(parser.dicom))
         with self.assertRaises(KeyError):
-            check1 = parser.dicom["ReferringPhysicianName"].value
+            parser.dicom["ReferringPhysicianName"].value
         with self.assertRaises(KeyError):
-            check2 = parser.dicom["PhysiciansOfRecord"].value
+            parser.dicom["PhysiciansOfRecord"].value
         with self.assertRaises(KeyError):
-            check3 = parser.dicom["RequestingPhysician"].value
+            parser.dicom["RequestingPhysician"].value
         with self.assertRaises(KeyError):
-            check4 = parser.dicom["00331019"].value
+            parser.dicom["00331019"].value
 
     def test_strip_sequences(self):
         """
@@ -705,14 +684,12 @@ class TestDicom(unittest.TestCase):
         caused exceptions to be thrown when child (or duplicate) sequences existed within the header.
 
         %header
-        ADD PatientIdentityRemoved Yeppers!
+        ADD PatientIdentityRemoved YES
         """
         print("Test strip_sequences")
         dicom_file = get_file(self.dataset)
 
-        actions = [
-            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yeppers!"}
-        ]
+        actions = [{"action": "ADD", "field": "PatientIdentityRemoved", "value": "YES"}]
         recipe = create_recipe(actions)
         result = replace_identifiers(
             dicom_files=dicom_file,
@@ -724,7 +701,7 @@ class TestDicom(unittest.TestCase):
         self.assertEqual(1, len(result))
         self.assertEqual(156, len(result[0]))
         with self.assertRaises(KeyError):
-            check1 = result[0]["00081110"].value
+            result[0]["00081110"].value
         for tag in result[0]:
             self.assertFalse(isinstance(tag.value, Sequence))
 
@@ -750,10 +727,11 @@ class TestDicom(unittest.TestCase):
             }
         ]
         recipe = create_recipe(actions)
+        new_uid = "1.2.3.4.5.4.3.2.1"
 
         items = get_identifiers([dicom_file])
         for item in items:
-            items[item]["new_val"] = "modified"
+            items[item]["new_val"] = new_uid
 
         result = replace_identifiers(
             dicom_files=dicom_file,
@@ -762,9 +740,9 @@ class TestDicom(unittest.TestCase):
             save=False,
         )
         self.assertEqual(1, len(result))
-        self.assertEqual(result[0].StudyInstanceUID, "modified")
+        self.assertEqual(result[0].StudyInstanceUID, new_uid)
         self.assertEqual(
-            result[0].RequestAttributesSequence[0].StudyInstanceUID, "modified"
+            result[0].RequestAttributesSequence[0].StudyInstanceUID, new_uid
         )
 
     def test_jitter_compounding(self):
@@ -806,14 +784,14 @@ class TestDicom(unittest.TestCase):
         recipes are built in that manner.  This test ensures consistency with prior versions.
 
         %header
-        ADD PatientIdentityRemoved Yeppers!
+        ADD PatientIdentityRemoved YES
         REMOVE PatientIdentityRemoved
         """
         print("Test addremove compounding")
         dicom_file = get_file(self.dataset)
 
         actions = [
-            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yeppers!"},
+            {"action": "ADD", "field": "PatientIdentityRemoved", "value": "YES"},
             {"action": "REMOVE", "field": "PatientIdentityRemoved"},
         ]
         recipe = create_recipe(actions)
@@ -828,7 +806,7 @@ class TestDicom(unittest.TestCase):
         self.assertEqual(1, len(result))
         self.assertEqual(155, len(result[0]))
         with self.assertRaises(KeyError):
-            willerror = result[0]["PatientIdentityRemoved"].value
+            result[0]["PatientIdentityRemoved"].value
 
     def test_removeadd_compounding(self):
         """
@@ -944,9 +922,9 @@ class TestDicom(unittest.TestCase):
         self.assertEqual(1, len(result))
         self.assertNotEqual(len(original_dataset), len(result[0]))
         with self.assertRaises(KeyError):
-            check1 = result[0]["00090010"].value
+            result[0]["00090010"].value
         with self.assertRaises(KeyError):
-            check2 = result[0]["Manufacturer"].value
+            result[0]["Manufacturer"].value
 
     def test_jitter_values(self):
         """

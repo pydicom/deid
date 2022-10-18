@@ -20,7 +20,7 @@ contains PatientSex M
 
 %header
 
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 REPLACE PatientID var:id
 REPLACE SOPInstanceUID var:source_id
 ```

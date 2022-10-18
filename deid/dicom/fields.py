@@ -1,36 +1,21 @@
-"""
+__author__ = "Vanessa Sochat"
+__copyright__ = "Copyright 2016-2022, Vanessa Sochat"
+__license__ = "MIT"
 
-Copyright (c) 2017-2021 Vanessa Sochat
+import re
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-"""
+from pydicom.dataelem import DataElement
+from pydicom.dataset import Dataset, FileMetaDataset, RawDataElement
+from pydicom.sequence import Sequence
 
 from deid.logger import bot
-from pydicom.sequence import Sequence
-from pydicom.dataset import RawDataElement, Dataset, FileMetaDataset
-from pydicom.dataelem import DataElement
-import re
 
 
 class DicomField:
-    """A dicom field holds the element, and a string that represents the entire
+    """
+    A dicom field.
+
+    A dicom field holds the element, and a string that represents the entire
     nested structure (e.g., SequenceName__CodeValue).
     """
 
@@ -48,18 +33,25 @@ class DicomField:
 
     @property
     def tag(self):
-        """Return a string of the element tag."""
+        """
+        Return a string of the element tag.
+        """
         return str(self.element.tag)
 
     @property
     def stripped_tag(self):
-        """Return the stripped element tag"""
+        """
+        Return the stripped element tag
+        """
         return re.sub("([(]|[)]|,| )", "", str(self.element.tag))
 
     # Contains
 
     def name_contains(self, expression):
-        """use re to search a field for a regular expression, meaning
+        """
+        Determine if a name contains a pattern or expression.
+
+        Use re to search a field for a regular expression, meaning
         the name, the keyword (nested) or the string tag.
 
         name.lower: includes nested keywords (e.g., Sequence_Child)
@@ -78,7 +70,9 @@ class DicomField:
         return False
 
     def value_contains(self, expression):
-        """use re to search a field value for a regular expression"""
+        """
+        Use re to search a field value for a regular expression
+        """
         values = self.element.value
 
         # If we are not dealing with a list
@@ -92,9 +86,29 @@ class DicomField:
                 return True
         return False
 
+    def select_matches(self, expression):
+        """
+        Determine whether the element has a specific selected attribute
+        """
+        attribute, value = expression.split(":", 1)
+        attribute = attribute.upper()
+
+        if attribute == "VR":
+            value = value[0:2].upper()
+            return self.element.VR == value
+
+        elif attribute == "GROUP":
+            value = int(value, 16)
+            return self.element.tag.group == value
+
+        return False
+
 
 def extract_item(item, prefix=None, entry=None):
-    """a helper function to extract sequence, will extract values from
+    """
+    Extract values from a dicom sequence depending on the type.
+
+    A helper function to extract sequence, will extract values from
     a dicom sequence depending on the type.
 
     Parameters
@@ -127,7 +141,10 @@ def extract_item(item, prefix=None, entry=None):
 
 
 def extract_sequence(sequence, prefix=None):
-    """return a pydicom.sequence.Sequence recursively
+    """
+    Extract a sequence recursively.
+
+    return a pydicom.sequence.Sequence recursively
     as a flattened list of items. For example, a nested FieldA and FieldB
     would return as:
 
@@ -158,12 +175,15 @@ def extract_sequence(sequence, prefix=None):
 
 
 def expand_field_expression(field, dicom, contenders=None):
-    """Get a list of fields based on an expression. If
-    no expression found, return single field. Options for fields include:
+    """
+    Get a list of fields based on an expression.
+
+    If no expression found, return single field. Options for fields include:
 
     endswith: filter to fields that end with the expression
     startswith: filter to fields that start with the expression
     contains: filter to fields that contain the expression
+    select: filter based on DICOM element properties
     allfields: include all fields
     exceptfields: filter to all fields except those listed ( | separated)
 
@@ -214,12 +234,17 @@ def expand_field_expression(field, dicom, contenders=None):
             if not field.name_contains(expression):
                 fields[uid] = field
 
+        elif expander.lower() == "select":
+            if field.select_matches(expression):
+                fields[uid] = field
+
     return fields
 
 
 def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
-    """expand all dicom fields into a list, where each entry is
-    a DicomField. If we find a sequence, we unwrap it and
+    """Expand all dicom fields into a list.
+
+    Each entry is a DicomField. If we find a sequence, we unwrap it and
     represent the location with the name (e.g., Sequence__Child)
     """
     skip = skip or []
@@ -229,11 +254,13 @@ def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
     if not isinstance(skip, list):
         skip = [skip]
 
-    # Retrieve both dicom and file meta fields
-    datasets = [dicom, dicom.file_meta]
+    # Retrieve both dicom and file meta fields if dicom came from a file
+    datasets = [d for d in [dicom, dicom.get("file_meta")] if d]
 
     def add_element(element, name, uid, is_filemeta):
-        """Add an element to fields, but only if it has not been seen.
+        """
+        Add an element to fields, but only if it has not been seen.
+
         The uid is derived from the tag (group, element) and includes
         nesting, so the "same" tag on different levels is considered
         different.

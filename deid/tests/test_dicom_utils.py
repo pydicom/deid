@@ -1,41 +1,21 @@
 #!/usr/bin/env python
 
+__author__ = "Vanessa Sochat"
+__copyright__ = "Copyright 2016-2022, Vanessa Sochat"
+__license__ = "MIT"
+
 """
 Test dicom utils
-
-The MIT License (MIT)
-
-Copyright (c) 2016-2021 Vanessa Sochat
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
 """
 
-import unittest
-import tempfile
-import shutil
-import json
 import os
+import shutil
+import tempfile
+import unittest
 
-from deid.utils import get_installdir
 from deid.data import get_dataset
-from deid.tests.common import get_file, get_dicom
+from deid.tests.common import get_dicom
+from deid.utils import get_installdir
 
 global generate_uid
 
@@ -56,7 +36,6 @@ class TestDicomUtils(unittest.TestCase):
         print("Test test_get_files")
         print("Case 1: Test get files from dataset")
         from deid.dicom import get_files
-        from deid.config import load_deid
 
         found = 0
         for dicom_file in get_files(self.dataset):
@@ -75,7 +54,6 @@ class TestDicomUtils(unittest.TestCase):
         print("Test test_get_files_as_list")
         print("Case 1: Test get files from dataset")
         from deid.dicom import get_files
-        from deid.config import load_deid
 
         dicom_files = list(get_files(self.dataset))
         found = len(dicom_files)
@@ -90,8 +68,8 @@ class TestDicomUtils(unittest.TestCase):
 
     def test_jitter_timestamp(self):
 
-        from deid.dicom.fields import DicomField
         from deid.dicom.actions import jitter_timestamp
+        from deid.dicom.fields import DicomField
         from deid.dicom.tags import get_tag
 
         dicom = get_dicom(self.dataset)
@@ -121,7 +99,7 @@ class TestDicomUtils(unittest.TestCase):
         print("Case 3: Testing with non-standard DICOM date (DA)")
         name = "StudyDate"
         tag = get_tag(name)
-        dicom.StudyDate = "2013/12/10"
+        dicom.StudyDate = "20131210"
         dicom.data_element(name).VR = "DA"
         field = DicomField(dicom.data_element(name), name, str(tag["tag"]))
         actual = jitter_timestamp(field, 10)

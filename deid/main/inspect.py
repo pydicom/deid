@@ -1,41 +1,23 @@
 #!/usr/bin/env python3
 
-"""
-
-Copyright (c) 2017-2021 Vanessa Sochat
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-"""
-
-from deid.logger import bot
-from deid.dicom import get_files
-from deid.data import get_dataset
-from deid.config import load_deid
-from deid.dicom import has_burned_pixels
+__author__ = "Vanessa Sochat"
+__copyright__ = "Copyright 2016-2022, Vanessa Sochat"
+__license__ = "MIT"
 
 import datetime
 import os
 
+from deid.config import load_deid
+from deid.data import get_dataset
+from deid.dicom import get_files, has_burned_pixels
+from deid.logger import bot
+
 
 def main(args, parser):
-    """inspect currently serves to inspect the header fields of a set
+    """
+    Inspect the header fields of dicom files.
+
+    inspect currently serves to inspect the header fields of a set
     of dicom files against a standard, and flag images that don't
     pass the different levels of criteria
     """

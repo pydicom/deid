@@ -4,6 +4,15 @@ category: Getting Started
 order: 7
 ---
 
+<a id="data">
+## Data
+
+To run these examples, you'll need to install external deid-data.
+
+```bash
+$ pip install deid-data
+```
+
 At this point, we have a bunch of dicom files, have written a recipe with 
 actions, and want to run those actions across the files. The easiest way
 to do this is with the `DicomParser`

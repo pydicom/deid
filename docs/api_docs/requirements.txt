@@ -1,0 +1,10 @@
+git+https://github.com/pydicom/deid@master#egg=deid
+sphinx
+sphinxcontrib-napoleon
+sphinx-argparse
+sphinx_rtd_theme
+docutils==0.12
+recommonmark
+configargparse
+appdirs
+Jinja2<3.1

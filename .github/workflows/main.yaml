@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches_ignore: []
+
+jobs:
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup black environment
+        run: conda create --quiet --name black black
+
+      - name: Check formatting
+        run: |
+          export PATH="/usr/share/miniconda/bin:$PATH"
+          source activate black
+          pip install black --upgrade
+          black --check --verbose deid
+
+  testing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup conda environment
+        run: | 
+          conda create --quiet --name testing
+          export PATH="/usr/share/miniconda/bin:$PATH"
+          source activate testing
+          pip install matplotlib
+          pip install .
+
+      - name: Test deid
+        run: |
+          export PATH="/usr/share/miniconda/bin:$PATH"
+          source activate testing
+          pip install deid-data==0.0.17
+          python -m unittest discover -s deid/tests/ -p '[t|T]est*.py'

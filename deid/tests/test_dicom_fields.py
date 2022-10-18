@@ -1,40 +1,22 @@
 #!/usr/bin/env python
 
+__author__ = "Vanessa Sochat"
+__copyright__ = "Copyright 2016-2022, Vanessa Sochat"
+__license__ = "MIT"
+
 """
 Testing field parsing and expansion
-
-Copyright (c) 2020-2021 Vanessa Sochat
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
 """
 
-import unittest
-import tempfile
-import shutil
-import json
 import os
+import shutil
+import tempfile
+import unittest
 
-from deid.utils import get_installdir
 from deid.data import get_dataset
 from deid.dicom.fields import get_fields
 from deid.tests.common import get_dicom
+from deid.utils import get_installdir
 
 
 class TestDicomFields(unittest.TestCase):
@@ -65,6 +47,25 @@ class TestDicomFields(unittest.TestCase):
         # The fields returned should end in time
         for uid, field in fields.items():
             assert field.name.endswith("Time")
+
+        print("Testing that field expansion works for groups")
+        fields = expand_field_expression(
+            dicom=dicom, field="select:group:0020", contenders=contenders
+        )
+
+        # The fields returned should be tag group 0020
+        for uid, field in fields.items():
+            assert field.element.tag.group == 0x0020
+
+        print("Testing that field expansion works for VR")
+        fields = expand_field_expression(
+            dicom=dicom, field="select:VR:TM", contenders=contenders
+        )
+
+        # The fields returned should end in time
+        for uid, field in fields.items():
+            assert field.name.endswith("Time")
+            assert field.element.VR == "TM"
 
         print("Testing that we can also search private tags based on numbers.")
         fields = expand_field_expression(

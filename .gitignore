@@ -3,6 +3,8 @@ dist
 deid.egg-info
 build
 pypi.sh
+env
+_build
 
 private
 .vscode
@@ -35,3 +37,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 .cache
+
+# PyCharm
+.idea/
+

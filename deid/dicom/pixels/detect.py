@@ -1,37 +1,25 @@
-"""
+__author__ = "Vanessa Sochat"
+__copyright__ = "Copyright 2016-2022, Vanessa Sochat"
+__license__ = "MIT"
 
+
+"""
 detect.py: functions for pixel scrubbing
-
-Copyright (c) 2017-2021 Vanessa Sochat
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
 """
 
-from deid.config import DeidRecipe
-from deid.logger import bot
-from deid.dicom.filter import apply_filter
-from pydicom import read_file
+from typing import Union, List, Optional
+
+from pydicom import read_file, FileDataset
 from pydicom.sequence import Sequence
 
+from deid.config import DeidRecipe
+from deid.dicom.filter import apply_filter
+from deid.logger import bot
 
-def has_burned_pixels(dicom_files, force=True, deid=None):
+
+def has_burned_pixels(
+    dicom_files, force: bool = True, deid: Optional[DeidRecipe] = None
+):
     """has burned pixels is an entrypoint for has_burned_pixels_multi (for
     multiple images) or has_burned_pixels_single (for one detailed repor)
     We will use the MIRCTP criteria (see ref folder with the
@@ -51,7 +39,7 @@ def has_burned_pixels(dicom_files, force=True, deid=None):
     return _has_burned_pixels_single(dicom_files, force, deid)
 
 
-def _has_burned_pixels_multi(dicom_files, force, deid):
+def _has_burned_pixels_multi(dicom_files: List[Union[str, FileDataset]], force, deid):
     """return a summary dictionary with lists of clean, and then lookups
     for flagged images with reasons. The deid should be a deid recipe
     instantiated from deid.config.DeidRecipe. This function should not
@@ -75,7 +63,7 @@ def _has_burned_pixels_multi(dicom_files, force, deid):
     return decision
 
 
-def _has_burned_pixels_single(dicom_file, force, deid):
+def _has_burned_pixels_single(dicom_file, force: bool, deid):
 
     """has burned pixels single will evaluate one dicom file for burned in
     pixels based on 'filter' criteria in a deid. If deid is not provided,
@@ -119,7 +107,10 @@ def _has_burned_pixels_single(dicom_file, force, deid):
             ]
         }
     """
-    dicom = read_file(dicom_file, force=force)
+    if isinstance(dicom_file, FileDataset):
+        dicom = dicom_file
+    else:
+        dicom = read_file(dicom_file, force=force)
 
     # Return list with lookup as dicom_file
     results = []

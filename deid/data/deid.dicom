@@ -161,6 +161,36 @@ LABEL Overlay # (CTP)
   + contains OverlayDescription Siemens MedCom Object Graphics
   coordinates 0,0,512,90
 
+
+LABEL Philips PT # (CTP)
+  contains Modality PT
+  + contains Manufacturer Philips
+  + contains ManufacturerModelName GEMINI
+  + equals Rows 446
+  + equals Columns 245
+  coordinates 0,0,125,50
+
+LABEL Philips PT # (CTP)
+  contains Modality PT
+  + contains Manufacturer Philips
+  + contains ManufacturerModelName GEMINI
+  + equals Rows 445
+  + equals Columns 493
+  coordinates 0,0,140,55
+
+LABEL Philips PT # (CTP)
+  contains Modality PT
+  + contains Manufacturer Philips
+  + contains ManufacturerModelName GEMINI
+  + equals Rows 373
+  + equals Columns 492
+  coordinates 0,0,100,25
+
+LABEL MINDRAY # (CTP)
+  contains Modality US
+  + contains ImplementationVersionName MINDRAY
+  coordinates 0,0,1229,69
+
 LABEL Logiq US (LOGIQ9) # (CTP)
   contains Modality US
   + contains Manufacturer GE
@@ -227,14 +257,14 @@ LABEL EPIQ 7G # (CTP)
   + contains Manufacturer Philips
   + equals Rows 600
   + contains ManufacturerModelName EPIQ
-  coordinates 0,0,800,59
+  coordinates 0,0,1024,49
 
 LABEL EPIQ 7G # (CTP)
   contains Modality US
   + contains Manufacturer Philips
   + equals Rows 768
   + contains ManufacturerModelName EPIQ
-  coordinates 0,0,800,59
+  coordinates 0,0,1024,49
 
 LABEL EPIQ 7G # (FFUR)
   contains Modality US
@@ -247,6 +277,11 @@ LABEL CX50 # (CTP)
   contains Modality US
   + contains Manufacturer Philips
   + contains ManufacturerModelName CX50
+  coordinates 0,0,800,59
+
+LABEL EPIQ_7G (CTP)
+  + contains Manufacturer EPIQ
+  + equals Rows 600|768
   coordinates 0,0,800,59
 
 LABEL Z_ONE # (CTP)
@@ -352,7 +387,7 @@ LABEL Acuson Sequoia # (CTP)
   + contains ManufacturerModelName SEQUOIA
   coordinates 0,0,640,30
 
-LABEL Aplio 400 or 500 # (CTP)
+LABEL Toshiba Aplio 400 or 500 # (CTP)
   contains Modality US
   + contains Manufacturer TOSHIBA
   + equals Rows 720
@@ -396,6 +431,20 @@ LABEL Supersonic Imagine 5A # (CTP)
   + contains ManufacturerModelName Aixplorer
   coordinates 0,0,1400,89
 
+LABEL SENO # (CTP)
+  contains Modality US
+  + contains Manufacturer SENO
+  + equals Rows 1058
+  + equals Columns 1920
+  coordinates 161,0,1632,50
+
+LABEL SENO Cine # (CTP)
+  contains Modality US
+  + contains Manufacturer SENO
+  + equals Rows 1056
+  + equals Columns 1920
+  coordinates 161,0,1632,50
+
 LABEL Canon CR/DR # (CTP)
   contains Modality MRI
   + contains Manufacturer Canon
@@ -410,17 +459,44 @@ LABEL Siemens NM # (CTP)
   + equals Rows 860
   + contains ManufacturerModelName CXD1
   + contains ImageType SECONDARY
-  coordinates 0,0,1132,82
+  coordinates 0,0,1132,90
   coordinates 0,780,1132,80
 
+LABEL Siemens NM # (CTP)
+  contains Modality NM
+  + contains Manufacturer Siemens
+  + equals Rows 860
+  + contains ImageType SECONDARY
+  coordinates 0,0,1132,90
+  coordinates 0,780,1132,80
+
+LABEL Siemens NM # (CTP)
+  contains Modality NM
+  + contains Manufacturer Siemens
+  + equals Rows 865
+  + contains ImageType SECONDARY
+  coordinates 0,0,1132,35
+
+LABEL Siemens NM # (CTP)
+  contains Modality NM
+  + contains Manufacturer Siemens
+  + equals Rows 882
+  + contains ImageType SECONDARY
+  coordinates 0,0,1132,65
 
 LABEL ADAC # (CTP)
-  contains Modality Other
-  + contains Manufacturer ADAC
-  + equals Rows 832
+  equals Rows 832
   + equals Columns 1024
   + contains Manfacturer ADAC
-  coordinates 0,0,1024,60
+  coordinates 0,0,1024,80
+  coordinates 0,762,1024,80
+
+LABEL ADAC # (CTP)
+  equals Rows 832
+  + equals Columns 1024
+  + contains Manfacturer ADAC
+  + contains ProtocolName DUAL DETEC
+  coordinates 0,0,1024,130
   coordinates 0,762,1024,80
 
 LABEL MEDRAD Injection Profile # (CTP)
@@ -812,10 +888,10 @@ REMOVE ScheduledStudyLocationAETitle
 REMOVE OrderEntererLocation
 REMOVE AssignedLocation
 
-ADD IssuerOfPatientID STARR. In an effort to remove PHI all dates are offset from their original values.
+ADD IssuerOfPatientID STARR
 ADD PatientBirthDate var:entity_timestamp
 ADD StudyDate var:item_timestamp
 ADD PatientID var:entity_id
 ADD AccessionNumber var:item_id
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 REMOVE jitter

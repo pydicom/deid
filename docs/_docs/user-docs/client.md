@@ -1,7 +1,7 @@
 ---
 title: Deid Client
 category: User Documentation
-order: 5
+order: 6
 ---
 
 After you [install deid]({{ site.baseurl }}/install/) you will notice a command line application has been placed in your bin:
@@ -315,7 +315,7 @@ FORMAT dicom
 
 %header
 
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 REPLACE PatientID var:id
 REPLACE SOPInstanceUID var:source_id
 ```
@@ -328,7 +328,7 @@ ids=/tmp/tmp6sywao9a/deid-ids.pkl
 deid="examples/deid/deid.dicom"
 deid --action put --ids $ids --deid $deid
 DEBUG FORMAT set to dicom
-DEBUG Adding ADD PatientIdentityRemoved Yes
+DEBUG Adding ADD PatientIdentityRemoved YES
 DEBUG Adding REPLACE PatientID var:id
 DEBUG Adding REPLACE SOPInstanceUID var:source_id
 No input folder specified, will use demo dicom-cookies.
@@ -337,7 +337,7 @@ DEBUG Checking 7 dicom files for validation.
 Found 7 valid dicom files
 PUT identifiers from dicom-cookies
 DEBUG FORMAT set to dicom
-DEBUG Adding ADD PatientIdentityRemoved Yes
+DEBUG Adding ADD PatientIdentityRemoved YES
 DEBUG Adding REPLACE PatientID var:id
 DEBUG Adding REPLACE SOPInstanceUID var:source_id
 DEBUG entity id: cookie-47
@@ -436,7 +436,7 @@ deid="examples/deid/deid.dicom"
 deid --action put --ids $ids --deid $deid
 
 DEBUG FORMAT set to dicom
-DEBUG Adding ADD PatientIdentityRemoved Yes
+DEBUG Adding ADD PatientIdentityRemoved YES
 DEBUG Adding REPLACE PatientID var:id
 DEBUG Adding REPLACE SOPInstanceUID var:source_id
 No input folder specified, will use demo dicom-cookies.
@@ -445,7 +445,7 @@ DEBUG Checking 7 dicom files for validation.
 Found 7 valid dicom files
 PUT identifiers from dicom-cookies
 DEBUG FORMAT set to dicom
-DEBUG Adding ADD PatientIdentityRemoved Yes
+DEBUG Adding ADD PatientIdentityRemoved YES
 DEBUG Adding REPLACE PatientID var:id
 DEBUG Adding REPLACE SOPInstanceUID var:source_id
 DEBUG entity id: cookie-47

@@ -10,7 +10,18 @@ change field with a value derived from a function. This example
 was derived based on a prompt in [this pull request](https://github.com/pydicom/contrib-pydicom/pull/14).
 If you are interested in the code for this example, it's available
 [here](https://github.com/pydicom/deid/tree/master/examples/dicom/header-manipulation).
+If you are interested in the functions provided by deid (and you don't want to write your
+own function) see [this documentation](https://pydicom.github.io/deid/user-docs/recipe-funcs/).
 Let's get started!
+
+<a id="data">
+## Data
+
+To run these examples, you'll need to install external deid-data.
+
+```bash
+$ pip install deid-data
+```
 
 <a id="imports">
 ## Imports
@@ -38,12 +49,7 @@ from deid.dicom import get_identifiers
 items = get_identifiers(dicom_files)
 ```
 
-If you want to expand sequences, ask for it:
-
-```python
-items = get_identifiers(dicom_files, expand_sequences=True)
-```
-
+Note that the default is to expand sequences.
 When you expand sequences, they are flattened out in the data structure.
 For example:
 
@@ -57,6 +63,13 @@ For example:
  'ReferencedPerformedProcedureStepSequence__ReferencedSOPClassUID': 'xxxxxxxxxx',
  'ReferencedPerformedProcedureStepSequence__ReferencedSOPInstanceUID': 'xxxxxxxx',
 ```
+
+If desired, you can ask for different:
+
+```python
+items = get_identifiers(dicom_files, expand_sequences=False)
+```
+
 
 The function we will use for the example will perform an action to generate a uid, 
 but you can also use it to communicate with databases, APIs, or do something like 
@@ -269,5 +282,6 @@ cleaned_files[0]
 (0020, 0052) Frame of Reference UID              UI: frameofreferenceuid-1.2.826.0.1.3680043.10.188.3138524385829221974514732538424409758
 ```
 
-That's it! If you need any help, please open an issue. Full code for the
+That's it! If you need any help, please open an issue. If you think there is a function that could be added
+to be provided [for all users](https://pydicom.github.io/deid/user-docs/recipe-funcs/) please also open an issue. Full code for the
 example above is [available here](https://github.com/pydicom/deid/tree/master/examples/dicom/header-manipulation).

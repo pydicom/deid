@@ -1,37 +1,20 @@
 #!/usr/bin/env python
 
+__author__ = "Vanessa Sochat"
+__copyright__ = "Copyright 2016-2022, Vanessa Sochat"
+__license__ = "MIT"
+
 """
 Test utils
-
-Copyright (c) 2016-2021 Vanessa Sochat
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
 """
 
-from deid.utils import get_installdir
-
-import unittest
-import tempfile
-import shutil
 import json
 import os
+import shutil
+import tempfile
+import unittest
+
+from deid.utils import get_installdir
 
 
 class TestUtils(unittest.TestCase):
@@ -84,7 +67,7 @@ class TestUtils(unittest.TestCase):
         bad_json = {"Wakkawakkawakka'}": [{True}, "2", 3]}
         tmpfile = tempfile.mkstemp()[1]
         os.remove(tmpfile)
-        with self.assertRaises(TypeError) as cm:
+        with self.assertRaises(TypeError):
             write_json(bad_json, tmpfile)
 
         print("Case 2: Providing good json")
@@ -112,22 +95,9 @@ class TestUtils(unittest.TestCase):
         print("Testing recursive find.")
         from deid.utils import recursive_find
 
-        found = 0
-        expected = 11
-        for file in recursive_find(self.pwd, pattern="*.dcm"):
-            found += 1
-        print("Found %s files" % (found))
-        self.assertTrue(found == expected)
-
-    def test_recursive_find_as_list(self):
-        """test_recursive_find_as_list should detect 7 dicoms"""
-        print("Testing recursive find as lit.")
-        from deid.utils import recursive_find
-
-        expected = 11
-        files = list(recursive_find(self.pwd, pattern="*.dcm"))
-        found = len(files)
-        print("Found %s files" % (len(files)))
+        expected = 3
+        found = len(list(recursive_find(self.pwd, pattern="deid*")))
+        print("Found %s deid files" % (found))
         self.assertTrue(found == expected)
 
 

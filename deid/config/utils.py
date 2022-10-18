@@ -1,47 +1,25 @@
-"""
-
-Copyright (c) 2017-2021 Vanessa Sochat
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-The functions below assume a configuration file called deid, although the
-user can specify a custom name.
-
-"""
+__author__ = "Vanessa Sochat"
+__copyright__ = "Copyright 2016-2022, Vanessa Sochat"
+__license__ = "MIT"
 
 # pylint: skip-file
 
-from deid.logger import bot
-from deid.utils import read_file, get_installdir
-from deid.data import data_base
-from deid.config.standards import (
-    formats,
-    actions,
-    sections,
-    filters,
-    groups,
-    group_actions,
-)
-from collections import OrderedDict
 import os
 import re
 import sys
+from collections import OrderedDict
+
+from deid.config.standards import (
+    actions,
+    filters,
+    formats,
+    group_actions,
+    groups,
+    sections,
+)
+from deid.data import data_base
+from deid.logger import bot
+from deid.utils import get_installdir, read_file
 
 
 def load_combined_deid(deids):

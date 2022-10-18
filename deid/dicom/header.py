@@ -1,38 +1,19 @@
-"""
+__author__ = "Vanessa Sochat"
+__copyright__ = "Copyright 2016-2022, Vanessa Sochat"
+__license__ = "MIT"
 
+"""
 header.py: functions to extract identifiers from dicom headers
-
-Copyright (c) 2017-2021 Vanessa Sochat
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
 """
 
 
-from deid.logger import bot
+import os
 
 from pydicom import read_file
 
-from deid.dicom.utils import save_dicom
 from deid.dicom.parser import DicomParser
-
-import os
+from deid.dicom.utils import save_dicom
+from deid.logger import bot
 
 here = os.path.dirname(os.path.abspath(__file__))
 
@@ -44,8 +25,11 @@ def get_identifiers(
     strip_sequences=False,
     remove_private=False,
     disable_skip=False,
+    expand_sequences=True,
 ):
-    """extract all identifiers from a dicom image.
+    """
+    Extract all identifiers from a dicom image.
+
     This function returns a lookup by file name, where each value indexed
     includes a dictionary of nested fields (indexed by nested tag).
 
@@ -57,6 +41,7 @@ def get_identifiers(
     strip_sequences: if True, remove all sequences
     remove_private: remove private tags
     disable_skip: do not skip over protected fields
+    expand_sequences: if True, expand sequences. otherwise, skips
     """
     if not isinstance(dicom_files, list):
         dicom_files = [dicom_files]
@@ -67,7 +52,7 @@ def get_identifiers(
     # Parse each dicom file
     for dicom_file in dicom_files:
         parser = DicomParser(dicom_file, force=force, config=config, disable_skip=False)
-        lookup[parser.dicom_file] = parser.get_fields()
+        lookup[parser.dicom_file] = parser.get_fields(expand_sequences=expand_sequences)
 
     return lookup
 
@@ -76,7 +61,10 @@ def remove_private_identifiers(
     dicom_files, save=True, overwrite=False, output_folder=None, force=True
 ):
 
-    """remove_private_identifiers is a wrapper for the
+    """
+    Remove private identifiers.
+
+    remove_private_identifiers is a wrapper for the
     simple call to dicom.remove_private_tags, it simply
     reads in the files for the user and saves accordingly
     """
@@ -116,7 +104,10 @@ def replace_identifiers(
     disable_skip=False,
 ):
 
-    """replace identifiers using pydicom, can be slow when writing
+    """
+    Replace identifiers.
+
+    replace identifiers using pydicom, can be slow when writing
     and saving new files. If you want to replace sequences, they need
     to be extracted with get_identifiers and expand_sequences to True.
     """

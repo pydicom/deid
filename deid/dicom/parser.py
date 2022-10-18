@@ -1,61 +1,49 @@
-"""
-
-parser.py: class that supports dicom extraction and replacement of fields.
-
-Copyright (c) 2017-2021 Vanessa Sochat
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-"""
-
-
-from deid.logger import bot
-
-from pydicom import read_file
-from pydicom.tag import Tag
-from pydicom.dataelem import DataElement
-from pydicom.dataset import Dataset
-
-from deid.config import DeidRecipe
-from deid.config.standards import actions as valid_actions
-from deid.dicom.utils import save_dicom
-from deid.dicom.actions import jitter_timestamp
-from deid.dicom.tags import remove_sequences, get_private, get_tag, add_tag
-from deid.dicom.groups import extract_values_list, extract_fields_list
-from deid.dicom.fields import get_fields, expand_field_expression, DicomField
-from deid.utils import parse_value, read_json
+__author__ = "Vanessa Sochat"
+__copyright__ = "Copyright 2016-2022, Vanessa Sochat"
+__license__ = "MIT"
 
 import os
 import re
 from copy import deepcopy
 
+from pydicom import read_file
+from pydicom.dataelem import DataElement
+from pydicom.dataset import Dataset
+from pydicom.tag import Tag
+
+from deid.config import DeidRecipe
+from deid.config.standards import actions as valid_actions
+from deid.dicom.actions import deid_funcs, jitter_timestamp
+from deid.dicom.fields import DicomField, expand_field_expression, get_fields
+from deid.dicom.groups import extract_fields_list, extract_values_list
+from deid.dicom.tags import add_tag, get_private, get_tag, remove_sequences
+from deid.dicom.utils import save_dicom
+from deid.logger import bot
+from deid.utils import parse_value, read_json
+
 here = os.path.dirname(os.path.abspath(__file__))
 
 
 class DicomParser:
-    """A dicom header serves as a cache to read in all fields from a dicom
+    """
+    Parse a dicom, performing one or more actions on fields.
+
+    A dicom parser serves as a cache to read in all fields from a dicom
     file. For each, we store the element and child elements
     """
 
     def __init__(
         self, dicom_file, recipe=None, config=None, force=True, disable_skip=False
     ):
+        """
+        Create new instance of DicomParser
+
+        :param dicom_file: Path to a dicom file or instance of a pydicom.Dataset
+        :param recipe: a deid recipe, defaults to None
+        :param config: deid config, defaults to None
+        :param force: ignore errors when reading a dicom file, defaults to True
+        :param disable_skip: _description_, defaults to False
+        """
 
         # Lookup for the dicom
         self.lookup = {}
@@ -72,9 +60,13 @@ class DicomParser:
             bot.error("Cannot find config %s, exiting" % (config))
         self.config = read_json(config, ordered_dict=True)
 
+        # Keep a lookup of deid provided functions
+        self.deid_funcs = deid_funcs
+
         # Deid can be a recipe or filename
         if not isinstance(recipe, DeidRecipe):
             recipe = DeidRecipe(recipe)
+
         self.load(dicom_file, force=force)
         self.recipe = recipe
 
@@ -85,7 +77,10 @@ class DicomParser:
         return self.__str__()
 
     def load(self, dicom_file, force=True):
-        """Ensure that the dicom file exists, and use full path. Here
+        """
+        Load the dicom file.
+
+        Ensure that the dicom file exists, and use full path. Here
         we load the file, and save the dicom, dicom_file, and dicom_name.
         """
         # Reset seen, which is generated when we parse
@@ -95,18 +90,20 @@ class DicomParser:
         if isinstance(dicom_file, Dataset):
             self.dicom = dicom_file
         else:
-
             # If we must read the file, the path must exist
             if not os.path.exists(dicom_file):
                 bot.exit("%s does not exist." % dicom_file)
             self.dicom = read_file(dicom_file, force=force)
 
         # Set class variables that might be helpful later
-        self.dicom_file = os.path.abspath(self.dicom.filename)
-        self.dicom_name = os.path.basename(self.dicom_file)
+        df = self.dicom.get("filename")
+        self.dicom_file = None if not df else os.path.abspath(df)
+        self.dicom_name = None if not df else os.path.basename(self.dicom_file)
 
     def define(self, name, value):
-        """Add a function or variable to the lookup for later usage.
+        """
+        Add a function or variable to the lookup for later usage.
+
         This can be used for functions, lists, or variables.
         """
         self.lookup[name] = value
@@ -117,7 +114,10 @@ class DicomParser:
         self.dicom.preamble = b"\0" * 128
 
     def get_nested_field(self, field, return_parent=False):
-        """Based on a DicomField, return the one referenced in self.dicom.
+        """
+        Retrieve a nested field.
+
+        Based on a DicomField, return the one referenced in self.dicom.
         If a delete is needed, then the parent should be returned as well.
         """
         # The field provided will be last in the list, the one we want
@@ -165,8 +165,10 @@ class DicomParser:
         return desired
 
     def delete_field(self, field):
-        """Delete a field from the dicom. We do this by way of
-        parsing all nested levels of a tag into actual tags,
+        """
+        Delete a field from the dicom.
+
+        We do this by way of parsing all nested levels of a tag into actual tags,
         and deleting the child node.
         """
         # Returns the parent, and a DataElement (indexes into parent by tag)
@@ -176,7 +178,9 @@ class DicomParser:
             del self.fields[field.uid]
 
     def blank_field(self, field):
-        """Blank a field"""
+        """
+        Blank a field
+        """
         element = self.get_nested_field(field)
 
         # Assert we have a data element, and can blank a string
@@ -189,13 +193,18 @@ class DicomParser:
                 bot.warning("Unrecognized VR for %s, skipping blank." % field)
 
     def replace_field(self, field, value):
-        """Replace a value in a field. This uses the same function as ADD,
-        except we know that it's likely that the dicom has the value.
+        """
+        Replace a value in a field.
+
+        This uses the same function as ADD, but likely the dicom has the value.
         """
         self.add_field(field, value)
 
     def parse(self, strip_sequences=False, remove_private=False):
-        """The parse action corresponds to iterating through fields, and
+        """
+        Parse the dicom.
+
+        The parse action corresponds to iterating through fields, and
         for each one, saving a data structure with the full element,
         the string (with nested representation of the keywords)
         and the tag. We want to save all three in a flat list that is
@@ -249,7 +258,9 @@ class DicomParser:
         # The user can save, or take other action
 
     def save(self, filename, overwrite=False):
-        """After a parse action, the user can choose to save the dicom to file."""
+        """
+        Save a dicom to file.
+        """
         filename = filename or self.dicom_file
         ds = save_dicom(
             dicom=self.dicom,
@@ -284,7 +295,10 @@ class DicomParser:
         return self.fields
 
     def find_by_values(self, values):
-        """Given a list of values, find fields in the dicom that contain any
+        """
+        Find fields by values.
+
+        Given a list of values, find fields in the dicom that contain any
         of those values, as determined by a regular expression search.
         """
         # Values must be strings
@@ -304,7 +318,10 @@ class DicomParser:
         return fields
 
     def find_by_name(self, name):
-        """Given a string, find all field objects that contain the name.
+        """
+        Find fields by name.
+
+        Given a string, find all field objects that contain the name.
         Name can correspond to:
          - a string of the tag, with or without the parens and comma/space
          - a keyword
@@ -322,7 +339,10 @@ class DicomParser:
     # Actions
 
     def perform_action(self, field, value, action, filemeta=False):
-        """perform action takes an action (dictionary with field, action, value)
+        """
+        Perform an action on a field.
+
+        perform action takes an action (dictionary with field, action, value)
         and performs the action on the loaded dicom.
 
         Parameters
@@ -344,7 +364,7 @@ class DicomParser:
             values = self.lookup.get(re.sub("^values:", "", field), [])
             fields = self.find_by_values(values=values)
 
-        # A fields list is used vertabim
+        # A fields list is used vertbatim
         # In expand_field_expression below, the stripped_tag is being passed in to field.  At this point,
         # expanders for %fields lists have already been processed and each of the contenders is an
         # identified, unique field.  It is important to use stripped_tag at this point instead of
@@ -375,18 +395,23 @@ class DicomParser:
 
         # Otherwise, these are operations on existing fields
         else:
-            """clone the fields dictionary. delete actions must also delete from the fields dictionary.
-            performing the clone and iterating on the clone allows the deletions while preventing a
-            runtime error - "dictionary changed size during iterations"
-            """
+            # without deepcopy - "dictionary changed size during iterations"
             temp_fields = deepcopy(fields)
             for uid, field in temp_fields.items():
                 self._run_action(field=field, action=action, value=value)
 
     def add_field(self, field, value):
-        """add a field to the dicom. If it's already present, update the value."""
+        """
+        Add a field to the dicom.
+
+        If it's already present, update the value.
+        """
         value = parse_value(
-            item=self.lookup, value=value, field=field, dicom=self.dicom
+            item=self.lookup,
+            value=value,
+            field=field,
+            dicom=self.dicom,
+            funcs=self.deid_funcs,
         )
 
         # The addition will be different depending on if we have filemeta
@@ -440,7 +465,10 @@ class DicomParser:
                 bot.warning("Cannot find tag for field %s, skipping." % name)
 
     def _run_action(self, field, action, value=None):
-        """perform_action (above) typically is called using a loaded deid,
+        """
+        Underlying function to run an action.
+
+        perform_action (above) typically is called using a loaded deid,
         and _run_addition is typically done via an addition in a config
         Both result in a call to this function. If an action fails or is not
         done, None is returned, and the calling function should handle this.
@@ -460,7 +488,11 @@ class DicomParser:
         # Code the value with something in the response
         elif action == "JITTER":
             value = parse_value(
-                item=self.lookup, dicom=self.dicom, value=value, field=field
+                item=self.lookup,
+                dicom=self.dicom,
+                value=value,
+                field=field,
+                funcs=self.deid_funcs,
             )
             if value is not None:
                 # Jitter the field by the supplied value
@@ -479,14 +511,20 @@ class DicomParser:
             do_removal = True
             if value != None:
                 do_removal = parse_value(
-                    item=self.lookup, dicom=self.dicom, value=value, field=field
+                    item=self.lookup,
+                    dicom=self.dicom,
+                    value=value,
+                    field=field,
+                    funcs=self.deid_funcs,
                 )
 
-            if do_removal == True:
+            if do_removal is True:
                 self.delete_field(field)
 
     def remove_private(self):
-        """Remove private tags from the loaded dicom"""
+        """
+        Remove private tags from the loaded dicom
+        """
         try:
             self.dicom.remove_private_tags()
         except Exception:

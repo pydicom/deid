@@ -1,44 +1,17 @@
-"""
+__author__ = "Vanessa Sochat"
+__copyright__ = "Copyright 2016-2022, Vanessa Sochat"
+__license__ = "MIT"
 
-DeidRecipe
-
-Copyright (c) 2017-2021 Vanessa Sochat
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-The functions below assume a configuration file called deid, although the
-user can specify a custom name.
-
-
-"""
-
-from deid.config.utils import load_deid, get_deid, load_combined_deid
-from deid.config.standards import actions, sections, formats
-
+from deid.config.standards import actions, formats, sections
+from deid.config.utils import get_deid, load_combined_deid, load_deid
 from deid.logger import bot
-import os
-import re
 
 
 class DeidRecipe:
-    """Create and work with a deid recipe to filter and perform operations on
-    a dicom header. Usage typically looks like:
+    """
+    Create a deid recipe to filter and perform operations on a dicom header.
+
+    Usage typically looks like:
 
     deid = 'dicom.deid'
     recipe = DeidRecipe(deid)
@@ -52,7 +25,6 @@ class DeidRecipe:
           (later in the list overrides earlier loaded).
     base: if True, load a default base (default_base) before custom
     default_base: the default base to load if "base" is True
-
     """
 
     def __init__(self, deid=None, base=False, default_base="dicom"):
@@ -70,8 +42,10 @@ class DeidRecipe:
         return "[deid]"
 
     def load(self, deid):
-        """load a deid recipe into the object. If a deid configuration is
-        already defined, append to that.
+        """
+        Load a deid recipe into the object.
+
+        If a deid configuration is already defined, append to that.
         """
         deid = get_deid(deid)
         if deid is not None:
@@ -84,7 +58,9 @@ class DeidRecipe:
             self.deid = load_combined_deid([self.deid, deid])
 
     def _get_section(self, name):
-        """return a section (key) in the loaded deid, if it exists"""
+        """
+        Return a section (key) in the loaded deid, if it exists
+        """
         section = None
         if self.deid is not None:
             section = self.deid.get(name)
@@ -93,11 +69,16 @@ class DeidRecipe:
     # Get Sections
 
     def get_format(self):
-        """return the format of the loaded deid, if one exists"""
+        """
+        Return the format of the loaded deid, if one exists
+        """
         return self._get_section("format")
 
     def _get_named_section(self, section_name, name=None):
-        """a helper function to return an entire section, or if a name is
+        """
+        Get a named section from the deid recipe.
+
+        a helper function to return an entire section, or if a name is
         provided, a named section under it. If the section is not
         defined, we appropriately return None.
         """
@@ -107,19 +88,27 @@ class DeidRecipe:
         return section
 
     def get_filters(self, name=None):
-        """return all filters for a deid recipe, or a set based on a name"""
+        """
+        Return all filters for a deid recipe, or a set based on a name
+        """
         return self._get_named_section("filter", name)
 
     def get_values_lists(self, name=None):
-        """return a values list by name"""
+        """
+        Return a values list by name
+        """
         return self._get_named_section("values", name)
 
     def get_fields_lists(self, name=None):
-        """return a values list by name"""
+        """
+        Return a values list by name
+        """
         return self._get_named_section("fields", name)
 
     def _get_actions(self, action=None, field=None, section="header"):
-        """handler for header or filemeta actions."""
+        """
+        Handler for header or filemeta actions.
+        """
         header = self._get_section(section) or []
         if header is not None:
             if action is not None:
@@ -131,7 +120,8 @@ class DeidRecipe:
         return header
 
     def get_actions(self, action=None, field=None):
-        """get deid actions to perform on a header, or a subset based on a type
+        """
+        Get deid actions to perform on a header, or a subset based on a type
 
         A header action is a list with the following:
         {'action': 'REMOVE', 'field': 'AssignedLocation'},
@@ -161,7 +151,9 @@ class DeidRecipe:
     # Listing
 
     def listof(self, section):
-        """return a list of keys for a section"""
+        """
+        Return a list of keys for a section
+        """
         listing = self._get_section(section) or {}
         return list(listing.keys())
 
@@ -177,7 +169,10 @@ class DeidRecipe:
     # Init
 
     def _init_deid(self, deid=None, base=False, default_base="dicom"):
-        """initialize the recipe with one or more deids, optionally including
+        """
+        Initialize a recipe.
+
+        initialize the recipe with one or more deids, optionally including
         the default. This function is called at init time. If you need to add
         or work with already loaded configurations, use add/remove
 

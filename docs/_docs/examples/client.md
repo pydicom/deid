@@ -7,6 +7,15 @@ order: 3
 Here is a quick example of using the deid executable. For more information on this
 client, see the [user docs]({{ site.baseurl }}/user-docs/client/) page.
 
+<a id="data">
+## Data
+
+To run these examples, you'll need to install external deid-data.
+
+```bash
+$ pip install deid-data
+```
+
 <a id="deid-executable">
 ### Deid Executable
 The deid executable is installed automatically with the module. Just running `deid` we see:
@@ -132,7 +141,7 @@ deid = load_deid('examples/deid')
 DEBUG FORMAT set to dicom
 DEBUG Adding section filter dangerouscookie
 DEBUG Adding section header
-DEBUG Adding ADD PatientIdentityRemoved Yes
+DEBUG Adding ADD PatientIdentityRemoved YES
 DEBUG Adding REPLACE PatientID var:id
 DEBUG Adding REPLACE SOPInstanceUID var:source_id
 ```
@@ -163,7 +172,7 @@ equals Rows 2048
 
 %header
 
-ADD PatientIdentityRemoved Yes
+ADD PatientIdentityRemoved YES
 REPLACE PatientID var:id
 REPLACE SOPInstanceUID var:source_id
 ```

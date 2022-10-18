@@ -1,30 +1,12 @@
-"""
+__author__ = "Vanessa Sochat"
+__copyright__ = "Copyright 2016-2022, Vanessa Sochat"
+__license__ = "MIT"
 
-Copyright (c) 2017-2021 Vanessa Sochat
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-"""
+import re
 
 from pydicom.dataset import Dataset
+
 from deid.logger import bot
-import re
 
 # These filters are based off the the CTP Dicom Filter
 # http://mircwiki.rsna.org/index.php?title=The_CTP_DICOM_Filter
@@ -138,7 +120,9 @@ Dataset.notEquals = notEquals
 
 
 def missing(self, field):
-    """missing returns True if the dicom is missing the field entirely
+    """Determine if the dicom is missing a field.
+
+    Missing returns True if the dicom is missing the field entirely
     This means that the entire field is None
     """
     content = self.get(field)
@@ -148,7 +132,9 @@ def missing(self, field):
 
 
 def empty(self, field):
-    """empty returns True if the value is found to be "". If the field
+    """Determine if the value is empty.
+
+    Empty returns True if the value is found to be "". If the field
     is not present for the dicom, then we return False (missing != empty)
     """
     if field not in self:
@@ -185,7 +171,10 @@ Dataset.missing = missing
 
 
 def compareBase(self, field, expression, func, ignore_case=True):
-    """compareBase takes either re.search (for contains) or
+    """
+    Search a field for an expression.
+
+    compareBase takes either re.search (for contains) or
     re.match (for matches) and returns True if the given regular
     expression is contained or matched
     """
@@ -217,7 +206,10 @@ def compareBase(self, field, expression, func, ignore_case=True):
 
 
 def matches(self, field, expression):
-    """matches returns true if the value of the identifier matches
+    """
+    Determine if a field value matches an expression.
+
+    matches returns true if the value of the identifier matches
     the regular expression specified in the string argument;
     otherwise, it returns false.
     """
@@ -225,7 +217,10 @@ def matches(self, field, expression):
 
 
 def contains(self, field, expression):
-    """contains returns true if the value of the identifier
+    """
+    Determine if a field value contains an expression.
+
+    contains returns true if the value of the identifier
     contains the the string argument anywhere within it;
     otherwise, it returns false.
     """
@@ -233,7 +228,10 @@ def contains(self, field, expression):
 
 
 def notContains(self, field, expression):
-    """notContains returns true if the value of the identifier
+    """
+    Determine if a field value does not contain an expression.
+
+    notContains returns true if the value of the identifier
     does not contain the the string argument anywhere within it;
     """
     return not self.compareBase(field=field, expression=expression, func=re.search)
@@ -250,7 +248,10 @@ Dataset.notContains = notContains
 
 
 def startsWith(self, field, term):
-    """startsWith returns true if the value of the identifier
+    """
+    Determine if a field value starts with an expression.
+
+    startsWith returns true if the value of the identifier
     starts with the string argument; otherwise, it returns false.
     """
     expression = "^%s" % term
@@ -258,7 +259,10 @@ def startsWith(self, field, term):
 
 
 def endsWith(self, field, term):
-    """endsWith returns true if the value of the identifier ends with
+    """
+    Determine if a field value ends with an expression.
+
+    endsWith returns true if the value of the identifier ends with
     the string argument; otherwise, it returns false.
     """
     expression = "%s$" % term

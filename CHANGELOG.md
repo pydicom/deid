@@ -14,7 +14,17 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
- - various LGTM alert fixes [#186](https://github.com/pydicom/deid/pull/186)
+ - Remove unecessary typing - adds bugs (0.2.37)
+ - Provide data as an external package (0.2.36)
+ - Restore expand_sequences to get_identifiers (0.2.35)
+ - Add function to clean datasets without `DicomCleaner` [#223](https://github.com/pydicom/deid/pull/223) (0.2.34)
+ - add select:vr:XX field expander to select elements by VR (0.2.33)
+ - rename group:XXXX field expander to select:group:XXXX
+ - add group:XXXX field expander to select all elements with a specified DICOM tag group (0.2.32)
+ - custom class example for using dicom.Dataset, not requiring on client init [#211](https://github.com/pydicom/deid/pull/211) (0.2.31)
+ - adding support for deid provided functions [#207](https://github.com/pydicom/deid/issues/207) (0.2.3)
+ - update CTP deid.dicom up until [this commit](https://github.com/johnperry/CTP/commit/345b05b157c046532e8791a63ababbf6d0dba59b) (0.2.29)
+ - various LGTM alert fixes [#186](https://github.com/pydicom/deid/pull/186) (0.0.28)
  - bug fix for exception when attempting to jitter DA/DT which cannot be jittered (space) [#189] (https://github.com/pydicom/deid/issues/189) (0.2.27)
  - adding support to manipulate file meta [#183](https://github.com/pydicom/deid/issues/183) (0.2.26)
  - updated pydicom dependency from 1.3.0 to 2.1.1 [#171](https://github.com/pydicom/deid/issues/171) (0.2.25)

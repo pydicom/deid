@@ -10,12 +10,24 @@ into the data. If you don't want the detalis, jump into our
 [example script](https://github.com/pydicom/deid/blob/master/examples/dicom/pixels/run-cleaner-client.py). 
 Here we will walk through how this cleaner was derived, and how it works.
 
+ - [Data](#data)
  - [Inspiration from CTP](#inspiration-from-ctp)
  - [Deid Implementation](#deid-implementation)
  - [Client](#client) to control the cleaning process
  - [Detect](#detect) areas in the image likely to need cleaning
  - [Clean and Save](#clean-and-save)
  - [Debugging](#debugging) and other important notes
+
+
+<a id="data">
+## Data
+
+To run these examples, you'll need to install external deid-data.
+
+```bash
+$ pip install deid-data
+```
+
 
 <a id="inspiration-from-ctp">
 ## Inspiration from CTP
@@ -76,7 +88,7 @@ The expression above would say:
 
 The pixels with bounding boxes (0,0,100,20) and (480,200,32,250) should be removed if:
    - the modality is CT AND
-   - the Manufacterer contains text "manufacturer1" (and ignore the case) AND
+   - the Manufacturer contains text "manufacturer1" (and ignore the case) AND
    - the Manufacturer model name text contains "modelA" (and ignore the case)
 
 
@@ -341,3 +353,26 @@ client.clean(fix_interpretation=False)
 Please [see the note](https://pydicom.github.io/pydicom/stable/old/image_data_handlers.html#usage)
 on the pydicom documentation for more details. Also, it would be useful to use machine 
 learning to detect text. if you want to develop this or have ideas, please reach out.
+
+<a id="no-client">
+### Usage without the client
+
+There are some cases when using the client won't be handy (multiprocessing) or working on PyDicom files directly would be preferred.
+In that case, you can skip client initialization and do:
+
+```python
+import pydicom
+import matplotlib.pyplot as plt
+
+from deid.dicom.pixels import clean_pixel_data, has_burned_pixels
+
+dicom_file_data = pydicom.read_file(DICOM_FILE)
+
+burned_pixels_results = has_burned_pixels(dicom_file_data)
+cleaned_pixels = clean_pixel_data(
+    dicom_file=dicom_file_data, 
+    results=burned_pixels_results
+)
+
+plt.imshow(cleaned_pixels)
+```

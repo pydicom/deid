@@ -4,6 +4,19 @@ category: Getting Started
 order: 5
 ---
 
+<a id="data">
+## Data
+
+To run these examples, you'll need to install external deid-data.
+
+```bash
+$ pip install deid-data
+```
+
+
+<a id="get-identifiers">
+## Get Identifiers
+
 A get request using the deid module will return a data structure with headers found in a particular dataset. 
 Let's walk through these steps. As we did in the [loading]({{ site.baseurl }}/getting-started/dicom-loading), 
 the first step was to load a dicom dataset:
