@@ -258,7 +258,7 @@ def parse_filter_group(spec):
     return members
 
 
-def derive_ctp_coordinate(raw):
+def _derive_ctp_coordinate(raw):
     """
     Derive a ctp coordinate from a raw (comma separated) string.
 
@@ -284,9 +284,11 @@ def derive_ctp_coordinate(raw):
     if len(new_coordinate) != 4:
         bot.exit("Coordinates are expected to have length of 4, found %s" % raw)
     xmin, ymin, width, height = new_coordinate
+    new_coordinate[2] = xmin + width
+    new_coordinate[3] = ymin + height
 
     # Translate CTP coordinate to the convention we use
-    return [xmin, ymin, xmin + width, ymin + height]
+    return ",".join([str(i) for i in new_coordinate])
 
 
 def parse_label(section, config, section_name, members, label=None):
@@ -311,14 +313,14 @@ def parse_label(section, config, section_name, members, label=None):
         member = members.pop(0).strip()
 
         if member.lower().startswith("ctpcoordinates"):
-            coordinate = derive_ctp_coordinate(
+            coordinate = _derive_ctp_coordinate(
                 member.replace("ctpcoordinates", "").strip()
             )
             criteria["coordinates"].append([0, coordinate])
             continue
 
         elif member.lower().startswith("ctpkeepcoordinates"):
-            coordinate = derive_ctp_coordinate(
+            coordinate = _derive_ctp_coordinate(
                 member.replace("ctpkeepcoordinates", "").strip()
             )
             criteria["coordinates"].append([1, coordinate])
