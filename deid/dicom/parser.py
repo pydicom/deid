@@ -558,7 +558,7 @@ class DicomParser:
                     funcs=self.deid_funcs,
                 )
 
-            if do_removal is True and not (field.name in self.excluded_from_deletion):
+            if do_removal is True and field.name not in self.excluded_from_deletion:
                 self.delete_field(field)
 
     def remove_private(self):
