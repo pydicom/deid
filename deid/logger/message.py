@@ -2,9 +2,6 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2022, Vanessa Sochat"
 __license__ = "MIT"
 
-"""
-logger/message.py: Python logger base
-"""
 
 import os
 import sys

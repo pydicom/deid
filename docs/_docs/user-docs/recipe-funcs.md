@@ -64,7 +64,7 @@ The default uses `stable_remapping=true`, which means we use the original UUID a
 to be able to consistently return the same value between runs. You can disable it, however
 we do not recommended it (but maybe could be appropriate for your use case).
 
-You can also optionally define a custom prefix. Note that it needs to match the 
+You can also optionally define a custom prefix. Note that it needs to match the
 regular expression `^(0|[1-9][0-9]*)(\\.(0|[1-9][0-9]*))*\\.$` which (in spoken terms)
 is a number followed by a period, another number, and ending also in a period (e.g, `1.55.`).
 
@@ -78,7 +78,7 @@ REPLACE ReferringPhysicianName deid_func:pydicom_uuid prefix=1.55.
 ## A Dicom UUID
 
 A more "formal" uuid function was added that requires an organization root. Your
-organization should have it's own - for example the `PYMEDPHYS_ROOT_UID` is 
+organization should have it's own - for example the `PYMEDPHYS_ROOT_UID` is
 "1.2.826.0.1.3680043.10.188" so we might do:
 
 ```
@@ -105,7 +105,7 @@ This would make a final value that looks something like `patient_into-5897bd32-b
 ## Jitter
 
 Jitter is intended for datetime fields, and technically you can just use the `JITTER` function provided
-natively in the recipe. We decided to include it here to add further customization. For example, you can provide 
+natively in the recipe. We decided to include it here to add further customization. For example, you can provide
 variables for both days and years for a more fine-tuned jitter. We also wanted to add it here because
 technically it is a custom action. A jitter (as a custom deid function) might look like this:
 

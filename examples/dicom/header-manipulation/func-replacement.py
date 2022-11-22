@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
-from deid.dicom import get_files, replace_identifiers
+# Create the DeidRecipe Instance from deid.dicom
+from deid.config import DeidRecipe
 from deid.data import get_dataset
+from deid.dicom import get_files, get_identifiers, replace_identifiers
 
 # This is an example of replacing fields in dicom headers,
 # but via a function instead of a preset identifier.
@@ -10,9 +12,6 @@ from deid.data import get_dataset
 base = get_dataset("dicom-cookies")
 dicom_files = list(get_files(base))  # todo : consider using generator functionality
 
-
-# This is the function to get identifiers
-from deid.dicom import get_identifiers
 
 items = get_identifiers(dicom_files)
 
@@ -41,9 +40,6 @@ items = get_identifiers(dicom_files)
 # output from the generate_uid function, which is expected in the item dict
 ##################################
 
-# Create the DeidRecipe Instance from deid.dicom
-from deid.config import DeidRecipe
-
 recipe = DeidRecipe("deid.dicom")
 
 # To see an entire (raw in a dictionary) recipe just look at
@@ -56,17 +52,16 @@ recipe.get_format()
 # What actions do we want to do on the header?
 recipe.get_actions()
 
-"""
-[{'action': 'REPLACE',
-  'field': 'StudyInstanceUID',
-  'value': 'func:generate_uid'},
- {'action': 'REPLACE',
-  'field': 'SeriesInstanceUID',
-  'value': 'func:generate_uid'},
- {'action': 'REPLACE',
-  'field': 'FrameOfReferenceUID',
-  'value': 'func:generate_uid'}]
-"""
+
+# [{'action': 'REPLACE',
+#  'field': 'StudyInstanceUID',
+#  'value': 'func:generate_uid'},
+# {'action': 'REPLACE',
+#  'field': 'SeriesInstanceUID',
+#  'value': 'func:generate_uid'},
+# {'action': 'REPLACE',
+#  'field': 'FrameOfReferenceUID',
+#  'value': 'func:generate_uid'}]
 
 # We can filter to an action type (not useful here, we only have one type)
 recipe.get_actions(action="REPLACE")
@@ -74,11 +69,10 @@ recipe.get_actions(action="REPLACE")
 # or we can filter to a field
 recipe.get_actions(field="FrameOfReferenceUID")
 
-"""
-[{'action': 'REPLACE',
-  'field': 'FrameOfReferenceUID',
-  'value': 'func:generate_uid'}]
-"""
+# [{'action': 'REPLACE',
+#  'field': 'FrameOfReferenceUID',
+#  'value': 'func:generate_uid'}]
+
 
 # and logically, both (not useful here)
 recipe.get_actions(field="PatientID", action="REMOVE")

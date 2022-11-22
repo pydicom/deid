@@ -13,8 +13,8 @@ can easily contribute via a [pull request](https://help.github.com/articles/abou
 
 <a id="installing-dependencies">
 ### Installing Dependencies
-Initially (on OS X), you will need to setup [Brew](http://brew.sh/) which is a 
-package manager for OS X and [Git](https://git-scm.com/). To install Brew and Git, 
+Initially (on OS X), you will need to setup [Brew](http://brew.sh/) which is a
+package manager for OS X and [Git](https://git-scm.com/). To install Brew and Git,
 run the following commands:
 
 ```bash

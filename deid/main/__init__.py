@@ -77,7 +77,7 @@ def get_parser():
         dest="command",
     )
 
-    version = subparsers.add_parser(
+    subparsers.add_parser(
         "version", help="print version and exit"  # pylint: disable=unused-variable
     )
 

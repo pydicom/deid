@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-from deid.dicom import get_identifiers, replace_identifiers, get_files
 from deid.config import DeidRecipe
 from deid.data import get_dataset
+from deid.dicom import get_files, get_identifiers, replace_identifiers
 
 # This is supported for deid.dicom version 0.1.34
 

@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
-from deid.dicom import DicomCleaner
+from deid.data import get_dataset
+
+# This will get a set of example cookie dicoms
+from deid.dicom import DicomCleaner, get_files
 
 # This is a complete example of using the cleaning client to inspect
 # and clean pixels
@@ -11,9 +14,6 @@ from deid.dicom import DicomCleaner
 # 1. Get List of Files
 #########################################
 
-# This will get a set of example cookie dicoms
-from deid.dicom import get_files
-from deid.data import get_dataset
 
 base = get_dataset("dicom-cookies")
 dicom_files = list(get_files(base))  # todo : consider using generator functionality

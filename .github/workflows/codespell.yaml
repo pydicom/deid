@@ -14,5 +14,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: crate-ci/typos@592b36d23c62cb378f6097a292bc902ee73f93ef # version 1.0.4
-        with: 
+        with:
           files: ./deid ./docs/_docs ./docs/README.md ./docs/pages ./examples

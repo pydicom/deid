@@ -6,4 +6,4 @@ LABEL - To be tested with Cat.dcm.  Intended to flag the image.
   contains Modality DX
 
 %header
-ADD PatientIdentityRemoved No 
+ADD PatientIdentityRemoved No

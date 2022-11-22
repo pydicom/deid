@@ -47,4 +47,3 @@ jobs:
              git commit -a -m "Adding changed documentation files"
              git push origin gh-pages || echo "up to date"
           fi
-

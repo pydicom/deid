@@ -5,10 +5,6 @@ __copyright__ = "Copyright 2016-2022, Vanessa Sochat"
 __license__ = "MIT"
 
 
-"""
-Test DICOM Cleaner
-"""
-
 import os
 import shutil
 import tempfile

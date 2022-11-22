@@ -135,7 +135,7 @@ def load_deid(path=None):
             parts = line.split(" ")
             if len(parts) > 1:
                 section_name = " ".join(parts[1:])
-            section = re.sub("[%]|(\s+)", "", parts[0]).lower()
+            section = re.sub("[%]|(\s+)", "", parts[0]).lower()  # noqa
             if section not in sections:
                 bot.exit("%s is not a valid section." % section)
 
@@ -225,7 +225,7 @@ def parse_format(line):
     ==========
     line: the line that starts with format.
     """
-    fmt = re.sub("FORMAT|(\s+)", "", line).lower()
+    fmt = re.sub("FORMAT|(\s+)", "", line).lower()  # noqa
     if fmt not in formats:
         bot.exit("%s is not a valid format." % fmt)
     bot.debug("FORMAT set to %s" % fmt)
@@ -386,8 +386,8 @@ def parse_member(members, operator=None):
         member = members.pop(0).strip()
 
         # Find the first || or +
-        match_or = re.search("\|\|", member)
-        match_and = re.search("\+", member)
+        match_or = re.search("\|\|", member)  # noqa
+        match_and = re.search("\+", member)  # noqa
 
         if match_or is not None:
             operator = "||"

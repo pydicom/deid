@@ -71,8 +71,8 @@ items = get_identifiers(dicom_files, expand_sequences=False)
 ```
 
 
-The function we will use for the example will perform an action to generate a uid, 
-but you can also use it to communicate with databases, APIs, or do something like 
+The function we will use for the example will perform an action to generate a uid,
+but you can also use it to communicate with databases, APIs, or do something like
 save the original (and newly generated one) in some (IRB approvied) place
 
 <a id="the-deid-recipe">
@@ -189,8 +189,8 @@ def generate_uid(item, value, field, dicom):
     return prefix + "-" + sliced_uid
 ```
 
-As stated in the docstring, you can expect it to be passed the dictionary of 
-items extracted from the dicom (and your function) and variables, the 
+As stated in the docstring, you can expect it to be passed the dictionary of
+items extracted from the dicom (and your function) and variables, the
 original value (func:generate_uid) and the field name you are applying it to.
 
 <a id="development-tip">
@@ -215,18 +215,18 @@ interactive session and have all the variables available to you for inspection.
 For example:
 
 ```python
-item                                                                                                                    
+item
 # {'(0008, 0005)': (0008, 0005) Specific Character Set              CS: 'ISO_IR 100'  [SpecificCharacterSet],
 # ...
 # 'generate_uid': <function __main__.generate_uid(item, value, field, dicom)>}
 
-value                                                                                                                  
+value
 # 'func:generate_uid'
 
-field                                                                                                                  
+field
 # (0020, 000d) Study Instance UID                  UI: 1.2.276.0.7230010.3.1.2.8323329.5329.1495927169.580350  [StudyInstanceUID]
 
-dicom                                                                                                                  
+dicom
 # (0008, 0005) Specific Character Set              CS: 'ISO_IR 100'
 ...
 ```
@@ -237,7 +237,7 @@ on how it is used internally, so you should always check.
 <a id="update-your-items">
 ## Update Your Items
 
-How do we update the items? Remember, the action is: 
+How do we update the items? Remember, the action is:
 
 ```
 REPLACE StudyInstanceUID func:generate_uid
@@ -252,8 +252,8 @@ for item in items:
 
 <a id="replace-identifiers">
 ## Replace identifiers
-We are ready to go! Now let's generate the cleaned files! It will output to a 
-temporary directory. 
+We are ready to go! Now let's generate the cleaned files! It will output to a
+temporary directory.
 
 ```python
 cleaned_files = replace_identifiers(dicom_files=dicom_files,
@@ -276,7 +276,7 @@ See [here](https://github.com/pydicom/deid/tree/master/examples/dicom/header-man
 to see if the replacement was done:
 
 ```python
-cleaned_files[0]                                                                                                       
+cleaned_files[0]
 (0020, 000d) Study Instance UID                  UI: studyinstanceuid-1.2.826.0.1.3680043.10.188.1803528571851574950019323462792270863
 (0020, 000e) Series Instance UID                 UI: seriesinstanceuid-1.2.826.0.1.3680043.10.188.1218768560803332968447018964651707696
 (0020, 0052) Frame of Reference UID              UI: frameofreferenceuid-1.2.826.0.1.3680043.10.188.3138524385829221974514732538424409758

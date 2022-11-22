@@ -13,4 +13,4 @@ LABEL by SOPClassUID blacklist2
   coordinates 10,10,20,20
 
 %header
-ADD PatientIdentityRemoved No 
+ADD PatientIdentityRemoved No

@@ -30,7 +30,7 @@ Generally, a custom function should accept the following variables:
  - item: expected to be the dictionary lookup of user provided values
  - field: the dicom field
  - value: the value to replace
- 
+
 You can generally define a catch all `**kwargs` if you don't need a field. Finally,
 if you do provide a custom variable, you'll need to also provide a default (or exit on error
 if it's absolutely essential). As an example, if your custom function in the lookup is named

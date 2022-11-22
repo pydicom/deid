@@ -15,32 +15,33 @@ Referenced versions in headers are tagged on Github, in parentheses are for pypi
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
 
+- pre-commit for linting and formatting (0.3.1)
 - Add `ctpcoordinates` and `ctpkeepcoordinates` to handle different formats (0.3.0)
-- Minimum Python required is 3.7, numpy 1.20
+  - Minimum Python required is 3.7, numpy 1.20
 - Remove unecessary typing - adds bugs (0.2.37)
 - Provide data as an external package (0.2.36)
 - Restore expand_sequences to get_identifiers (0.2.35)
 - Add function to clean datasets without `DicomCleaner` [#223](https://github.com/pydicom/deid/pull/223) (0.2.34)
 - add select:vr:XX field expander to select elements by VR (0.2.33)
-- rename group:XXXX field expander to select:group:XXXX
+  - rename group:XXXX field expander to select:group:XXXX
 - add group:XXXX field expander to select all elements with a specified DICOM tag group (0.2.32)
 - custom class example for using dicom.Dataset, not requiring on client init [#211](https://github.com/pydicom/deid/pull/211) (0.2.31)
 - adding support for deid provided functions [#207](https://github.com/pydicom/deid/issues/207) (0.2.3)
 - update CTP deid.dicom up until [this commit](https://github.com/johnperry/CTP/commit/345b05b157c046532e8791a63ababbf6d0dba59b) (0.2.29)
 - various LGTM alert fixes [#186](https://github.com/pydicom/deid/pull/186) (0.0.28)
-- `REPLACE/JITTER` actions have now higher priority than `REMOVE`, allowing to whitelist fields from `REMOVE ALL/Field` [#197](https://github.com/pydicom/deid/issues/197)
-- `ADD/KEEP` actions have now higher priority than `REMOVE`, allowing to whitelist fields from `REMOVE ALL/Field` [#197](https://github.com/pydicom/deid/issues/197)
-- updated pydicom dependency from 2.1.1 to 2.2.2 [#194](https://github.com/pydicom/deid/issues/194)
+  - `REPLACE/JITTER` actions have now higher priority than `REMOVE`, allowing to whitelist fields from `REMOVE ALL/Field` [#197](https://github.com/pydicom/deid/issues/197)
+  - `ADD/KEEP` actions have now higher priority than `REMOVE`, allowing to whitelist fields from `REMOVE ALL/Field` [#197](https://github.com/pydicom/deid/issues/197)
+  - updated pydicom dependency from 2.1.1 to 2.2.2 [#194](https://github.com/pydicom/deid/issues/194)
 - bug fix for exception when attempting to jitter DA/DT which cannot be jittered (space) [#189] (<https://github.com/pydicom/deid/issues/189>) (0.2.27)
 - adding support to manipulate file meta [#183](https://github.com/pydicom/deid/issues/183) (0.2.26)
 - updated pydicom dependency from 1.3.0 to 2.1.1 [#171](https://github.com/pydicom/deid/issues/171) (0.2.25)
-- bug fix for multivalued fields in %values lists [#174](https://github.com/pydicom/deid/issues/174)
-- allowing other VR types for jitter [#175](https://github.com/pydicom/deid/issues/175)
-- ensuring that an add/replace of an existing value is also updated in fields [#173](https://github.com/pydicom/deid/issues/173)
+  - bug fix for multivalued fields in %values lists [#174](https://github.com/pydicom/deid/issues/174)
+  - allowing other VR types for jitter [#175](https://github.com/pydicom/deid/issues/175)
+  - ensuring that an add/replace of an existing value is also updated in fields [#173](https://github.com/pydicom/deid/issues/173)
 - change to correct issue with deidentifying RGB images [#165](https://github.com/pydicom/deid/issues/165) (0.2.24)
 - removing verbosity of debug logger (0.2.23)
 - changing iteration technique through fields to properly add nested uids [#153](https://github.com/pydicom/deid/issues/153) (0.2.22)
-- change to return results from detect when recipe does not contain filters [#155](https://github.com/pydicom/deid/issues/155)
+  - change to return results from detect when recipe does not contain filters [#155](https://github.com/pydicom/deid/issues/155)
 - fix to correct bug in detect [#142](https://github.com/pydicom/deid/issues/142)  (0.2.21)
 - fixes to detect and clean to better represent keep/coordinates (0.2.20)
 - modify default VR for added tags [#146](https://github.com/pydicom/deid/issues/146), bug with private tags in %fields section [#147](https://github.com/pydicom/deid/issues/147) (0.2.19)
@@ -78,14 +79,14 @@ Referenced versions in headers are tagged on Github, in parentheses are for pypi
 - need to clean up temporary directory (mkdtemp), issue #68 (0.1.18)
 - fixing issue #65, save for compressed data (0.1.17)
 - matplotlib must be less than or equal to 2.1.2 for install (0.1.16)
-- fixing bug with clean coordinate flipping rectangle
+  - fixing bug with clean coordinate flipping rectangle
 - Fixing bug with saving self.cleaned (0.1.15)
 - Allowing for datasets to be passed in functions (not necessary for files) (0.1.14)
 - index should be full path in header.py (0.1.13)
 - pydicom bumped to install latest (1.0.2) (0.1.12)
 - ensuring that ids for images are full paths (0.1.11)
-- addition of the DeidRecipe class to better interact with and combine deid recipe files.
-- the get_files function now returns a generator instead of a list.
+  - addition of the DeidRecipe class to better interact with and combine deid recipe files.
+  - the get_files function now returns a generator instead of a list.
 
 ## [0.1.1](https://pypi.python.org/packages/28/26/ee80e7f1c3f65fae1c901497bb2388701158f0c96e0d633ab301abeaa478/deid-0.1.1.tar.gz#md5=39df7efb03e5d3b63308016742062a43) (0.1.1)
 

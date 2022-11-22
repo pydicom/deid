@@ -146,10 +146,10 @@ DEBUG Adding REPLACE PatientID var:id
 DEBUG Adding REPLACE SOPInstanceUID var:source_id
 ```
 
-and the file we are reading looks like this. It's very intuitive, we have groups of 
-filters (more specific at the top and moving down to more general) and each is named 
-("dangerouscookie" and "bigimage"). Within each filter we have one criteria group, 
-with a "+" indicating and. We could have more groups under each, but happen to not 
+and the file we are reading looks like this. It's very intuitive, we have groups of
+filters (more specific at the top and moving down to more general) and each is named
+("dangerouscookie" and "bigimage"). Within each filter we have one criteria group,
+with a "+" indicating and. We could have more groups under each, but happen to not
 for this example.
 
 ```
@@ -177,18 +177,18 @@ REPLACE PatientID var:id
 REPLACE SOPInstanceUID var:source_id
 ```
 
-We won't be using the header section for this example, but for your FYI, 
-this is the recipe for how we would want to replace information in the header, 
+We won't be using the header section for this example, but for your FYI,
+this is the recipe for how we would want to replace information in the header,
 if we were cleaning the headers. Right now we are just filtering images to
- flag those that might have PHI. Let's very strictly walk through the logic 
+ flag those that might have PHI. Let's very strictly walk through the logic
 that will be taken above:
 
  1. If the header contains field PatientSex "M" (Male), and OperatorsName is not "bold bread," we flag. Otherwise, keep going.
  2. If the header has field Rows 2048 and Columns 1536 we flag.
 
-The flag that is done first (more specific) is the final decision. 
-This means that you should have your known coordinates of PHI (eg, specific 
-modality, manufacturer, etc) first, and followed by more general estimates of 
+The flag that is done first (more specific) is the final decision.
+This means that you should have your known coordinates of PHI (eg, specific
+modality, manufacturer, etc) first, and followed by more general estimates of
 PHI. Likely a later group will create flags for more manual inspection.
 
 Now let's run the filter! First just within python:
@@ -227,7 +227,7 @@ image1.dcm:fragrant pond - F
 image5.dcm:curly darkness - M    <--- FLAGGED
 ```
 
-Seems to be! The data structure returned gives us programmatic access to the groups, 
+Seems to be! The data structure returned gives us programmatic access to the groups,
 including list of clean (top), list of flagged and flag list name (flagged) and given flagged, a lookup dictionary with reasons:
 
 ```python

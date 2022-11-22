@@ -5,9 +5,9 @@ permalink: /
 
 **Anonymization toward De-identification (deid)**
 
-This Python module is intended for basic coding of medical images, which means 
-"cleaning" image headers and pixel data, and integrating with your own functions 
-to replace with anonymous identifiers. Per HIPAA, this process is technically 
+This Python module is intended for basic coding of medical images, which means
+"cleaning" image headers and pixel data, and integrating with your own functions
+to replace with anonymous identifiers. Per HIPAA, this process is technically
 called "anonymization," meaning we did our _best effort_.
 
 > What does this module do?
@@ -27,5 +27,5 @@ For dicom data, we use [pydicom](https://www.github.com/pydicom/pydicom) and for
 
 > Where do I go from here?
 
-If you are new to deid or pydicom, we recommend you start with 
+If you are new to deid or pydicom, we recommend you start with
 the [getting started]({{ site.baseurl }}/getting-started/) pages.
