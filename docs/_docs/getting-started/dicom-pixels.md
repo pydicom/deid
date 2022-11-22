@@ -333,12 +333,12 @@ Generating animation...
 In a recent pull request we [encountered](https://github.com/pydicom/deid/pull/134)
 an issue where a user had decompressed the data without changing the `dicom.PixelInterpretation`,
 which is a header that tells pydicom how to read the data. The suggested approach
-when you do `dicom.decompress()` is to set `dicom.PhotometricInterpreation = 'RGB'`
+when you do `dicom.decompress()` is to set `dicom.PhotometricInterpretation = 'RGB'`
 after doing so:
 
 ```python
 dicom.decompress()
-dicom.PhotometricInterpreation = 'RGB'
+dicom.PhotometricInterpretation = 'RGB'
 ```
 
 If you see this warning message:

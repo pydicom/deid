@@ -138,7 +138,7 @@ equals ImageType CT|MRI
 which is equivalent to:
 
 ```
-equals ImageTyoe CT
+equals ImageType CT
 || equals ImageType MRI
 ```
 

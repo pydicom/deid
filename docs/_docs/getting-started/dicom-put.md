@@ -287,7 +287,7 @@ And you could save your data to file.
 ```python
 parser.save("/tmp/mydicom.dcm")
 ```
-<a id="replace-identifers">
+<a id="replace-identifiers">
 ## Replace Identifiers
 
 If you want to do the above in bulk, you might find it easier to use the `replace_identifiers`

@@ -282,7 +282,7 @@ for item in items:
     items[item]['pusheenize'] = pusheenize
 ```
 
-<a id="replace-identifers">
+<a id="replace-identifiers">
 ### 3. Replace Identifiers
 given that our function is in the python working environment, we would
 have extracted identifiers like this. We don't want to save them
