@@ -1,5 +1,6 @@
-from setuptools import setup, find_packages
 import os
+
+from setuptools import find_packages, setup
 
 
 def get_lookup():
@@ -94,7 +95,7 @@ setup(
     long_description_content_type="text/markdown",
     keywords=KEYWORDS,
     install_requires=INSTALL_REQUIRES,
-    python_requires='>=3.7',
+    python_requires=">=3.7",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",

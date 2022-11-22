@@ -213,7 +213,7 @@ LABEL Logiq US LOGIQE  # (AMBR)
 LABEL Philips IU22 # (CTP)
   contains Modality US
   + contains Manufacturer Philips
-  + equals Rows 480 
+  + equals Rows 480
   + contains ManufacturerModelName iU22
   ctpcoordinates 0,0,640,47
 
@@ -285,7 +285,7 @@ LABEL EPIQ_7G (CTP)
   ctpcoordinates 0,0,800,59
 
 LABEL Z_ONE # (CTP)
-  contains Modality US 
+  contains Modality US
   + contains Manufacturer Zonare
   + equals Rows 600
   + contains ManufacturerModelName Z_ONE
@@ -316,7 +316,7 @@ LABEL ATL HDI4000 # (FFUR)
 
 LABEL Siemens SC2000 # (CTP)
   contains Modality US
-  + contains Manufacturer Siemens 
+  + contains Manufacturer Siemens
   + equals Rows 768
   + equals Columns 1024
   + contains ManufacturerModelName SC2000
@@ -325,7 +325,7 @@ LABEL Siemens SC2000 # (CTP)
 
 LABEL Siemens Antares # (CTP)
   contains Modality US
-  + contains Manufacturer Siemens 
+  + contains Manufacturer Siemens
   + equals Rows 768
   + equals Columns 1024
   + contains ManufacturerModelName Antares

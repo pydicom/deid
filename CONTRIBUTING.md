@@ -24,8 +24,8 @@ This code is licensed under the MIT [LICENSE](LICENSE).
 4. The project's default copyright and header have been included in any new
    source files.
 5. All (major) changes to deid must be documented in
-   [docs](docs). If your PR changes a core functionality, please 
-   include clear description of the changes in your PR so that the docs 
+   [docs](docs). If your PR changes a core functionality, please
+   include clear description of the changes in your PR so that the docs
    can be updated, or better, submit another PR to update the docs directly.
 6. If necessary, update the [README](README.md), and the [CHANGELOG](CHANGELOG.md).
 7. The pull request will be reviewed by others, and the final merge must be
@@ -97,7 +97,7 @@ an incident. Further details of specific enforcement policies may be posted
 separately.
 
 Project maintainers, contributors and users who do not follow or enforce the
-Code of Conduct in good faith may face temporary or permanent repercussions 
+Code of Conduct in good faith may face temporary or permanent repercussions
 with their involvement in the project as determined by the project's leader(s).
 
 ## Attribution

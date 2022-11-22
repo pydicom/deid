@@ -3,13 +3,9 @@ __copyright__ = "Copyright 2016-2022, Vanessa Sochat"
 __license__ = "MIT"
 
 
-"""
-detect.py: functions for pixel scrubbing
-"""
+from typing import List, Optional, Union
 
-from typing import Union, List, Optional
-
-from pydicom import read_file, FileDataset
+from pydicom import FileDataset, read_file
 from pydicom.sequence import Sequence
 
 from deid.config import DeidRecipe

@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 
-from deid.dicom import get_files, replace_identifiers
-from deid.utils import get_installdir
-from deid.data import get_dataset
 import os
+
+# We can load in a cleaned file to see what was done
+from pydicom import read_file
+
+# Create a DeidRecipe
+from deid.config import DeidRecipe
+from deid.data import get_dataset
+from deid.dicom import get_files, get_identifiers, replace_identifiers
+from deid.utils import get_installdir
 
 # This is a complete example of doing de-identification. For details, see our docs
 # https://pydicom.github.io/deid
@@ -13,9 +19,6 @@ import os
 base = get_dataset("dicom-cookies")
 dicom_files = list(get_files(base))  # todo : consider using generator functionality
 
-
-# This is the function to get identifiers
-from deid.dicom import get_identifiers
 
 ids = get_identifiers(dicom_files)
 
@@ -39,9 +42,6 @@ ids = get_identifiers(dicom_files)
 # deid recipe file, continue to the step to replace_identifiers
 #
 ##################################
-
-# Create a DeidRecipe
-from deid.config import DeidRecipe
 
 recipe = DeidRecipe()
 
@@ -195,9 +195,6 @@ cleaned_files = replace_identifiers(
     dicom_files=dicom_files, deid=recipe, ids=updated_ids
 )
 
-
-# We can load in a cleaned file to see what was done
-from pydicom import read_file
 
 test_file = read_file(cleaned_files[0])
 

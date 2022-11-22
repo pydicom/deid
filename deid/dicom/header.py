@@ -2,10 +2,6 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2022, Vanessa Sochat"
 __license__ = "MIT"
 
-"""
-header.py: functions to extract identifiers from dicom headers
-"""
-
 
 import os
 

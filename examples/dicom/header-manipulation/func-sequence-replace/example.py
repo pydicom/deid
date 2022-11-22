@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-from deid.dicom import get_identifiers, replace_identifiers
 from deid.config import DeidRecipe
+from deid.dicom import get_identifiers, replace_identifiers
 
 # This is supported for deid.dicom version 0.1.34
 

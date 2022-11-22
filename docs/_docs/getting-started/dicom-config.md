@@ -36,7 +36,7 @@ Let's first discuss each of the sections.
 A section is a part of the recipe that starts with a "%". You can think of
 a section as a chunk of text that is parsed for some purpose. For example,
 `%filter` is a section where it's expected that you've defined filters, and
-`%header` is expected to have actions to update and change headers. 
+`%header` is expected to have actions to update and change headers.
 
 
 |  Section    | Description                                               | Example                                 |
@@ -65,7 +65,7 @@ action corresponds with either:
  - an action applied to a header field, like "REPLACE FieldA with value B" or
  - replacing pixels in the image with a black box to hide text and other identifiers
 
-For reading more about how the Deid software does this by way of a file called 
+For reading more about how the Deid software does this by way of a file called
 a deid recipe, read about deid [recipe filters]({{ site.baseurl }}/user-docs/recipe-filters/).
 
 <a id="clean-headers">
@@ -77,10 +77,10 @@ The general application flow to clean headers looks like this:
 [define actions] -> [get identifiers] --> [update identifiers] --> [replace identifiers]
 ```
 
-And then optionally save the updated files! 
+And then optionally save the updated files!
 
 More detail is provided about cleaning headers in the [recipe headers]({{ site.baseurl }}/user-docs/recipe-headers/)
-pages.  
+pages.
 
 
 > Where do I go from here?

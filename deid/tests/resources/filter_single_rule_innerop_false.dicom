@@ -6,4 +6,4 @@ LABEL - To be tested with Cat.dcm.  Intended to NOT flag the image.
   contains Modality CT + contains PatientSex F
 
 %header
-ADD PatientIdentityRemoved No 
+ADD PatientIdentityRemoved No

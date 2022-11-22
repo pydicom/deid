@@ -4,10 +4,6 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2022, Vanessa Sochat"
 __license__ = "MIT"
 
-"""
-Test replace_identifiers
-"""
-
 import os
 import shutil
 import tempfile
@@ -770,7 +766,7 @@ class TestDicom(unittest.TestCase):
         self.assertEqual("Yes", parser.dicom["PatientIdentityRemoved"].value)
         self.assertIsNotNone(parser.dicom["PixelData"])
         with self.assertRaises(KeyError):
-            check3 = parser.dicom["StudyDate"].value
+            parser.dicom["StudyDate"].value
 
     def test_blank_field_keep_field_compounding_should_keep(self):
         """

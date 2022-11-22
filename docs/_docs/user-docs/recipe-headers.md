@@ -196,7 +196,7 @@ def is_name(dicom, value, field):
     splitvalues = name.split('^')
     for phi in splitvalues:
         if len(phi) > 4 and phi in currentvalue:
-            return True 
+            return True
     return False
 ```
 

@@ -2,9 +2,6 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2022, Vanessa Sochat"
 __license__ = "MIT"
 
-"""
-clean.py: functions for pixel scrubbing
-"""
 
 import math
 import os
@@ -26,7 +23,7 @@ from deid.utils import get_temporary_name
 
 matplotlib.use("pdf")
 
-from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt  # noqa
 
 bot.level = 3
 

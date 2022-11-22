@@ -38,7 +38,7 @@ Resources
     :caption: API Reference
     :name: api-reference
     :maxdepth: 3
-    
+
     source/deid.config.rst
     source/deid.data.rst
     source/deid.dicom.actions.rst

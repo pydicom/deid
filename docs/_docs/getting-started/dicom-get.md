@@ -17,8 +17,8 @@ $ pip install deid-data
 <a id="get-identifiers">
 ## Get Identifiers
 
-A get request using the deid module will return a data structure with headers found in a particular dataset. 
-Let's walk through these steps. As we did in the [loading]({{ site.baseurl }}/getting-started/dicom-loading), 
+A get request using the deid module will return a data structure with headers found in a particular dataset.
+Let's walk through these steps. As we did in the [loading]({{ site.baseurl }}/getting-started/dicom-loading),
 the first step was to load a dicom dataset:
 
 
@@ -30,7 +30,7 @@ base = get_dataset("dicom-cookies")
 dicom_files = list(get_files(base))
 ```
 
-We now have our small dataset that we want to de-identify! The first step is to get 
+We now have our small dataset that we want to de-identify! The first step is to get
 the identifiers. By default, we will return all of them. That call will look like this:
 
 ```python
@@ -43,7 +43,7 @@ Within each entry, the value is another dictionary with an expanded string of
 the tag. For example:
 
 ```
-ids[dicom_files[0]]                                                                                                                           
+ids[dicom_files[0]]
 {'(0008, 0005)': (0008, 0005) Specific Character Set              CS: 'ISO_IR 100'  [SpecificCharacterSet],
  '(0008, 0016)': (0008, 0016) SOP Class UID                       UI: Secondary Capture Image Storage  [SOPClassUID],
  '(0008, 0018)': (0008, 0018) SOP Instance UID                    UI: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351  [SOPInstanceUID],
@@ -82,7 +82,7 @@ ids[dicom_files[0]]
 
 If there is a nested tag, you'll see it with the format `(7fe0, 0010)__(0080, 0012)`. If there
 is a nested sequence, you'll see the index provided in that same format. For example,
-`(7fe0, 0010)__0__(0080, 0012)` counts as the first element of a sequence, 
+`(7fe0, 0010)__0__(0080, 0012)` counts as the first element of a sequence,
 and `(7fe0, 0010)__1__(0080, 0012)` the second. We start counting at 0, we aren't barbarians!
 
 <a id="dicomfield">
@@ -95,19 +95,19 @@ parsing. For example:
 ```python
 field = ids[dicom_files[0]]['(0010, 0010)']
 
-field.element                                                                                                                                 
+field.element
 (0010, 0010) Patient's Name                      PN: 'falling disk'
 
-field.name                                                                                                                                   
+field.name
 'PatientName'
 
-field.uid                                                                                                                                    
+field.uid
 '(0010, 0010)'
 ```
 
 The field.element is what you would get if you indexed the dicom Dataset
 at dicom.get("PatientName"). The name refers to the keyword (which, if there
-is nesting, will include that. For example, a Sequence with header value `AdditionalData` 
+is nesting, will include that. For example, a Sequence with header value `AdditionalData`
 and item `Modality` will be returned as `AdditionalData_Modality`,
 and this name string is used to help with filters. The uid would also
 include the index of the sequence, since we use it to index into the
@@ -124,22 +124,22 @@ At this point, you have a few options:
 <a id="recipe-interaction">
 ### Recipe Interaction
 
-If you want to write a recipe to perform a bunch of custom actions on your 
+If you want to write a recipe to perform a bunch of custom actions on your
 dicom files, you should read about how to [work with recipes]({{ site.basurl }}/examples/recipe/).
 
 <a id="clean-pixels">
 ### Clean Pixels
 
-It's likely that the pixels in the images have burned in annotations, and we can 
-use the header data to flag these images. Thus, before you replace identifiers, 
-you probably want to do this. We have a DicomCleaner class that can flag images 
-for PHI based on matching some header filter criteria, and you can 
-[read about that here]({{site.baseurl}}/getting-started/dicom-pixels/). 
+It's likely that the pixels in the images have burned in annotations, and we can
+use the header data to flag these images. Thus, before you replace identifiers,
+you probably want to do this. We have a DicomCleaner class that can flag images
+for PHI based on matching some header filter criteria, and you can
+[read about that here]({{site.baseurl}}/getting-started/dicom-pixels/).
 
 <a id="update-identifiers">
 ### Update Identifiers
 
 Once you are finished with any customization of the recipe, updating identifiers,
- and/or potentially flagging and quarantining images that have PHI, you should be 
+ and/or potentially flagging and quarantining images that have PHI, you should be
 ready to [replace (PUT)]({{ site.baseurl}}/getting-started/dicom-put/) with new
  fields based on the deid recipe.

@@ -5,7 +5,7 @@ order: 5
 ---
 
 This example will walk through how to use header expansion
-to select more than one field from a dicom header to apply an action to. 
+to select more than one field from a dicom header to apply an action to.
 Thanks to [@howardpchen](https://github.com/howardpchen) for contributing this idea in [this issue](https://github.com/pydicom/deid/issues/87). We will first show examples that you can write into [a deid recipe](https://pydicom.github.io/deid/examples/recipe/) to keep a record of your dicom header edits. We will then show the same
 (and more advanced) actions working with expanders directly in Python. Let's go! Let's say I want to:
 
@@ -62,7 +62,7 @@ REPLACE except:LoserField func:my_special_function
 ## Python Examples
 
 If you want to use the expanders in your code, that's easy too! Here
-are the same examples. Let's first start with reading in a dicom file, 
+are the same examples. Let's first start with reading in a dicom file,
 such as one of the dicom-cookies examples provided with deid.
 
 <a id="data">
@@ -87,7 +87,7 @@ Let's get those cookies!
 
 ```python
 base = get_dataset('dicom-cookies')
-dicom_files = list(get_files(base)) 
+dicom_files = list(get_files(base))
 ```
 
 `dicom_files` is a list of the complete paths for 7 dicom cookie examples.
@@ -111,8 +111,8 @@ from deid.dicom.fields import expand_field_expression
 ```
 
 None of the actions (BLANK, JITTER, etc.) are relevant here; we just want to get back the list of
-fields that meet some criteria.  Given an action, these fields would be 
-passed on to the next step in deid to handle the action. 
+fields that meet some criteria.  Given an action, these fields would be
+passed on to the next step in deid to handle the action.
 You could also use this function to interactively explore the header data, or another purpose.
 
 <a id="select-all-fields-that-end-with-name">
@@ -263,7 +263,7 @@ def pusheenize(item, value, field, dicom):
     return value
 ```
 
-To not forget that we are showing examples with expand_field_expression, this quick 
+To not forget that we are showing examples with expand_field_expression, this quick
 snippet simple shows that the list of field names is the entire
 set included with the dicom.
 
@@ -282,16 +282,16 @@ for item in items:
     items[item]['pusheenize'] = pusheenize
 ```
 
-<a id="replace-identifers">
+<a id="replace-identifiers">
 ### 3. Replace Identifiers
 given that our function is in the python working environment, we would
 have extracted identifiers like this. We don't want to save them
-so we set save to False. If we set save to True, they would be saved to a temporary directory. 
+so we set save to False. If we set save to True, they would be saved to a temporary directory.
 
 ```python
 from deid.dicom import replace_identifiers
 cleaned_files = replace_identifiers(dicom_files=dicom_files,
-                                    deid=recipe, 
+                                    deid=recipe,
                                     save=False,
                                     ids=items)
 ```
@@ -300,7 +300,7 @@ Let's look at the first cleaned dicom. Is it pusheenized?
 
 ```python
 In [78]: cleaned_files[0]
-Out[78]: 
+Out[78]:
 (0008, 0005) Specific Character Set              CS: 'ISO_IR 100'
 (0008, 0016) SOP Class UID                       UI: Secondary Capture Image Storage
 (0008, 0018) SOP Instance UID                    UI: 1.2.276.0.7230010.3.1.4.8323329.5323.1495927169.335276

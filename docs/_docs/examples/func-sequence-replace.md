@@ -4,7 +4,7 @@ category: Examples
 order: 4
 ---
 
-The code and files for this example can be found [here](https://github.com/pydicom/deid/tree/master/examples/dicom/header-manipulation/func-sequence-replace/). 
+The code and files for this example can be found [here](https://github.com/pydicom/deid/tree/master/examples/dicom/header-manipulation/func-sequence-replace/).
 For this example, we want to replace values that are nested (in sequences).
 This operation is available for deid versions 0.1.34 and later, and currently
 we support `REPLACE`, and `BLANK`.
@@ -27,7 +27,7 @@ dicom_files = ['MR.dcm']
 items = get_identifiers(dicom_files)
 ```
 
-For each item (indexed by the dicom file name), sequences 
+For each item (indexed by the dicom file name), sequences
 are flattened out in the data structure. For example:
 
 ```python
@@ -40,8 +40,8 @@ are flattened out in the data structure. For example:
  'ReferencedPerformedProcedureStepSequence__ReferencedSOPInstanceUID': 'xxxxxxxx',
 ```
 
-The function we will use for the example will perform an action to generate a uid, 
-but you can also use it to communicate with databases, APIs, or do something like 
+The function we will use for the example will perform an action to generate a uid,
+but you can also use it to communicate with databases, APIs, or do something like
 save the original (and newly generated one) in some (IRB approvied) place
 
 <a id="the-deid-recipe">
@@ -98,8 +98,8 @@ recipe.get_actions(field='InstanceCreationDate')
 recipe.get_actions(field='PatientID', action="REMOVE")
 ```
 
-Our recipe instance is ready to go. From the above we are saying we want to replace the 
-`InstanceCreationDate` field with the output from the generate_uid function, 
+Our recipe instance is ready to go. From the above we are saying we want to replace the
+`InstanceCreationDate` field with the output from the generate_uid function,
 which is expected in the item dict. Let's write that next.
 
 <a id="write-your-function">
@@ -150,8 +150,8 @@ def generate_uid(item, value, field, dicom):
     return prefix + "-" + sliced_uid
 ```
 
-As stated in the docstring, you can expect it to be passed the dictionary of 
-items extracted from the dicom (and your function) and variables, the 
+As stated in the docstring, you can expect it to be passed the dictionary of
+items extracted from the dicom (and your function) and variables, the
 original value (func:generate_uid) and the field name you are applying it to.
 
 <a id="development-tip">
@@ -176,18 +176,18 @@ interactive session and have all the variables available to you for inspection.
 For example:
 
 ```python
-item                                                                                                                    
+item
 # {'(0008, 0005)': (0008, 0005) Specific Character Set              CS: 'ISO_IR 100'  [SpecificCharacterSet],
 # ...
 # 'generate_uid': <function __main__.generate_uid(item, value, field, dicom)>}
 
-value                                                                                                                  
+value
 # 'func:generate_uid'
 
-field                                                                                                                  
+field
 # (0020, 000d) Study Instance UID                  UI: 1.2.276.0.7230010.3.1.2.8323329.5329.1495927169.580350  [StudyInstanceUID]
 
-dicom                                                                                                                  
+dicom
 # (0008, 0005) Specific Character Set              CS: 'ISO_IR 100'
 ...
 ```
@@ -198,7 +198,7 @@ on how it is used internally, so you should always check.
 <a id="update-your-items">
 ## Update Your Items
 
-How do we update the items? Remember, the action is: 
+How do we update the items? Remember, the action is:
 
 ```
 REPLACE InstanceCreationDate func:generate_uid
@@ -213,7 +213,7 @@ for item in items:
 
 <a id="replace-identifiers">
 ## Replace identifiers
-We are ready to go! Now let's generate the cleaned files! It will output to a 
+We are ready to go! Now let's generate the cleaned files! It will output to a
 temporary directory. Since we want to replace nested sequences, we need to
 set `strip_sequences` to False.
 
