@@ -4,10 +4,10 @@ category: Getting Started
 order: 6
 ---
 
-At this point, you've possibly obtained identifiers via a [get]({{ site.baseurl }}/getting-started/dicom-get) 
-action, and you want to figure out which of your images have pixels burned 
-into the data. If you don't want the detalis, jump into our 
-[example script](https://github.com/pydicom/deid/blob/master/examples/dicom/pixels/run-cleaner-client.py). 
+At this point, you've possibly obtained identifiers via a [get]({{ site.baseurl }}/getting-started/dicom-get)
+action, and you want to figure out which of your images have pixels burned
+into the data. If you don't want the detalis, jump into our
+[example script](https://github.com/pydicom/deid/blob/master/examples/dicom/pixels/run-cleaner-client.py).
 Here we will walk through how this cleaner was derived, and how it works.
 
  - [Data](#data)
@@ -32,17 +32,17 @@ $ pip install deid-data
 <a id="inspiration-from-ctp">
 ## Inspiration from CTP
 
-Flagging images with potentially having burned in PHI is based on a well established 
-rule-based approach. We know a concrete list of header fields and known locations 
+Flagging images with potentially having burned in PHI is based on a well established
+rule-based approach. We know a concrete list of header fields and known locations
 with PHI associated with fields in the header, and we can check these fields in any
-files and then perform cleaning if there is a match. This approach is based on the 
-MIRCTP functions to [filter DICOM](http://mircwiki.rsna.org/index.php?title=The_CTP_DICOM_Filter) 
-and then [Anonymize](http://mircwiki.rsna.org/index.php?title=The_CTP_DICOM_Pixel_Anonymizer). 
-The  [DicomPixelAnonymizer.script](https://github.com/johnperry/CTP/blob/master/source/files/scripts/DicomPixelAnonymizer.script) 
-is a rule based list of known machine and modality types, and specific locations 
-in the pixels where annotations are commonly found. The 
-[BurnedInPixels.script](https://github.com/johnperry/CTP/blob/master/source/files/scripts/BurnedInPixelsFilter.script) 
-is a set of filters that, given that an image passes through them, it continues processing. 
+files and then perform cleaning if there is a match. This approach is based on the
+MIRCTP functions to [filter DICOM](http://mircwiki.rsna.org/index.php?title=The_CTP_DICOM_Filter)
+and then [Anonymize](http://mircwiki.rsna.org/index.php?title=The_CTP_DICOM_Pixel_Anonymizer).
+The  [DicomPixelAnonymizer.script](https://github.com/johnperry/CTP/blob/master/source/files/scripts/DicomPixelAnonymizer.script)
+is a rule based list of known machine and modality types, and specific locations
+in the pixels where annotations are commonly found. The
+[BurnedInPixels.script](https://github.com/johnperry/CTP/blob/master/source/files/scripts/BurnedInPixelsFilter.script)
+is a set of filters that, given that an image passes through them, it continues processing.
 If it fails, then we flag it. If we look at the script above, we see the following:
 
 ```
@@ -56,35 +56,35 @@ If it fails, then we flag it. If we look at the script above, we see the followi
     # ![0028,0301].contains("YES")      BurnedInAnnotation is not YES
 ```
 
-and I've provided a "human friendly" translation of the rules. The `!` operator indicates a `not`, 
-and the `*` indicates `and`. You can imagine an image passing through those tests, and if it 
-makes it all the way through, it's considered ok. If any of the tests fail, then it 
-gets flagged for PHI (Burned Annotations) and is quarantined. Thus, we can read 
+and I've provided a "human friendly" translation of the rules. The `!` operator indicates a `not`,
+and the `*` indicates `and`. You can imagine an image passing through those tests, and if it
+makes it all the way through, it's considered ok. If any of the tests fail, then it
+gets flagged for PHI (Burned Annotations) and is quarantined. Thus, we can read
 through the dicom fields and summarize the above as:
 
 We continue processing given that:
  - Image was not saved with some secondary software or device
  - Image is not flagged to have burned pixels
 
-If we look at the [DicomPixelAnonymizer.script](https://github.com/johnperry/CTP/blob/master/source/files/scripts/DicomPixelAnonymizer.script), 
-it also contains criteria (and additionally, locations) for pixel areas that are known/likely 
+If we look at the [DicomPixelAnonymizer.script](https://github.com/johnperry/CTP/blob/master/source/files/scripts/DicomPixelAnonymizer.script),
+it also contains criteria (and additionally, locations) for pixel areas that are known/likely
 to have annotations. The general format looks like this:
 
-```
+```console
 { signature }
 (region) (region) ... (region)
 ```
-and the signature looks similar to an expression used in the `BurnedInPixels.script`, 
+and the signature looks similar to an expression used in the `BurnedInPixels.script`,
 but the difference is that groups of logic are then paired with one or more regions:
 
-```
-{ Modality.equals("CT") 
-    * Manufacturer.containsIgnoreCase("manufacturer1") 
+```console
+{ Modality.equals("CT")
+    * Manufacturer.containsIgnoreCase("manufacturer1")
         * ManufacturerModelName.containsIgnoreCase("modelA") }
 (0,0,100,20) (480,200,32,250)
 ```
 
-The expression above would say: 
+The expression above would say:
 
 The pixels with bounding boxes (0,0,100,20) and (480,200,32,250) should be removed if:
    - the modality is CT AND
@@ -92,32 +92,32 @@ The pixels with bounding boxes (0,0,100,20) and (480,200,32,250) should be remov
    - the Manufacturer model name text contains "modelA" (and ignore the case)
 
 
-I'm not entirely sure why these two are separate (as both seem to indicate a flag 
-for an image having PHI) but likely it's because the first group (`BurnedInPixels.script`) 
-indicates header fields that are likely to indicate annotation, but don't 
-carry any obvious mapping to a location. We can think of both as a set of filters, 
-some with a clear location, and others not. TLDR: the second file (`DicomPixelAnonymizer.script`) 
+I'm not entirely sure why these two are separate (as both seem to indicate a flag
+for an image having PHI) but likely it's because the first group (`BurnedInPixels.script`)
+indicates header fields that are likely to indicate annotation, but don't
+carry any obvious mapping to a location. We can think of both as a set of filters,
+some with a clear location, and others not. TLDR: the second file (`DicomPixelAnonymizer.script`)
 has both header fields and locations.
 
 <a id="deid-implementation">
 ## Deid Implementation
 
-We have a set of pixel functions that mirror the functionality of MIRCTP, 
-and we take a similar approach of deriving the rules for this process from a 
+We have a set of pixel functions that mirror the functionality of MIRCTP,
+and we take a similar approach of deriving the rules for this process from a
 deid recipe. Our implementeation of a [DicomCleaner](https://github.com/pydicom/deid/blob/master/deid/dicom/pixels/clean.py#L35) generally works as follows:
 
  1. The user initializes a [Recipe](recipe.md) to configure detecting images with PHI (and possibly cleaning). The recipe has two parts - a set of filters to run over the headers to estimate if an image has burned in pixels (a section that starts with `%filter`), and a list of header cleaning rules (`%header`).
  2. The recipe is used to categorize the images into groups based on the defined lists, or to clean the data.
  3. The user selects some subset of images to continue forward with replacement of identifiers.
 
-To jump right in to using the Dicom Cleaner, see our [example script](https://github.com/pydicom/deid/blob/master/examples/dicom/pixels/run-cleaner-client.py). 
+To jump right in to using the Dicom Cleaner, see our [example script](https://github.com/pydicom/deid/blob/master/examples/dicom/pixels/run-cleaner-client.py).
 We will walk through the basics here.
 
 We start by importing the class
 
 
 ```python
-from deid.dicom import DicomCleaner, get_files 
+from deid.dicom import DicomCleaner, get_files
 from deid.data import get_dataset
 ```
 
@@ -149,8 +149,13 @@ The basic steps we will take are the following:
 
 ### Coordinates from Fields
 
+Deid has two ways of representing coordinates:
+
+ - The [ctp standard](https://mircwiki.rsna.org/index.php?title=The_CTP_DICOM_Pixel_Anonymizer) with `ctpcoordinate` or `ctpkeepcoordinate`
+ - Our coordinate standard (xmin, ymin, xmax, ymax) with `coordinate` or `keepcoordinate`
+
 By default, we use a list of rules provided by CTP and other users in [dicom.deid](https://github.com/pydicom/deid/blob/master/deid/data/deid.dicom), and these are based on finding known locations based on dicom header values.
-There are two operations we can apply to coordinates:
+With and without the `ctp` prefix to determine the coordinate convention used, there are two operations we can apply to coordinates:
 
  - `keepcoordinates` indicates a set of coordinates that you want to set the mask to a value of 1, to indicate keeping
  - `coordinates` indicates a set of coordinates that you want to set the mask to a value of 0, to indicate cleaning.
@@ -160,7 +165,7 @@ apply the list of rules provided by CTP and others in [dicom.deid](https://githu
 to add regions with 0s, indicating regions to be cleaned. For example, here is a rule to scrub a box of pixels
 based on finding a particular set of metadata:
 
-```
+```console
 LABEL LightSpeed Dose Report # (Susan Weber)
   contains ManufacturerModelName LightSpeed VCT
   + contains Modality CT
@@ -173,30 +178,30 @@ if there is a large region to remove, but then a smaller region inside of it to 
 You can do this with the `keepcoordinate` attribute, which might look the same as above
 but instead of `coordinates` you would have:
 
-```
+```console
   keepcoordinates 0,0,512,121
 ```
 
 In that the default mask is 1s (to indicate keep) this would only be meaningful if you've already
-provided a directive to clean some area including that region. 
+provided a directive to clean some area including that region.
 
 #### Custom Clean
 
 Let's say that you want to perform a cleaning action, but you don't have corresponding header fields
-to indicate it. In fact, you want to go further and extract the coordinates from a field in the image. 
+to indicate it. In fact, you want to go further and extract the coordinates from a field in the image.
 In this case you can use a smiliar snippet. In the example below, we take
  the coordinates defined based on the [SequenceOfUltrasoundRegions](http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.8.5.5.html#table_C.8-17) identifier, and tell deid to keep that region.
 
-```
+```console
 LABEL Clean Ultrasound
     present SequenceOfUltrasoundRegions
     keepcoordinates from:SequenceOfUltrasoundRegions
 ```
 
-And since the default value of the mask is all 1s, we need to start with the inverse, 
+And since the default value of the mask is all 1s, we need to start with the inverse,
 all zeros! We can do that as follows:
 
-```
+```console
 LABEL Blank Mask
     coordinates all
 
@@ -208,11 +213,11 @@ LABEL Clean Ultrasound
 In the above, we first tell deid to blank the entire mask (setting values of 0). We
 then ask to look for the dicom header `SequenceOfUltrasoundRegions`
 (it must be present), and given this condition, we look for coordinates
-from that field, and set then to a value of 1 (keep) in our mask. 
+from that field, and set then to a value of 1 (keep) in our mask.
 These actions is added to the provided deid.dicom.ultrasound recipe, a subset shown
 below:
 
-```
+```console
 FORMAT dicom
 
 %filter whitelist
@@ -259,7 +264,7 @@ and then run clean to perform the actions.
 client.clean()
 
 import os
-cleaner.save_dicom(output_folder=os.getcwd())                                                    
+cleaner.save_dicom(output_folder=os.getcwd())
 '/home/vanessa/Desktop/Code/deid/echo/cleaned-echo1.dcm'
 ```
 
@@ -286,9 +291,9 @@ client.detect(dicom_file)
 
 <a id="clean-and-save">
 ### Clean and Save
-After detection, the flags that were triggered are saved with the client, until 
-you override with another file. You can now run clean, and save the 
-images to a format that you like. Remember that even with flags, if there are no coordinates 
+After detection, the flags that were triggered are saved with the client, until
+you override with another file. You can now run clean, and save the
+images to a format that you like. Remember that even with flags, if there are no coordinates
 associated with the flag, no changes are done to the image.
 
 ```python
@@ -325,15 +330,15 @@ Generating animation...
 <a id="debugging">
 ### Debugging and Important Notes
 
-In a recent pull request we [encountered](https://github.com/pydicom/deid/pull/134) 
+In a recent pull request we [encountered](https://github.com/pydicom/deid/pull/134)
 an issue where a user had decompressed the data without changing the `dicom.PixelInterpretation`,
 which is a header that tells pydicom how to read the data. The suggested approach
-when you do `dicom.decompress()` is to set `dicom.PhotometricInterpreation = 'RGB'` 
+when you do `dicom.decompress()` is to set `dicom.PhotometricInterpretation = 'RGB'`
 after doing so:
 
 ```python
 dicom.decompress()
-dicom.PhotometricInterpreation = 'RGB'
+dicom.PhotometricInterpretation = 'RGB'
 ```
 
 If you see this warning message:
@@ -351,7 +356,7 @@ client.clean(fix_interpretation=False)
 ```
 
 Please [see the note](https://pydicom.github.io/pydicom/stable/old/image_data_handlers.html#usage)
-on the pydicom documentation for more details. Also, it would be useful to use machine 
+on the pydicom documentation for more details. Also, it would be useful to use machine
 learning to detect text. if you want to develop this or have ideas, please reach out.
 
 <a id="no-client">
@@ -370,7 +375,7 @@ dicom_file_data = pydicom.read_file(DICOM_FILE)
 
 burned_pixels_results = has_burned_pixels(dicom_file_data)
 cleaned_pixels = clean_pixel_data(
-    dicom_file=dicom_file_data, 
+    dicom_file=dicom_file_data,
     results=burned_pixels_results
 )
 

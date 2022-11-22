@@ -121,13 +121,13 @@ from Crypto.Hash import SHA512
 from datetime import datetime
 
 class DeidDataset:
-    """This class allows to pseudonymize an instance of 
+    """This class allows to pseudonymize an instance of
     pydicom.Dataset with our custom recipe and functions.
     """
     def __init__(self, secret_salt: str, recipe_path: str):
         """New instance of our pseudonymizer class.
 
-        :param secret_salt: a random string that makes the 
+        :param secret_salt: a random string that makes the
          hashing harder to break.
         :param recipe_path: path to our deid recipe.
         """
@@ -149,14 +149,14 @@ class DeidDataset:
         parser.parse(strip_sequences=True, remove_private=True)
         return parser.dicom
 
-    # All registered functions that are used in the recipe must 
+    # All registered functions that are used in the recipe must
     # receive the arguments: `item`, `value`, `field`, `dicom`
-    
+
     def deid_hash_func(self, item, value, field, dicom) -> str:
         """Performs self.hash to field.element.value"""
         val = field.element.value
         return self.hash(str(val))
-    
+
     @staticmethod
     def remove_day(item, value, field, dicom) -> str:
         """Removes the day from a DT field in the deid framework"""
@@ -179,7 +179,7 @@ class DeidDataset:
 
     def hash(self, msg: str) -> str:
         """
-        :param msg: message that we want to encrypt, 
+        :param msg: message that we want to encrypt,
          normally the PatientID or the StudyID.
         :return: the encrypted message as hexdigest
          (in characters from '0' to '9' and 'a' to 'f')
@@ -189,7 +189,7 @@ class DeidDataset:
         bytes_str = bytes(f"{self.secret_salt}{msg}", "utf-8")
         h.update(bytes_str)
         return str(h.hexdigest())
-    
+
 # Load the pydicom Dataset
 import json
 

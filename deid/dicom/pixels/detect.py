@@ -3,13 +3,9 @@ __copyright__ = "Copyright 2016-2022, Vanessa Sochat"
 __license__ = "MIT"
 
 
-"""
-detect.py: functions for pixel scrubbing
-"""
+from typing import List, Optional, Union
 
-from typing import Union, List, Optional
-
-from pydicom import read_file, FileDataset
+from pydicom import FileDataset, read_file
 from pydicom.sequence import Sequence
 
 from deid.config import DeidRecipe
@@ -20,7 +16,10 @@ from deid.logger import bot
 def has_burned_pixels(
     dicom_files, force: bool = True, deid: Optional[DeidRecipe] = None
 ):
-    """has burned pixels is an entrypoint for has_burned_pixels_multi (for
+    """
+    Determine if a dicom file has burned pixels.
+
+    has_burned_pixels is an entrypoint for has_burned_pixels_multi (for
     multiple images) or has_burned_pixels_single (for one detailed repor)
     We will use the MIRCTP criteria (see ref folder with the
     original scripts used by CTP) to determine if an image is likely to have
@@ -40,7 +39,10 @@ def has_burned_pixels(
 
 
 def _has_burned_pixels_multi(dicom_files: List[Union[str, FileDataset]], force, deid):
-    """return a summary dictionary with lists of clean, and then lookups
+    """
+    Determine if one or more dicom files have burned pixels.
+
+    return a summary dictionary with lists of clean, and then lookups
     for flagged images with reasons. The deid should be a deid recipe
     instantiated from deid.config.DeidRecipe. This function should not
     be called directly, but should be called from has_burned_pixels
@@ -65,7 +67,10 @@ def _has_burned_pixels_multi(dicom_files: List[Union[str, FileDataset]], force, 
 
 def _has_burned_pixels_single(dicom_file, force: bool, deid):
 
-    """has burned pixels single will evaluate one dicom file for burned in
+    """
+    Determine if a single dicom has burned pixels.
+
+    has burned pixels single will evaluate one dicom file for burned in
     pixels based on 'filter' criteria in a deid. If deid is not provided,
     will use application default. The method proceeds as follows:
 
@@ -207,7 +212,8 @@ def _has_burned_pixels_single(dicom_file, force: bool, deid):
 
 
 def evaluate_group(flags):
-    """evaluate group will take a list of flags (eg:
+    """
+    Evaluate group will take a list of flags (e.g.,
 
      [True, and, False, or, True]
 
@@ -242,7 +248,9 @@ def evaluate_group(flags):
 
 
 def extract_coordinates(dicom, field):
-    """Given a field that is provided for a dicom, extract coordinates"""
+    """
+    Given a field that is provided for a dicom, extract coordinates
+    """
     field = field.replace("from:", "", 1)
     coordinates = []
     if field not in dicom:

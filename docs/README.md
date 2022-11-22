@@ -2,7 +2,7 @@
 
 ![assets/img/logo.png](assets/img/logo.png)
 
-This is a documentation site for [deid](https://www.github.com/pydicom/deid). 
+This is a documentation site for [deid](https://www.github.com/pydicom/deid).
 It is part of the [pydicom](https://www.github.com/pydicom) family of tools.
 
 ## Setup

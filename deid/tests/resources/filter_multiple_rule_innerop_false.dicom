@@ -7,4 +7,4 @@ LABEL - To be tested with Cat.dcm.  Intended to NOT flag the image.
   + contains Manufacturer Agfa
 
 %header
-ADD PatientIdentityRemoved No 
+ADD PatientIdentityRemoved No

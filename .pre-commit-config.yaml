@@ -1,0 +1,31 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.3.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+
+  - repo: local
+    hooks:
+      - id: black
+        name: black
+        language: python
+        types: [python]
+        entry: black
+
+      - id: isort
+        name: isort
+        args: [--filter-files]
+        language: python
+        types: [python]
+        entry: isort
+
+      - id: flake8
+        name: flake8
+        language: python
+        types: [python]
+        entry: flake8

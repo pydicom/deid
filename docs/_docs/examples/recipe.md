@@ -4,20 +4,20 @@ category: Examples
 order: 2
 ---
 
-As we've discussed, the basic actions of using header filters to flag images, 
-and performing actions on headers (for replacement), are controlled by a text file called 
-a deid recipe. If you want a reminder about how to write this text file, 
-[read here]({{ site.baseurl }}/getting-started/dicom-config), and we hope to at some 
-point have an interactive way as well (let us know your feedback!). 
-The basic gist of the file is that we have different sections. 
+As we've discussed, the basic actions of using header filters to flag images,
+and performing actions on headers (for replacement), are controlled by a text file called
+a deid recipe. If you want a reminder about how to write this text file,
+[read here]({{ site.baseurl }}/getting-started/dicom-config), and we hope to at some
+point have an interactive way as well (let us know your feedback!).
+The basic gist of the file is that we have different sections.
 
  - In the `%header` section we have a list of actions to take on header fields
  - We can define groups, either field names `%fields` or values from fields `%values` to reference in header actions
  - In the `%filter` section we have lists of criteria to check image headers against, and given a match, we flag the image as belonging to the group.
 
-In this small tutorial, we will walk through the basic steps of loading a recipe, 
-interacting with it, and then using it to replace identifiers. If you want to 
-jump in, then go straight to the [script](https://github.com/pydicom/deid/blob/master/examples/dicom/recipe/deid-dicom-example.py) 
+In this small tutorial, we will walk through the basic steps of loading a recipe,
+interacting with it, and then using it to replace identifiers. If you want to
+jump in, then go straight to the [script](https://github.com/pydicom/deid/blob/master/examples/dicom/recipe/deid-dicom-example.py)
 that describes this example.
 
 <a id="data">
@@ -38,8 +38,8 @@ The following sections will describe creating and combining recipes.
 <a id="create-a-deidrecipe">
 ### Create a DeidRecipe
 
-We will start with how to work with a `DeidRecipe` object. If you aren't interested 
-in this use case or just want to use a provided deid recipe file, continue to the 
+We will start with how to work with a `DeidRecipe` object. If you aren't interested
+in this use case or just want to use a provided deid recipe file, continue to the
 next section.
 
 We start by importing the class, and instantiating it.
@@ -51,14 +51,14 @@ WARNING No specification, loading default base deid.dicom
 ```
 
 Since we didn't load a custom deid recipe text file, we get a default warning message that
-a default is being use. That default is a [dicom base](https://github.com/pydicom/deid/blob/master/deid/data/deid.dicom) 
+a default is being use. That default is a [dicom base](https://github.com/pydicom/deid/blob/master/deid/data/deid.dicom)
 provided by the library. If you want to see the raw data structure that is loaded, look here:
 
 ```
 recipe.deid
 ```
 
-You can also double check the recipe format. We currently only support dicom, 
+You can also double check the recipe format. We currently only support dicom,
 but this could in the future be other image formats (seriously, open an issue)!
 
 
@@ -67,9 +67,9 @@ recipe.get_format()
 # dicom
 ```
 
-Note that validation of this structure happens at load time. If something is 
-incorrectly labeled or formatted, you will get an error message and it will 
-fail to load. You can also provide your own deid recipe file, and in 
+Note that validation of this structure happens at load time. If something is
+incorrectly labeled or formatted, you will get an error message and it will
+fail to load. You can also provide your own deid recipe file, and in
 doing so, you won't load the default. Here is one from our examples folder
 
 
@@ -85,24 +85,24 @@ recipe = DeidRecipe(deid=deid_file)
 ```
 
 I would strongly recommended starting with an example, and building your custom
-recipe from it. If you have an example that you think others would find useful, 
+recipe from it. If you have an example that you think others would find useful,
 please contribute it to the repository in the examples folder.
 
 <a id="combine-recipes">
 ### Combine Recipes
 
-You can also choose to load the default base with your own recipe. In this action, 
-the two recipes are combined, with any conflict (an overlap in the second) being 
-given preference. For example, if the first deid you load removes a field and 
-the second adds the same field, the final result will have it added. 
-Keep this in mind and take care when combining recipes for this reason. 
+You can also choose to load the default base with your own recipe. In this action,
+the two recipes are combined, with any conflict (an overlap in the second) being
+given preference. For example, if the first deid you load removes a field and
+the second adds the same field, the final result will have it added.
+Keep this in mind and take care when combining recipes for this reason.
 Here is how it would look to load the default base *and* provide you custom file:
 
 ```
 recipe = DeidRecipe(deid=deid_file, base=True)
 ```
 
-You can also specify a different base entirely, and this would be equivalent to 
+You can also specify a different base entirely, and this would be equivalent to
 just providing a list of deid files:
 
 ```
@@ -110,8 +110,8 @@ recipe = DeidRecipe(deid=[deid_file1, deid_file2])
 recipe = DeidRecipe(deid=deid_file1, base=True, default_base=deid_file2)
 ```
 
-When we load bases, we are looking in the [data folder](https://github.com/pydicom/deid/tree/master/deid/data) 
-provided by the module. The base is the deid.<tag> in this folder. 
+When we load bases, we are looking in the [data folder](https://github.com/pydicom/deid/tree/master/deid/data)
+provided by the module. The base is the deid.<tag> in this folder.
 So for example, if we wanted to use `deid/data/deid.dicom.chest.xray` we would specify:
 
 ```
@@ -125,8 +125,8 @@ recipe = DeidRecipe(deid='dicom.xray.chest')
 recipe = DeidRecipe(deid='dicom.xray.chest', base=True)
 ```
 
-This data folder is to encourage sharing! It often is a lot of work to develop 
-a criteria specific for your group or interest. If you have a general recipe 
+This data folder is to encourage sharing! It often is a lot of work to develop
+a criteria specific for your group or interest. If you have a general recipe
 that others might use, please [contribute it](https://github.com/pydicom/deid/blob/master/CONTRIBUTING.md#pull-request-process).
 
 <a id="sections">
@@ -141,9 +141,9 @@ groups for lists of values or fields.
 The process of flagging images comes down to writing a set of filters to
 check if each image meets some criteria of interest. For example, I might
 create a filter called "xray" that is triggered when the Modality is CT or XR.
-The filters are found in the `%filter` sections of the deid recipe. 
+The filters are found in the `%filter` sections of the deid recipe.
 
-First, to get a complete dict of all filters (a dictionary with keys corresponding 
+First, to get a complete dict of all filters (a dictionary with keys corresponding
 to filter group names and values the filters themselves) we can do the following actions:
 
 ```python
@@ -162,12 +162,12 @@ recipe.get_filters('blacklist')
 A header action is a step (e.g., replace, remove, blank) to be applied to
 a dicom image header. The headers are also part of the deid recipe. You
 don't need to necessarily use header actions and filters at the same time, but since
-it's nice to keep things tidy for a single dataset using a shared file, we support 
-having them both represented in the same file. You could just as easily keep 
+it's nice to keep things tidy for a single dataset using a shared file, we support
+having them both represented in the same file. You could just as easily keep
 them in separate files to load separately - a DeidRecipe is not
 required to have header actions and/or filters.
 
-First, let's load the default deid recipe file (deid.dicom in the data folder) 
+First, let's load the default deid recipe file (deid.dicom in the data folder)
 that we know has a `%header` section.
 
 ```
@@ -205,11 +205,11 @@ recipe.get_actions(field='PatientID', action="REMOVE")
 #  [{'action': 'REMOVE', 'field': 'PatientID'}]
 
 # If you have lists of fields or values defined, you can retrieve them too
-recipe.get_fields_lists()                                                                                                              
+recipe.get_fields_lists()
 # OrderedDict([('instance_fields',
 #              [{'action': 'FIELD', 'field': 'contains:Instance'}])])
 
-recipe.get_values_lists()                                                                                                              
+recipe.get_values_lists()
 # OrderedDict([('cookie_names',
 #              [{'action': 'SPLIT',
 #                'field': 'PatientID',
@@ -217,7 +217,7 @@ recipe.get_values_lists()
 #             ('operator_names',
 #              [{'action': 'FIELD', 'field': 'startswith:Operator'}])])
 
-recipe.get_values_lists("cookie_names")                                                                                                
+recipe.get_values_lists("cookie_names")
 # [{'action': 'SPLIT', 'field': 'PatientID', 'value': 'by="^";minlength=4'}]
 ```
 
@@ -282,12 +282,12 @@ The above says that we are going to:
 
 We have 7 dicom cookie images we loaded above, so we have two options. We can
 either loop through the dictionary of ids and update values (in this case,
-adding values to be used as new variables) or we can make a new datastructure. 
+adding values to be used as new variables) or we can make a new datastructure.
 Let's be lazy and just update the extracted ones
 
 ```python
 updated_ids = dict(); count=0
-for image, fields in ids.items():    
+for image, fields in ids.items():
     fields['id'] = 'cookiemonster'
     fields['source_id'] = "cookiemonster-image-%s" %(count)
     updated_ids[image] = fields
@@ -348,7 +348,7 @@ cleaned_files = replace_identifiers(dicom_files=dicom_files,
 <a id="groups">
 ## Groups
 
-More advanced usage of header actions would be to define a group of values (the content of the 
+More advanced usage of header actions would be to define a group of values (the content of the
 header fields) or field names (the names themselves) to use in an action. This corresponds
 to `%fields` (a list of fields) and `%values` (a list of values from fields) to parse
 at the onset of the dicom load, and use later in a recipe. Here is how that might look

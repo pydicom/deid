@@ -2,10 +2,6 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2022, Vanessa Sochat"
 __license__ = "MIT"
 
-"""
-groups: functions to derive groups of fields or values
-"""
-
 
 from pydicom.multival import MultiValue
 

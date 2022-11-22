@@ -1,6 +1,6 @@
 {
-   "get": { 
-         
+   "get": {
+
          "skip": ["PixelData",
                   "RedPaletteColorLookupTableData",
                   "GreenPaletteColorLookupTableData",
@@ -20,7 +20,7 @@
 
    "put":{
 
-          "actions":[ 
+          "actions":[
               {"action":"KEEP","field":"PixelData"}
       ]
    }

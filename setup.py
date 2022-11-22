@@ -1,5 +1,6 @@
-from setuptools import setup, find_packages
 import os
+
+from setuptools import find_packages, setup
 
 
 def get_lookup():
@@ -94,6 +95,7 @@ setup(
     long_description_content_type="text/markdown",
     keywords=KEYWORDS,
     install_requires=INSTALL_REQUIRES,
+    python_requires=">=3.7",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
@@ -105,10 +107,7 @@ setup(
         "Operating System :: Unix",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.2",
-        "Programming Language :: Python :: 3.3",
-        "Programming Language :: Python :: 3.4",
-        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.7",
         "Topic :: Software Development",
         "Topic :: Scientific/Engineering",
         "Topic :: System :: Shells",

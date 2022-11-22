@@ -245,8 +245,8 @@ samp {
         transform:rotate(360deg);
     }
 }
-	
-#name { 
+
+#name {
     font-size: 46px;
     display: inline-block;
     vertical-align: middle;
@@ -254,7 +254,7 @@ samp {
     text-decoration: none !important;
     font-weight:400;
 }
-   
+
 #box { width: 450px;
 	border: solid black 2px;
 	text-align: justify;

@@ -7,10 +7,10 @@ order: 2
 To use the Docker container, you should first ensure that you have
  [installed Docker](https://www.docker.com/get-started) on your computer.
 
-For the container we will use, we currently provide a container hosted 
-at [pydicom/deid](http://hub.docker.com/r/pydicom/deid) that you can use to 
+For the container we will use, we currently provide a container hosted
+at [pydicom/deid](http://hub.docker.com/r/pydicom/deid) that you can use to
 quickly run deid without any installation of other dependencies
-or compiling on your host. 
+or compiling on your host.
 
 When you are ready, try running {{ site.title }} using it. This first command will
 access the deid executable:
@@ -28,6 +28,6 @@ It might also be desired to shell into the container and interact with deid
 via python:
 
 ```bash
-$ docker run -it --entrypoint bash {{ site.docker }} 
+$ docker run -it --entrypoint bash {{ site.docker }}
 (base) root@488f5e7f53a1:/code#
 ```

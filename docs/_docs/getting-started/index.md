@@ -7,7 +7,7 @@ order: 1
 
 Deid does two things: clean header and image data, and filter based on headers.
 These algorithms are not sophisticated - they perform their duties based on
-parsing header metadata. Here we will provide a simple walkthrough to get started 
+parsing header metadata. Here we will provide a simple walkthrough to get started
 with deid. In the following pages, we will show you how to load data,
 configure a custom recipe to deidentify and filter, and then clean pixels.
 

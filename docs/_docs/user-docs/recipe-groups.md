@@ -77,8 +77,8 @@ as follows:
 REPLACE fields:patient_info func:generate_uid
 ```
 
-And this reads nicely as "Replace fields defined in patient_info to be the variable 
-I'm defining with the function generate_uid (which should be added to each item 
+And this reads nicely as "Replace fields defined in patient_info to be the variable
+I'm defining with the function generate_uid (which should be added to each item
 after lookup).
 
 This of course means that the actions supported for the `%fields` section includes:
@@ -112,7 +112,7 @@ notice that the first line uses a new action `SPLIT`:
 SPLIT PatientsName splitval='^';minlength='4'
 ```
 
-This action says to start with the field `PatientsName`, split based on the `^` 
+This action says to start with the field `PatientsName`, split based on the `^`
 character, and keep results that have a length greater than or equal to 4.
 Let's talk about these actions in detail. Field is the same, but we also have split:
 
@@ -147,5 +147,5 @@ REMOVE ALL values:patient_info
 Or you could chose some other field name, or field expander, if you want to limit
 the removal to some subset.
 
-If you haven't yet, take a look at how at generate a basic [get]({{ site.baseurl }}/getting-started/dicom-get/), 
+If you haven't yet, take a look at how at generate a basic [get]({{ site.baseurl }}/getting-started/dicom-get/),
 which is will get a set of fields and values from your dicom files.

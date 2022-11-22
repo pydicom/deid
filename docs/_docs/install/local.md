@@ -5,7 +5,7 @@ order: 3
 ---
 
 
-Let's walk through how to install {{ site.title }} locally. 
+Let's walk through how to install {{ site.title }} locally.
 
 <a id="install-from-github">
 ## Install from Github

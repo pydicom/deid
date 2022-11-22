@@ -41,7 +41,7 @@ def parse_value(dicom, value, item=None, field=None, funcs=None):
             # There can be additional key=value pairs
             try:
                 value_option, extras = value_option.split(" ", 1)
-            except:
+            except Exception:
                 extras = ""
                 pass
 

@@ -1,10 +1,11 @@
-from walkdir import filtered_walk, file_paths
-import pydicom
+import csv
 import os
 import platform
-import csv
-from collections.abc import Sequence
 from collections import OrderedDict
+from collections.abc import Sequence
+
+import pydicom
+from walkdir import file_paths, filtered_walk
 
 
 def load_tags_in_files(tag_file_path):

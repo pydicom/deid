@@ -11,8 +11,8 @@ from pydicom import FileDataset
 
 from deid.logger import bot
 from deid.utils import recursive_find
-from .validate import validate_dicoms
 
+from .validate import validate_dicoms
 
 ################################################################################
 # Functions for Dicom files

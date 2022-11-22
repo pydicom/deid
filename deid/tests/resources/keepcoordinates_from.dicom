@@ -5,7 +5,7 @@ LABEL Clean Ultrasound Regions
   present SequenceOfUltrasoundRegions
   coordinates all
   keepcoordinates from:SequenceOfUltrasoundRegions
-  
+
 
 %header
-ADD PatientIdentityRemoved No 
+ADD PatientIdentityRemoved No

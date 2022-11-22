@@ -7,4 +7,4 @@ LABEL by SOPClassUID
   keepcoordinates 0,0,1024,1024
 
 %header
-ADD PatientIdentityRemoved No 
+ADD PatientIdentityRemoved No

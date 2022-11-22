@@ -13,7 +13,7 @@ To run these examples, you'll need to install external deid-data.
 $ pip install deid-data
 ```
 
-At this point, we have a bunch of dicom files, have written a recipe with 
+At this point, we have a bunch of dicom files, have written a recipe with
 actions, and want to run those actions across the files. The easiest way
 to do this is with the `DicomParser`
 
@@ -38,7 +38,7 @@ import os
 path = os.path.abspath("%s/../examples/deid/deid.dicom-groups" % get_installdir())
 ```
 
-Let's now import the DicomParser and 
+Let's now import the DicomParser and
 
 ```python
 from deid.dicom.parser import DicomParser
@@ -52,7 +52,7 @@ You can see that the dicom is loaded:
 
 ```python
 parser.dicom
-Out[32]: 
+Out[32]:
 (0008, 0005) Specific Character Set              CS: 'ISO_IR 100'
 (0008, 0016) SOP Class UID                       UI: Secondary Capture Image Storage
 (0008, 0018) SOP Instance UID                    UI: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
@@ -174,7 +174,7 @@ You would do the same thing for a named function. Where do these end up? In  a l
 held by the parser:
 
 ```python
-parser.lookup                                                                                                                                
+parser.lookup
 {'id': 'new-cookie-id', 'source_id': 'new-operator-id'}
 ```
 
@@ -183,7 +183,7 @@ So they will be available when you parse.
 ### 4. Parse Away!
 
 Now that we've defined the variables that we need, and we've loaded our recipe
-and dicom, let's perform the parse action! By default, sequences and private 
+and dicom, let's perform the parse action! By default, sequences and private
 tags are not removed (so they are included in parsing).
 
 ```python
@@ -287,7 +287,7 @@ And you could save your data to file.
 ```python
 parser.save("/tmp/mydicom.dcm")
 ```
-<a id="replace-identifers">
+<a id="replace-identifiers">
 ## Replace Identifiers
 
 If you want to do the above in bulk, you might find it easier to use the `replace_identifiers`
@@ -321,7 +321,7 @@ cleaned_files = replace_identifiers(dicom_files=dicom_files, save=True)
 You will notice that by default, the files are written to a temporary directory:
 
 ```python
-cleaned_files 
+cleaned_files
 ['/tmp/tmphvj05c6y/image4.dcm',
  '/tmp/tmphvj05c6y/image2.dcm',
  '/tmp/tmphvj05c6y/image7.dcm',
@@ -347,8 +347,8 @@ cleaned_files
  '/home/vanessa/Desktop/image5.dcm']
 ```
 
-One setting that is important is `overwrite`, which is by default set to False. 
-For example, let's say we decided to run the above again, using the same output 
+One setting that is important is `overwrite`, which is by default set to False.
+For example, let's say we decided to run the above again, using the same output
 directory of desktop (where the files already exist!)
 
 ```python
@@ -375,7 +375,7 @@ DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
 ERROR image5.dcm already exists, overwrite set to False. Not writing.
 ```
 
-The function gets angry at us, and returns the list of files that are already 
+The function gets angry at us, and returns the list of files that are already
 there. If you really want to force an overwrite, then you need to do this:
 
 
@@ -385,14 +385,14 @@ cleaned_files = replace_identifiers(dicom_files=dicom_files,
                                     overwrite=True)
 ```
 
-wherever you dump your new dicoms, it's up to you to decide how to then move 
+wherever you dump your new dicoms, it's up to you to decide how to then move
 and store them, and (likely) deal with the original data with identifiers.
 
 <a id="private-tags">
 ## Private Tags
 
 An important note is that by default, this function will keep private tags
- (`remove_private=False`). If you need to remove private tags 
+ (`remove_private=False`). If you need to remove private tags
 you would want to set this to True.
 
 
@@ -417,7 +417,7 @@ You could also do pixel scraping first, and then call the function
 <a id="getting-private-tags">
 ### Getting Private Tags
 
-If you are working within python and want to get private tags for inspection, 
+If you are working within python and want to get private tags for inspection,
 you can do that too! Let's first load some default data:
 
 

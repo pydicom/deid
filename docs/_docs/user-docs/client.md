@@ -11,10 +11,10 @@ $ which deid
 /home/vanessa/anaconda3/bin/deid
 ```
 
-**Note** @vsoch thinks this client could be better organized (with regard to 
+**Note** @vsoch thinks this client could be better organized (with regard to
 usage and commands) please [provide feedback]
-(https://www.github.com/pydicom/deid/issues) as you test these functions! 
-The primary use of deid by the developers group has 
+(https://www.github.com/pydicom/deid/issues) as you test these functions!
+The primary use of deid by the developers group has
 been via functions in Python, so the client might be neglected.
 
 <a id="usage">
@@ -29,20 +29,20 @@ usage: deid [-h] [--input FOLDER] [--version] [--print] [--format {dicom}]
 deid: error: the following arguments are required: --action/-a
 ```
 
-It's telling us that it wants an action, which can be one of `{get,put,all}`, 
-where "get" corresponds to getting identifiers from a dataset, "put" corresponds 
-to doing the replacement, and "all" means you want to do both at the same time 
-(meaning you won't intervene between the calls to customize any of the replacement 
-actions. Let's walk through the simplest use case, giving an action without 
-any other arguments, which will use the default dataset provided (a subset 
+It's telling us that it wants an action, which can be one of `{get,put,all}`,
+where "get" corresponds to getting identifiers from a dataset, "put" corresponds
+to doing the replacement, and "all" means you want to do both at the same time
+(meaning you won't intervene between the calls to customize any of the replacement
+actions. Let's walk through the simplest use case, giving an action without
+any other arguments, which will use the default dataset provided (a subset
 of [dicom-cookies](https://pydicom.github.io/dicom-cookies)).
 
 <a id="inspect">
 ### Inspect
 
-Currently, inspect is simply going to look at header fields and try to guess 
-if there are burned pixels in the image. I am not convinced this is robust - 
-the filters I am using are from [MIRC CTP](https://github.com/johnperry/CTP/blob/master/source/files/scripts/BurnedInPixelsFilter.script), 
+Currently, inspect is simply going to look at header fields and try to guess
+if there are burned pixels in the image. I am not convinced this is robust -
+the filters I am using are from [MIRC CTP](https://github.com/johnperry/CTP/blob/master/source/files/scripts/BurnedInPixelsFilter.script),
 and seem to generally look for:
 
  - if the field Burned Annotation is set to Yes
@@ -52,7 +52,7 @@ and seem to generally look for:
 To inspect a dataset, call the `--action` (or `-a`) command with `inspect`:
 
 ```bash
-deid --action inspect 
+deid --action inspect
 No input folder specified, will use demo dicom-cookies.
 DEBUG Found 7 contender files in dicom-cookies
 DEBUG Checking 7 dicom files for validation.
@@ -70,7 +70,7 @@ or specify your own dataset with `--input/-i`
 
 ```
 deid --action inspect -input /home/vanessa/Desktop/test/su/
-DEBUG Found 62 contender files in 
+DEBUG Found 62 contender files in
 DEBUG Checking 62 dicom files for validation.
 WARNING Cannot read input file /home/vanessa/Desktop/test/su/__index.xml, skipping.
 Found 61 valid dicom files
@@ -88,8 +88,8 @@ DEBUG FO-3565568840462998171.dcm header filter indicates pixels are clean.
 ```
 
 ### Get
-Let's specify `--action` as get. This means that we will use a demo dataset, 
-and the ids (a data structure saved in compressed python file called a "pickle")  
+Let's specify `--action` as get. This means that we will use a demo dataset,
+and the ids (a data structure saved in compressed python file called a "pickle")
 will be saved to a temporary directory.
 
 ```
@@ -123,15 +123,15 @@ DEBUG Found 27 defined fields for image5.dcm
 Writing ids to /tmp/tmpv3h9b11t/deid-ids.pkl
 ```
 
-Pickle was chosen because what appear as strings are actually data structures 
-that write nicely back into dicom (or other) files. It also is likely the case 
-that to save and tweak these identifiers, you will likely need to load them 
-programmatically anyway, and we are doing a good deed for the world to 
-encourage using Python :). 
+Pickle was chosen because what appear as strings are actually data structures
+that write nicely back into dicom (or other) files. It also is likely the case
+that to save and tweak these identifiers, you will likely need to load them
+programmatically anyway, and we are doing a good deed for the world to
+encourage using Python :).
 
 <a id="customize-message-level">
 #### Customize Message Level
-Also by default, we give you debug output. If you want to silence the output, 
+Also by default, we give you debug output. If you want to silence the output,
 then you can add `--quiet`:
 
 ```
@@ -143,8 +143,8 @@ GET and PUT identifiers from dicom-cookies
 Writing ids to /tmp/tmp6sywao9a/deid-ids.pkl
 ```
 
-Note that you are actually receiving the level `INFO`, because otherwise you might 
-not know where the file was saved. If you really want to tweak your level, 
+Note that you are actually receiving the level `INFO`, because otherwise you might
+not know where the file was saved. If you really want to tweak your level,
 then just export what you like in an environment variable, `MESSAGELEVEL`:
 
 ```bash
@@ -153,11 +153,11 @@ export MESSAGELEVEL
 deid --action get
 ```
 
-And nothing would be printed! 
+And nothing would be printed!
 
 <a id="customize-output">
 #### Customize Output
-If you just want to check output, it might be useful to print it to the screen. 
+If you just want to check output, it might be useful to print it to the screen.
 You can do this by adding the flag `--print`:
 
 
@@ -165,7 +165,7 @@ You can do this by adding the flag `--print`:
 $ deid --action get --print
 ```
 
-You will see a WHOLE bunch of output print to the screen! You could pipe this 
+You will see a WHOLE bunch of output print to the screen! You could pipe this
 output into a file, however be careful that this will not be proper json.
 
 ```
@@ -174,8 +174,8 @@ $ cat deid-ids.txt | more
 ```
 
 ### Put
-Put works in the same way, except you would also hand it your ids (the pickle) 
-file, in the case that you don't call get with put (via all). In case you changed 
+Put works in the same way, except you would also hand it your ids (the pickle)
+file, in the case that you don't call get with put (via all). In case you changed
 your message level to `QUIET`, change it back!
 
 ```bash
@@ -301,12 +301,12 @@ DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
 7 dicom files at /home/vanessa/Desktop
 ```
 
-and no error message occurs. 
+and no error message occurs.
 
 <a id="customize-deid-recipe">
 #### Customize Deid Recipe
-If you generate a configuration file (deid) that says how you want to deidentify 
-your data, then you can give that to get. Here is a simple one, discussed in 
+If you generate a configuration file (deid) that says how you want to deidentify
+your data, then you can give that to get. Here is a simple one, discussed in
 [config](config.md) and [available here](../examples/deid/deid.dicom) for our dicom cookies:
 
 ```bash
@@ -388,11 +388,11 @@ image2.dcm  image4.dcm  image6.dcm
 
 ```
 
-The reason because we get a lot of warnings is because I specified to replace 
-fields in the data with variables in the ids data structure, but I didn't 
-actually add them. In practice, this would mean they would be removed from the header.  
-We would have needed to load the pickle, add the identifiers, and then give the 
-ids datastructure to put.  Let's quickly see what that would look like 
+The reason because we get a lot of warnings is because I specified to replace
+fields in the data with variables in the ids data structure, but I didn't
+actually add them. In practice, this would mean they would be removed from the header.
+We would have needed to load the pickle, add the identifiers, and then give the
+ids datastructure to put.  Let's quickly see what that would look like
 (in python). First, load the identifiers we generated:
 
 ```python
@@ -407,8 +407,8 @@ ids = load_identifiers(idspkl)
 Loading /tmp/tmp3g0x8ts2/deid-ids.pkl
 ```
 
-Now, we need to define an "id" and "source_id" to substitute, here is a loop 
-to do that. At this point you would probably want to save whatever you need to 
+Now, we need to define an "id" and "source_id" to substitute, here is a loop
+to do that. At this point you would probably want to save whatever you need to
 your IRB approved database / protocol.
 
 ```python
@@ -427,7 +427,7 @@ ids = save_identifiers(ids)
 exit
 ```
 
-Now let's try again - since the fields are defined in the data, we shouldn't see 
+Now let's try again - since the fields are defined in the data, we shouldn't see
 the warning messages.
 
 ```python
@@ -525,8 +525,8 @@ DEBUG item id: 1.2.276.0.7230010.3.1.4.8323329.5329.1495927169.580351
 7 dicom files at /tmp/tmp12lwhq7x
 ```
 
-This will mean that the majority of things will be removed. You can still specify a 
-deid file to have additions, or blanks, but all variables must be present in the 
+This will mean that the majority of things will be removed. You can still specify a
+deid file to have additions, or blanks, but all variables must be present in the
 header already (eg, the fields returned in the ids that we had tweaked above) for it to work.
 
 <a id="your-own-folder">

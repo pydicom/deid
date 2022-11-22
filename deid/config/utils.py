@@ -135,7 +135,7 @@ def load_deid(path=None):
             parts = line.split(" ")
             if len(parts) > 1:
                 section_name = " ".join(parts[1:])
-            section = re.sub("[%]|(\s+)", "", parts[0]).lower()
+            section = re.sub("[%]|(\s+)", "", parts[0]).lower()  # noqa
             if section not in sections:
                 bot.exit("%s is not a valid section." % section)
 
@@ -225,7 +225,7 @@ def parse_format(line):
     ==========
     line: the line that starts with format.
     """
-    fmt = re.sub("FORMAT|(\s+)", "", line).lower()
+    fmt = re.sub("FORMAT|(\s+)", "", line).lower()  # noqa
     if fmt not in formats:
         bot.exit("%s is not a valid format." % fmt)
     bot.debug("FORMAT set to %s" % fmt)
@@ -258,9 +258,42 @@ def parse_filter_group(spec):
     return members
 
 
+def _derive_ctp_coordinate(raw):
+    """
+    Derive a ctp coordinate from a raw (comma separated) string.
+
+    A ctp coordinate is:
+    - the horizontal component of the left side
+    - the vertical component of the top
+    - the width
+    - the height
+
+    And we need to translate that into (xmin, ymin, xmax, ymax)
+    This largely means given that we have:
+      (--> (xmin), ^ (ymin), width, height)
+    This translates to (xmin, ymin, xmin+width, ymin+height)
+    Note that the first two values have no change, and the latter two are
+    derived by adding the width or height to the appropriate dimension.
+    """
+    # Cut out early if we have an "all" to indicate the entire image
+    if raw == "all":
+        return raw
+    new_coordinate = [int(x) for x in raw.split(",") if x]
+
+    # Cut out early for malformed coordinate
+    if len(new_coordinate) != 4:
+        bot.exit("Coordinates are expected to have length of 4, found %s" % raw)
+    xmin, ymin, width, height = new_coordinate
+    new_coordinate[2] = xmin + width
+    new_coordinate[3] = ymin + height
+
+    # Translate CTP coordinate to the convention we use
+    return ",".join([str(i) for i in new_coordinate])
+
+
 def parse_label(section, config, section_name, members, label=None):
-    """parse label will add a (optionally named) label to the filter
-    section, including one or more criteria
+    """
+    Add a named label to the filter section, including one or more criteria
 
     Parameters
     ==========
@@ -279,8 +312,22 @@ def parse_label(section, config, section_name, members, label=None):
     while len(members) > 0:
         member = members.pop(0).strip()
 
+        if member.lower().startswith("ctpcoordinates"):
+            coordinate = _derive_ctp_coordinate(
+                member.replace("ctpcoordinates", "").strip()
+            )
+            criteria["coordinates"].append([0, coordinate])
+            continue
+
+        elif member.lower().startswith("ctpkeepcoordinates"):
+            coordinate = _derive_ctp_coordinate(
+                member.replace("ctpkeepcoordinates", "").strip()
+            )
+            criteria["coordinates"].append([1, coordinate])
+            continue
+
         # We have a coordinate line (coordinates to remove, mask 0)
-        if member.lower().startswith("coordinates"):
+        elif member.lower().startswith("coordinates"):
             coordinate = member.replace("coordinates", "").strip()
             criteria["coordinates"].append([0, coordinate])
             continue
@@ -339,8 +386,8 @@ def parse_member(members, operator=None):
         member = members.pop(0).strip()
 
         # Find the first || or +
-        match_or = re.search("\|\|", member)
-        match_and = re.search("\+", member)
+        match_or = re.search("\|\|", member)  # noqa
+        match_and = re.search("\+", member)  # noqa
 
         if match_or is not None:
             operator = "||"

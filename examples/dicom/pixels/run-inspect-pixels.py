@@ -5,9 +5,10 @@
 # https://pydicom.github.io/deid
 
 
+from deid.data import get_dataset
+
 # This will get a set of example cookie dicoms
 from deid.dicom import get_files, has_burned_pixels
-from deid.data import get_dataset
 from deid.logger import bot
 
 bot.level = 3

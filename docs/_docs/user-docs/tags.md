@@ -4,7 +4,7 @@ category: User Documentation
 order: 7
 ---
 
-It is sometimes helpful to be able to find a particular tag. [Pydicom](https://www.github.com/pydicom/pydicom) 
+It is sometimes helpful to be able to find a particular tag. [Pydicom](https://www.github.com/pydicom/pydicom)
 has done a great job of providing a dictionary of tags:
 
 ```python
@@ -13,7 +13,7 @@ from pydicom._dicom_dict import DicomDictionary
 
 <a id="search-by-name">
 ## Search By Name
-and we extend that here to make it easy to find tags. For example, 
+and we extend that here to make it easy to find tags. For example,
 we can use a function to search based on name:
 
 ```python
@@ -36,9 +36,9 @@ find_tag('Modality', VR='CS')
 
 <a id="search-repeaters">
 ## Search Repeaters (Retired)
-If you want to search the set of Repeats (or tags I think pydicom doesn't use / calls retired). 
-Then set `retired=True`. For example, when I search for `Overlay Description` the normal 
-way I get nothing, but setting this flag returns the (old) value. This would be useful 
+If you want to search the set of Repeats (or tags I think pydicom doesn't use / calls retired).
+Then set `retired=True`. For example, when I search for `Overlay Description` the normal
+way I get nothing, but setting this flag returns the (old) value. This would be useful
 given that you need to look up a tag for an older dataset.
 
 ```python

@@ -2,7 +2,7 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2022, Vanessa Sochat"
 __license__ = "MIT"
 
-__version__ = "0.2.37"
+__version__ = "0.3.1"
 AUTHOR = "Vanessa Sochat"
 AUTHOR_EMAIL = "vsoch@users.noreply.github.com"
 NAME = "deid"
@@ -13,7 +13,7 @@ LICENSE = "LICENSE"
 
 INSTALL_REQUIRES = (
     ("matplotlib", {"min_version": None}),
-    ("numpy", {"min_version": None}),
-    ("pydicom", {"min_version": "2.1.1"}),
+    ("numpy", {"min_version": "1.20"}),
+    ("pydicom", {"min_version": "2.2.2"}),
     ("python-dateutil", {"min_version": None}),
 )

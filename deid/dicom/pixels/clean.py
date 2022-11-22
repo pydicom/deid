@@ -2,9 +2,6 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2022, Vanessa Sochat"
 __license__ = "MIT"
 
-"""
-clean.py: functions for pixel scrubbing
-"""
 
 import math
 import os
@@ -26,7 +23,7 @@ from deid.utils import get_temporary_name
 
 matplotlib.use("pdf")
 
-from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt  # noqa
 
 bot.level = 3
 
@@ -94,7 +91,9 @@ class DicomCleaner:
     ) -> Optional[NDArray]:
 
         if not self.results:
-            bot.warning("Use %s.detect() to find coordinates first." % self)
+            bot.warning(
+                "Use %s.detect() with a dicom file to find coordinates first." % self
+            )
             return
 
         bot.info("Scrubbing %s." % self.dicom_file)

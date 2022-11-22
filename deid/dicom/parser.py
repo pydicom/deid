@@ -32,6 +32,11 @@ class DicomParser:
     file. For each, we store the element and child elements
     """
 
+    """
+    list of fields to exclude from remove because they are replaced and jittered
+    """
+    _excluded_fields = None
+
     def __init__(
         self, dicom_file, recipe=None, config=None, force=True, disable_skip=False
     ):
@@ -280,6 +285,41 @@ class DicomParser:
             skips = self.config.get("get", {}).get("skip", {})
         return skips
 
+    @property
+    def keep(self):
+        """
+        Return a list of fields to keep original, as defined by all KEEP actions in recipe
+        Those fields are not impacted by REPLACE/JITTER actions
+        """
+        keeps = []
+        if self.recipe.deid is not None:
+            keeps = [
+                action.get("field")
+                for action in self.recipe.get_actions(action="KEEP")
+                if action and action.get("field")
+            ]
+        return keeps
+
+    @property
+    def excluded_from_deletion(self):
+        """
+        Return once-evaluated list of fields that are not removed by REMOVE ALL or REMOVE SomeField,
+        as they later have to be changed by REPLACE / JITTER
+        That allows whitelisting fields from REMOVE ALL/SomeField to change them if needed (i.e. obfuscation)
+        """
+        if self._excluded_fields is None:
+            self._excluded_fields = []
+            if self.recipe.deid is not None:
+                self._excluded_fields = [
+                    action.get("field")
+                    for action in (
+                        self.recipe.get_actions(action="JITTER")
+                        + self.recipe.get_actions(action="REPLACE")
+                    )
+                    if action and action.get("field")
+                ]
+        return self._excluded_fields
+
     def get_fields(self, expand_sequences=True):
         """expand all dicom fields into a list, where each entry is
         a DicomField. If we find a sequence, we unwrap it and
@@ -290,7 +330,7 @@ class DicomParser:
                 dicom=self.dicom,
                 expand_sequences=expand_sequences,
                 seen=self.seen,
-                skip=self.skip,
+                skip=self.skip + self.keep,
             )
         return self.fields
 
@@ -347,12 +387,12 @@ class DicomParser:
 
         Parameters
         ==========
-        fields: if provided, a filtered list of fields for expand
+        field: a field for expand
+        value: field value
         action: the action from the parsed deid to take
            "field" (eg, PatientID) the header field to process
            "action" (eg, REPLACE) what to do with the field
            "value": if needed, the field from the response to replace with
-        filemeta (bool) perform on filemeta
         """
         # Validate the action
         if action not in valid_actions:
@@ -364,7 +404,7 @@ class DicomParser:
             values = self.lookup.get(re.sub("^values:", "", field), [])
             fields = self.find_by_values(values=values)
 
-        # A fields list is used vertbatim
+        # A fields list is used verbatim
         # In expand_field_expression below, the stripped_tag is being passed in to field.  At this point,
         # expanders for %fields lists have already been processed and each of the contenders is an
         # identified, unique field.  It is important to use stripped_tag at this point instead of
@@ -509,7 +549,7 @@ class DicomParser:
 
             # If a value is defined, parse it (could be filter)
             do_removal = True
-            if value != None:
+            if value is not None:
                 do_removal = parse_value(
                     item=self.lookup,
                     dicom=self.dicom,
@@ -518,7 +558,7 @@ class DicomParser:
                     funcs=self.deid_funcs,
                 )
 
-            if do_removal is True:
+            if do_removal is True and field.name not in self.excluded_from_deletion:
                 self.delete_field(field)
 
     def remove_private(self):

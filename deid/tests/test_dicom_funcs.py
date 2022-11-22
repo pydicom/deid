@@ -4,9 +4,6 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2022, Vanessa Sochat"
 __license__ = "MIT"
 
-"""
-Testing deid provided functions
-"""
 
 import re
 import shutil

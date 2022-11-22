@@ -6,7 +6,7 @@ order: 1
 ---
 
 Along with the [getting started]({{ site.baseurl }}/getting-started/) guides,
-these pages will help you to use the deid software. 
+these pages will help you to use the deid software.
 
 ## Recipes
 
