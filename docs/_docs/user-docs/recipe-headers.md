@@ -296,7 +296,7 @@ field will interact with each other. In general the second action encountered on
         <td>JITTER #1 + JITTER #2<hr/><i><b>Actions Combined</b></i></td>
         <td>KEEP</td>
         <td>REPLACE</td>
-        <td>JITTER</td>
+        <td>JITTER<hr/><i><b>First Action Overrides Second</b></i></td>
     </tr>
     <tr>
         <th>KEEP</th>
