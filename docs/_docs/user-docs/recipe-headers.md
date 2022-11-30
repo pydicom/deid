@@ -251,6 +251,82 @@ The above would remove everything except for the pixel data, and a few fields
 that are relevant to its dimensions. It would add a field to indicate the
 patient's identity was removed.
 
+The table below shows the full details of how multiple actions defined on the same
+field will interact with each other. In general the second action encountered on a field will supercede the first, however there are a few cases in which the actions are combined or the first supercedes the second.
+
+<table>
+    <tr>
+        <th></th>
+        <th></th>
+        <th colspan=6>Second Action</th>
+    <tr>
+    <tr>
+        <th></th>
+        <th></th>
+        <th>ADD</th>
+        <th>BLANK</th>
+        <th>JITTER</th>
+        <th>KEEP</th>
+        <th>REPLACE</th>
+        <th>REMOVE</th>
+    <tr>
+    <tr>
+        <th rowspan=6>First Action</th>
+        <th>ADD</th>
+        <td>ADD #2</td>
+        <td>BLANK</td>
+        <td>ADD + JITTER<hr/><i><b>Actions Combined</b></i></td>
+        <td>ADD<hr/><i><b>First Action Overrides Second</b></i></td>
+        <td>REPLACE</td>
+        <td>REMOVE</td>
+    </tr>
+    <tr>
+        <th>BLANK</th>
+        <td>ADD</td>
+        <td>BLANK</td>
+        <td>BLANK<hr/><i><b>First Action Overrides Second</b></i></td>
+        <td>KEEP</td>
+        <td>REPLACE</td>
+        <td>REMOVE</td>
+    </tr>
+    <tr>
+        <th>JITTER</th>
+        <td>ADD</td>
+        <td>BLANK</td>
+        <td>JITTER #1 + JITTER #2<hr/><i><b>Actions Combined</b></i></td>
+        <td>KEEP</td>
+        <td>REPLACE</td>
+        <td>JITTER</td>
+    </tr>
+    <tr>
+        <th>KEEP</th>
+        <td>ADD</td>
+        <td>KEEP<hr/><i><b>First Action Overrides Second</b></i></td>
+        <td>KEEP<hr/><i><b>First Action Overrides Second</b></i></td>
+        <td>KEEP<hr/><i><b>First Action Overrides Second</b></i></td>
+        <td>KEEP<hr/><i><b>First Action Overrides Second</b></i></td>
+        <td>KEEP<hr/><i><b>First Action Overrides Second</b></i></td>
+    </tr>
+    <tr>
+        <th>REPLACE</th>
+        <td>ADD</td>
+        <td>BLANK</td>
+        <td>REPLACE + JITTER<hr/><i><b>Actions Combined</b></i></td>
+        <td>KEEP</td>
+        <td>REPLACE #2</td>
+        <td>REPLACE<hr/><i><b>First Action Overrides Second</b></i></td>
+    </tr>
+    <tr>
+        <th>REMOVE</th>
+        <td>ADD</td>
+        <td>REMOVE<hr/><i><b>First Action Overrides Second</b></i></td>
+        <td>JITTER</td>
+        <td>KEEP</td>
+        <td>REPLACE</td>
+        <td>REMOVE</td>
+    </tr>
+</table>
+
 <a id="jitter">
 ##### Jitter
 For jitter, you can add a hard coded number, or a variable to specify it:

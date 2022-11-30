@@ -167,7 +167,7 @@ class DicomParser:
 
         if return_parent:
             return parent, desired
-        return desired
+        return parent[desired]
 
     def delete_field(self, field):
         """
@@ -191,11 +191,11 @@ class DicomParser:
         # Assert we have a data element, and can blank a string
         if element:
             if not isinstance(element, DataElement):
-                bot.warning("Issue parsing %s as a DataElement, not blanked." % field)
-            elif element.VR in ["US", "SS"]:
-                element.value = ""
+                bot.warning(f"Issue parsing {field} as a DataElement, not blanked.")
+            elif element.VR in ["OB", "OD", "OF", "OW"]:
+                bot.warning(f"Unsupported VR for {field}, skipping blank.")
             else:
-                bot.warning("Unrecognized VR for %s, skipping blank." % field)
+                element.value = None
 
     def replace_field(self, field, value):
         """

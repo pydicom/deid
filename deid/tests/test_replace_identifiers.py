@@ -360,7 +360,7 @@ class TestDicom(unittest.TestCase):
             strip_sequences=False,
         )
         self.assertEqual(1, len(result))
-        self.assertEqual(157, len(result[0]))
+        self.assertEqual(161, len(result[0]))
         with self.assertRaises(KeyError):
             result[0]["ExposureTime"].value
         with self.assertRaises(KeyError):
@@ -522,7 +522,7 @@ class TestDicom(unittest.TestCase):
         self.assertTrue("(0009, 0010)" in parser.lookup["field_set2_private"])
         self.assertTrue("(0010, 0020)" in parser.lookup["field_set2_private"])
 
-        self.assertEqual(162, len(parser.dicom))
+        self.assertEqual(166, len(parser.dicom))
         self.assertEqual("SIEMENS CT VA0  COAD", parser.dicom["00190010"].value)
         with self.assertRaises(KeyError):
             parser.dicom["00090010"].value
@@ -628,7 +628,7 @@ class TestDicom(unittest.TestCase):
             disable_skip=True,
         )
         self.assertEqual(1, len(result))
-        self.assertEqual(139, len(result[0]))
+        self.assertEqual(143, len(result[0]))
         with self.assertRaises(KeyError):
             result[0]["00090010"].value
         with self.assertRaises(KeyError):
@@ -663,7 +663,7 @@ class TestDicom(unittest.TestCase):
         parser.define("contains_hibbard", contains_hibbard)
         parser.parse()
 
-        self.assertEqual(160, len(parser.dicom))
+        self.assertEqual(164, len(parser.dicom))
         with self.assertRaises(KeyError):
             parser.dicom["ReferringPhysicianName"].value
         with self.assertRaises(KeyError):
@@ -1021,7 +1021,7 @@ class TestDicom(unittest.TestCase):
             strip_sequences=True,
         )
         self.assertEqual(1, len(result))
-        self.assertEqual(156, len(result[0]))
+        self.assertEqual(160, len(result[0]))
         with self.assertRaises(KeyError):
             result[0]["00081110"].value
         for tag in result[0]:
@@ -1095,7 +1095,7 @@ class TestDicom(unittest.TestCase):
         )
 
         self.assertEqual(1, len(result))
-        self.assertEqual(155, len(result[0]))
+        self.assertEqual(159, len(result[0]))
         self.assertEqual("20230104", result[0]["StudyDate"].value)
 
     def test_addremove_compounding(self):
@@ -1126,7 +1126,7 @@ class TestDicom(unittest.TestCase):
         )
 
         self.assertEqual(1, len(result))
-        self.assertEqual(155, len(result[0]))
+        self.assertEqual(159, len(result[0]))
         with self.assertRaises(KeyError):
             result[0]["PatientIdentityRemoved"].value
 
@@ -1158,7 +1158,7 @@ class TestDicom(unittest.TestCase):
         )
 
         self.assertEqual(1, len(result))
-        self.assertEqual(155, len(result[0]))
+        self.assertEqual(159, len(result[0]))
         self.assertEqual("123456", result[0]["PatientID"].value)
 
     def test_valueset_empty_remove(self):
