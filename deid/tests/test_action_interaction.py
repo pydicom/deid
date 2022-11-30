@@ -1232,7 +1232,7 @@ class TestRuleInteractions(unittest.TestCase):
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
-    def test_replace_remove_should_be_removed(self):
+    def test_replace_remove_should_be_replace_value(self):
         """RECIPE RULE
         REPLACE StudyDate 20221128
         REMOVE StudyDate
@@ -1474,7 +1474,7 @@ class TestRuleInteractions(unittest.TestCase):
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
-    def test_remove_remove_should_be_original_value(self):
+    def test_remove_remove_should_remove(self):
         """This is a bit of a nonsensical test, but is included for completeness.
         RECIPE RULE
         REMOVE StudyDate
