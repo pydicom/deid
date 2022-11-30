@@ -256,13 +256,11 @@ field will interact with each other. In general the second action encountered on
 
 <table>
     <tr>
-        <th></th>
-        <th></th>
+        <th colspan=2></th>
         <th colspan=6>Second Action</th>
     <tr>
     <tr>
-        <th></th>
-        <th></th>
+        <th colspan=2></th>
         <th>ADD</th>
         <th>BLANK</th>
         <th>JITTER</th>
