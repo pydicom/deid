@@ -40,5 +40,5 @@ jobs:
         run: |
           export PATH="/usr/share/miniconda/bin:$PATH"
           source activate testing
-          pip install deid-data==0.0.17
+          pip install deid-data==0.0.18
           python -m unittest discover -s deid/tests/ -p '[t|T]est*.py'
