@@ -197,8 +197,6 @@ class DicomParser:
         if element:
             if not isinstance(element, DataElement):
                 bot.warning(f"Issue parsing {field} as a DataElement, not blanked.")
-            elif element.VR in ["OB", "OD", "OF", "OW"]:
-                bot.warning(f"Unsupported VR for {field}, skipping blank.")
             else:
                 element.value = None
 
