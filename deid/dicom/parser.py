@@ -167,7 +167,7 @@ class DicomParser:
 
         if return_parent:
             return parent, desired
-        return parent[desired]
+        return desired
 
     def delete_field(self, field):
         """
@@ -186,7 +186,12 @@ class DicomParser:
         """
         Blank a field
         """
-        element = self.get_nested_field(field)
+        tag = self.get_nested_field(field)
+        if tag in self.dicom:
+            element = self.dicom[tag]
+        else:
+            element = None
+            bot.warning(f"Field {field} not found in DICOM header.")
 
         # Assert we have a data element, and can blank a string
         if element:
