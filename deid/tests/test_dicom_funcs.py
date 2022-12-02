@@ -56,7 +56,7 @@ class TestDicomFuncs(unittest.TestCase):
         parser.define("myfunction", myfunction)
         parser.parse()
 
-        self.assertEqual(164, len(parser.dicom))
+        self.assertEqual(174, len(parser.dicom))
         with self.assertRaises(KeyError):
             parser.dicom["ReferringPhysicianName"].value
         with self.assertRaises(KeyError):
