@@ -31,78 +31,136 @@ class TestBlankAction(unittest.TestCase):
         shutil.rmtree(self.tmpdir)
         print("\n######################END########################")
 
-    def test_blank_VR(self):
-        """
-        Loops through all VR Types testing the blank action on a field of each VR.
-        """
+    def run_blank_test(self, VR, Field, Expected):
+        print(f"Test BLANK {VR}")
+        dicom_file = get_file(self.dataset)
 
-        fieldList = [
-            {"VR": "AE", "Field": "NetworkID", "Expected": ""},
-            {"VR": "AS", "Field": "PatientAge", "Expected": ""},
-            {"VR": "AT", "Field": "00110004", "Expected": None},
-            {"VR": "CS", "Field": "BodyPartExamined", "Expected": ""},
-            {"VR": "DA", "Field": "StudyDate", "Expected": ""},
-            {"VR": "DS", "Field": "PatientWeight", "Expected": None},
-            {"VR": "DT", "Field": "AcquisitionDateTime", "Expected": ""},
-            {"VR": "FD", "Field": "SingleCollimationWidth", "Expected": None},
-            {"VR": "FL", "Field": "CalciumScoringMassFactorDevice", "Expected": None},
-            {"VR": "IS", "Field": "Exposure", "Expected": None},
-            {"VR": "LO", "Field": "PatientID", "Expected": ""},
-            {"VR": "LT", "Field": "AdditionalPatientHistory", "Expected": ""},
-            {"VR": "OB", "Field": "00110011", "Expected": None},
-            {"VR": "OD", "Field": "00110012", "Expected": None},
-            {"VR": "OF", "Field": "00110013", "Expected": None},
-            {"VR": "OL", "Field": "00110014", "Expected": None},
-            {"VR": "OV", "Field": "00110015", "Expected": None},
-            {"VR": "OW", "Field": "00110016", "Expected": None},
-            {"VR": "PN", "Field": "ReferringPhysicianName", "Expected": ""},
-            {"VR": "SH", "Field": "AccessionNumber", "Expected": ""},
-            {"VR": "SL", "Field": "00110001", "Expected": None},
-            {"VR": "SQ", "Field": "ProcedureCodeSequence", "Expected": []},
-            {"VR": "SS", "Field": "00110002", "Expected": None},
-            {"VR": "ST", "Field": "InstitutionAddress", "Expected": ""},
-            {"VR": "SV", "Field": "00110007", "Expected": None},
-            {"VR": "TM", "Field": "StudyTime", "Expected": ""},
-            {"VR": "UC", "Field": "00110009", "Expected": ""},
-            {"VR": "UI", "Field": "FrameOfReferenceUID", "Expected": ""},
-            {"VR": "UL", "Field": "00311101", "Expected": None},
-            {"VR": "UN", "Field": "00110003", "Expected": None},
-            {"VR": "UR", "Field": "00110008", "Expected": ""},
-            {"VR": "US", "Field": "PregnancyStatus", "Expected": None},
-            {"VR": "UT", "Field": "00291022", "Expected": ""},
-            {"VR": "UV", "Field": "00110010", "Expected": None},
+        actions = [
+            {"action": "BLANK", "field": Field},
         ]
+        recipe = create_recipe(actions)
 
-        for field in fieldList:
-            currentfield = field["Field"]
-            currentVR = field["VR"]
-            currentExpected = field["Expected"]
+        inputfile = read_file(dicom_file)
+        currentValue = inputfile[Field].value
+        currentVR = inputfile[Field].VR
 
-            print(f"Test BLANK {currentVR}")
-            dicom_file = get_file(self.dataset)
+        self.assertNotEqual(None, currentValue)
+        self.assertNotEqual("", currentValue)
+        self.assertEqual(VR, currentVR)
 
-            actions = [
-                {"action": "BLANK", "field": currentfield},
-            ]
-            recipe = create_recipe(actions)
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+        )
 
-            inputfile = read_file(dicom_file)
-            currentValue = inputfile[currentfield].value
+        outputfile = read_file(result[0])
+        self.assertEqual(1, len(result))
+        self.assertEqual(Expected, outputfile[Field].value)
 
-            self.assertNotEqual(None, currentValue)
-            self.assertNotEqual("", currentValue)
+    def test_blank_AE(self):
+        self.run_blank_test("AE", "NetworkID", "")
 
-            result = replace_identifiers(
-                dicom_files=dicom_file,
-                deid=recipe,
-                save=True,
-                remove_private=False,
-                strip_sequences=False,
-            )
+    def test_blank_AS(self):
+        self.run_blank_test("AS", "PatientAge", "")
 
-            outputfile = read_file(result[0])
-            self.assertEqual(1, len(result))
-            self.assertEqual(currentExpected, outputfile[currentfield].value)
+    def test_blank_AT(self):
+        self.run_blank_test("AT", "00110004", None)
+
+    def test_blank_CS(self):
+        self.run_blank_test("CS", "BodyPartExamined", "")
+
+    def test_blank_DA(self):
+        self.run_blank_test("DA", "StudyDate", "")
+
+    def test_blank_DS(self):
+        self.run_blank_test("DS", "PatientWeight", None)
+
+    def test_blank_DT(self):
+        self.run_blank_test("DT", "AcquisitionDateTime", "")
+
+    def test_blank_FD(self):
+        self.run_blank_test("FD", "SingleCollimationWidth", None)
+
+    def test_blank_FL(self):
+        self.run_blank_test("FL", "CalciumScoringMassFactorDevice", None)
+
+    def test_blank_IS(self):
+        self.run_blank_test("IS", "Exposure", None)
+
+    def test_blank_LO(self):
+        self.run_blank_test("LO", "PatientID", "")
+
+    def test_blank_LT(self):
+        self.run_blank_test("LT", "AdditionalPatientHistory", "")
+
+    def test_blank_OB(self):
+        self.run_blank_test("OB", "00110011", None)
+
+    def test_blank_OD(self):
+        self.run_blank_test("OD", "00110012", None)
+
+    def test_blank_OF(self):
+        self.run_blank_test("OF", "00110013", None)
+
+    def test_blank_OL(self):
+        self.run_blank_test("OL", "00110014", None)
+
+    def test_blank_OV(self):
+        self.run_blank_test("OV", "00110016", None)
+
+    def test_blank_OW(self):
+        self.run_blank_test("OW", "00110015", None)
+
+    def test_blank_PN(self):
+        self.run_blank_test("PN", "ReferringPhysicianName", "")
+
+    def test_blank_SH(self):
+        self.run_blank_test("SH", "AccessionNumber", "")
+
+    def test_blank_SL(self):
+        self.run_blank_test("SL", "00110001", None)
+
+    def test_blank_SQ(self):
+        self.run_blank_test("SQ", "ProcedureCodeSequence", [])
+
+    def test_blank_SS(self):
+        self.run_blank_test("SS", "00110002", None)
+
+    def test_blank_ST(self):
+        self.run_blank_test("ST", "InstitutionAddress", "")
+
+    def test_blank_SV(self):
+        self.run_blank_test("SV", "00110007", None)
+
+    def test_blank_TM(self):
+        self.run_blank_test("TM", "StudyTime", "")
+
+    def test_blank_UC(self):
+        self.run_blank_test("UC", "00110009", "")
+
+    def test_blank_UI(self):
+        self.run_blank_test("UI", "FrameOfReferenceUID", "")
+
+    def test_blank_UL(self):
+        self.run_blank_test("UL", "00311101", None)
+
+    def test_blank_UN(self):
+        self.run_blank_test("UN", "00110003", None)
+
+    def test_blank_UR(self):
+        self.run_blank_test("UR", "00110008", "")
+
+    def test_blank_US(self):
+        self.run_blank_test("US", "PregnancyStatus", None)
+
+    def test_blank_UT(self):
+        self.run_blank_test("UT", "00291022", "")
+
+    def test_blank_UV(self):
+        self.run_blank_test("UV", "00110010", None)
 
 
 if __name__ == "__main__":
