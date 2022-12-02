@@ -4,10 +4,10 @@ __license__ = "MIT"
 
 import re
 from datetime import datetime, timedelta
-from deid.dicom.fields import DicomField
 
 import dateutil.parser
 
+from deid.dicom.fields import DicomField
 from deid.logger import bot
 
 
