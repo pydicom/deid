@@ -74,6 +74,7 @@ def parse_value(dicom, value, item=None, field=None, funcs=None):
     # Determine if the value is for an existing field.  If so,
     # the value must be converted to conform to the appropriate Python type.
     # Otherwise the field can remain as string and be auto-added as such.
+    existingField = False
     if isinstance(field, str) and dicom is not None and field in dicom:
         existingField = True
         fieldName = dicom[field].name
@@ -82,13 +83,8 @@ def parse_value(dicom, value, item=None, field=None, funcs=None):
         existingField = True
         fieldName = field.name
         fieldVR = field.element.VR
-    else:
-        existingField = False
 
-    if existingField:
-        return convert_value(fieldName, fieldVR, value)
-    else:
-        return value
+    return convert_value(fieldName, fieldVR, value) if existingField else value
 
 
 def parse_keyvalue_pairs(pairs):
@@ -196,5 +192,5 @@ def convert_value(field, VR, value):
                 f"Value ({value}) is not a valid value for VR {VR} field: {field}. Field will be BLANKED."
             )
             return None
-    else:
-        return value
+
+    return value
