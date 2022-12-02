@@ -68,7 +68,7 @@ def parse_value(dicom, value, item=None, field=None, funcs=None):
             # The field is an entire dicom element object
             return item[value_option](dicom=dicom, value=value, field=field, item=item)
         else:
-            bot.warning("%s is not a valid value type, skipping." % (value_type))
+            bot.warning(f"{value_type} is not a valid value type, skipping.")
             return None
 
     # Determine if the value is for an existing field.  If so,
