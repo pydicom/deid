@@ -7,7 +7,6 @@ from datetime import datetime, timedelta
 
 import dateutil.parser
 
-from deid.dicom.fields import DicomField
 from deid.logger import bot
 
 
@@ -19,6 +18,9 @@ def parse_value(dicom, value, item=None, field=None, funcs=None):
     1. the string (string or from function)
     2. a variable looked up (var:FieldName)
     """
+    # Prevent circular import
+    from deid.dicom.fields import DicomField
+
     # custom function lookup
     funcs = funcs or {}
 
