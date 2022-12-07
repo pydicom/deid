@@ -11,6 +11,7 @@ import tempfile
 import unittest
 
 from deid.data import get_dataset
+from deid.dicom import get_files
 from deid.dicom.parser import DicomParser
 from deid.tests.common import create_recipe, get_file, get_same_file
 from deid.utils import get_installdir
@@ -35,7 +36,7 @@ class TestDicomFuncs(unittest.TestCase):
         REMOVE ALL func:myfunction
         """
         print("Test user provided func")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         def myfunction(dicom, value, field, item):
             from pydicom.tag import Tag
