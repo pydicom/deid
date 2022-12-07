@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+- Circular import error [#247](https://github.com/pydicom/deid/issues/247) (0.3.21)
 - Expand BLANK Action to additional VRs [#241](https://github.com/pydicom/deid/issues/241) (0.3.2)
   - Correct issues with REPLACE action on numeric VRs [#244](https://github.com/pydicom/deid/issues/244)
   - Correct issue with actions on fields within sequences [#243](https://github.com/pydicom/deid/issues/243)
