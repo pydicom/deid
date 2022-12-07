@@ -118,16 +118,12 @@ class TestDicom(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        # Create a DicomParser to easily find fields
-        parser = DicomParser(dicom_file)
-        parser.parse()
+        inputfile = read_file(dicom_file)
+        field1 = inputfile[newfield1].value
+        field2 = inputfile[newfield2].value
 
-        # The first in the list is the highest level
-        field1 = list(parser.find_by_name(newfield1).values())[0]
-        field2 = list(parser.find_by_name(newfield2).values())[0]
-
-        self.assertNotEqual(newvalue1, field1.element.value)
-        self.assertNotEqual(newvalue2, field2.element.value)
+        self.assertNotEqual(newvalue1, field1)
+        self.assertNotEqual(newvalue2, field2)
 
         result = replace_identifiers(
             dicom_files=dicom_file,
