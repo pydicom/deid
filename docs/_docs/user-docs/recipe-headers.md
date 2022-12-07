@@ -254,7 +254,7 @@ patient's identity was removed.
 The table below shows the full details of how multiple actions defined on the same
 field will interact with each other. In general the second action encountered on a field will supercede the first, however there are a few cases in which the actions are combined or the first supercedes the second.
 
-![Action Interaction Grid](/assets/img/interaction-grid.png)
+![Action Interaction Grid](../../assets/img/interaction-grid.png)
 
 <a id="jitter">
 ##### Jitter
