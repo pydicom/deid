@@ -14,7 +14,9 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
-
+- Expand BLANK Action to additional VRs [#241](https://github.com/pydicom/deid/issues/241) (0.3.2)
+  - Correct issues with REPLACE action on numeric VRs [#244](https://github.com/pydicom/deid/issues/244)
+  - Correct issue with actions on fields within sequences [#243](https://github.com/pydicom/deid/issues/243)
 - pre-commit for linting and formatting (0.3.1)
 - Add `ctpcoordinates` and `ctpkeepcoordinates` to handle different formats (0.3.0)
   - Minimum Python required is 3.7, numpy 1.20

@@ -33,7 +33,7 @@ class TestDicom(unittest.TestCase):
         found = 0
         for dicom_file in get_files(self.dataset):
             found += 1
-        expected = 1
+        expected = 2
         self.assertEqual(found, expected)
 
         print("Case 2: Ask for files from empty folder")
@@ -50,7 +50,7 @@ class TestDicom(unittest.TestCase):
 
         dicom_files = list(get_files(self.dataset))
         found = len(dicom_files)
-        expected = 1
+        expected = 2
         self.assertEqual(found, expected)
 
         print("Case 2: Ask for files from empty folder")

@@ -160,8 +160,9 @@ class DicomParser:
             # Otherwise it's an index into a sequence
             else:
 
-                # If the parent has been removed, we can't continue
-                if not int(uid) in parent:
+                # If the sequence is outside the bounds of the array of items
+                # within the sequence, we can't continue.
+                if int(uid) < 0 or int(uid) >= len(parent.value):
                     return None, desired
                 parent = parent[int(uid)]
 
@@ -186,16 +187,10 @@ class DicomParser:
         """
         Blank a field
         """
-        element = self.get_nested_field(field)
-
-        # Assert we have a data element, and can blank a string
-        if element:
-            if not isinstance(element, DataElement):
-                bot.warning("Issue parsing %s as a DataElement, not blanked." % field)
-            elif element.VR in ["US", "SS"]:
-                element.value = ""
-            else:
-                bot.warning("Unrecognized VR for %s, skipping blank." % field)
+        # Returns the parent, and a DataElement (indexes into parent by tag)
+        parent, desired = self.get_nested_field(field, return_parent=True)
+        if parent and desired in parent:
+            parent[desired].value = None
 
     def replace_field(self, field, value):
         """
