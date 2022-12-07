@@ -14,9 +14,9 @@ from pydicom import read_file
 from pydicom.sequence import Sequence
 
 from deid.data import get_dataset
-from deid.dicom import get_identifiers, replace_identifiers
+from deid.dicom import get_files, get_identifiers, replace_identifiers
 from deid.dicom.parser import DicomParser
-from deid.tests.common import create_recipe, get_file
+from deid.tests.common import create_recipe
 from deid.utils import get_installdir
 
 global generate_uid
@@ -39,7 +39,7 @@ class TestDicom(unittest.TestCase):
         ADD 11112221 SIMPSON
         """
         print("Test add private tag constant value")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [{"action": "ADD", "field": "11112221", "value": "SIMPSON"}]
         recipe = create_recipe(actions)
@@ -59,7 +59,7 @@ class TestDicom(unittest.TestCase):
         ADD 11112221 SIMPSON
         """
         print("Test add private tag constant value")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [{"action": "ADD", "field": "11112221", "value": "SIMPSON"}]
         recipe = create_recipe(actions)
@@ -83,7 +83,7 @@ class TestDicom(unittest.TestCase):
         """
 
         print("Test add public tag constant value")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [{"action": "ADD", "field": "PatientIdentityRemoved", "value": "YES"}]
         recipe = create_recipe(actions)
@@ -105,7 +105,7 @@ class TestDicom(unittest.TestCase):
         """
 
         print("Test replace tags with constant values")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         newfield1 = "AccessionNumber"
         newvalue1 = "987654321"
@@ -144,7 +144,7 @@ class TestDicom(unittest.TestCase):
         """
 
         print("Test replace tags with constant values")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         newfield1 = "AcquisitionDate"
         newvalue1 = "20210330"
@@ -179,7 +179,7 @@ class TestDicom(unittest.TestCase):
         """
 
         print("Test remove of public and private tags")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         field1name = "InstitutionName"
         field2name = "00190010"
@@ -230,7 +230,7 @@ class TestDicom(unittest.TestCase):
         """
 
         print("Test add tag constant value from variable")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {"action": "ADD", "field": "11112221", "value": "var:myVar"},
@@ -260,7 +260,7 @@ class TestDicom(unittest.TestCase):
         """
 
         print("Test add tag constant value from variable")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {"action": "ADD", "field": "11112221", "value": "var:myVar"},
@@ -292,7 +292,7 @@ class TestDicom(unittest.TestCase):
         """
 
         print("Test date jitter")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [{"action": "JITTER", "field": "StudyDate", "value": "1"}]
         recipe = create_recipe(actions)
@@ -314,7 +314,7 @@ class TestDicom(unittest.TestCase):
         """
 
         print("Test timestamp jitter")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [{"action": "JITTER", "field": "AcquisitionDateTime", "value": "1"}]
         recipe = create_recipe(actions)
@@ -339,7 +339,7 @@ class TestDicom(unittest.TestCase):
         """
 
         print("Test contains, endswith, and startswith expanders")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {"action": "REMOVE", "field": "contains:Collimation"},
@@ -371,7 +371,7 @@ class TestDicom(unittest.TestCase):
         """
 
         print("Test except expander")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [{"action": "REMOVE", "field": "except:Manufacturer"}]
         recipe = create_recipe(actions)
@@ -405,7 +405,7 @@ class TestDicom(unittest.TestCase):
         """
 
         print("Test public tag fieldset")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [{"action": "REMOVE", "field": "fields:field_set1"}]
         fields = OrderedDict()
@@ -457,7 +457,7 @@ class TestDicom(unittest.TestCase):
         """
 
         print("Test public tag valueset")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [{"action": "REMOVE", "field": "values:value_set1"}]
         values = OrderedDict()
@@ -503,7 +503,7 @@ class TestDicom(unittest.TestCase):
         """
 
         print("Test private tag fieldset")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [{"action": "REMOVE", "field": "fields:field_set2_private"}]
         fields = OrderedDict()
@@ -535,7 +535,7 @@ class TestDicom(unittest.TestCase):
         """
 
         print("Test private tag valueset")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [{"action": "REMOVE", "field": "values:value_set2_private"}]
         values = OrderedDict()
@@ -564,7 +564,7 @@ class TestDicom(unittest.TestCase):
         REMOVE contains:0009
         """
         print("Test expanding tag by tag number part (matches group numbers only)")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [{"action": "REMOVE", "field": "contains:0009"}]
         recipe = create_recipe(actions)
@@ -584,7 +584,7 @@ class TestDicom(unittest.TestCase):
         Should remove:
         (0008, 103e) Series Description
         """
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
         actions = [{"action": "REMOVE", "field": "contains:8103"}]
         recipe = create_recipe(actions)
 
@@ -611,7 +611,7 @@ class TestDicom(unittest.TestCase):
         print(
             "Test expanding tag by tag number part (matches groups and element numbers)"
         )
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [{"action": "REMOVE", "field": "contains:0010"}]
         recipe = create_recipe(actions)
@@ -636,7 +636,7 @@ class TestDicom(unittest.TestCase):
         REMOVE ALL func:contains_hibbard
         """
         print("Test tag removal by")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         def contains_hibbard(dicom, value, field, item):
             from pydicom.tag import Tag
@@ -676,7 +676,7 @@ class TestDicom(unittest.TestCase):
         KEEP StudyDate
         ADD PatientIdentityRemoved Yes
         """
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {"action": "REMOVE", "field": "ALL"},
@@ -699,7 +699,7 @@ class TestDicom(unittest.TestCase):
         REMOVE ALL
         ADD PatientIdentityRemoved Yes
         """
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {"action": "REMOVE", "field": "except:Manufacturer"},
@@ -724,7 +724,7 @@ class TestDicom(unittest.TestCase):
         ADD PatientIdentityRemoved Yes
         ADD StudyDate 19700101
         """
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {"action": "REMOVE", "field": "ALL"},
@@ -747,7 +747,7 @@ class TestDicom(unittest.TestCase):
         ADD PatientIdentityRemoved Yes
         BLANK StudyDate
         """
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {"action": "REMOVE", "field": "ALL"},
@@ -771,7 +771,7 @@ class TestDicom(unittest.TestCase):
         BLANK StudyDate
         KEEP StudyDate
         """
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {"action": "ADD", "field": "PatientIdentityRemoved", "value": "Yes"},
@@ -795,7 +795,7 @@ class TestDicom(unittest.TestCase):
         ADD StudyDate 19700101
         ADD PatientIdentityRemoved Yes
         """
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {"action": "REMOVE", "field": "ALL"},
@@ -819,7 +819,7 @@ class TestDicom(unittest.TestCase):
         REPLACE StudyDate 19700101
         ADD PatientIdentityRemoved Yes
         """
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {"action": "REMOVE", "field": "ALL"},
@@ -842,7 +842,7 @@ class TestDicom(unittest.TestCase):
         JITTER StudyDate 1
         ADD PatientIdentityRemoved Yes
         """
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {"action": "REMOVE", "field": "ALL"},
@@ -866,7 +866,7 @@ class TestDicom(unittest.TestCase):
         REPLACE StudyDate 19700101
         ADD PatientIdentityRemoved Yes
         """
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {"action": "REMOVE", "field": "ALL"},
@@ -891,7 +891,7 @@ class TestDicom(unittest.TestCase):
         JITTER StudyDate 1
         ADD PatientIdentityRemoved Yes
         """
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {"action": "REMOVE", "field": "ALL"},
@@ -915,7 +915,7 @@ class TestDicom(unittest.TestCase):
         REPLACE StudyDate 19700101
         ADD PatientIdentityRemoved Yes
         """
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {"action": "REMOVE", "field": "StudyDate"},
@@ -938,7 +938,7 @@ class TestDicom(unittest.TestCase):
         JITTER StudyDate 1
         ADD PatientIdentityRemoved Yes
         """
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {"action": "REMOVE", "field": "StudyDate"},
@@ -961,7 +961,7 @@ class TestDicom(unittest.TestCase):
         KEEP StudyDate
         ADD PatientIdentityRemoved Yes
         """
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {"action": "REMOVE", "field": "StudyDate"},
@@ -982,7 +982,7 @@ class TestDicom(unittest.TestCase):
         %header
         REMOVE except:Manufacturer
         """
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {"action": "REMOVE", "field": "except:Manufacturer"},
@@ -1005,7 +1005,7 @@ class TestDicom(unittest.TestCase):
         ADD PatientIdentityRemoved YES
         """
         print("Test strip_sequences")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [{"action": "ADD", "field": "PatientIdentityRemoved", "value": "YES"}]
         recipe = create_recipe(actions)
@@ -1035,7 +1035,7 @@ class TestDicom(unittest.TestCase):
         REPLACE contains:StudyInstanceUID var:new_val
         """
         print("Test nested_replace")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {
@@ -1075,7 +1075,7 @@ class TestDicom(unittest.TestCase):
         JITTER StudyDate 2
         """
         print("Test jitter compounding")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {"action": "JITTER", "field": "StudyDate", "value": "1"},
@@ -1106,7 +1106,7 @@ class TestDicom(unittest.TestCase):
         REMOVE PatientIdentityRemoved
         """
         print("Test addremove compounding")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {"action": "ADD", "field": "PatientIdentityRemoved", "value": "YES"},
@@ -1138,7 +1138,7 @@ class TestDicom(unittest.TestCase):
         ADD StudyDate 20200805
         """
         print("Test remove/add compounding")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
 
         actions = [
             {"action": "REMOVE", "field": "PatientID"},
@@ -1171,7 +1171,7 @@ class TestDicom(unittest.TestCase):
         import pydicom
 
         print("Test empty value valueset")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
         original_dataset = pydicom.dcmread(dicom_file)
 
         actions = [{"action": "REMOVE", "field": "values:value_set1"}]
@@ -1212,7 +1212,7 @@ class TestDicom(unittest.TestCase):
         import pydicom
 
         print("Test one empty value valueset")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
         original_dataset = pydicom.dcmread(dicom_file)
 
         actions = [{"action": "REMOVE", "field": "values:value_set1"}]
@@ -1257,7 +1257,7 @@ class TestDicom(unittest.TestCase):
         import pydicom
 
         print("Test jitter from values list")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
         original_dataset = pydicom.dcmread(dicom_file)
 
         actions = [{"action": "JITTER", "field": "values:value_set1", "value": "1"}]
@@ -1300,7 +1300,7 @@ class TestDicom(unittest.TestCase):
         import pydicom
 
         print("Test jitter private tag")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
         original_dataset = pydicom.dcmread(dicom_file)
 
         actions = [{"action": "JITTER", "field": "00291019", "value": "1"}]
@@ -1329,7 +1329,7 @@ class TestDicom(unittest.TestCase):
         import pydicom
 
         print("Test jitter date field containing space")
-        dicom_file = get_file(self.dataset)
+        dicom_file = next(get_files(self.dataset, pattern="ctbrain1.dcm"))
         original_dataset = pydicom.dcmread(dicom_file)
 
         actions = [{"action": "JITTER", "field": "ContentDate", "value": "1"}]
