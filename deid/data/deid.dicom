@@ -770,7 +770,7 @@ LABEL Stanford Medical Center LightSpeed VCT # (Roger Goldman)
   + contains Modality CT
   + contains ManufacturerModelName GE|Stanford
   + contains SeriesDescription Dose || contains ImageType SCREEN SAVE
-  ctpcoordinates 0,0,512,121
+  coordinates 0,0,512,121
 
 LABEL Stanford Medical Center GE # (Roger Goldman)
   contains Manufacturer GE
