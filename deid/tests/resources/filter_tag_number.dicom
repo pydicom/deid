@@ -1,0 +1,9 @@
+FORMAT dicom
+
+%filter blacklist
+
+LABEL - To be tested with Cat.dcm.  Intended to NOT flag the image.
+  contains 0x00110003 Agfa
+
+%header
+ADD PatientIdentityRemoved No

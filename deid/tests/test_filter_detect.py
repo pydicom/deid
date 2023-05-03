@@ -47,6 +47,17 @@ class TestFilterDetect(unittest.TestCase):
         out = client.detect(dicom_file)
         self.assertTrue(out["flagged"])
 
+    def test_filter_tag_number(self):
+        """Test the DicomCleaner.detect to ensure numeric tag numbers can be used """
+        from deid.dicom import DicomCleaner
+
+        dicom_file = get_file(self.dataset)
+        deid = os.path.join(self.deidpath, "filter_tag_number.dicom")
+
+        client = DicomCleaner(output_folder=self.tmpdir, deid=deid)
+        out = client.detect(dicom_file)
+        self.assertTrue(out["flagged"])
+
     def test_filter_single_rule_innerop_false(self):
         """Test the DicomCleaner.detect to ensure a single rule with an inner operator evaluated to false detects appropriately."""
         from deid.dicom import DicomCleaner
