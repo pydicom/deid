@@ -32,7 +32,6 @@ def parse_value(dicom, value, item=None, field=None, funcs=None):
     if re.search("(^var:)|(^func:)|(^deid_func:)", value):
         value_type, value_option = value.split(":", 1)
         if value_type.lower() == "var":
-
             # If selected variable not provided, skip
             if value_option not in item:
                 return None
@@ -40,7 +39,6 @@ def parse_value(dicom, value, item=None, field=None, funcs=None):
 
         # The user wants to use a deid provided function
         elif value_type.lower() == "deid_func":
-
             # There can be additional key=value pairs
             try:
                 value_option, extras = value_option.split(" ", 1)
@@ -61,7 +59,6 @@ def parse_value(dicom, value, item=None, field=None, funcs=None):
 
         # The user is providing a specific function
         elif value_type.lower() == "func":
-
             if value_option not in item:
                 bot.warning("%s not found in item lookup." % (value_option))
                 return None

@@ -157,7 +157,6 @@ def extract_sequence(sequence, prefix=None):
     """
     items = {}
     for item in sequence:
-
         # If it's a Dataset, we need to further unwrap it
         if isinstance(item, Dataset):
             for subitem in item:
@@ -224,7 +223,6 @@ def expand_field_expression(field, dicom, contenders=None):
 
     # Loop through fields, all are strings STOPPED HERE NEED TO ADDRESS EMPTY NAME
     for uid, field in contenders.items():
-
         # Apply expander to string for name OR to tag string
         if expander.lower() in ["endswith", "startswith", "contains"]:
             if field.name_contains(expression):
@@ -270,7 +268,6 @@ def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
             seen.append(uid)
 
     while datasets:
-
         # Grab the first dataset, usually just the dicom
         dataset = datasets.pop(0)
 
@@ -281,7 +278,6 @@ def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
 
         # Includes private tags, sequences flattened, non-null values
         for contender in dataset:
-
             # All items should be data elements, skip based on keyword or tag
             if contender.keyword in skip or str(contender.tag) in skip:
                 continue
@@ -297,7 +293,6 @@ def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
 
             # if it's a sequence, extract with prefix and index
             if isinstance(contender.value, Sequence) and expand_sequences is True:
-
                 # Add the contender (usually type Dataset) to fields
                 add_element(contender, name, uid, is_filemeta)
 

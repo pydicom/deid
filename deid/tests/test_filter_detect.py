@@ -48,7 +48,7 @@ class TestFilterDetect(unittest.TestCase):
         self.assertTrue(out["flagged"])
 
     def test_filter_tag_number(self):
-        """Test the DicomCleaner.detect to ensure numeric tag numbers can be used """
+        """Test the DicomCleaner.detect to ensure numeric tag numbers can be used"""
         from deid.dicom import DicomCleaner
 
         dicom_file = get_file(self.dataset)

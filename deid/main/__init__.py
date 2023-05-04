@@ -163,7 +163,6 @@ def get_parser():
 
 
 def main():
-
     parser = get_parser()
     try:
         args = parser.parse_args()

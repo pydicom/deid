@@ -66,7 +66,6 @@ def _has_burned_pixels_multi(dicom_files: List[Union[str, FileDataset]], force, 
 
 
 def _has_burned_pixels_single(dicom_file, force: bool, deid):
-
     """
     Determine if a single dicom has burned pixels.
 
@@ -142,10 +141,8 @@ def _has_burned_pixels_single(dicom_file, force: bool, deid):
                 group_flags = []  # evaluation for a single line
                 group_descriptions = []
                 for group in item["filters"]:
-
                     # You cannot pop from the list
                     for a in range(len(group["action"])):
-
                         action = group["action"][a]
                         field = group["field"][a]
                         value = ""
@@ -268,14 +265,12 @@ def extract_coordinates(dicom, field):
 
     # Now extract coordinates
     for region in regions:
-
         if (
             "RegionLocationMinX0" in region
             and "RegionLocationMinY0" in region
             and "RegionLocationMaxX1" in region
             and "RegionLocationMaxY1" in region
         ):
-
             # https://gist.github.com/vsoch/df6957be12c34e62b21000603f1687e5
             # minr, minc, maxr, maxc = coordinate
             # self.cleaned[minc:maxc, minr:maxr] = 0  # should fill with black
