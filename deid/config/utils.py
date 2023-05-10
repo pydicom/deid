@@ -37,12 +37,10 @@ def load_combined_deid(deids):
     deid = None
 
     for single_deid in deids:
-
         # If not a tag or path, returns None
         next_deid = get_deid(tag=single_deid, exit_on_fail=False, quiet=True, load=True)
 
         if next_deid is not None:
-
             # Formats must match
             if found_format is None:
                 found_format = next_deid["format"]
@@ -57,7 +55,6 @@ def load_combined_deid(deids):
             if deid is None:
                 deid = next_deid
             else:
-
                 # Update filter, appending to end to give first preference
                 if "filter" in next_deid:
                     if "filter" not in deid:
@@ -112,7 +109,6 @@ def load_deid(path=None):
     section = None
 
     while spec:
-
         # Clean up white trailing/leading space
         line = spec.pop(0).strip()
 
@@ -126,7 +122,6 @@ def load_deid(path=None):
 
         # A new section?
         elif line.startswith("%"):
-
             # Remove any comments
             line = line.split("#", 1)[0].strip()
 
@@ -151,7 +146,6 @@ def load_deid(path=None):
 
         # An action (ADD, BLANK, JITTER, KEEP, REPLACE, REMOVE, LABEL)
         elif line.upper().startswith(actions):
-
             # Start of a filter group
             if line.upper().startswith("LABEL") and section == "filter":
                 members = parse_filter_group(spec)
@@ -355,7 +349,6 @@ def parse_label(section, config, section_name, members, label=None):
         if not member.lower().startswith(filters):
             bot.warning("%s filter is not valid, skipping." % member.lower())
         else:
-
             # Returns single member with field, values, operator,
             # Or if multiple or/and in statement, a list
             entry = parse_member(member, operator)
@@ -380,7 +373,6 @@ def parse_member(members, operator=None):
     members = [members]
 
     while len(members) > 0:
-
         operator = None
         value = None
         member = members.pop(0).strip()
@@ -399,7 +391,6 @@ def parse_member(members, operator=None):
                 operator = "+"
 
         if operator is not None:
-
             member, rest = member.split(operator, 1)
 
             # The rest is only valid if contains a filter statement
@@ -470,7 +461,6 @@ def add_section(config, section, section_name=None):
         bot.exit("%s is not a valid section." % section)
 
     if section not in config:
-
         # If a section is named, we have more one level (dict)
         if section_name is not None:
             config[section] = OrderedDict()
@@ -531,7 +521,6 @@ def parse_group_action(section, line, config, section_name):
 
     # Values supports FIELD or SPLIT
     elif section == "values":
-
         # If we have a third set of arguments
         if parts:
             value = _remove_comments(parts)

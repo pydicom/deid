@@ -311,7 +311,6 @@ def get_logging_level():
         level = int(os.environ.get("MESSAGELEVEL", DEBUG))
 
     except ValueError:
-
         level = os.environ.get("MESSAGELEVEL", DEBUG)
         if level == "CRITICAL":
             return FLAG

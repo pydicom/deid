@@ -150,7 +150,6 @@ class DicomParser:
 
                 # We keep going until we find the desired tag
                 if tag != desired:
-
                     # If the parent has been removed, we can't continue
                     if tag not in parent:
                         return None, desired
@@ -159,7 +158,6 @@ class DicomParser:
 
             # Otherwise it's an index into a sequence
             else:
-
                 # If the sequence is outside the bounds of the array of items
                 # within the sequence, we can't continue.
                 if int(uid) < 0 or int(uid) >= len(parent.value):
@@ -224,7 +222,6 @@ class DicomParser:
 
         # if we loaded a deid recipe
         if self.recipe.deid is not None:
-
             # Prepare additional lists of values and lookup fields (index by nested uid)
             if self.recipe.has_values_lists():
                 for group, actions in self.recipe.get_values_lists().items():
@@ -461,7 +458,6 @@ class DicomParser:
 
         # Assume we don't want to add an empty value
         if value is not None:
-
             # If provided a field object, create based on keyword or tag identifier
             name = field
             if isinstance(field, DicomField):
@@ -541,7 +537,6 @@ class DicomParser:
 
         # Remove the field entirely
         elif action == "REMOVE":
-
             # If a value is defined, parse it (could be filter)
             do_removal = True
             if value is not None:

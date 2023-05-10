@@ -26,7 +26,6 @@ class TestDeidRecipe(unittest.TestCase):
         print("\n######################END########################")
 
     def test_load_recipe(self):
-
         print("Case 1: Test loading default DeidRecipe")
 
         recipe = DeidRecipe()
@@ -42,7 +41,6 @@ class TestDeidRecipe(unittest.TestCase):
         recipe = DeidRecipe(self.deid)
 
     def test_get_functions(self):
-
         recipe = DeidRecipe(self.deid)
 
         # Format

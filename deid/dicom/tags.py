@@ -45,7 +45,6 @@ def get_tag(field):
     manifest = None
 
     if len(found) > 0:
-
         # (VR, VM, Name, Retired, Keyword
         found = found[0]  # shouldn't ever have length > 1
         tag = Tag(list(found)[0])

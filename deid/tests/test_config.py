@@ -43,7 +43,6 @@ class TestConfig(unittest.TestCase):
         config = load_deid(self.tmpdir)
 
     def test_find_deid(self):
-
         print("Testing finding deid file, referencing directly.")
         from deid.config.utils import find_deid
 

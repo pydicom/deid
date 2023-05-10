@@ -50,7 +50,6 @@ class DicomCleaner:
         font=None,
         force=True,
     ):
-
         if output_folder is None:
             output_folder = get_temporary_name(prefix="clean")
 
@@ -89,7 +88,6 @@ class DicomCleaner:
     def clean(
         self, fix_interpretation: bool = True, pixel_data_attribute: str = "PixelData"
     ) -> Optional[NDArray]:
-
         if not self.results:
             bot.warning(
                 "Use %s.detect() with a dicom file to find coordinates first." % self
@@ -312,10 +310,8 @@ def clean_pixel_data(
     coordinates = []
 
     for item in results["results"]:
-
         # We iterate through coordinates in order specified in file
         for coordinate_set in item.get("coordinates", []):
-
             # Each is a list with [value, coordinate]
             mask_value, new_coordinates = coordinate_set
 
@@ -323,10 +319,8 @@ def clean_pixel_data(
                 new_coordinates = [new_coordinates]
 
             for new_coordinate in new_coordinates:
-
                 # Case 1: an "all" indicates applying to entire image
                 if new_coordinate.lower() == "all":
-
                     # 2D - Greyscale Image - Shape = (X, Y) OR 3D - RGB Image - Shape = (X, Y, Channel)
                     if len(original.shape) == 2 or (
                         len(original.shape) == 3 and dicom.SamplesPerPixel == 3
@@ -375,7 +369,6 @@ def clean_pixel_data(
     # Now apply finished mask to the data
     # RGB cine clip
     if len(original.shape) == 4:
-
         # np.tile does the copying and stacking of masks into the channel dim to produce 3D masks
         # transposition to convert tile output (channel, X, Y)  into (X, Y, channel)
         # see: https://github.com/nquach/anonymize/blob/master/anonymize.py#L154
@@ -390,7 +383,6 @@ def clean_pixel_data(
 
     # RGB image or Greyscale cine clip
     elif len(original.shape) == 3:
-
         # This condition is ambiguous.  If the image shape is 3, we may have a single frame RGB image: size (X, Y, channel)
         # or a multiframe greyscale image: size (frames, X, Y).  Interrogate the SamplesPerPixel field.
         if dicom.SamplesPerPixel == 3:

@@ -64,7 +64,6 @@ class TestDicomUtils(unittest.TestCase):
         self.assertEqual(found, expected)
 
     def test_jitter_timestamp(self):
-
         from deid.dicom.actions import jitter_timestamp
         from deid.dicom.fields import DicomField
         from deid.dicom.tags import get_tag
