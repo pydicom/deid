@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 __author__ = "Vanessa Sochat"
-__copyright__ = "Copyright 2016-2022, Vanessa Sochat"
+__copyright__ = "Copyright 2016-2023, Vanessa Sochat"
 __license__ = "MIT"
 
 import datetime
