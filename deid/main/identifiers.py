@@ -16,7 +16,6 @@ from deid.logger import bot
 
 
 def main(args, parser):
-
     # Global output folder
     output_folder = args.outfolder
     if output_folder is None:

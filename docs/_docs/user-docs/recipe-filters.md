@@ -91,7 +91,11 @@ report to the user given that the flag goes off. Each criteria then has the foll
 ```
 <criteria> <field> <value>
 ```
-where "value" is optional, depending on the filter. For example:
+where "criteria" is a test such as "contains", "notcontains",
+"equals", "notequals", "missing", "present" or "empty";
+"field" is the single-word name of a DICOM tag (as known to pydicom),
+or the number as 8-digit hex format with 0x prefix;
+and "value" is optional, depending on the filter. For example:
 
 ```
 LABEL Burned In Annotation

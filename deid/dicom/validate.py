@@ -26,7 +26,6 @@ def validate_dicoms(dcm_files, force=False):
 
     bot.debug("Checking %s dicom files for validation." % (len(dcm_files)))
     for dcm_file in dcm_files:
-
         try:
             with open(dcm_file, "rb") as filey:
                 read_file(filey, force=force)

@@ -56,7 +56,6 @@ def get_identifiers(
 def remove_private_identifiers(
     dicom_files, save=True, overwrite=False, output_folder=None, force=True
 ):
-
     """
     Remove private identifiers.
 
@@ -99,7 +98,6 @@ def replace_identifiers(
     remove_private=False,
     disable_skip=False,
 ):
-
     """
     Replace identifiers.
 

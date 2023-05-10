@@ -23,7 +23,6 @@ def extract_values_list(dicom, actions, fields=None):
         fields = get_fields(dicom)
 
     for action in actions:
-
         # Extract some subset of fields based on action
         subset = expand_field_expression(
             field=action["field"], dicom=dicom, contenders=fields
@@ -40,7 +39,6 @@ def extract_values_list(dicom, actions, fields=None):
 
         # Split action, can optionally have a "by" and/or minlength parameter
         elif action["action"] == "SPLIT":
-
             # Default values for split are length 1 and character empty space
             bot.debug("Parsing action %s" % action)
             split_by = " "
@@ -86,7 +84,6 @@ def extract_fields_list(dicom, actions, fields=None):
         fields = get_fields(dicom)
 
     for action in actions:
-
         if action["action"] == "FIELD":
             subset.update(
                 expand_field_expression(

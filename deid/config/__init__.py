@@ -28,7 +28,6 @@ class DeidRecipe:
     """
 
     def __init__(self, deid=None, base=False, default_base="dicom"):
-
         # If deid is None, use the default
         if deid is None:
             base = True
@@ -49,7 +48,6 @@ class DeidRecipe:
         """
         deid = get_deid(deid)
         if deid is not None:
-
             # Update our list of files
             self._files.append(deid)
             self.files = list(set(self.files))

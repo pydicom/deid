@@ -24,11 +24,14 @@ def apply_filter(dicom, field, filter_name, value):
     Parameters
     ==========
     dicom: the pydicom.dataset Dataset (pydicom.read_file)
-    field: the name of the field to apply the filter to
+    field: the name of the field to apply the filter to,
+      or the tag number as a string '0xGGGGEEEE'
     filer_name: the name of the filter to apply (e.g., contains)
     value: the value to set, if filter_name is valid
 
     """
+    if "0x" in field:
+        field = int(field, 0)  # 0=decode hex with 0x prefix
     filter_name = filter_name.lower().strip()
 
     if filter_name == "contains":
@@ -74,7 +77,6 @@ def equalsBase(self, field, term, ignore_case=True, not_equals=False):
     # In this loop we can only switch to True
     for contender in contenders:
         if contender is not None:
-
             try:
                 # both converted to string (handles tags)
                 contender = str(contender)
@@ -187,7 +189,6 @@ def compareBase(self, field, expression, func, ignore_case=True):
 
     for contender in contenders:
         if contender is not None:
-
             try:
                 contender = str(contender)
                 expression = str(expression)

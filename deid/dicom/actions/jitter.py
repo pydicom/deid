@@ -43,7 +43,6 @@ def jitter_timestamp(field, value):
     new_value = original
 
     if original is not None:
-
         # Create default for new value
         new_value = None
         dcmvr = field.element.VR
@@ -67,7 +66,6 @@ def jitter_timestamp(field, value):
                 )
 
         else:
-
             # If the field type is not supplied, attempt to parse different formats
             for fmtstr in ["%Y%m%d", "%Y%m%d%H%M%S.%f%z", "%Y%m%d%H%M%S.%f"]:
                 try:
