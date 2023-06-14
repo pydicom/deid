@@ -26,37 +26,27 @@ def apply_filter(dicom, field, filter_name, value):
     dicom: the pydicom.dataset Dataset (pydicom.read_file)
     field: the name of the field to apply the filter to,
       or the tag number as a string '0xGGGGEEEE'
-    filer_name: the name of the filter to apply (e.g., contains)
+    filter_name: the name of the filter to apply (e.g., contains)
     value: the value to set, if filter_name is valid
 
     """
     if "0x" in field:
         field = int(field, 0)  # 0=decode hex with 0x prefix
     filter_name = filter_name.lower().strip()
+    filter_name_map = {
+        "contains": dicom.contains(field, value),
+        "notcontains": dicom.notContains(field, value),
+        "equals": dicom.equals(field, value),
+        "missing": notdicom.missing(field),
+        "present": not dicom.missing(field),
+        "empty": dicom.empty(field),
+        "notequals": dicom.notEquals(field, value)
+    }
+    if filter_name not in filter_name_map.keys():
+        bot.warning("%s is not a valid filter name, returning False" % filter_name)
+        return False
 
-    if filter_name == "contains":
-        return dicom.contains(field, value)
-
-    if filter_name == "notcontains":
-        return dicom.notContains(field, value)
-
-    elif filter_name == "equals":
-        return dicom.equals(field, value)
-
-    elif filter_name == "missing":
-        return dicom.missing(field)
-
-    elif filter_name == "present":
-        return not dicom.missing(field)
-
-    elif filter_name == "empty":
-        return dicom.empty(field)
-
-    elif filter_name == "notequals":
-        return dicom.notEquals(field, value)
-
-    bot.warning("%s is not a valid filter name, returning False" % filter_name)
-    return False
+    return filter_name_map[filter_name]
 
 
 ################################################################################
