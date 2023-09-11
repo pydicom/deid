@@ -4,7 +4,7 @@ __license__ = "MIT"
 
 import re
 
-from pydicom.dataset import Dataset
+from pydicom.dataset import DataElement, Dataset
 
 from deid.logger import bot
 
@@ -152,7 +152,7 @@ def empty(self, field):
         return len(content) == 0
 
     # This is the case of a data element
-    elif not isinstance(content, str):
+    elif isinstance(content, DataElement):
         content = content.value
 
     if content == "":
