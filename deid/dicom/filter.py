@@ -4,7 +4,7 @@ __license__ = "MIT"
 
 import re
 
-from pydicom.dataset import Dataset, DataElement
+from pydicom.dataset import DataElement, Dataset
 
 from deid.logger import bot
 
