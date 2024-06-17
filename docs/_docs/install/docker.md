@@ -16,12 +16,11 @@ When you are ready, try running {{ site.title }} using it. This first command wi
 access the deid executable:
 
 ```bash
-$ docker run {{ site.docker }}
-$ deid
+$ docker run {{ site.docker }} --help
 usage: deid [-h] [--quiet] [--debug] [--version] [--outfolder OUTFOLDER]
             [--format {dicom}] [--overwrite]
             {version,inspect,identifiers} ...
-deid: error: too few arguments
+...
 ```
 
 It might also be desired to shell into the container and interact with deid
