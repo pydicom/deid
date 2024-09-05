@@ -4,8 +4,8 @@ __license__ = "MIT"
 
 import os
 import re
-from io import BytesIO
 from copy import deepcopy
+from io import BytesIO
 
 from pydicom import read_file
 from pydicom.dataelem import DataElement
