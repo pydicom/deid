@@ -5,6 +5,7 @@ __license__ = "MIT"
 import os
 import re
 from copy import deepcopy
+from io import BytesIO
 
 from pydicom import read_file
 from pydicom.dataelem import DataElement
@@ -102,6 +103,7 @@ class DicomParser:
 
         # Set class variables that might be helpful later
         df = self.dicom.get("filename")
+        df = None if isinstance(df, BytesIO) else df
         self.dicom_file = None if not df else os.path.abspath(df)
         self.dicom_name = None if not df else os.path.basename(self.dicom_file)
 
