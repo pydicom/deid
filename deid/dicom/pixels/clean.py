@@ -13,7 +13,7 @@ from typing import Optional
 import matplotlib
 import numpy
 from numpy.typing import NDArray
-from pydicom import read_file
+from pydicom import dcmread
 from pydicom.pixel_data_handlers.util import get_expected_length
 
 from deid.config import DeidRecipe
@@ -245,7 +245,7 @@ class DicomCleaner:
         # Having clean also means has dicom image
         if hasattr(self, image_type):
             dicom_name = self._get_clean_name(output_folder)
-            dicom = read_file(self.dicom_file, force=True)
+            dicom = dcmread(self.dicom_file, force=True)
             # If going from compressed, change TransferSyntax
             if dicom.file_meta.TransferSyntaxUID.is_compressed is True:
                 dicom.decompress()

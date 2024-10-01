@@ -5,7 +5,7 @@ __license__ = "MIT"
 
 from typing import List, Optional, Union
 
-from pydicom import FileDataset, read_file
+from pydicom import FileDataset, dcmread
 from pydicom.sequence import Sequence
 
 from deid.config import DeidRecipe
@@ -114,7 +114,7 @@ def _has_burned_pixels_single(dicom_file, force: bool, deid):
     if isinstance(dicom_file, FileDataset):
         dicom = dicom_file
     else:
-        dicom = read_file(dicom_file, force=force)
+        dicom = dcmread(dicom_file, force=force)
 
     # Return list with lookup as dicom_file
     results = []

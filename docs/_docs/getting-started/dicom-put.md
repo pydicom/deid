@@ -433,8 +433,8 @@ and now the functions we can use. We will look at one dicom_file
 ```python
 from deid.dicom.tags import has_private, get_private
 
-from pydicom import read_file
-dicom = read_file(dicom_files[0])
+from pydicom import dcmread
+dicom = dcmread(dicom_files[0])
 ```
 
 Does it have private tags?

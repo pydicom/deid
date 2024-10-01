@@ -98,8 +98,8 @@ dicom_files = list(get_files(base))
 For the purpose of exploration, let's load one file.
 
 ```python
-from pydicom import read_file
-dicom = read_file(dicom_files[0])
+from pydicom import dcmread
+dicom = dcmread(dicom_files[0])
 ```
 
 Let's play with our expanders! Remember the examples above that we wrote into

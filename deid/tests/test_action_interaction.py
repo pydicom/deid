@@ -9,7 +9,7 @@ import shutil
 import tempfile
 import unittest
 
-from pydicom import read_file
+from pydicom import dcmread
 
 from deid.data import get_dataset
 from deid.dicom import replace_identifiers
@@ -54,7 +54,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         with self.assertRaises(KeyError):
             inputfile[field].value
 
@@ -66,7 +66,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(value2, outputfile[field].value)
 
@@ -92,7 +92,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(1, currentValue)
@@ -106,7 +106,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(None, outputfile[field].value)
 
@@ -135,7 +135,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(value1, currentValue)
@@ -149,7 +149,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -177,7 +177,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(value1, currentValue)
@@ -191,7 +191,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -220,7 +220,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(value1, currentValue)
@@ -234,7 +234,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -260,7 +260,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(value1, currentValue)
@@ -273,7 +273,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         with self.assertRaises(KeyError):
             _ = outputfile[field].value
@@ -302,7 +302,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(None, currentValue)
@@ -317,7 +317,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -344,7 +344,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(None, currentValue)
@@ -359,7 +359,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -387,7 +387,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(None, currentValue)
@@ -402,7 +402,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -426,7 +426,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
         valueexpected = currentValue
 
@@ -442,7 +442,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -470,7 +470,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(None, currentValue)
@@ -485,7 +485,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -509,7 +509,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(None, currentValue)
@@ -523,7 +523,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         with self.assertRaises(KeyError):
             _ = outputfile[field].value
@@ -553,7 +553,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(valueexpected, currentValue)
@@ -567,7 +567,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -595,7 +595,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(None, currentValue)
@@ -609,7 +609,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -638,7 +638,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(valueexpected, currentValue)
@@ -652,7 +652,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -678,7 +678,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
         valueexpected = currentValue
 
@@ -693,7 +693,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -722,7 +722,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(valueexpected, currentValue)
@@ -736,7 +736,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -763,7 +763,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertEqual("20230101", currentValue)
@@ -776,7 +776,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -804,7 +804,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(None, currentValue)
@@ -819,7 +819,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -843,7 +843,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
         valueexpected = currentValue
 
@@ -858,7 +858,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -884,7 +884,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
         valueexpected = currentValue
 
@@ -899,7 +899,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -924,7 +924,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
         valueexpected = currentValue
 
@@ -940,7 +940,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -966,7 +966,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
         valueexpected = currentValue
 
@@ -981,7 +981,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -1005,7 +1005,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
         valueexpected = currentValue
 
@@ -1020,7 +1020,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -1049,7 +1049,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
         self.assertNotEqual(valueexpected, currentValue)
 
@@ -1061,7 +1061,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -1087,7 +1087,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(value1, currentValue)
@@ -1102,7 +1102,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual("", outputfile[field].value)
 
@@ -1131,7 +1131,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(value1, currentValue)
@@ -1145,7 +1145,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -1171,7 +1171,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
         valueexpected = currentValue
 
@@ -1185,7 +1185,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -1214,7 +1214,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(value1, currentValue)
@@ -1228,7 +1228,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -1254,7 +1254,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(value1, currentValue)
@@ -1267,7 +1267,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(value1, outputfile[field].value)
 
@@ -1295,7 +1295,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(None, currentValue)
@@ -1310,7 +1310,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -1334,7 +1334,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(None, currentValue)
@@ -1348,7 +1348,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         with self.assertRaises(KeyError):
             _ = outputfile[field].value
@@ -1375,7 +1375,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(None, currentValue)
@@ -1389,7 +1389,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual("20230102", outputfile[field].value)
 
@@ -1413,7 +1413,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
         valueexpected = currentValue
 
@@ -1429,7 +1429,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -1456,7 +1456,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(None, currentValue)
@@ -1470,7 +1470,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
@@ -1495,7 +1495,7 @@ class TestRuleInteractions(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
 
         self.assertNotEqual(None, currentValue)
@@ -1509,7 +1509,7 @@ class TestRuleInteractions(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         with self.assertRaises(KeyError):
             _ = outputfile[field].value

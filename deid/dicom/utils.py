@@ -110,4 +110,4 @@ def load_dicom(dcm_file):
     if isinstance(dcm_file, FileDataset):
         return dcm_file
     else:
-        return pydicom.read_file(dcm_file, force=True)
+        return pydicom.dcmread(dcm_file, force=True)

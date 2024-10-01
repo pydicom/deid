@@ -5,7 +5,7 @@ __license__ = "MIT"
 
 import os
 
-from pydicom import read_file
+from pydicom import dcmread
 
 from deid.dicom.parser import DicomParser
 from deid.dicom.utils import save_dicom
@@ -68,7 +68,7 @@ def remove_private_identifiers(
         dicom_files = [dicom_files]
 
     for dicom_file in dicom_files:
-        dicom = read_file(dicom_file, force=force)
+        dicom = dcmread(dicom_file, force=force)
         dicom.remove_private_tags()
         dicom_name = os.path.basename(dicom_file)
         bot.debug("Removed private identifiers for %s" % dicom_name)

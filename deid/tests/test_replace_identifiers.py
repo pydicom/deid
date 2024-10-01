@@ -10,7 +10,7 @@ import tempfile
 import unittest
 from collections import OrderedDict
 
-from pydicom import read_file
+from pydicom import dcmread
 from pydicom.sequence import Sequence
 
 from deid.data import get_dataset
@@ -72,7 +72,7 @@ class TestDicom(unittest.TestCase):
             strip_sequences=False,
             output_folder=self.tmpdir,
         )
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
 
         self.assertEqual(1, len(result))
         self.assertEqual("SIMPSON", outputfile["11112221"].value)
@@ -118,7 +118,7 @@ class TestDicom(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         field1 = inputfile[newfield1].value
         field2 = inputfile[newfield2].value
 
@@ -155,7 +155,7 @@ class TestDicom(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[newfield1].value
 
         self.assertNotEqual(newvalue1, currentValue)
@@ -168,7 +168,7 @@ class TestDicom(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(newvalue1, outputfile[newfield1].value)
 
@@ -280,7 +280,7 @@ class TestDicom(unittest.TestCase):
             strip_sequences=False,
             output_folder=self.tmpdir,
         )
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual("SIMPSON", outputfile["11112221"].value)
         self.assertEqual("SIMPSON", outputfile["PatientIdentityRemoved"].value)
@@ -589,7 +589,7 @@ class TestDicom(unittest.TestCase):
         recipe = create_recipe(actions)
 
         # Ensure tag is present before removal
-        dicom = read_file(dicom_file)
+        dicom = dcmread(dicom_file)
         assert "0008103e" in dicom
 
         result = replace_identifiers(

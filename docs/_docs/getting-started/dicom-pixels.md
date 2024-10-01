@@ -371,7 +371,7 @@ import matplotlib.pyplot as plt
 
 from deid.dicom.pixels import clean_pixel_data, has_burned_pixels
 
-dicom_file_data = pydicom.read_file(DICOM_FILE)
+dicom_file_data = pydicom.dcmread(DICOM_FILE)
 
 burned_pixels_results = has_burned_pixels(dicom_file_data)
 cleaned_pixels = clean_pixel_data(
