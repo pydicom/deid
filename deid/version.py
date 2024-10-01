@@ -12,8 +12,8 @@ DESCRIPTION = "best effort deidentify dicom with python and pydicom"
 LICENSE = "LICENSE"
 
 INSTALL_REQUIRES = (
-    ("matplotlib", {"min_version": None}),
-    ("numpy", {"min_version": "1.20"}),
-    ("pydicom", {"min_version": "2.2.2"}),
-    ("python-dateutil", {"min_version": None}),
+    "matplotlib",
+    "numpy>=1.20",
+    "pydicom>=2.2.2,<3.0.0",
+    "python-dateutil",
 )
