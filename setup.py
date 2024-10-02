@@ -30,31 +30,7 @@ def get_requirements(lookup=None):
     if lookup is None:
         lookup = get_lookup()
 
-    install_requires = []
-    for module in lookup["INSTALL_REQUIRES"]:
-        module_name = module[0]
-        module_meta = module[1]
-
-        # Install exact version
-        if "exact_version" in module_meta:
-            dependency = "%s==%s" % (module_name, module_meta["exact_version"])
-
-        # Install min version
-        elif "min_version" in module_meta:
-            if module_meta["min_version"] is None:
-                dependency = module_name
-            else:
-                dependency = "%s>=%s" % (module_name, module_meta["min_version"])
-
-        # Install min version
-        elif "max_version" in module_meta:
-            if module_meta["max_version"] is None:
-                dependency = module_name
-            else:
-                dependency = "%s<=%s" % (module_name, module_meta["max_version"])
-
-        install_requires.append(dependency)
-    return install_requires
+    return lookup["INSTALL_REQUIRES"]
 
 
 # Make sure everything is relative to setup.py
