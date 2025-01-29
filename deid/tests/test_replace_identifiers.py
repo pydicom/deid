@@ -515,8 +515,8 @@ class TestDicom(unittest.TestCase):
 
         parser = DicomParser(dicom_file, recipe=recipe)
         parser.parse()
-        self.assertTrue("(0009, 0010)" in parser.lookup["field_set2_private"])
-        self.assertTrue("(0010, 0020)" in parser.lookup["field_set2_private"])
+        self.assertTrue("(0009,0010)" in parser.lookup["field_set2_private"])
+        self.assertTrue("(0010,0020)" in parser.lookup["field_set2_private"])
 
         self.assertEqual(176, len(parser.dicom))
         self.assertEqual("SIEMENS CT VA0  COAD", parser.dicom["00190010"].value)
