@@ -317,8 +317,8 @@ cleaned_files = replace_identifiers(dicom_files=dicom_files,
 To check your work, you can load in a cleaned file to see what was done
 
 ```python
-from pydicom import read_file
-test_file = read_file(cleaned_files[0])
+from pydicom import dcmread
+test_file = dcmread(cleaned_files[0])
 
 # test_file
 # (0008, 0018) SOP Instance UID                    UI: cookiemonster-image-1

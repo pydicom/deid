@@ -3,7 +3,7 @@
 import os
 
 # We can load in a cleaned file to see what was done
-from pydicom import read_file
+from pydicom import dcmread
 
 # Create a DeidRecipe
 from deid.config import DeidRecipe
@@ -196,7 +196,7 @@ cleaned_files = replace_identifiers(
 )
 
 
-test_file = read_file(cleaned_files[0])
+test_file = dcmread(cleaned_files[0])
 
 
 # test_file

@@ -30,12 +30,12 @@ def get_dicom(dataset):
     """
     helper function to load a dicom
     """
-    from pydicom import read_file
+    from pydicom import dcmread
 
     from deid.dicom import get_files
 
     dicom_files = get_files(dataset)
-    return read_file(next(dicom_files))
+    return dcmread(next(dicom_files))
 
 
 def get_same_file(dataset):

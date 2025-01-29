@@ -47,7 +47,7 @@ class TestDicomHeader(unittest.TestCase):
 
     def test_replace_identifiers(self):
         print("Testing deid.dicom replace_identifiers")
-        from pydicom import read_file
+        from pydicom import dcmread
 
         from deid.dicom import get_identifiers, replace_identifiers
 
@@ -55,7 +55,7 @@ class TestDicomHeader(unittest.TestCase):
         ids = get_identifiers(dicom_files)
 
         # Before blanking, 28 fields don't have blanks
-        notblanked = read_file(dicom_files[0])
+        notblanked = dcmread(dicom_files[0])
         notblanked_fields = [
             x for x in notblanked.dir() if notblanked.get(x) != ""
         ]  # 28
@@ -64,21 +64,21 @@ class TestDicomHeader(unittest.TestCase):
         updated_files = replace_identifiers(dicom_files, ids, output_folder=self.tmpdir)
 
         # After replacing only 9 don't have blanks
-        blanked = read_file(updated_files[0])
+        blanked = dcmread(updated_files[0])
         blanked_fields = [x for x in blanked.dir() if blanked.get(x) != ""]
         self.assertTrue(len(blanked_fields) == 9)
 
 
 def get_dicom(dataset, return_dir=False):
     """helper function to load a dicom"""
-    from pydicom import read_file
+    from pydicom import dcmread
 
     from deid.dicom import get_files
 
     dicom_files = get_files(dataset)
     if return_dir:
         return list(dicom_files)
-    return read_file(next(dicom_files))
+    return dcmread(next(dicom_files))
 
 
 if __name__ == "__main__":

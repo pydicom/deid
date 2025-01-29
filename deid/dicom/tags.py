@@ -123,7 +123,7 @@ def update_tag(dicom, field, value):
 
     Parameters
     ==========
-    dicom: the pydicom.dataset Dataset (pydicom.read_file)
+    dicom: the pydicom.dataset Dataset (pydicom.dcmread)
     field: the name of the field to update
     value: the value to set, if name is a valid tag
 
@@ -157,7 +157,7 @@ def get_private(dicom):
 
     Parameters
     ==========
-    dicom: the pydicom.dataset Dataset (pydicom.read_file)
+    dicom: the pydicom.dataset Dataset (pydicom.dcmread)
     """
     datasets = [dicom]
     private_tags = []
@@ -188,7 +188,7 @@ def has_private(dicom):
 
     Parameters
     ==========
-    dicom: the pydicom.dataset Dataset (pydicom.read_file)
+    dicom: the pydicom.dataset Dataset (pydicom.dcmread)
 
     """
     private_tags = len(get_private(dicom))

@@ -23,7 +23,7 @@ def apply_filter(dicom, field, filter_name, value):
 
     Parameters
     ==========
-    dicom: the pydicom.dataset Dataset (pydicom.read_file)
+    dicom: the pydicom.dataset Dataset (pydicom.dcmread)
     field: the name of the field to apply the filter to,
       or the tag number as a string '0xGGGGEEEE'
     filer_name: the name of the filter to apply (e.g., contains)

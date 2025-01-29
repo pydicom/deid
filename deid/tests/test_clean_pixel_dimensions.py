@@ -10,7 +10,7 @@ import shutil
 import tempfile
 import unittest
 
-from pydicom import read_file
+from pydicom import dcmread
 
 from deid.data import get_dataset
 from deid.utils import get_installdir
@@ -45,10 +45,10 @@ class TestCleanPizelDimensions(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())
@@ -74,10 +74,10 @@ class TestCleanPizelDimensions(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())
@@ -103,10 +103,10 @@ class TestCleanPizelDimensions(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())
@@ -132,10 +132,10 @@ class TestCleanPizelDimensions(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())
@@ -161,10 +161,10 @@ class TestCleanPizelDimensions(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())
@@ -190,10 +190,10 @@ class TestCleanPizelDimensions(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())
@@ -219,10 +219,10 @@ class TestCleanPizelDimensions(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())
@@ -248,10 +248,10 @@ class TestCleanPizelDimensions(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())

@@ -7,7 +7,7 @@ import re
 from copy import deepcopy
 from io import BytesIO
 
-from pydicom import read_file
+from pydicom import dcmread
 from pydicom.dataelem import DataElement
 from pydicom.dataset import Dataset
 from pydicom.tag import Tag
@@ -99,7 +99,7 @@ class DicomParser:
             # If we must read the file, the path must exist
             if not os.path.exists(dicom_file):
                 bot.exit("%s does not exist." % dicom_file)
-            self.dicom = read_file(dicom_file, force=force)
+            self.dicom = dcmread(dicom_file, force=force)
 
         # Set class variables that might be helpful later
         df = self.dicom.get("filename")

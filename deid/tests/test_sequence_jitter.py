@@ -9,7 +9,7 @@ import shutil
 import tempfile
 import unittest
 
-from pydicom import read_file
+from pydicom import dcmread
 
 from deid.data import get_dataset
 from deid.dicom import get_files, replace_identifiers
@@ -37,7 +37,7 @@ class TestSequenceJitter(unittest.TestCase):
         dicom_file = next(get_files(self.dataset, pattern="ctbrain2.dcm"))
         recipe = create_recipe([{"action": "JITTER", "field": field, "value": "1"}])
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
         self.assertIsNotNone(currentValue)
 
@@ -49,7 +49,7 @@ class TestSequenceJitter(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual("20230102", outputfile[field].value)
 
@@ -59,7 +59,7 @@ class TestSequenceJitter(unittest.TestCase):
         dicom_file = next(get_files(self.dataset, pattern="ctbrain2.dcm"))
         recipe = create_recipe([{"action": "JITTER", "field": field, "value": "1"}])
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[field].value
         self.assertIsNotNone(currentValue)
 
@@ -71,7 +71,7 @@ class TestSequenceJitter(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual("20260318", outputfile[field].value)
 
@@ -81,7 +81,7 @@ class TestSequenceJitter(unittest.TestCase):
         dicom_file = next(get_files(self.dataset, pattern="ctbrain2.dcm"))
         recipe = create_recipe([{"action": "JITTER", "field": field, "value": "1"}])
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentparent = inputfile["00070011"]
         self.assertEqual(currentparent.VR, "SQ")
 
@@ -99,7 +99,7 @@ class TestSequenceJitter(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
 
         outputparent = outputfile["00070011"]
@@ -114,7 +114,7 @@ class TestSequenceJitter(unittest.TestCase):
         dicom_file = next(get_files(self.dataset, pattern="ctbrain2.dcm"))
         recipe = create_recipe([{"action": "JITTER", "field": field, "value": "1"}])
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentparent = inputfile["00070012"]
         self.assertEqual(currentparent.VR, "SQ")
 
@@ -130,7 +130,7 @@ class TestSequenceJitter(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
 
         outputparent = outputfile["00070012"]
@@ -145,7 +145,7 @@ class TestSequenceJitter(unittest.TestCase):
         dicom_file = next(get_files(self.dataset, pattern="ctbrain2.dcm"))
         recipe = create_recipe([{"action": "JITTER", "field": field, "value": "1"}])
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         level1parent = inputfile["00070013"]
         self.assertEqual(level1parent.VR, "SQ")
 
@@ -166,7 +166,7 @@ class TestSequenceJitter(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
 
         outputparent = outputfile["00070013"]

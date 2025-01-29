@@ -49,7 +49,7 @@ def get_tags_in_files(dicom_path, tag_file_path):
     tags_in_files = {}
     dicom_file_paths = file_paths(filtered_walk(dicom_path, included_files=["*.dcm"]))
     for dicom_file_path in dicom_file_paths:
-        dicom_file = pydicom.read_file(dicom_file_path)
+        dicom_file = pydicom.dcmread(dicom_file_path)
         for item in dicom_file:
             if item.keyword not in tags_in_files:
                 group = "0x%04x" % item.tag.group
@@ -107,7 +107,7 @@ def directory_to_csv(dicom_path, csv_file_path, tags_in_files, tags_to_exclude):
 
         # write the rows
         for dicom_file_path in dicom_file_paths:
-            dicom_file = pydicom.read_file(dicom_file_path)
+            dicom_file = pydicom.dcmread(dicom_file_path)
 
             row_vals = []
             for keyword in tags_in_files:

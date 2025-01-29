@@ -2,7 +2,8 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2023, Vanessa Sochat"
 __license__ = "MIT"
 
-__version__ = "0.3.25"
+
+__version__ = "1.0.0"
 AUTHOR = "Vanessa Sochat"
 AUTHOR_EMAIL = "vsoch@users.noreply.github.com"
 NAME = "deid"
@@ -12,8 +13,8 @@ DESCRIPTION = "best effort deidentify dicom with python and pydicom"
 LICENSE = "LICENSE"
 
 INSTALL_REQUIRES = (
-    "matplotlib",
-    "numpy>=1.20",
-    "pydicom>=2.2.2,<3.0.0",
-    "python-dateutil",
+    "matplotlib<4.0",
+    "numpy>=1.20,<2.0",
+    "pydicom>=3.0.1,<4.0.0",
+    "python-dateutil<3.0",
 )

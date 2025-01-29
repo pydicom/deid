@@ -213,7 +213,7 @@ Is this accurate?
 
 ```python
 for dicom_file in dicom_files:
-    dicom = read_file(dicom_file)
+    dicom = dcmread(dicom_file)
     print("%s:%s - %s" %(os.path.basename(dicom_file),
                          dicom.OperatorsName,
                          dicom.PatientSex))

@@ -2,7 +2,7 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2023, Vanessa Sochat"
 __license__ = "MIT"
 
-from pydicom import read_file
+from pydicom import dcmread
 
 from deid.logger import bot
 
@@ -28,7 +28,7 @@ def validate_dicoms(dcm_files, force=False):
     for dcm_file in dcm_files:
         try:
             with open(dcm_file, "rb") as filey:
-                read_file(filey, force=force)
+                dcmread(filey, force=force)
             valids.append(dcm_file)
         except Exception:
             bot.warning("Cannot read input file {0!s}, skipping.".format(dcm_file))

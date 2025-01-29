@@ -9,7 +9,7 @@ import shutil
 import tempfile
 import unittest
 
-from pydicom import read_file
+from pydicom import dcmread
 
 from deid.data import get_dataset
 from deid.dicom import replace_identifiers
@@ -43,7 +43,7 @@ class TestReplaceAction(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = dcmread(dicom_file)
         currentValue = inputfile[Field].value
         currentVR = inputfile[Field].VR
 
@@ -58,7 +58,7 @@ class TestReplaceAction(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(expected, outputfile[Field].value)
 
