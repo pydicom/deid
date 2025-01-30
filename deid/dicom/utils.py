@@ -15,6 +15,17 @@ from deid.utils import recursive_find
 from .validate import validate_dicoms
 
 ################################################################################
+# Abstraction layer over pydicom
+################################################################################
+
+def dcmread(filename):
+    """ Just call the native pydicom dcmread function.
+    This function exists so that if dcmread is renamed in future we can change
+    it here and the rest of deid will continue to work unchanged. """
+    return pydicom.dcmread(filename)
+
+
+################################################################################
 # Functions for Dicom files
 ################################################################################
 
@@ -110,4 +121,4 @@ def load_dicom(dcm_file):
     if isinstance(dcm_file, FileDataset):
         return dcm_file
     else:
-        return pydicom.dcmread(dcm_file, force=True)
+        return dcmread(dcm_file, force=True)

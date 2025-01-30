@@ -9,8 +9,7 @@ import shutil
 import tempfile
 import unittest
 
-from pydicom import dcmread
-
+from deid.dicom.utils import dcmread
 from deid.data import get_dataset
 from deid.dicom import get_files, replace_identifiers
 from deid.tests.common import create_recipe

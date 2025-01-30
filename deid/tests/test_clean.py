@@ -12,8 +12,9 @@ import unittest
 from copy import deepcopy
 
 import pydicom
-from pydicom import dcmread
 
+
+from deid.dicom.utils import dcmread
 from deid.config import DeidRecipe
 from deid.data import get_dataset
 from deid.dicom.pixels import clean_pixel_data, has_burned_pixels
@@ -63,7 +64,7 @@ class TestClean(unittest.TestCase):
 
     def test_pixel_cleaner_remove_coordinates_dicom_file(self):
         """Test the pixel cleaner to ensure it appropriately clears specified pixels."""
-        dicom_file_data = pydicom.dcmread(get_file(self.dataset))
+        dicom_file_data = dcmread(get_file(self.dataset))
         inputpixels = deepcopy(dicom_file_data.pixel_array)
 
         deid_path = os.path.join(self.deidpath, "remove_coordinates.dicom")

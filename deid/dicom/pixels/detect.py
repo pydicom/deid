@@ -5,9 +5,10 @@ __license__ = "MIT"
 
 from typing import List, Optional, Union
 
-from pydicom import FileDataset, dcmread
+from pydicom import FileDataset
 from pydicom.sequence import Sequence
 
+from deid.dicom.utils import dcmread
 from deid.config import DeidRecipe
 from deid.dicom.filter import apply_filter
 from deid.logger import bot

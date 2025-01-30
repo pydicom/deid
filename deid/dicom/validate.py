@@ -2,7 +2,7 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2023, Vanessa Sochat"
 __license__ = "MIT"
 
-from pydicom import dcmread
+from deid.dicom.utils import dcmread
 
 from deid.logger import bot
 

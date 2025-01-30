@@ -13,7 +13,7 @@ from typing import Optional
 import matplotlib
 import numpy
 from numpy.typing import NDArray
-from pydicom import dcmread
+from deid.dicom.utils import dcmread
 from pydicom.pixel_data_handlers.util import get_expected_length
 
 from deid.config import DeidRecipe

@@ -7,7 +7,7 @@ import re
 from copy import deepcopy
 from io import BytesIO
 
-from pydicom import dcmread
+from deid.dicom.utils import dcmread
 from pydicom.dataelem import DataElement
 from pydicom.dataset import Dataset
 from pydicom.tag import Tag

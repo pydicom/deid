@@ -10,8 +10,7 @@ import shutil
 import tempfile
 import unittest
 
-from pydicom import dcmread
-
+from deid.dicom.utils import dcmread
 from deid.data import get_dataset
 from deid.utils import get_installdir
 

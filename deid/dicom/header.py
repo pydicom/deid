@@ -5,7 +5,7 @@ __license__ = "MIT"
 
 import os
 
-from pydicom import dcmread
+from deid.dicom.utils import dcmread
 
 from deid.dicom.parser import DicomParser
 from deid.dicom.utils import save_dicom
