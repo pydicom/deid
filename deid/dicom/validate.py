@@ -28,7 +28,7 @@ def validate_dicoms(dcm_files, force=False):
     for dcm_file in dcm_files:
         try:
             with open(dcm_file, "rb") as filey:
-                dcmread(filey, force=force)
+                dcmread(dcm_file, force=force)
             valids.append(dcm_file)
         except Exception:
             bot.warning("Cannot read input file {0!s}, skipping.".format(dcm_file))
