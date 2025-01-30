@@ -12,7 +12,7 @@ from collections import OrderedDict
 
 from pydicom.sequence import Sequence
 
-from deid.dicom.utils import dcmread
+from deid.dicom.dcmread import dcmread
 from deid.data import get_dataset
 from deid.dicom import get_files, get_identifiers, replace_identifiers
 from deid.dicom.parser import DicomParser

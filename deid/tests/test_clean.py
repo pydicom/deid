@@ -14,7 +14,7 @@ from copy import deepcopy
 import pydicom
 
 
-from deid.dicom.utils import dcmread
+from deid.dicom.dcmread import dcmread
 from deid.config import DeidRecipe
 from deid.data import get_dataset
 from deid.dicom.pixels import clean_pixel_data, has_burned_pixels

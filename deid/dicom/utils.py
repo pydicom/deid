@@ -13,16 +13,8 @@ from deid.logger import bot
 from deid.utils import recursive_find
 
 from .validate import validate_dicoms
+from .dcmread import dcmread
 
-################################################################################
-# Abstraction layer over pydicom
-################################################################################
-
-def dcmread(filename):
-    """ Just call the native pydicom dcmread function.
-    This function exists so that if dcmread is renamed in future we can change
-    it here and the rest of deid will continue to work unchanged. """
-    return pydicom.dcmread(filename)
 
 
 ################################################################################
