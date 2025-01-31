@@ -14,10 +14,10 @@ from pydicom.sequence import Sequence
 
 from deid.data import get_dataset
 from deid.dicom import get_files, get_identifiers, replace_identifiers
-from deid.dicom.dcmread import dcmread
 from deid.dicom.parser import DicomParser
 from deid.tests.common import create_recipe
 from deid.utils import get_installdir
+from deid.utils.dcmread import dcmread
 
 global generate_uid
 

@@ -31,7 +31,7 @@ def get_dicom(dataset):
     helper function to load a dicom
     """
     from deid.dicom import get_files
-    from deid.dicom.dcmread import dcmread
+    from deid.utils.dcmread import dcmread
 
     dicom_files = get_files(dataset)
     return dcmread(next(dicom_files))

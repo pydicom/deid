@@ -11,8 +11,8 @@ import tempfile
 import unittest
 
 from deid.data import get_dataset
-from deid.dicom.dcmread import dcmread
 from deid.utils import get_installdir
+from deid.utils.dcmread import dcmread
 
 
 class TestCleanPizelDimensions(unittest.TestCase):

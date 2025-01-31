@@ -9,9 +9,9 @@ from pydicom import FileDataset
 from pydicom.sequence import Sequence
 
 from deid.config import DeidRecipe
-from deid.dicom.dcmread import dcmread
 from deid.dicom.filter import apply_filter
 from deid.logger import bot
+from deid.utils.dcmread import dcmread
 
 
 def has_burned_pixels(

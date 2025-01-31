@@ -2,8 +2,8 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2023, Vanessa Sochat"
 __license__ = "MIT"
 
-from deid.dicom.dcmread import dcmread
 from deid.logger import bot
+from deid.utils.dcmread import dcmread
 
 
 def validate_dicoms(dcm_files, force=False):

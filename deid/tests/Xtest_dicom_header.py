@@ -48,7 +48,7 @@ class TestDicomHeader(unittest.TestCase):
     def test_replace_identifiers(self):
         print("Testing deid.dicom replace_identifiers")
         from deid.dicom import get_identifiers, replace_identifiers
-        from deid.dicom.dcmread import dcmread
+        from deid.utils.dcmread import dcmread
 
         dicom_files = get_dicom(self.dataset, return_dir=True)
         ids = get_identifiers(dicom_files)
@@ -71,7 +71,7 @@ class TestDicomHeader(unittest.TestCase):
 def get_dicom(dataset, return_dir=False):
     """helper function to load a dicom"""
     from deid.dicom import get_files
-    from deid.dicom.dcmread import dcmread
+    from deid.utils.dcmread import dcmread
 
     dicom_files = get_files(dataset)
     if return_dir:
