@@ -1,7 +1,3 @@
-__author__ = "Vanessa Sochat"
-__copyright__ = "Copyright 2016-2023, Vanessa Sochat"
-__license__ = "MIT"
-
 import os
 import shutil
 import tempfile

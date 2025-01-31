@@ -1,18 +1,12 @@
 #!/usr/bin/env python
 
-__author__ = "Vanessa Sochat"
-__copyright__ = "Copyright 2016-2023, Vanessa Sochat"
-__license__ = "MIT"
-
 import os
 import shutil
 import tempfile
 import unittest
 
-from pydicom import read_file
-
 from deid.data import get_dataset
-from deid.dicom import get_files, replace_identifiers
+from deid.dicom import get_files, replace_identifiers, utils
 from deid.tests.common import create_recipe
 from deid.utils import get_installdir
 
@@ -39,7 +33,7 @@ class TestSequenceReplace(unittest.TestCase):
             [{"action": "REPLACE", "field": field, "value": "ReplacementValue"}]
         )
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         currentValue = inputfile[field].value
         self.assertIsNotNone(currentValue)
 
@@ -51,7 +45,7 @@ class TestSequenceReplace(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = utils.dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual("ReplacementValue", outputfile[field].value)
 
@@ -63,7 +57,7 @@ class TestSequenceReplace(unittest.TestCase):
             [{"action": "REPLACE", "field": field, "value": "ReplacementValue"}]
         )
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         currentValue = inputfile[field].value
         self.assertIsNotNone(currentValue)
 
@@ -75,7 +69,7 @@ class TestSequenceReplace(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = utils.dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual("ReplacementValue", outputfile[field].value)
 
@@ -87,7 +81,7 @@ class TestSequenceReplace(unittest.TestCase):
             [{"action": "REPLACE", "field": field, "value": "ReplacementValue"}]
         )
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         currentparent = inputfile["00070001"]
         self.assertEqual(currentparent.VR, "SQ")
 
@@ -105,7 +99,7 @@ class TestSequenceReplace(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = utils.dcmread(result[0])
         self.assertEqual(1, len(result))
 
         outputparent = outputfile["00070001"]
@@ -122,7 +116,7 @@ class TestSequenceReplace(unittest.TestCase):
             [{"action": "REPLACE", "field": field, "value": "ReplacementValue"}]
         )
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         currentparent = inputfile["00070002"]
         self.assertEqual(currentparent.VR, "SQ")
 
@@ -138,7 +132,7 @@ class TestSequenceReplace(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = utils.dcmread(result[0])
         self.assertEqual(1, len(result))
 
         outputparent = outputfile["00070002"]
@@ -155,7 +149,7 @@ class TestSequenceReplace(unittest.TestCase):
             [{"action": "REPLACE", "field": field, "value": "ReplacementValue"}]
         )
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         level1parent = inputfile["00070003"]
         self.assertEqual(level1parent.VR, "SQ")
 
@@ -176,7 +170,7 @@ class TestSequenceReplace(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = utils.dcmread(result[0])
         self.assertEqual(1, len(result))
 
         outputparent = outputfile["00070003"]
@@ -199,7 +193,7 @@ class TestSequenceReplace(unittest.TestCase):
             [{"action": "REPLACE", "field": field, "value": "ReplacementValue"}]
         )
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         currentValue = inputfile[field].value
         self.assertIsNotNone(currentValue)
 
@@ -218,7 +212,7 @@ class TestSequenceReplace(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = utils.dcmread(result[0])
         self.assertEqual(1, len(result))
 
         outputparent = outputfile["RequestAttributesSequence"]

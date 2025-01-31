@@ -1,13 +1,14 @@
 __author__ = "Vanessa Sochat"
-__copyright__ = "Copyright 2016-2023, Vanessa Sochat"
+__copyright__ = "Copyright 2016-2025, Vanessa Sochat"
 __license__ = "MIT"
 
 
 from typing import List, Optional, Union
 
-from pydicom import FileDataset, read_file
+from pydicom import FileDataset
 from pydicom.sequence import Sequence
 
+import deid.dicom.utils as utils
 from deid.config import DeidRecipe
 from deid.dicom.filter import apply_filter
 from deid.logger import bot
@@ -111,10 +112,7 @@ def _has_burned_pixels_single(dicom_file, force: bool, deid):
             ]
         }
     """
-    if isinstance(dicom_file, FileDataset):
-        dicom = dicom_file
-    else:
-        dicom = read_file(dicom_file, force=force)
+    dicom = utils.load_dicom(dicom_file, force=force)
 
     # Return list with lookup as dicom_file
     results = []

@@ -1,5 +1,5 @@
 __author__ = "Vanessa Sochat"
-__copyright__ = "Copyright 2016-2023, Vanessa Sochat"
+__copyright__ = "Copyright 2016-2025, Vanessa Sochat"
 __license__ = "MIT"
 
 import re
@@ -23,7 +23,7 @@ def apply_filter(dicom, field, filter_name, value):
 
     Parameters
     ==========
-    dicom: the pydicom.dataset Dataset (pydicom.read_file)
+    dicom: the pydicom.dataset Dataset
     field: the name of the field to apply the filter to,
       or the tag number as a string '0xGGGGEEEE'
     filer_name: the name of the filter to apply (e.g., contains)

@@ -1,18 +1,12 @@
 #!/usr/bin/env python
 
-__author__ = "Vanessa Sochat"
-__copyright__ = "Copyright 2016-2023, Vanessa Sochat"
-__license__ = "MIT"
-
-
 import os
 import shutil
 import tempfile
 import unittest
 
-from pydicom import read_file
-
 from deid.data import get_dataset
+from deid.dicom import utils
 from deid.utils import get_installdir
 
 
@@ -45,10 +39,10 @@ class TestCleanPizelDimensions(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = utils.dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())
@@ -74,10 +68,10 @@ class TestCleanPizelDimensions(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = utils.dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())
@@ -103,10 +97,10 @@ class TestCleanPizelDimensions(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = utils.dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())
@@ -132,10 +126,10 @@ class TestCleanPizelDimensions(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = utils.dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())
@@ -161,10 +155,10 @@ class TestCleanPizelDimensions(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = utils.dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())
@@ -190,10 +184,10 @@ class TestCleanPizelDimensions(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = utils.dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())
@@ -219,10 +213,10 @@ class TestCleanPizelDimensions(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = utils.dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())
@@ -248,10 +242,10 @@ class TestCleanPizelDimensions(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = utils.dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())

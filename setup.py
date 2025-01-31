@@ -83,7 +83,7 @@ setup(
         "Operating System :: Unix",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Topic :: Software Development",
         "Topic :: Scientific/Engineering",
         "Topic :: System :: Shells",

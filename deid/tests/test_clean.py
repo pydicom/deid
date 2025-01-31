@@ -1,21 +1,14 @@
 #!/usr/bin/env python
 
-__author__ = "Vanessa Sochat"
-__copyright__ = "Copyright 2016-2023, Vanessa Sochat"
-__license__ = "MIT"
-
-
 import os
 import shutil
 import tempfile
 import unittest
 from copy import deepcopy
 
-import pydicom
-from pydicom import read_file
-
 from deid.config import DeidRecipe
 from deid.data import get_dataset
+from deid.dicom import utils
 from deid.dicom.pixels import clean_pixel_data, has_burned_pixels
 from deid.tests.common import get_file
 from deid.utils import get_installdir
@@ -49,10 +42,10 @@ class TestClean(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = utils.dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())
@@ -63,7 +56,7 @@ class TestClean(unittest.TestCase):
 
     def test_pixel_cleaner_remove_coordinates_dicom_file(self):
         """Test the pixel cleaner to ensure it appropriately clears specified pixels."""
-        dicom_file_data = pydicom.read_file(get_file(self.dataset))
+        dicom_file_data = utils.dcmread(get_file(self.dataset))
         inputpixels = deepcopy(dicom_file_data.pixel_array)
 
         deid_path = os.path.join(self.deidpath, "remove_coordinates.dicom")
@@ -95,10 +88,10 @@ class TestClean(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = utils.dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())
@@ -121,10 +114,10 @@ class TestClean(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = utils.dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertTrue(compare.all())
@@ -143,10 +136,10 @@ class TestClean(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = utils.dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())
@@ -168,10 +161,10 @@ class TestClean(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = utils.dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())
@@ -195,10 +188,10 @@ class TestClean(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = utils.dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())
@@ -222,10 +215,10 @@ class TestClean(unittest.TestCase):
         client.clean()
         cleanedfile = client.save_dicom()
 
-        outputfile = read_file(cleanedfile)
+        outputfile = utils.dcmread(cleanedfile)
         outputpixels = outputfile.pixel_array
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         inputpixels = inputfile.pixel_array
         compare = inputpixels == outputpixels
         self.assertFalse(compare.all())
