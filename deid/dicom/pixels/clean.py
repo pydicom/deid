@@ -13,11 +13,11 @@ from typing import Optional
 import matplotlib
 import numpy
 from numpy.typing import NDArray
-from deid.dicom.dcmread import dcmread
 from pydicom.pixel_data_handlers.util import get_expected_length
 
 from deid.config import DeidRecipe
 from deid.dicom import utils
+from deid.dicom.dcmread import dcmread
 from deid.logger import bot
 from deid.utils import get_temporary_name
 

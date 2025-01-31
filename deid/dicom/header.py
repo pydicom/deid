@@ -6,7 +6,6 @@ __license__ = "MIT"
 import os
 
 from deid.dicom.dcmread import dcmread
-
 from deid.dicom.parser import DicomParser
 from deid.dicom.utils import save_dicom
 from deid.logger import bot

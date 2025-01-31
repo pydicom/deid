@@ -3,7 +3,6 @@ __copyright__ = "Copyright 2016-2023, Vanessa Sochat"
 __license__ = "MIT"
 
 from deid.dicom.dcmread import dcmread
-
 from deid.logger import bot
 
 

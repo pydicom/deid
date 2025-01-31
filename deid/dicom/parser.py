@@ -7,7 +7,6 @@ import re
 from copy import deepcopy
 from io import BytesIO
 
-from deid.dicom.dcmread import dcmread
 from pydicom.dataelem import DataElement
 from pydicom.dataset import Dataset
 from pydicom.tag import Tag
@@ -15,6 +14,7 @@ from pydicom.tag import Tag
 from deid.config import DeidRecipe
 from deid.config.standards import actions as valid_actions
 from deid.dicom.actions import deid_funcs, jitter_timestamp
+from deid.dicom.dcmread import dcmread
 from deid.dicom.fields import DicomField, expand_field_expression, get_fields
 from deid.dicom.groups import extract_fields_list, extract_values_list
 from deid.dicom.tags import add_tag, get_private, get_tag, remove_sequences
