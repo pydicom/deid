@@ -11,9 +11,9 @@ import tempfile
 import unittest
 from copy import deepcopy
 
-from deid.dicom.dcmread import dcmread
 from deid.config import DeidRecipe
 from deid.data import get_dataset
+from deid.dicom.dcmread import dcmread
 from deid.dicom.pixels import clean_pixel_data, has_burned_pixels
 from deid.tests.common import get_file
 from deid.utils import get_installdir

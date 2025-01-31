@@ -9,9 +9,9 @@ import shutil
 import tempfile
 import unittest
 
-from deid.dicom.dcmread import dcmread
 from deid.data import get_dataset
 from deid.dicom import get_files, replace_identifiers
+from deid.dicom.dcmread import dcmread
 from deid.tests.common import create_recipe
 from deid.utils import get_installdir
 
