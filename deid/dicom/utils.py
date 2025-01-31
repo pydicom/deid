@@ -16,7 +16,6 @@ from .validate import validate_dicoms
 from .dcmread import dcmread
 
 
-
 ################################################################################
 # Functions for Dicom files
 ################################################################################
