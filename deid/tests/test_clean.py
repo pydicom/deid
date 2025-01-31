@@ -11,9 +11,6 @@ import tempfile
 import unittest
 from copy import deepcopy
 
-import pydicom
-
-
 from deid.dicom.dcmread import dcmread
 from deid.config import DeidRecipe
 from deid.data import get_dataset

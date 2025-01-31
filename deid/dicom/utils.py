@@ -6,7 +6,6 @@ import os
 import tempfile
 import zipfile
 
-import pydicom
 from pydicom import FileDataset
 
 from deid.logger import bot
