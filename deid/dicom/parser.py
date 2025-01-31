@@ -1,5 +1,5 @@
 __author__ = "Vanessa Sochat"
-__copyright__ = "Copyright 2016-2023, Vanessa Sochat"
+__copyright__ = "Copyright 2016-2025, Vanessa Sochat"
 __license__ = "MIT"
 
 import os
@@ -7,11 +7,11 @@ import re
 from copy import deepcopy
 from io import BytesIO
 
-from pydicom import read_file
 from pydicom.dataelem import DataElement
 from pydicom.dataset import Dataset
 from pydicom.tag import Tag
 
+import deid.dicom.utils as utils
 from deid.config import DeidRecipe
 from deid.config.standards import actions as valid_actions
 from deid.dicom.actions import deid_funcs, jitter_timestamp
@@ -99,7 +99,7 @@ class DicomParser:
             # If we must read the file, the path must exist
             if not os.path.exists(dicom_file):
                 bot.exit("%s does not exist." % dicom_file)
-            self.dicom = read_file(dicom_file, force=force)
+            self.dicom = utils.dcmread(dicom_file, force=force)
 
         # Set class variables that might be helpful later
         df = self.dicom.get("filename")

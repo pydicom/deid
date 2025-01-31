@@ -1,12 +1,11 @@
 __author__ = "Vanessa Sochat"
-__copyright__ = "Copyright 2016-2023, Vanessa Sochat"
+__copyright__ = "Copyright 2016-2025, Vanessa Sochat"
 __license__ = "MIT"
 
 
 import os
 
-from pydicom import read_file
-
+import deid.dicom.utils as utils
 from deid.dicom.parser import DicomParser
 from deid.dicom.utils import save_dicom
 from deid.logger import bot
@@ -68,7 +67,7 @@ def remove_private_identifiers(
         dicom_files = [dicom_files]
 
     for dicom_file in dicom_files:
-        dicom = read_file(dicom_file, force=force)
+        dicom = utils.dcmread(dicom_file, force=force)
         dicom.remove_private_tags()
         dicom_name = os.path.basename(dicom_file)
         bot.debug("Removed private identifiers for %s" % dicom_name)

@@ -1,18 +1,12 @@
 #!/usr/bin/env python
 
-__author__ = "Vanessa Sochat"
-__copyright__ = "Copyright 2016-2023, Vanessa Sochat"
-__license__ = "MIT"
-
 import os
 import shutil
 import tempfile
 import unittest
 
-from pydicom import read_file
-
 from deid.data import get_dataset
-from deid.dicom import replace_identifiers
+from deid.dicom import replace_identifiers, utils
 from deid.tests.common import create_recipe, get_file
 from deid.utils import get_installdir
 
@@ -40,7 +34,7 @@ class TestBlankAction(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         currentValue = inputfile[Field].value
         currentVR = inputfile[Field].VR
 
@@ -56,7 +50,7 @@ class TestBlankAction(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = utils.dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(Expected, outputfile[Field].value)
 

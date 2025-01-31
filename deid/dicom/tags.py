@@ -1,5 +1,5 @@
 __author__ = "Vanessa Sochat"
-__copyright__ = "Copyright 2016-2023, Vanessa Sochat"
+__copyright__ = "Copyright 2016-2025, Vanessa Sochat"
 __license__ = "MIT"
 
 import re
@@ -123,7 +123,7 @@ def update_tag(dicom, field, value):
 
     Parameters
     ==========
-    dicom: the pydicom.dataset Dataset (pydicom.read_file)
+    dicom: the pydicom.dataset Dataset
     field: the name of the field to update
     value: the value to set, if name is a valid tag
 
@@ -157,7 +157,7 @@ def get_private(dicom):
 
     Parameters
     ==========
-    dicom: the pydicom.dataset Dataset (pydicom.read_file)
+    dicom: the pydicom.dataset Dataset
     """
     datasets = [dicom]
     private_tags = []
@@ -188,7 +188,7 @@ def has_private(dicom):
 
     Parameters
     ==========
-    dicom: the pydicom.dataset Dataset (pydicom.read_file)
+    dicom: the pydicom.dataset Dataset
 
     """
     private_tags = len(get_private(dicom))

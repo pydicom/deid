@@ -1,20 +1,15 @@
 #!/usr/bin/env python
 
-__author__ = "Vanessa Sochat"
-__copyright__ = "Copyright 2016-2023, Vanessa Sochat"
-__license__ = "MIT"
-
 import os
 import shutil
 import tempfile
 import unittest
 from collections import OrderedDict
 
-from pydicom import read_file
 from pydicom.sequence import Sequence
 
 from deid.data import get_dataset
-from deid.dicom import get_files, get_identifiers, replace_identifiers
+from deid.dicom import get_files, get_identifiers, replace_identifiers, utils
 from deid.dicom.parser import DicomParser
 from deid.tests.common import create_recipe
 from deid.utils import get_installdir
@@ -72,7 +67,7 @@ class TestDicom(unittest.TestCase):
             strip_sequences=False,
             output_folder=self.tmpdir,
         )
-        outputfile = read_file(result[0])
+        outputfile = utils.dcmread(result[0])
 
         self.assertEqual(1, len(result))
         self.assertEqual("SIMPSON", outputfile["11112221"].value)
@@ -118,7 +113,7 @@ class TestDicom(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         field1 = inputfile[newfield1].value
         field2 = inputfile[newfield2].value
 
@@ -155,7 +150,7 @@ class TestDicom(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        inputfile = read_file(dicom_file)
+        inputfile = utils.dcmread(dicom_file)
         currentValue = inputfile[newfield1].value
 
         self.assertNotEqual(newvalue1, currentValue)
@@ -168,7 +163,7 @@ class TestDicom(unittest.TestCase):
             strip_sequences=False,
         )
 
-        outputfile = read_file(result[0])
+        outputfile = utils.dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(newvalue1, outputfile[newfield1].value)
 
@@ -280,7 +275,7 @@ class TestDicom(unittest.TestCase):
             strip_sequences=False,
             output_folder=self.tmpdir,
         )
-        outputfile = read_file(result[0])
+        outputfile = utils.dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual("SIMPSON", outputfile["11112221"].value)
         self.assertEqual("SIMPSON", outputfile["PatientIdentityRemoved"].value)
@@ -515,8 +510,8 @@ class TestDicom(unittest.TestCase):
 
         parser = DicomParser(dicom_file, recipe=recipe)
         parser.parse()
-        self.assertTrue("(0009, 0010)" in parser.lookup["field_set2_private"])
-        self.assertTrue("(0010, 0020)" in parser.lookup["field_set2_private"])
+        self.assertTrue("(0009,0010)" in parser.lookup["field_set2_private"])
+        self.assertTrue("(0010,0020)" in parser.lookup["field_set2_private"])
 
         self.assertEqual(176, len(parser.dicom))
         self.assertEqual("SIEMENS CT VA0  COAD", parser.dicom["00190010"].value)
@@ -589,7 +584,7 @@ class TestDicom(unittest.TestCase):
         recipe = create_recipe(actions)
 
         # Ensure tag is present before removal
-        dicom = read_file(dicom_file)
+        dicom = utils.dcmread(dicom_file)
         assert "0008103e" in dicom
 
         result = replace_identifiers(

@@ -1,5 +1,5 @@
 __author__ = "Vanessa Sochat"
-__copyright__ = "Copyright 2016-2023, Vanessa Sochat"
+__copyright__ = "Copyright 2016-2025, Vanessa Sochat"
 __license__ = "MIT"
 
 import os
@@ -106,8 +106,12 @@ def save_dicom(dicom, dicom_file, output_folder=None, overwrite=False):
     return output_dicom
 
 
-def load_dicom(dcm_file):
+def load_dicom(dcm_file, force=True):
     if isinstance(dcm_file, FileDataset):
         return dcm_file
     else:
-        return pydicom.read_file(dcm_file, force=True)
+        return pydicom.dcmread(dcm_file, force=force)
+
+
+def dcmread(filename, **kwargs):
+    return pydicom.dcmread(filename, **kwargs)
