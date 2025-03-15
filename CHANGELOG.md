@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+- `deid` client saves cleaned dicoms when requested [#276](https://github.com/pydicom/deid/pull/276) (0.4.1)
 - Update to use pydicom 3 [#267](https://github.com/pydicom/deid/pull/267) (0.4.0)
 - Refactor INCLUDE_REQUIRES and provide max pydicom version [#267](https://github.com/pydicom/deid/pull/267) (0.3.25)
 - Support pydicom.Dataset objects created from BytesIO [#265](https://github.com/pydicom/deid/pull/265) (0.3.24)
