@@ -69,6 +69,7 @@ def main(args, parser):
             deid=args.deid,
             overwrite=args.overwrite,
             output_folder=output_folder,
+            save=True,
         )
 
         bot.info("%s %s files at %s" % (len(cleaned_files), args.format, output_folder))
