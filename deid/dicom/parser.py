@@ -451,12 +451,51 @@ class DicomParser:
         # The addition will be different depending on if we have filemeta
         is_filemeta = False
 
-        # Helper function to update dicom
+        def parse_tag_string(tag_string):
+            """
+            There are four possible varieties of `tag_string`:
+            1. A string of the form "(0002,0010)"
+            2. A string of the form "00020010"
+            3. A string of the form "2" (decimal), indicating the index within
+               a sequence
+            4. A tag name (e.g., "PatientID"), rather than a number.
+            """
+            if tag_string.startswith("("):
+                pattern = re.compile(r"\(([0-9A-Fa-f]{4}),([0-9A-Fa-f]{4})\)")
+                result = pattern.match(tag_string)
+                return int(f"0x{result.group(1)}{result.group(2)}", base=16)
+            else:
+                try:
+                    unannotated_hex_tag = re.compile(r"[0-9A-Fa-f]{8}")
+                    if unannotated_hex_tag.match(tag_string):
+                        return int(f"0x{tag_string}", base=16)
+                    else:
+                        return int(tag_string)
+                except ValueError:
+                    # If all numerical parsing failed, this is likely a tag name
+                    return tag_string
+
+        # A string representation of the full tag path, including parent sequences
+        full_tag_path = field
+        if hasattr(field, "uid"):
+            full_tag_path = field.uid
+
         def update_dicom(element, is_filemeta):
+            """
+            Update the dataset in `self.dicom` with the given element.
+
+            If `is_filemeta` is True, add the element to the file meta information.
+
+            Otherwise, traverse the tag path and update the element in the dataset.
+            """
             if is_filemeta:
                 self.dicom.file_meta.add(element)
             else:
-                self.dicom.add(element)
+                dataset_cursor = self.dicom
+                *parent_tags, last_tag = full_tag_path.split("__")
+                for tag in parent_tags:
+                    dataset_cursor = dataset_cursor[parse_tag_string(tag)]
+                dataset_cursor[parse_tag_string(last_tag)] = element
 
         # Assume we don't want to add an empty value
         if value is not None:
