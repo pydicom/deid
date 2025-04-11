@@ -26,6 +26,7 @@ here = os.path.dirname(os.path.abspath(__file__))
 parentheses_hex_tag_format = re.compile(r"\(([0-9A-Fa-f]{4}),([0-9A-Fa-f]{4})\)")
 bare_hex_tag_format = re.compile(r"[0-9A-Fa-f]{8}")
 
+
 class DicomParser:
     """
     Parse a dicom, performing one or more actions on fields.
