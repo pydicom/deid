@@ -23,7 +23,8 @@ from deid.logger import bot
 from deid.utils import parse_value, read_json
 
 here = os.path.dirname(os.path.abspath(__file__))
-
+parentheses_hex_tag_format = re.compile(r"\(([0-9A-Fa-f]{4}),([0-9A-Fa-f]{4})\)")
+bare_hex_tag_format = re.compile(r"[0-9A-Fa-f]{8}")
 
 class DicomParser:
     """
@@ -461,13 +462,11 @@ class DicomParser:
             4. A tag name (e.g., "PatientID"), rather than a number.
             """
             if tag_string.startswith("("):
-                pattern = re.compile(r"\(([0-9A-Fa-f]{4}),([0-9A-Fa-f]{4})\)")
-                result = pattern.match(tag_string)
+                result = parentheses_hex_tag_format.match(tag_string)
                 return int(f"0x{result.group(1)}{result.group(2)}", base=16)
             else:
                 try:
-                    unannotated_hex_tag = re.compile(r"[0-9A-Fa-f]{8}")
-                    if unannotated_hex_tag.match(tag_string):
+                    if bare_hex_tag_format.match(tag_string):
                         return int(f"0x{tag_string}", base=16)
                     else:
                         return int(tag_string)
