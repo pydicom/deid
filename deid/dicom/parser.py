@@ -495,7 +495,7 @@ class DicomParser:
                 self.dicom.file_meta.add(element)
             else:
                 dataset_cursor = self.dicom
-                # Navigate down the nested tag heirarchy by splitting the path
+                # Navigate down the nested tag hierarchy by splitting the path
                 # on the "__" delimiter. We split the last tag in the path out
                 # in order to use it for directly assigning the element to a
                 # nested field in the `self.dicom` dataset.
