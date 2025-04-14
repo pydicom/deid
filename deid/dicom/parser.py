@@ -465,17 +465,20 @@ class DicomParser:
             if tag_string.startswith("("):
                 result = parentheses_hex_tag_format.match(tag_string)
                 return int(f"0x{result.group(1)}{result.group(2)}", base=16)
-            else:
-                try:
-                    if bare_hex_tag_format.match(tag_string):
-                        return int(f"0x{tag_string}", base=16)
-                    else:
-                        return int(tag_string)
-                except ValueError:
-                    # If all numerical parsing failed, this is likely a tag name
-                    return tag_string
+            try:
+                if bare_hex_tag_format.match(tag_string):
+                    return int(f"0x{tag_string}", base=16)
+                return int(tag_string)
+            except ValueError:
+                # If all numerical parsing failed, this is likely a tag name
+                return tag_string
 
-        # A string representation of the full tag path, including parent sequences
+        # A string representation of the full tag path, including parent sequences.
+        # If `field` is a string, this will represent either the keyword ("PatientID")
+        # or tag ("(0010,0020)") of the element. If it is an object containing a `uid`
+        # property, the `uid` property will contain the full path of tags to the element
+        # with double-underscore delimiters between tags (e.g.
+        # "(0008,1115)__0__(0020,000E)")
         full_tag_path = field
         if hasattr(field, "uid"):
             full_tag_path = field.uid
@@ -492,6 +495,10 @@ class DicomParser:
                 self.dicom.file_meta.add(element)
             else:
                 dataset_cursor = self.dicom
+                # Navigate down the nested tag heirarchy by splitting the path
+                # on the "__" delimiter. We split the last tag in the path out
+                # in order to use it for directly assigning the element to a
+                # nested field in the `self.dicom` dataset.
                 *parent_tags, last_tag = full_tag_path.split("__")
                 for tag in parent_tags:
                     dataset_cursor = dataset_cursor[parse_tag_string(tag)]
