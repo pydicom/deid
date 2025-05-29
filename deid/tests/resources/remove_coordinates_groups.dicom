@@ -1,0 +1,18 @@
+FORMAT dicom
+
+%filter graylist
+
+LABEL Groups With OR
+  contains Manufacturer foo
+  + contains ManufacturerModelName bar || contains SeriesDescription flag me
+  coordinates 0,0,1024,1024
+
+LABEL Value With OR
+  contains Manufacturer foo|bar|baz
+  + contains SeriesDescription bam
+  coordinates 0,0,10,10
+
+LABEL Value With AND
+  contains Manufacturer foo
+  + contains ImageType DERIVED+SECONDARY
+  coordinates 0,0,20,10

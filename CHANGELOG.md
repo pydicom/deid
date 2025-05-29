@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+- Fix logic in evaluating flags for groups containing OR (`||`) [#278](https://github.com/pydicom/deid/pull/279) (0.4.3)
 - Fix incorrect assignment of deeply-nested tags to top-level tags [#277](https://github.com/pydicom/deid/pull/277) (0.4.2)
 - `deid` client saves cleaned dicoms when requested [#276](https://github.com/pydicom/deid/pull/276) (0.4.1)
 - Update to use pydicom 3 [#267](https://github.com/pydicom/deid/pull/267) (0.4.0)

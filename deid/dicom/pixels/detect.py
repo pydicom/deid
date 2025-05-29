@@ -132,13 +132,14 @@ def _has_burned_pixels_single(dicom_file, force: bool, deid):
 
             # If there aren't any filters but we have coordinates, assume True
             if not item.get("filters") and item.get("coordinates"):
-                group_flags = [True]
+                this_item_flags = [True]
                 group_descriptions = [item.get("name", "")]
 
             else:
-                group_flags = []  # evaluation for a single line
+                this_item_flags = []  # evaluation for a single line
                 group_descriptions = []
                 for group in item["filters"]:
+                    this_group_flags = []
                     # You cannot pop from the list
                     for a in range(len(group["action"])):
                         action = group["action"][a]
@@ -154,18 +155,21 @@ def _has_burned_pixels_single(dicom_file, force: bool, deid):
                             filter_name=action,
                             value=value or None,
                         )
-                        group_flags.append(flag)
+                        this_group_flags.append(flag)
                         description = "%s %s %s" % (field, action, value)
 
                         if len(group["InnerOperators"]) > a:
                             inner_operator = group["InnerOperators"][a]
-                            group_flags.append(inner_operator)
+                            this_group_flags.append(inner_operator)
                             description = "%s %s" % (description, inner_operator)
 
                         group_descriptions.append(description)
 
+                    overall_group_flag = evaluate_group(this_group_flags)
+                    this_item_flags.append(overall_group_flag)
+
             # At the end of a group, evaluate the inner group
-            flag = evaluate_group(group_flags)
+            flag = evaluate_group(this_item_flags)
 
             # "Operator" is relevant for the outcome of the list of actions
             operator = ""
