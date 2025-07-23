@@ -378,8 +378,8 @@ def parse_member(members, operator=None):
         member = members.pop(0).strip()
 
         # Find the first || or +
-        match_or = re.search("\|\|", member)  # noqa
-        match_and = re.search("\+", member)  # noqa
+        match_or = re.search(r"\|\|", member)  # noqa
+        match_and = re.search(r"\+", member)  # noqa
 
         if match_or is not None:
             operator = "||"

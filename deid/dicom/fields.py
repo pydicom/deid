@@ -47,24 +47,33 @@ class DicomField:
 
     # Contains
 
-    def name_contains(self, expression):
+    def name_contains(self, expression, whole_string=False):
         """
         Determine if a name contains a pattern or expression.
-
+        Use whole_string to match the entire string exactly (True),
+        or partially (False).
         Use re to search a field for a regular expression, meaning
         the name, the keyword (nested) or the string tag.
-
         name.lower: includes nested keywords (e.g., Sequence_Child)
-        self.tag: is the string version of the tag
         self.element.name: is the human friendly name "Sequence Child"
         self.element.keyword: is the name without nesting "Child"
+        Usage example: if the object contains PatientName then the
+        following expressions will return True:
+        - Patient's Name (tag name)
+        - patient's name (lowercase tag name)
+        - PatientName (tag keyword)
+        - PatientN (tag keyword partial match, with whole_string=False)
+        - (0010,0010) (parentheses-enclosed, comma-separated group, element)
+        - 00100010 (stripped group, element)
         """
+        regexp_expression = f"^{expression}$" if whole_string else expression
         if (
-            re.search(expression, self.name.lower())
-            or re.search(expression, self.tag)
-            or re.search(expression, self.stripped_tag)
-            or re.search(expression, self.element.name)
-            or re.search(expression, self.element.keyword)
+            re.search(regexp_expression, self.name.lower())
+            or f"({self.element.tag.group:04X},{self.element.tag.element:04X})".lower()
+            == expression.lower()
+            or re.search(regexp_expression, self.stripped_tag)
+            or re.search(regexp_expression, self.element.name)
+            or re.search(regexp_expression, self.element.keyword)
         ):
             return True
         return False
@@ -207,7 +216,7 @@ def expand_field_expression(field, dicom, contenders=None):
         return {
             uid: field
             for uid, field in contenders.items()
-            if field.name_contains("^" + fields[0] + "$")
+            if field.name_contains(fields[0], whole_string=True)
         }
 
     # if we get down here, we have an expander and expression

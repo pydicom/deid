@@ -289,11 +289,13 @@ class DicomParser:
         """
         keeps = []
         if self.recipe.deid is not None:
-            keeps = [
-                action.get("field")
-                for action in self.recipe.get_actions(action="KEEP")
-                if action and action.get("field")
-            ]
+            for action in self.recipe.get_actions(action="KEEP"):
+                if action and action.get("field"):
+                    fields = expand_field_expression(
+                        field=action.get("field"), dicom=self.dicom
+                    )
+                    # keys are in the format "(1234,5678)"
+                    keeps.extend(fields.keys())
         return keeps
 
     @property
