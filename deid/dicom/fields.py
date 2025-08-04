@@ -65,6 +65,17 @@ class DicomField:
         - PatientN (tag keyword partial match, with whole_string=False)
         - (0010,0010) (parentheses-enclosed, comma-separated group, element)
         - 00100010 (stripped group, element)
+
+        Usage examples for private tags:
+        - Standard hex format: 0033101E
+        - Parentheses format: (0033,101E)
+        - Private creator syntax (stripped): 0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E
+        - Private creator syntax (parentheses): (0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E)
+
+        Private tag syntax format:
+        - GROUP: 4-digit hexadecimal group number
+        - PRIVATE_CREATOR: Private creator string in double quotes
+        - ELEMENT_OFFSET: 2-digit hexadecimal element number (last 8 bits of full element)
         """
         regexp_expression = f"^{expression}$" if whole_string else expression
         if (
@@ -76,6 +87,25 @@ class DicomField:
             or re.search(regexp_expression, self.element.keyword)
         ):
             return True
+
+        if self.element.is_private and (self.element.private_creator is not None):
+            # Handle private tag syntax matching
+            # Private tags can be referenced using two formats:
+            # 1. Stripped format: GROUP,"PRIVATE_CREATOR",ELEMENT_OFFSET
+            #    Example: 0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E
+            # 2. Parentheses format: (GROUP,"PRIVATE_CREATOR",ELEMENT_OFFSET)
+            #    Example: (0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E)
+            #
+            # The GROUP is the 4-digit hex group number (e.g., 0033)
+            # The PRIVATE_CREATOR is the private creator string in quotes
+            # The ELEMENT_OFFSET is the 2-digit hex element number (masked to last 8 bits)
+            stripped_private_tag = f'{self.element.tag.group:04X},"{self.element.private_creator}",{(self.element.tag.element&0xFF):02X}'
+            private_tag = "(" + stripped_private_tag + ")"
+            if (
+                re.search(regexp_expression, stripped_private_tag, re.IGNORECASE)
+                or private_tag.lower() == expression.lower()
+            ):
+                return True
         return False
 
     def value_contains(self, expression):

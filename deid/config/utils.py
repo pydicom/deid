@@ -486,6 +486,17 @@ def _remove_comments(parts):
     return value.split("#")[0]  # remove comments
 
 
+def split_action_line(line):
+    """
+    Split an action line into its components.
+    Use regex to split the string by spaces, but only when the space is not
+    inside quotes. This is necessary to allow private creator syntax that
+    may have white spaces in their name between quotes, e.g.,
+    KEEP (0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E) or similar cases in deid recipes.
+    """
+    return re.findall(r"""(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+""", line)
+
+
 def parse_group_action(section, line, config, section_name):
     """parse a group action, either FIELD or SPLIT, which must belong to
     either a fields or values section.
@@ -505,7 +516,7 @@ def parse_group_action(section, line, config, section_name):
 
     # We may have to deal with cases of spaces
     bot.debug("%s: adding %s" % (section, line))
-    parts = line.split(" ")
+    parts = split_action_line(line)
     action = parts.pop(0).replace(" ", "")
 
     # Both require some parts
@@ -550,7 +561,7 @@ def parse_config_action(section, line, config, section_name=None):
         bot.exit("%s is not a valid action line." % line)
 
     # We may have to deal with cases of spaces
-    parts = line.split(" ")
+    parts = split_action_line(line)
     action = parts.pop(0).replace(" ", "")
 
     # What field is the action for?

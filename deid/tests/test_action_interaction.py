@@ -1135,13 +1135,13 @@ class TestRuleInteractions(unittest.TestCase):
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile["00100010"].value)
 
-    def test_keep_remove_single_private_tag_should_be_original_value(self):
+    def test_keep_remove_single_private_tag_should_be_original_value_1(self):
         """RECIPE RULE
         KEEP 0033101E
         REMOVE 0033101E
         """
 
-        print("Test KEEP/REMOVE Interaction")
+        print("Test KEEP/REMOVE Interaction private tag")
         dicom_file = get_file(self.dataset)
 
         field = "0033101E"
@@ -1173,6 +1173,46 @@ class TestRuleInteractions(unittest.TestCase):
         outputfile = utils.dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
+
+    def test_keep_remove_single_private_tag_should_be_original_value_2(self):
+        """RECIPE RULE
+        KEEP (0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E)
+        REMOVE (0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E)
+        """
+
+        print("Test KEEP/REMOVE Interaction for private creator syntax")
+        dicom_file = get_file(self.dataset)
+
+        field = '(0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E)'
+        field_dicom = "0033101E"
+
+        action1 = "KEEP"
+        action2 = "REMOVE"
+
+        actions = [
+            {"action": action1, "field": field},
+            {"action": action2, "field": field},
+        ]
+        recipe = create_recipe(actions)
+
+        inputfile = utils.dcmread(dicom_file)
+        currentValue = inputfile[field_dicom].value
+        valueexpected = currentValue
+
+        self.assertNotEqual(None, currentValue)
+        self.assertNotEqual("", currentValue)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+        )
+
+        outputfile = utils.dcmread(result[0])
+        self.assertEqual(1, len(result))
+        self.assertEqual(valueexpected, outputfile[field_dicom].value)
 
     def test_replace_add_should_have_add_value(self):
         """RECIPE RULE
@@ -1256,6 +1296,48 @@ class TestRuleInteractions(unittest.TestCase):
         self.assertEqual(1, len(result))
         self.assertEqual("", outputfile[field].value)
 
+    def test_private_tag_replace_blank_should_be_blank(self):
+        """RECIPE RULE
+        REPLACE (0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E) TestingReplace
+        BLANK (0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E)
+        """
+
+        print("Test REPLACE/BLANK Interaction for private creator syntax")
+        dicom_file = get_file(self.dataset)
+
+        field = '(0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E)'
+        field_dicom = "0033101E"
+
+        action1 = "REPLACE"
+        value1 = "TestingReplace"
+
+        action2 = "BLANK"
+
+        actions = [
+            {"action": action1, "field": field, "value": value1},
+            {"action": action2, "field": field},
+        ]
+        recipe = create_recipe(actions)
+
+        inputfile = utils.dcmread(dicom_file)
+        currentValue = inputfile[field_dicom].value
+
+        self.assertNotEqual(value1, currentValue)
+        self.assertNotEqual("", currentValue)
+        self.assertNotEqual(None, currentValue)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+        )
+
+        outputfile = utils.dcmread(result[0])
+        self.assertEqual(1, len(result))
+        self.assertEqual("", outputfile[field_dicom].value)
+
     def test_replace_jitter_should_combine(self):
         """RECIPE RULE
         REPLACE StudyDate 20221128
@@ -1298,6 +1380,50 @@ class TestRuleInteractions(unittest.TestCase):
         outputfile = utils.dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
+
+    def test_private_tag_replace_jitter_should_combine(self):
+        """RECIPE RULE
+        REPLACE (0029,"SIEMENS CSA HEADER",21) 20221128
+        JITTER (0029,"SIEMENS CSA HEADER",21) 5
+        """
+
+        print("Test REPLACE/JITTER Interaction for private creator syntax")
+        dicom_file = get_file(self.dataset)
+
+        field = '(0029,"SIEMENS CSA HEADER",21)'
+        field_dicom = "00291021"
+
+        action1 = "REPLACE"
+        value1 = "20221128"
+
+        action2 = "JITTER"
+        value2 = "5"
+
+        valueexpected = "20221203"
+
+        actions = [
+            {"action": action1, "field": field, "value": value1},
+            {"action": action2, "field": field, "value": value2},
+        ]
+        recipe = create_recipe(actions)
+
+        inputfile = utils.dcmread(dicom_file)
+        currentValue = inputfile[field_dicom].value
+
+        self.assertNotEqual(value1, currentValue)
+        self.assertNotEqual(valueexpected, currentValue)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+        )
+
+        outputfile = utils.dcmread(result[0])
+        self.assertEqual(1, len(result))
+        self.assertEqual(valueexpected, outputfile[field_dicom].value)
 
     def test_replace_keep_should_have_original_value(self):
         """RECIPE RULE
