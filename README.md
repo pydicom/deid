@@ -11,7 +11,6 @@ These are basic Python based tools for working with medical images and text, spe
 The cleaning method used here mirrors the one by CTP in that we can identify images based on known
 locations. We are looking for collaborators to develop and validate an OCR cleaning method! Please reach out if you would like to help work on this.
 
-
 ## Installation
 
 ### Local
