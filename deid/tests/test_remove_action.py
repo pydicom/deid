@@ -103,6 +103,76 @@ class TestRemoveAction(unittest.TestCase):
         with self.assertRaises(KeyError):
             _ = outputfile[Field].value
 
+    def test_remove_single_new_syntax_private_tag_field_1(self):
+        """RECIPE RULE
+        REMOVE (0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E)
+        """
+        print(
+            "Test REMOVE private tag in format (0033,'MITRA OBJECT UTF8 ATTRIBUTES 1.0', 1E)"
+        )
+        dicom_file = get_file(self.dataset)
+
+        Field = '(0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E)'
+        field_dicom = "0033101E"
+        actions = [
+            {"action": "REMOVE", "field": Field},
+        ]
+        recipe = create_recipe(actions)
+
+        inputfile = utils.dcmread(dicom_file)
+        currentValue = inputfile[field_dicom].value
+
+        self.assertNotEqual(None, currentValue)
+        self.assertNotEqual("", currentValue)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        outputfile = utils.dcmread(result[0])
+
+        self.assertEqual(1, len(result))
+        with self.assertRaises(KeyError):
+            _ = outputfile[field_dicom].value
+
+    def test_remove_single_new_syntax_private_tag_field_2(self):
+        """RECIPE RULE
+        REMOVE (0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E)
+        """
+        print(
+            "Test REMOVE private tag in format 0033,'MITRA OBJECT UTF8 ATTRIBUTES 1.0', 1E"
+        )
+        dicom_file = get_file(self.dataset)
+
+        Field = '0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E'
+        field_dicom = "0033101E"
+        actions = [
+            {"action": "REMOVE", "field": Field},
+        ]
+        recipe = create_recipe(actions)
+
+        inputfile = utils.dcmread(dicom_file)
+        currentValue = inputfile[field_dicom].value
+
+        self.assertNotEqual(None, currentValue)
+        self.assertNotEqual("", currentValue)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        outputfile = utils.dcmread(result[0])
+
+        self.assertEqual(1, len(result))
+        with self.assertRaises(KeyError):
+            _ = outputfile[field_dicom].value
+
 
 if __name__ == "__main__":
     unittest.main()
