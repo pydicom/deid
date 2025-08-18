@@ -75,7 +75,7 @@ class TestRemoveAction(unittest.TestCase):
         """RECIPE RULE
         REMOVE 0033101E
         """
-        print("Test REMOVE private tag in format 0033101E")
+        print("Test REMOVE private tag with hex format")
         dicom_file = get_file(self.dataset)
 
         Field = "0033101E"  # Private tag in hex format
@@ -102,6 +102,142 @@ class TestRemoveAction(unittest.TestCase):
         self.assertEqual(1, len(result))
         with self.assertRaises(KeyError):
             _ = outputfile[Field].value
+
+    def test_remove_single_tag_private_creator_syntax_1(self):
+        """RECIPE RULE
+        REMOVE (0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E)
+        """
+        print("Test REMOVE private tag with private creator syntax")
+        dicom_file = get_file(self.dataset)
+
+        Field = '(0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E)'
+        field_dicom = "0033101E"
+        actions = [
+            {"action": "REMOVE", "field": Field},
+        ]
+        recipe = create_recipe(actions)
+
+        inputfile = utils.dcmread(dicom_file)
+        currentValue = inputfile[field_dicom].value
+
+        self.assertNotEqual(None, currentValue)
+        self.assertNotEqual("", currentValue)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        outputfile = utils.dcmread(result[0])
+
+        self.assertEqual(1, len(result))
+        with self.assertRaises(KeyError):
+            _ = outputfile[field_dicom].value
+
+    def test_remove_single_tag_private_creator_syntax_2(self):
+        """RECIPE RULE
+        REMOVE 0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E
+        """
+        print("Test REMOVE private tag with (stripped) private creator syntax")
+        dicom_file = get_file(self.dataset)
+
+        Field = '0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E'
+        field_dicom = "0033101E"
+        actions = [
+            {"action": "REMOVE", "field": Field},
+        ]
+        recipe = create_recipe(actions)
+
+        inputfile = utils.dcmread(dicom_file)
+        currentValue = inputfile[field_dicom].value
+
+        self.assertNotEqual(None, currentValue)
+        self.assertNotEqual("", currentValue)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        outputfile = utils.dcmread(result[0])
+
+        self.assertEqual(1, len(result))
+        with self.assertRaises(KeyError):
+            _ = outputfile[field_dicom].value
+
+    def test_remove_single_tag_private_creator_syntax_3(self):
+        """RECIPE RULE
+        REMOVE (0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E)
+        """
+        print(
+            "Test REMOVE private tag with private creator syntax from external recipe file"
+        )
+        dicom_file = get_file(self.dataset)
+
+        field_dicom = "0033101E"
+
+        recipe = os.path.abspath(
+            "%s/../examples/deid/deid.dicom-private-creator-syntax" % self.pwd
+        )
+
+        inputfile = utils.dcmread(dicom_file)
+        currentValue = inputfile[field_dicom].value
+
+        self.assertNotEqual(None, currentValue)
+        self.assertNotEqual("", currentValue)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        outputfile = utils.dcmread(result[0])
+
+        self.assertEqual(1, len(result))
+        with self.assertRaises(KeyError):
+            _ = outputfile[field_dicom].value
+
+    def test_remove_single_tag_private_creator_no_match(self):
+        """RECIPE RULE
+        REMOVE 0033,"MITRA OBJECT UTF8 ATTRIBUTES 1",1E
+        """
+        print(
+            "Test REMOVE private tag with mismatched private creator - should NOT remove"
+        )
+        dicom_file = get_file(self.dataset)
+
+        # Use wrong private creator - should not match existing tag
+        Field = '0033,"MITRA OBJECT UTF8 ATTRIBUTES 1",1E'
+        field_dicom = "0033101E"
+        actions = [
+            {"action": "REMOVE", "field": Field},
+        ]
+        recipe = create_recipe(actions)
+
+        inputfile = utils.dcmread(dicom_file)
+        currentValue = inputfile[field_dicom].value
+
+        self.assertNotEqual(None, currentValue)
+        self.assertNotEqual("", currentValue)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        outputfile = utils.dcmread(result[0])
+
+        self.assertEqual(1, len(result))
+        # Tag should still exist because private creator didn't match
+        self.assertEqual(currentValue, outputfile[field_dicom].value)
 
 
 if __name__ == "__main__":

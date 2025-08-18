@@ -469,6 +469,35 @@ These notes are provided to give detail about the implementation - you do not ne
 to worry about using these underlying functions to do expansion, only that they
 are working to expose even private tags for parsing.
 
+##Private creator Syntax for Private Tags
+
+As of the version 0.4.5, deid supports enhanced private tag syntax for precise private tag matching with private creator.
+In addition to what was previously possible, private tags can now be also referenced using these formats:
+
+- Private creator syntax (stripped): `0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E`.
+- Private creator syntax (parentheses): `(0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E)`.
+
+The private creator syntax is particularly useful when one needs to target specific private tags that share
+the same group and element numbers but have different private creators.
+
+The private creator syntax is built with: `GROUP,"PRIVATE_CREATOR",ELEMENT_OFFSET`
+
+- GROUP: 4-digit hexadecimal group number (e.g., 0033)
+- PRIVATE_CREATOR: Exact private creator string in double quotes
+- ELEMENT_OFFSET: 2-digit hexadecimal element number (last 8 bits of full element)
+
+Examples using the private creator syntax in recipes:
+
+```
+# Private creator syntax for precise matching
+REMOVE 0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E
+BLANK (0029,"SIEMENS CSA HEADER",21)
+REPLACE (7FE1,"Philips Imaging DD 001",08) "REDACTED"
+```
+
+This enhanced syntax enables vendor-specific private tag handling and prevents accidental
+modification of the wrong private tags when multiple vendors use the same group/element combinations.
+
 <a id="example">
 ## Example
 
