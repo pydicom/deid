@@ -1508,13 +1508,13 @@ class TestRuleInteractions(unittest.TestCase):
         self.assertEqual(1, len(result))
         self.assertEqual(valueexpected, outputfile[field].value)
 
-    def test_replace_remove_should_be_replace_value(self):
+    def test_replace_remove_should_be_replace_value_1(self):
         """RECIPE RULE
         REPLACE StudyDate 20221128
         REMOVE StudyDate
         """
 
-        print("Test REPLACE/REMOVE Interaction")
+        print("Test REPLACE/REMOVE Interaction with StudyDate field")
         dicom_file = get_file(self.dataset)
 
         field = "StudyDate"
@@ -1546,6 +1546,81 @@ class TestRuleInteractions(unittest.TestCase):
         outputfile = utils.dcmread(result[0])
         self.assertEqual(1, len(result))
         self.assertEqual(value1, outputfile[field].value)
+
+    def test_replace_remove_should_be_replace_value_2(self):
+        """RECIPE RULE
+        REPLACE startswith:StudyDat 20221128
+        REMOVE startswith:StudyDat
+        """
+
+        print("Test REPLACE/REMOVE Interaction with startswith:StudyDat field")
+        dicom_file = get_file(self.dataset)
+
+        field = "startswith:StudyDat"
+
+        action1 = "REPLACE"
+        value1 = "20221128"
+
+        action2 = "REMOVE"
+
+        actions = [
+            {"action": action1, "field": field, "value": value1},
+            {"action": action2, "field": field},
+        ]
+        recipe = create_recipe(actions)
+
+        inputfile = utils.dcmread(dicom_file)
+        currentValue = inputfile["StudyDate"].value
+        self.assertNotEqual(value1, currentValue)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+        )
+
+        outputfile = utils.dcmread(result[0])
+        self.assertEqual(1, len(result))
+        self.assertEqual(value1, outputfile["StudyDate"].value)
+
+    def test_replace_remove_should_be_replace_value_3(self):
+        """RECIPE RULE
+        REPLACE (0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E) Hello
+        REMOVE (0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E)
+        """
+
+        print("Test REPLACE/REMOVE Interaction with private creator syntax")
+        dicom_file = get_file(self.dataset)
+
+        field = '(0033,"MITRA OBJECT UTF8 ATTRIBUTES 1.0",1E)'
+
+        action1 = "REPLACE"
+        value1 = "Hello"
+        action2 = "REMOVE"
+
+        actions = [
+            {"action": action1, "field": field, "value": value1},
+            {"action": action2, "field": field},
+        ]
+        recipe = create_recipe(actions)
+
+        inputfile = utils.dcmread(dicom_file)
+        currentValue = inputfile["0033101E"].value
+        self.assertNotEqual(value1, currentValue)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+        )
+
+        outputfile = utils.dcmread(result[0])
+        self.assertEqual(1, len(result))
+        self.assertEqual(value1, outputfile["0033101E"].value)
 
     def test_remove_add_should_be_add_value(self):
         """RECIPE RULE

@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+- Fix REMOVE action to respect REPLACE or JITTER priority [#283](https://github.com/pydicom/deid/pull/283) (0.4.6)
 - Add enhanced private tag syntax support [#282](https://github.com/pydicom/deid/pull/282) (0.4.5)
 - Fix tag specification for KEEP action [#281](https://github.com/pydicom/deid/pull/281) (0.4.4)
 - Fix logic in evaluating flags for groups containing OR (`||`) [#278](https://github.com/pydicom/deid/pull/279) (0.4.3)
