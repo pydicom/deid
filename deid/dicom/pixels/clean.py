@@ -234,7 +234,11 @@ class DicomCleaner:
             bot.warning("use detect() --> clean() before saving is possible.")
 
     def save_dicom(
-        self, output_folder=None, image_type="cleaned", preserve_compression=False
+        self,
+        output_folder=None,
+        image_type="cleaned",
+        preserve_compression=False,
+        compression=None,
     ):
         """
         Save a cleaned dicom to disk.
@@ -258,6 +262,14 @@ class DicomCleaner:
                     bot.warning(
                         "Could not recompress dicom with %s, saving uncompressed."
                         % original_transfer_syntax
+                    )
+            elif compression is not None:
+                try:
+                    dicom.compress(compression)
+                except NotImplementedError:
+                    bot.warning(
+                        "Could not recompress dicom with %s, saving uncompressed."
+                        % compression
                     )
 
             dicom.save_as(dicom_name)
