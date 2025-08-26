@@ -233,7 +233,9 @@ class DicomCleaner:
         else:
             bot.warning("use detect() --> clean() before saving is possible.")
 
-    def save_dicom(self, output_folder=None, image_type="cleaned"):
+    def save_dicom(
+        self, output_folder=None, image_type="cleaned", preserve_compression=False
+    ):
         """
         Save a cleaned dicom to disk.
 
@@ -245,10 +247,19 @@ class DicomCleaner:
         if hasattr(self, image_type):
             dicom_name = self._get_clean_name(output_folder)
             dicom = utils.dcmread(self.dicom_file, force=True)
-            # If going from compressed, change TransferSyntax
-            if dicom.file_meta.TransferSyntaxUID.is_compressed is True:
+            original_transfer_syntax = dicom.file_meta.TransferSyntaxUID
+            if original_transfer_syntax.is_compressed:
                 dicom.decompress()
             dicom.PixelData = self.cleaned.tobytes()
+            if original_transfer_syntax.is_compressed and preserve_compression:
+                try:
+                    dicom.compress(original_transfer_syntax)
+                except NotImplementedError:
+                    bot.warning(
+                        "Could not recompress dicom with %s, saving uncompressed."
+                        % original_transfer_syntax
+                    )
+
             dicom.save_as(dicom_name)
             return dicom_name
         else:
