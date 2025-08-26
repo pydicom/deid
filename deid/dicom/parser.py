@@ -597,9 +597,33 @@ class DicomParser:
                     field=field,
                     funcs=self.deid_funcs,
                 )
+            # Check if field should be excluded from deletion to maintain action priority
+            # This ensures that fields marked for REPLACE or JITTER actions are not
+            # removed before they can be processed, maintaining the correct action hierarchy:
+            # KEEP > ADD > REPLACE > JITTER > REMOVE > BLANK
+            is_excluded = False
+            if do_removal:
+                for excluded_field in self.excluded_from_deletion:
+                    # Use expand_field_expression to properly match field identifiers
+                    # This resolves the format mismatch issue where excluded_from_deletion
+                    # contains recipe format identifiers (e.g., "(0008,0020)", "StudyDate")
+                    # but field.uid is in internal format. expand_field_expression normalizes
+                    # all field identifier formats for proper comparison.
+                    excluded_fields = expand_field_expression(
+                        field=excluded_field, dicom=self.dicom, contenders=self.fields
+                    )
+                    # Check if the current field's UID matches any of the expanded
+                    # excluded fields. This ensures format-agnostic matching regardless
+                    # of how the field was specified in the deid recipe.
+                    if field.uid in excluded_fields:
+                        is_excluded = True
+                        break
 
-            if do_removal is True and field.name not in self.excluded_from_deletion:
-                self.delete_field(field)
+                # Only proceed with removal if both conditions are met:
+                # 1. do_removal is True (field passes any filter conditions)
+                # 2. is_excluded is False (field is not marked for later REPLACE/JITTER)
+                if not is_excluded:
+                    self.delete_field(field)
 
     def remove_private(self):
         """
