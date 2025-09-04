@@ -53,7 +53,7 @@ class TestMainAction(unittest.TestCase):
 
     @patch(
         "sys.argv",
-        "deid --outfolder out/ pixels --deid deid.cfg --input ./".split(" "),
+        "deid --outfolder out/ clean-pixels --deid deid.cfg --input ./".split(" "),
     )
     def test_deidmain_clean_pixels(self):
         """

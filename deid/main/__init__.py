@@ -159,7 +159,9 @@ def get_parser():
         required=True,
     )
 
-    pixels = subparsers.add_parser("pixels", help="Clean dicom: scrub burn in pixels")
+    pixels = subparsers.add_parser(
+        "clean-pixels", help="Clean dicom: scrub burn in pixels"
+    )
     pixels.add_argument(
         "--input",
         dest="input",
@@ -173,6 +175,13 @@ def get_parser():
         help="deid file with preferences, if not specified, default used.",
         type=str,
         default=None,
+    )
+    pixels.add_argument(
+        "--type",
+        dest="type",
+        help="Input type. Currently only dicom supported.",
+        choices=["dicom"],
+        default="dicom",
     )
 
     return parser
@@ -202,7 +211,7 @@ def main():
         from .identifiers import main
     elif args.command == "inspect":
         from .inspect import main
-    elif args.command == "pixels":
+    elif args.command == "clean-pixels":
         from .pixels import main
 
     else:
