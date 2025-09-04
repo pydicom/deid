@@ -10,7 +10,7 @@ from deid.dicom.pixels import DicomCleaner
 from deid.logger import bot
 
 
-def pixel_main(args: argparse.Namespace, parser: argparse.ArgumentParser = None):
+def main(args: argparse.Namespace, parser: argparse.ArgumentParser = None):
     """
     CLI interface for pixel cleaning.
     Used as `main` by py:func:`deid.main.main`

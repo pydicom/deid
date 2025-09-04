@@ -203,7 +203,7 @@ def main():
     elif args.command == "inspect":
         from .inspect import main
     elif args.command == "pixels":
-        from .pixels import pixel_main as main
+        from .pixels import main
 
     else:
         parser.print_help()
