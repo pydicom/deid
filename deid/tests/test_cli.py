@@ -64,7 +64,8 @@ class TestMainAction(unittest.TestCase):
         # Confirm input data has value that will be scrubbed.
         indcm = utils.dcmread(self.tmpdir + "/example.dicom")
         self.assertEqual(indcm.pixel_array.shape, (456, 510, 3))
-        censor_area = indcm.pixel_array[0:250, 0:100, :]  # y,x,z
+        # index is y,x,z for censor box coordinates from deid.cfg below
+        censor_area = indcm.pixel_array[0:250, 0:100, :]
         # all voxels in region to be scrubbed are valued. lucky us
         self.assertEqual(np.count_nonzero(censor_area != 0), 75000)
 
@@ -88,7 +89,6 @@ contains SOPInstanceUID .
         # Confirm we changed pixel data
         self.assertTrue(np.any(indcm.pixel_array != outfile.pixel_array))
         # Confirm censor area is all zeros
-        # 30126 but expect 75000
         zero_cnt = np.count_nonzero(outfile.pixel_array[0:250, 0:100, :] == 0)
         self.assertEqual(zero_cnt, 100 * 250 * 3)  # 75000
 

@@ -251,7 +251,7 @@ class TestClean(unittest.TestCase):
         )  # defaults:  extension="dcm", prefix="clean-"
         self.assertEqual(new_name, os.path.join("abc", "clean-XYZ.dcm"))
 
-        # note IMA not removed -- unusual dicom extension not implicitly handled
+        # note IMA not removed -- Siemens dicom extension not implicitly handled
         client.dicom_file = "XYZ.IMA"
         new_name = client._get_clean_name(output_folder="abc", extension="png")
         self.assertEqual(new_name, os.path.join("abc", "clean-XYZ.IMA.png"))
