@@ -6,11 +6,12 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+import numpy as np
+
 import deid.main
 from deid.data import get_dataset
 from deid.dicom import get_files, utils
 from deid.utils import get_installdir
-import numpy as np
 
 
 class TestMainAction(unittest.TestCase):

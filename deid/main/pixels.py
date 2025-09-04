@@ -2,9 +2,9 @@
 """
 CLI 'main' entrypoint for pixel scrubbing
 """
-import os
-import tempfile
 import argparse  # for typing only
+import tempfile
+
 from deid.dicom import get_files
 from deid.dicom.pixels import DicomCleaner
 from deid.logger import bot
@@ -39,8 +39,8 @@ def pixel_main(args: argparse.Namespace, parser: argparse.ArgumentParser = None)
     #       may want new client for each file to be safe?
     client = DicomCleaner(output_folder=output_folder, deid=args.deid)
     for dcm in dicom_files:
-        #: py:func:`deid.dicom.pixels.detect._has_burned_pixels_single` dictionary
-        has_burn_in = client.detect(dcm)
+        #: py:func:`deid.dicom.pixels.detect._has_burned_pixels_single` dictionary, not used so not saved
+        client.detect(dcm)
         client.clean()
         # prefix and extension empty to reuse same name as input
         # folder=None means use self.output_folder
