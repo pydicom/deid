@@ -165,7 +165,8 @@ class DicomCleaner:
         else:
             basename = os.path.basename(self.dicom_file)
 
-        return "%s/%s%s%s" % (output_folder, prefix, basename, extension)
+        new_basename = prefix + basename + extension
+        return os.path.join(output_folder, new_basename)
 
     def save_png(self, output_folder=None, image_type="cleaned", title=None):
         """
