@@ -22,7 +22,7 @@ def pixel_main(args: argparse.Namespace, parser: argparse.ArgumentParser = None)
     args:  Likely created by py:func:`deid.main.get_parser`.
            Uses output_folder, deid
 
-    parser: for compatiblity with other *.main functions. Ignored.
+    parser: for compatibility with other *.main functions. Ignored.
     """
 
     output_folder = args.outfolder

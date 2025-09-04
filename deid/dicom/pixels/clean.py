@@ -146,7 +146,7 @@ class DicomCleaner:
         extension: the extension of the file to create a name for, should
         not start with "."
         prefix: string prepended to file's basename
-        extension: extension to append to basename after removeing .dcm or .dicom.
+        extension: extension to append to basename after removing .dcm or .dicom.
                    Use empty string to disable. .dcm|.dicom will not be stripped. basename is not changed.
 
         """
@@ -258,8 +258,8 @@ class DicomCleaner:
         ==========
         output_folder: where to save clean dicoms. Will use self.output_folder if None
         image_type: ["cleaned","original"]. default "cleaned" checks that detect has been run.
-        prefix: passed onto py:meth:`DicomCleaner._get_clean_name`. Default addes 'clean-' to basename
-        extension: paseed onto py:meth:`DicomCleaner._get_clean_name`. Default appends .dcm afte removeing .dcm or .dicom.
+        prefix: passed onto py:meth:`DicomCleaner._get_clean_name`. Default adds 'clean-' to basename
+        extension: paseed onto py:meth:`DicomCleaner._get_clean_name`. Default appends .dcm after removing .dcm or .dicom.
                    use empty string to disable, reuses whole basename
 
 
