@@ -10,6 +10,7 @@ import deid.main
 from deid.data import get_dataset
 from deid.dicom import get_files, utils
 from deid.utils import get_installdir
+import numpy as np
 
 
 class TestMainAction(unittest.TestCase):
@@ -48,6 +49,43 @@ class TestMainAction(unittest.TestCase):
 
         # Confirm new file was srubbed
         self.assertEqual(None, outfile.get("StudyTime"))
+
+    @patch(
+        "sys.argv",
+        "deid --outfolder out/ --overwrite pixels --action all --deid deid.cfg --input ./".split(
+            " "
+        ),
+    )
+    def test_deidmain_clean_pixels(self):
+        """
+        Run example command line call to clean pixels
+        """
+        os.chdir(self.tmpdir)
+        shutil.copyfile(self.example, self.tmpdir + "/example.dicom")
+        # Confirm input data has value that will be scrubbed.
+        indcm = utils.dcmread(self.tmpdir + "/example.dicom")
+        self.assertEqual(indcm.pixel_array.shape, (456, 510, 3))
+        self.assertTrue(np.any(indcm.pixel_array[0:100,0:250,:] != 0))
+
+        with open('deid.cfg','w') as f:
+            f.write("""FORMAT dicom
+
+%filter greylist
+
+LABEL Censor Top Left
+contains SOPInstanceUID .
+  coordinates 0,0,100,250
+""")
+
+
+        os.makedirs("out/")
+        deid.main.main()
+
+        # Confirm new file is not same as old
+        # TODO: confirm correct number of pixels are censored
+        outfile = utils.dcmread("out/example.dicom")
+        self.assertTrue(np.any(indcm.pixel_array != outfile.pixel_array))
+
 
 
 if __name__ == "__main__":
