@@ -229,6 +229,50 @@ class TestClean(unittest.TestCase):
         compare = inputpixels[0:2000, 0:2000] == outputpixels[0:2000, 0:2000]
         self.assertTrue(compare.all())
 
+    def test_get_clean_name(self):
+        from deid.dicom import DicomCleaner
+
+        # 'out/' given to cleaner not necessarily what _get_clean_name will use
+        client = DicomCleaner(output_folder="out")
+
+        # exercise normal usage
+        client.dicom_file = "XYZ.dcm"
+        new_name = client._get_clean_name(output_folder="abc", extension="png")
+        self.assertEqual(new_name, os.path.join("abc", "clean-XYZ.png"))
+
+        client.dicom_file = "XYZ.dicom"
+        new_name = client._get_clean_name(output_folder="abc", extension="png")
+        self.assertEqual(new_name, os.path.join("abc", "clean-XYZ.png"))
+
+        # !! careful with extension! was .dicom will now be .dcm
+        client.dicom_file = "XYZ.dicom"
+        new_name = client._get_clean_name(
+            output_folder="abc"
+        )  # defaults:  extension="dcm", prefix="clean-"
+        self.assertEqual(new_name, os.path.join("abc", "clean-XYZ.dcm"))
+
+        # note IMA not removed -- Siemens dicom extension not implicitly handled
+        client.dicom_file = "XYZ.IMA"
+        new_name = client._get_clean_name(output_folder="abc", extension="png")
+        self.assertEqual(new_name, os.path.join("abc", "clean-XYZ.IMA.png"))
+
+        # fully specified options to avoid any change to basename
+        client.dicom_file = "image.IMA"
+        new_name = client._get_clean_name(output_folder=None, extension="", prefix="")
+        expected_name = os.path.join("out", "image.IMA")
+        self.assertEqual(new_name, expected_name)
+
+        # prefix but no extension
+        # example: UPitt MRRC no dcm extension (via DCMTK's storescp?)
+        client.dicom_file = "MR.1.3.12.2.1107.5.2.0.18914.2025082910014953724207010"
+        new_name = client._get_clean_name(
+            output_folder=None, extension="", prefix="clean-"
+        )
+        expected_name = os.path.join(
+            "out", "clean-MR.1.3.12.2.1107.5.2.0.18914.2025082910014953724207010"
+        )
+        self.assertEqual(new_name, expected_name)
+
 
 if __name__ == "__main__":
     unittest.main()
