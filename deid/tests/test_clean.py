@@ -256,7 +256,7 @@ class TestClean(unittest.TestCase):
         new_name = client._get_clean_name(output_folder="abc", extension="png")
         self.assertEqual(new_name, os.path.join("abc", "clean-XYZ.IMA.png"))
 
-        # fully specfied options to avoid any change to basename
+        # fully specified options to avoid any change to basename
         client.dicom_file = "image.IMA"
         new_name = client._get_clean_name(output_folder=None, extension="", prefix="")
         expected_name = os.path.join("out", "image.IMA")

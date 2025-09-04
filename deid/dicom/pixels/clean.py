@@ -246,21 +246,20 @@ class DicomCleaner:
             bot.warning("use detect() --> clean() before saving is possible.")
 
     def save_dicom(
-        self, output_folder=None, image_type="cleaned", prefix="clean-", extension="dcm"
+        self, output_folder=None, prefix="clean-", extension="dcm"
     ) -> str | None:
         """
         Save a cleaned dicom to disk.
+        DicomCleaner object must have already been run through detect() and clean()
 
-        We expose an option to save an original (change image_type to "original"
-        to be consistent, although this is not incredibly useful given it would
-        duplicate the original data.
 
         Parameters
         ==========
         output_folder: where to save clean dicoms. Will use self.output_folder if None
-        image_type: ["cleaned","original"]. default "cleaned" checks that detect has been run.
-        prefix: passed onto py:meth:`DicomCleaner._get_clean_name`. Default adds 'clean-' to basename
-        extension: paseed onto py:meth:`DicomCleaner._get_clean_name`. Default appends .dcm after removing .dcm or .dicom.
+        prefix: passed onto py:meth:`DicomCleaner._get_clean_name`.
+                Default adds 'clean-' to basename
+        extension: paseed onto py:meth:`DicomCleaner._get_clean_name`.
+                   Default appends .dcm after removing .dcm or .dicom.
                    use empty string to disable, reuses whole basename
 
 
@@ -269,20 +268,24 @@ class DicomCleaner:
         dicom_name: the file that was written
 
         """
-        # Having clean also means has dicom image
-        if hasattr(self, image_type):
-            dicom_name = self._get_clean_name(
-                output_folder, prefix=prefix, extension=extension
+        if not hasattr(self, "cleaned"):
+            bot.warning(
+                "No cleaned data for '%s'. use detect() --> clean() before saving is possible."
+                % (self.dicom_file)
             )
-            dicom = utils.dcmread(self.dicom_file, force=True)
-            # If going from compressed, change TransferSyntax
-            if dicom.file_meta.TransferSyntaxUID.is_compressed is True:
-                dicom.decompress()
-            dicom.PixelData = self.cleaned.tobytes()
-            dicom.save_as(dicom_name)
-            return dicom_name
-        else:
-            bot.warning("use detect() --> clean() before saving is possible.")
+            return
+
+        dicom_name = self._get_clean_name(
+            output_folder, prefix=prefix, extension=extension
+        )
+        dicom = utils.dcmread(self.dicom_file, force=True)
+
+        # If going from compressed, change TransferSyntax
+        if dicom.file_meta.TransferSyntaxUID.is_compressed is True:
+            dicom.decompress()
+        dicom.PixelData = self.cleaned.tobytes()
+        dicom.save_as(dicom_name)
+        return dicom_name
 
 
 def clean_pixel_data(
