@@ -52,9 +52,7 @@ class TestMainAction(unittest.TestCase):
 
     @patch(
         "sys.argv",
-        "deid --outfolder out/ --overwrite pixels --action all --deid deid.cfg --input ./".split(
-            " "
-        ),
+        "deid --outfolder out/ pixels --deid deid.cfg --input ./".split(" "),
     )
     def test_deidmain_clean_pixels(self):
         """
@@ -65,27 +63,33 @@ class TestMainAction(unittest.TestCase):
         # Confirm input data has value that will be scrubbed.
         indcm = utils.dcmread(self.tmpdir + "/example.dicom")
         self.assertEqual(indcm.pixel_array.shape, (456, 510, 3))
-        self.assertTrue(np.any(indcm.pixel_array[0:100,0:250,:] != 0))
+        censor_area = indcm.pixel_array[0:250, 0:100, :]  # y,x,z
+        # all voxels in region to be scrubbed are valued. lucky us
+        self.assertEqual(np.count_nonzero(censor_area != 0), 75000)
 
-        with open('deid.cfg','w') as f:
-            f.write("""FORMAT dicom
+        with open(self.tmpdir + "/deid.cfg", "w") as f:
+            f.write(
+                """FORMAT dicom
 
 %filter greylist
 
 LABEL Censor Top Left
 contains SOPInstanceUID .
   coordinates 0,0,100,250
-""")
-
+"""
+            )
 
         os.makedirs("out/")
         deid.main.main()
 
-        # Confirm new file is not same as old
-        # TODO: confirm correct number of pixels are censored
         outfile = utils.dcmread("out/example.dicom")
-        self.assertTrue(np.any(indcm.pixel_array != outfile.pixel_array))
 
+        # Confirm we changed pixel data
+        self.assertTrue(np.any(indcm.pixel_array != outfile.pixel_array))
+        # Confirm censor area is all zeros
+        # 30126 but expect 75000
+        zero_cnt = np.count_nonzero(outfile.pixel_array[0:250, 0:100, :] == 0)
+        self.assertEqual(zero_cnt, 100 * 250 * 3)  # 75000
 
 
 if __name__ == "__main__":

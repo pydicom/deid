@@ -159,6 +159,22 @@ def get_parser():
         required=True,
     )
 
+    pixels = subparsers.add_parser("pixels", help="Clean dicom: scrub burn in pixels")
+    pixels.add_argument(
+        "--input",
+        dest="input",
+        help="Input folder or single image to perform action on.",
+        type=str,
+        default=None,
+    )
+    pixels.add_argument(
+        "--deid",
+        dest="deid",
+        help="deid file with preferences, if not specified, default used.",
+        type=str,
+        default=None,
+    )
+
     return parser
 
 
@@ -181,10 +197,14 @@ def main():
     # Initialize the message bot, with level above
     from deid.logger import bot  # pylint: disable=unused-import
 
+    # 'main' function use with __main__ imported from submodules based on 'command'
     if args.command == "identifiers":
         from .identifiers import main
     elif args.command == "inspect":
         from .inspect import main
+    elif args.command == "pixels":
+        from .pixels import pixel_main as main
+
     else:
         parser.print_help()
         sys.exit(1)

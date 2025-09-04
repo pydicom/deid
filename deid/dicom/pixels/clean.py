@@ -132,7 +132,7 @@ class DicomCleaner:
                 plt.show()
             return plt
 
-    def _get_clean_name(self, output_folder, extension="dcm"):
+    def _get_clean_name(self, output_folder, extension="dcm", prefix="clean-"):
         """
         Get path to a cleaned output file.
 
@@ -145,6 +145,10 @@ class DicomCleaner:
         exist.
         extension: the extension of the file to create a name for, should
         not start with "."
+        prefix: string prepended to file's basename
+        extension: extension to append to basename after removeing .dcm or .dicom.
+                   Use empty string to disable. .dcm|.dicom will not be stripped. basename is not changed.
+
         """
         if output_folder is None:
             output_folder = self.output_folder
@@ -153,8 +157,15 @@ class DicomCleaner:
             bot.debug("Creating output folder %s" % output_folder)
             os.makedirs(output_folder)
 
-        basename = re.sub("[.]dicom|[.]dcm", "", os.path.basename(self.dicom_file))
-        return "%s/cleaned-%s.%s" % (output_folder, basename, extension)
+        # do we want to change extension? this might convert .dicom to .dcm
+        # or would add .dcm to eg. 'MR.*' (MR.12*34.dcm) or '*IMA' (1234.IMA.dcm)
+        if extension:
+            basename = re.sub("[.]dicom|[.]dcm", "", os.path.basename(self.dicom_file))
+            extension = "." + extension
+        else:
+            basename = os.path.basename(self.dicom_file)
+
+        return "%s/%s%s%s" % (output_folder, prefix, basename, extension)
 
     def save_png(self, output_folder=None, image_type="cleaned", title=None):
         """
@@ -233,17 +244,35 @@ class DicomCleaner:
         else:
             bot.warning("use detect() --> clean() before saving is possible.")
 
-    def save_dicom(self, output_folder=None, image_type="cleaned"):
+    def save_dicom(
+        self, output_folder=None, image_type="cleaned", prefix="clean-", extension="dcm"
+    ) -> str | None:
         """
         Save a cleaned dicom to disk.
 
         We expose an option to save an original (change image_type to "original"
         to be consistent, although this is not incredibly useful given it would
         duplicate the original data.
+
+        Parameters
+        ==========
+        output_folder: where to save clean dicoms. Will use self.output_folder if None
+        image_type: ["cleaned","original"]. default "cleaned" checks that detect has been run.
+        prefix: passed onto py:meth:`DicomCleaner._get_clean_name`. Default addes 'clean-' to basename
+        extension: paseed onto py:meth:`DicomCleaner._get_clean_name`. Default appends .dcm afte removeing .dcm or .dicom.
+                   use empty string to disable, reuses whole basename
+
+
+        Returns
+        =======
+        dicom_name: the file that was written
+
         """
         # Having clean also means has dicom image
         if hasattr(self, image_type):
-            dicom_name = self._get_clean_name(output_folder)
+            dicom_name = self._get_clean_name(
+                output_folder, prefix=prefix, extension=extension
+            )
             dicom = utils.dcmread(self.dicom_file, force=True)
             # If going from compressed, change TransferSyntax
             if dicom.file_meta.TransferSyntaxUID.is_compressed is True:
