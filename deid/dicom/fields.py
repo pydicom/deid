@@ -4,7 +4,9 @@ __license__ = "MIT"
 
 import re
 from collections import defaultdict
+from functools import cache
 
+from pydicom import FileDataset
 from pydicom.dataelem import DataElement
 from pydicom.dataset import Dataset, FileMetaDataset, RawDataElement
 from pydicom.sequence import Sequence
@@ -295,6 +297,12 @@ def expand_field_expression(
     return fields
 
 
+# NOTE: This hashing function is not perfect, but it's required
+# to enable caching. Note that adding a proxy class around this
+# decreases performance substantially.
+FileDataset.__hash__ = lambda self: hash(self.filename)
+
+
 def get_fields_with_lookup(dicom, skip=None, expand_sequences=True, seen=None):
     """Expand all dicom fields into a list, along with lookup tables keyed on
     different field properties.
@@ -332,6 +340,7 @@ def get_fields_with_lookup(dicom, skip=None, expand_sequences=True, seen=None):
     return fields, lookup_tables
 
 
+@cache
 def get_fields_inner(dicom, skip=None, expand_sequences=True, seen=None):
     skip = list(skip) if skip else []
     seen = list(seen) if seen else []
