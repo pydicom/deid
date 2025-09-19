@@ -77,14 +77,24 @@ class DicomField:
         - PRIVATE_CREATOR: Private creator string in double quotes
         - ELEMENT_OFFSET: 2-digit hexadecimal element number (last 8 bits of full element)
         """
-        regexp_expression = f"^{expression}$" if whole_string else expression
+        if whole_string:
+            expr = expression.lower()
+            return (
+                self.name.lower() == expr
+                or f"({self.element.tag.group:04X},{self.element.tag.element:04X})".lower()
+                == expr
+                or self.stripped_tag.lower() == expr
+                or expr == self.element.name.lower()
+                or expr == self.element.keyword.lower()
+            )
+        regexp_expression = re.compile(expression)
         if (
-            re.search(regexp_expression, self.name.lower())
+            expression.search(self.name.lower())
             or f"({self.element.tag.group:04X},{self.element.tag.element:04X})".lower()
             == expression.lower()
-            or re.search(regexp_expression, self.stripped_tag)
-            or re.search(regexp_expression, self.element.name)
-            or re.search(regexp_expression, self.element.keyword)
+            or expression.search(self.stripped_tag)
+            or expression.search(self.element.name)
+            or expression.search(self.element.keyword)
         ):
             return True
 
@@ -260,15 +270,16 @@ def expand_field_expression(field, dicom, contenders=None):
     elif expander.lower() == "startswith":
         expression = "^(%s)" % expression
 
+    expr = re.compile(expression)
     # Loop through fields, all are strings STOPPED HERE NEED TO ADDRESS EMPTY NAME
     for uid, field in contenders.items():
         # Apply expander to string for name OR to tag string
         if expander.lower() in ["endswith", "startswith", "contains"]:
-            if field.name_contains(expression):
+            if field.name_contains(expr):
                 fields[uid] = field
 
         elif expander.lower() == "except":
-            if not field.name_contains(expression):
+            if not field.name_contains(expr):
                 fields[uid] = field
 
         elif expander.lower() == "select":
