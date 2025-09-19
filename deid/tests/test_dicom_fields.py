@@ -6,7 +6,7 @@ import tempfile
 import unittest
 
 from deid.data import get_dataset
-from deid.dicom.fields import get_fields
+from deid.dicom.fields import get_fields_with_lookup
 from deid.tests.common import get_dicom
 from deid.utils import get_installdir
 
@@ -29,11 +29,14 @@ class TestDicomFields(unittest.TestCase):
 
         dicom = get_dicom(self.dataset)
 
-        contenders = get_fields(dicom)
+        contenders, contender_lookup_tables = get_fields_with_lookup(dicom)
 
         print("Testing that field expansion works for basic tags")
         fields = expand_field_expression(
-            dicom=dicom, field="endswith:Time", contenders=contenders
+            dicom=dicom,
+            field="endswith:Time",
+            contenders=contenders,
+            contender_lookup_tables=contender_lookup_tables,
         )
 
         # The fields returned should end in time
@@ -42,7 +45,10 @@ class TestDicomFields(unittest.TestCase):
 
         print("Testing that field expansion works for groups")
         fields = expand_field_expression(
-            dicom=dicom, field="select:group:0020", contenders=contenders
+            dicom=dicom,
+            field="select:group:0020",
+            contenders=contenders,
+            contender_lookup_tables=contender_lookup_tables,
         )
 
         # The fields returned should be tag group 0020
@@ -51,7 +57,10 @@ class TestDicomFields(unittest.TestCase):
 
         print("Testing that field expansion works for VR")
         fields = expand_field_expression(
-            dicom=dicom, field="select:VR:TM", contenders=contenders
+            dicom=dicom,
+            field="select:VR:TM",
+            contenders=contenders,
+            contender_lookup_tables=contender_lookup_tables,
         )
 
         # The fields returned should end in time
@@ -61,7 +70,10 @@ class TestDicomFields(unittest.TestCase):
 
         print("Testing that we can also search private tags based on numbers.")
         fields = expand_field_expression(
-            dicom=dicom, field="contains:0019", contenders=contenders
+            dicom=dicom,
+            field="contains:0019",
+            contenders=contenders,
+            contender_lookup_tables=contender_lookup_tables,
         )
 
         # The fields returned should include tag group or element 0019

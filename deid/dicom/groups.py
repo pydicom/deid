@@ -7,7 +7,7 @@ from pydicom.multival import MultiValue
 
 from deid.logger import bot
 
-from .fields import expand_field_expression, get_fields
+from .fields import expand_field_expression, get_fields_with_lookup
 
 
 def extract_values_list(dicom, actions, fields=None):
@@ -20,12 +20,15 @@ def extract_values_list(dicom, actions, fields=None):
 
     # The function can be provided fields to save re-parsing
     if not fields:
-        fields = get_fields(dicom)
+        fields, lookup_tables = get_fields_with_lookup(dicom)
 
     for action in actions:
         # Extract some subset of fields based on action
         subset = expand_field_expression(
-            field=action["field"], dicom=dicom, contenders=fields
+            field=action["field"],
+            dicom=dicom,
+            contenders=fields,
+            contender_lookup_tables=lookup_tables,
         )
 
         # Just grab the entire value string for a field, no parsing
@@ -81,13 +84,16 @@ def extract_fields_list(dicom, actions, fields=None):
     subset = {}
 
     if not fields:
-        fields = get_fields(dicom)
+        fields, lookup_tables = get_fields_with_lookup(dicom)
 
     for action in actions:
         if action["action"] == "FIELD":
             subset.update(
                 expand_field_expression(
-                    field=action["field"], dicom=dicom, contenders=fields
+                    field=action["field"],
+                    dicom=dicom,
+                    contenders=fields,
+                    contender_lookup_tables=lookup_tables,
                 )
             )
 

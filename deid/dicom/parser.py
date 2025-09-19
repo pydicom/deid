@@ -15,7 +15,11 @@ import deid.dicom.utils as utils
 from deid.config import DeidRecipe
 from deid.config.standards import actions as valid_actions
 from deid.dicom.actions import deid_funcs, jitter_timestamp
-from deid.dicom.fields import DicomField, expand_field_expression, get_fields
+from deid.dicom.fields import (
+    DicomField,
+    expand_field_expression,
+    get_fields_with_lookup,
+)
 from deid.dicom.groups import extract_fields_list, extract_values_list
 from deid.dicom.tags import add_tag, get_private, get_tag, remove_sequences
 from deid.dicom.utils import save_dicom
@@ -323,8 +327,8 @@ class DicomParser:
         a DicomField. If we find a sequence, we unwrap it and
         represent the location with the name (e.g., Sequence__Child)
         """
-        if not self.fields:
-            self.fields = get_fields(
+        if not self.fields or not self.fields_by_name:
+            self.fields, self.lookup_tables = get_fields_with_lookup(
                 dicom=self.dicom,
                 expand_sequences=expand_sequences,
                 seen=self.seen,
@@ -417,6 +421,7 @@ class DicomParser:
                         field=contender.stripped_tag,
                         dicom=self.dicom,
                         contenders=self.fields,
+                        contender_lookup_tables=self.lookup_tables,
                     )
                 )
             fields = listing
@@ -424,7 +429,10 @@ class DicomParser:
         else:
             # If there is an expander applied to field, we iterate over
             fields = expand_field_expression(
-                field=field, dicom=self.dicom, contenders=self.fields
+                field=field,
+                dicom=self.dicom,
+                contenders=self.fields,
+                contender_lookup_tables=self.lookup_tables,
             )
 
         # If it's an addition, we might not have fields
@@ -542,8 +550,16 @@ class DicomParser:
                     is_filemeta = str(element.tag).startswith("(0002")
                     update_dicom(element, is_filemeta)
                     self.fields[uid] = DicomField(element, name, uid, is_filemeta)
+                    self.add_to_lookup(self.fields[uid])
             else:
                 bot.warning("Cannot find tag for field %s, skipping." % name)
+
+    def add_to_lookup(self, field):
+        self.lookup_tables["name"][field.name].append(field)
+        self.lookup_tables["tag"][field.tag].append(field)
+        self.lookup_tables["stripped_tag"][field.stripped_tag].append(field)
+        self.lookup_tables["element_name"][field.element.name].append(field)
+        self.lookup_tables["element_keyword"][field.element.keyword].append(field)
 
     def _run_action(self, field, action, value=None):
         """
