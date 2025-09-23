@@ -246,6 +246,12 @@ class DicomCleaner:
         We expose an option to save an original (change image_type to "original"
         to be consistent, although this is not incredibly useful given it would
         duplicate the original data.
+
+        Additional options:
+        - `preserve_compression`: if the original dicom was compressed, attempt
+           to use the same compression when saving back out to disk.
+        - `compression`: if provided, attempt to use this compression when
+           saving back out to disk.
         """
         # Having clean also means has dicom image
         if hasattr(self, image_type):
