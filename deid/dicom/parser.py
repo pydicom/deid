@@ -234,13 +234,19 @@ class DicomParser:
             if self.recipe.has_values_lists():
                 for group, actions in self.recipe.get_values_lists().items():
                     self.lookup[group] = extract_values_list(
-                        dicom=self.dicom, actions=actions, fields=fields
+                        dicom=self.dicom,
+                        actions=actions,
+                        fields=fields,
+                        field_lookup_tables=self.lookup_tables,
                     )
 
             if self.recipe.has_fields_lists():
                 for group, actions in self.recipe.get_fields_lists().items():
                     self.lookup[group] = extract_fields_list(
-                        dicom=self.dicom, actions=actions, fields=fields
+                        dicom=self.dicom,
+                        actions=actions,
+                        fields=fields,
+                        field_lookup_tables=self.lookup_tables,
                     )
 
             # actions on the header
@@ -626,7 +632,10 @@ class DicomParser:
                     # but field.uid is in internal format. expand_field_expression normalizes
                     # all field identifier formats for proper comparison.
                     excluded_fields = expand_field_expression(
-                        field=excluded_field, dicom=self.dicom, contenders=self.fields
+                        field=excluded_field,
+                        dicom=self.dicom,
+                        contenders=self.fields,
+                        contender_lookup_tables=self.lookup_tables,
                     )
                     # Check if the current field's UID matches any of the expanded
                     # excluded fields. This ensures format-agnostic matching regardless

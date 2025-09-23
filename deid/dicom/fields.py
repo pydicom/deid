@@ -50,7 +50,7 @@ class DicomField:
 
     # Contains
 
-    def name_contains(self, expression, whole_string=False):
+    def name_contains(self, expression):
         """
         Determine if a name contains a pattern or expression.
         Use whole_string to match the entire string exactly (True),
@@ -80,21 +80,14 @@ class DicomField:
         - PRIVATE_CREATOR: Private creator string in double quotes
         - ELEMENT_OFFSET: 2-digit hexadecimal element number (last 8 bits of full element)
         """
-        if whole_string:
-            expr = expression.lower()
-            return (
-                self.name.lower() == expr
-                or f"({self.element.tag.group:04X},{self.element.tag.element:04X})".lower()
-                == expr
-                or self.stripped_tag.lower() == expr
-                or expr == self.element.name.lower()
-                or expr == self.element.keyword.lower()
-            )
-        regexp_expression = re.compile(expression)
+        if type(expression) is str:
+            expression = re.compile(expression, re.IGNORECASE)
+
         if (
             expression.search(self.name.lower())
-            or f"({self.element.tag.group:04X},{self.element.tag.element:04X})".lower()
-            == expression.lower()
+            or expression.search(
+                f"({self.element.tag.group:04X},{self.element.tag.element:04X})".lower()
+            )
             or expression.search(self.stripped_tag)
             or expression.search(self.element.name)
             or expression.search(self.element.keyword)
@@ -114,9 +107,8 @@ class DicomField:
             # The ELEMENT_OFFSET is the 2-digit hex element number (masked to last 8 bits)
             stripped_private_tag = f'{self.element.tag.group:04X},"{self.element.private_creator}",{(self.element.tag.element & 0xFF):02X}'
             private_tag = "(" + stripped_private_tag + ")"
-            if (
-                re.search(regexp_expression, stripped_private_tag, re.IGNORECASE)
-                or private_tag.lower() == expression.lower()
+            if re.search(expression, stripped_private_tag) or re.search(
+                expression, private_tag
             ):
                 return True
         return False
@@ -278,29 +270,56 @@ def expand_field_expression(
     elif expander.lower() == "startswith":
         expression = "^(%s)" % expression
 
-    expr = re.compile(expression)
+    expression_re = None
     # Loop through fields, all are strings STOPPED HERE NEED TO ADDRESS EMPTY NAME
     for uid, field in contenders.items():
-        # Apply expander to string for name OR to tag string
-        if expander.lower() in ["endswith", "startswith", "contains"]:
-            if field.name_contains(expr):
-                fields[uid] = field
-
-        elif expander.lower() == "except":
-            if not field.name_contains(expr):
-                fields[uid] = field
-
-        elif expander.lower() == "select":
-            if field.select_matches(expression):
-                fields[uid] = field
+        if type(field) is str and string_matches_expander(expander, expression, field):
+            fields[uid] = field
+        elif type(field) is DicomField and field_matches_expander(
+            expander, expression, expression_re, field
+        ):
+            fields[uid] = field
 
     return fields
 
 
-# NOTE: This hashing function is not perfect, but it's required
-# to enable caching. Note that adding a proxy class around this
-# decreases performance substantially.
-FileDataset.__hash__ = lambda self: hash(self.filename)
+def string_matches_expander(expander, expression_string, string):
+    # Apply expander to string for name OR to tag string
+    if expander.lower() in ["endswith", "startswith", "contains"]:
+        return expression_string in string
+
+    elif expander.lower() == "except":
+        return expression_string not in string
+
+    # Note: "select" expanders are not applicable to string values, as
+    # they do not have any attributes.
+    return False
+
+
+def field_matches_expander(expander, expression_string, expression_re, field):
+    # Apply expander to string for name OR to tag string
+    if expander.lower() == "select":
+        return field.select_matches(expression_string)
+
+    if expression_re is None:
+        expression_re = re.compile(expression_string, re.IGNORECASE)
+
+    if expander.lower() in ["endswith", "startswith", "contains"]:
+        return field.name_contains(expression_re)
+
+    elif expander.lower() == "except":
+        return not field.name_contains(expression_re)
+
+    return False
+
+
+# NOTE: this hashing function is required to enable caching on
+# `get_fields_inner`. While it is not ideal to override the hashing
+# behavior of the PyDicom FileDataset class, it appears to be the
+# only way to enable the use of caching without incurring significant
+# performance overhead. Note that adding a proxy class around this
+# decreases performance substantially (50% slowdown measured).
+FileDataset.__hash__ = lambda self: id(self)
 
 
 def get_fields_with_lookup(dicom, skip=None, expand_sequences=True, seen=None):
@@ -326,6 +345,9 @@ def get_fields_with_lookup(dicom, skip=None, expand_sequences=True, seen=None):
         "element_keyword": defaultdict(list),
     }
     for uid, field in fields.items():
+        if type(field) is not DicomField:
+            lookup_tables["name"][field].append(field)
+            continue
         if field.name:
             lookup_tables["name"][field.name].append(field)
         if field.tag:
@@ -336,6 +358,14 @@ def get_fields_with_lookup(dicom, skip=None, expand_sequences=True, seen=None):
             lookup_tables["element_name"][field.element.name].append(field)
         if field.element.keyword:
             lookup_tables["element_keyword"][field.element.keyword].append(field)
+        if field.element.is_private:
+            # Cache the two possible lookup formats for private tags-- with and without parentheses.
+            lookup_tables["name"][
+                f'({field.element.tag.group:04X},"{field.element.private_creator}",{(field.element.tag.element & 0x00FF):02X})'
+            ].append(field)
+            lookup_tables["name"][
+                f'{field.element.tag.group:04X},"{field.element.private_creator}",{(field.element.tag.element & 0x00FF):02X}'
+            ].append(field)
 
     return fields, lookup_tables
 
