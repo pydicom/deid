@@ -10,7 +10,7 @@ from deid.logger import bot
 from .fields import expand_field_expression, get_fields_with_lookup
 
 
-def extract_values_list(dicom, actions, fields=None, field_lookup_tables=None):
+def extract_values_list(dicom, actions, fields=None):
     """Given a list of actions for a named group (a list) extract values from
     the dicom based on the list of actions provided. This function
     always returns a list intended to update some lookup to be used
@@ -20,7 +20,7 @@ def extract_values_list(dicom, actions, fields=None, field_lookup_tables=None):
 
     # The function can be provided fields to save re-parsing
     if not fields:
-        fields, field_lookup_tables = get_fields_with_lookup(dicom)
+        fields = get_fields_with_lookup(dicom)
 
     for action in actions:
         # Extract some subset of fields based on action
@@ -28,7 +28,6 @@ def extract_values_list(dicom, actions, fields=None, field_lookup_tables=None):
             field=action["field"],
             dicom=dicom,
             contenders=fields,
-            contender_lookup_tables=field_lookup_tables,
         )
 
         # Just grab the entire value string for a field, no parsing
@@ -84,7 +83,7 @@ def extract_fields_list(dicom, actions, fields=None, field_lookup_tables=None):
     subset = {}
 
     if not fields:
-        fields, field_lookup_tables = get_fields_with_lookup(dicom)
+        fields = get_fields_with_lookup(dicom)
 
     for action in actions:
         if action["action"] == "FIELD":
@@ -93,7 +92,6 @@ def extract_fields_list(dicom, actions, fields=None, field_lookup_tables=None):
                     field=action["field"],
                     dicom=dicom,
                     contenders=fields,
-                    contender_lookup_tables=field_lookup_tables,
                 )
             )
 

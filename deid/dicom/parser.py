@@ -187,7 +187,7 @@ class DicomParser:
         parent, desired = self.get_nested_field(field, return_parent=True)
         if parent and desired in parent:
             del parent[desired]
-            del self.fields[field.uid]
+            self.fields.remove(field.uid)
 
     def blank_field(self, field):
         """
@@ -237,7 +237,6 @@ class DicomParser:
                         dicom=self.dicom,
                         actions=actions,
                         fields=fields,
-                        field_lookup_tables=self.lookup_tables,
                     )
 
             if self.recipe.has_fields_lists():
@@ -246,7 +245,6 @@ class DicomParser:
                         dicom=self.dicom,
                         actions=actions,
                         fields=fields,
-                        field_lookup_tables=self.lookup_tables,
                     )
 
             # actions on the header
@@ -334,7 +332,7 @@ class DicomParser:
         represent the location with the name (e.g., Sequence__Child)
         """
         if not self.fields or not self.fields_by_name:
-            self.fields, self.lookup_tables = get_fields_with_lookup(
+            self.fields = get_fields_with_lookup(
                 dicom=self.dicom,
                 expand_sequences=expand_sequences,
                 seen=self.seen,
@@ -427,7 +425,6 @@ class DicomParser:
                         field=contender.stripped_tag,
                         dicom=self.dicom,
                         contenders=self.fields,
-                        contender_lookup_tables=self.lookup_tables,
                     )
                 )
             fields = listing
@@ -438,7 +435,6 @@ class DicomParser:
                 field=field,
                 dicom=self.dicom,
                 contenders=self.fields,
-                contender_lookup_tables=self.lookup_tables,
             )
 
         # If it's an addition, we might not have fields
@@ -555,17 +551,9 @@ class DicomParser:
                     element = DataElement(tag["tag"], tag["VR"], value)
                     is_filemeta = str(element.tag).startswith("(0002")
                     update_dicom(element, is_filemeta)
-                    self.fields[uid] = DicomField(element, name, uid, is_filemeta)
-                    self.add_to_lookup(self.fields[uid])
+                    self.fields.add(uid, DicomField(element, name, uid, is_filemeta))
             else:
                 bot.warning("Cannot find tag for field %s, skipping." % name)
-
-    def add_to_lookup(self, field):
-        self.lookup_tables["name"][field.name].append(field)
-        self.lookup_tables["tag"][field.tag].append(field)
-        self.lookup_tables["stripped_tag"][field.stripped_tag].append(field)
-        self.lookup_tables["element_name"][field.element.name].append(field)
-        self.lookup_tables["element_keyword"][field.element.keyword].append(field)
 
     def _run_action(self, field, action, value=None):
         """
@@ -635,7 +623,6 @@ class DicomParser:
                         field=excluded_field,
                         dicom=self.dicom,
                         contenders=self.fields,
-                        contender_lookup_tables=self.lookup_tables,
                     )
                     # Check if the current field's UID matches any of the expanded
                     # excluded fields. This ensures format-agnostic matching regardless

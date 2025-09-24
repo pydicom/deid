@@ -30,7 +30,7 @@ class TestDicomGroups(unittest.TestCase):
         from deid.dicom.groups import extract_fields_list, extract_values_list
 
         dicom = get_dicom(self.dataset)
-        fields, _lookup_tables = get_fields_with_lookup(dicom)
+        fields = get_fields_with_lookup(dicom)
 
         # Test split action
         actions = [

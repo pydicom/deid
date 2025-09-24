@@ -29,14 +29,13 @@ class TestDicomFields(unittest.TestCase):
 
         dicom = get_dicom(self.dataset)
 
-        contenders, contender_lookup_tables = get_fields_with_lookup(dicom)
+        contenders = get_fields_with_lookup(dicom)
 
         print("Testing that field expansion works for basic tags")
         fields = expand_field_expression(
             dicom=dicom,
             field="endswith:Time",
             contenders=contenders,
-            contender_lookup_tables=contender_lookup_tables,
         )
 
         # The fields returned should end in time
@@ -48,7 +47,6 @@ class TestDicomFields(unittest.TestCase):
             dicom=dicom,
             field="select:group:0020",
             contenders=contenders,
-            contender_lookup_tables=contender_lookup_tables,
         )
 
         # The fields returned should be tag group 0020
@@ -60,7 +58,6 @@ class TestDicomFields(unittest.TestCase):
             dicom=dicom,
             field="select:VR:TM",
             contenders=contenders,
-            contender_lookup_tables=contender_lookup_tables,
         )
 
         # The fields returned should end in time
@@ -73,7 +70,6 @@ class TestDicomFields(unittest.TestCase):
             dicom=dicom,
             field="contains:0019",
             contenders=contenders,
-            contender_lookup_tables=contender_lookup_tables,
         )
 
         # The fields returned should include tag group or element 0019
