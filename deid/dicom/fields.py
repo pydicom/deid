@@ -80,7 +80,7 @@ class DicomField:
         - PRIVATE_CREATOR: Private creator string in double quotes
         - ELEMENT_OFFSET: 2-digit hexadecimal element number (last 8 bits of full element)
         """
-        if type(expression) is str:
+        if isinstance(expression, str):
             expression = re.compile(expression, re.IGNORECASE)
 
         if (
@@ -273,9 +273,11 @@ def expand_field_expression(
     expression_re = None
     # Loop through fields, all are strings STOPPED HERE NEED TO ADDRESS EMPTY NAME
     for uid, field in contenders.items():
-        if type(field) is str and string_matches_expander(expander, expression, field):
+        if isinstance(field, str) and string_matches_expander(
+            expander, expression, field
+        ):
             fields[uid] = field
-        elif type(field) is DicomField and field_matches_expander(
+        elif isinstance(field, DicomField) and field_matches_expander(
             expander, expression, expression_re, field
         ):
             fields[uid] = field
@@ -345,7 +347,7 @@ def get_fields_with_lookup(dicom, skip=None, expand_sequences=True, seen=None):
         "element_keyword": defaultdict(list),
     }
     for uid, field in fields.items():
-        if type(field) is not DicomField:
+        if not isinstance(field, DicomField):
             lookup_tables["name"][field].append(field)
             continue
         if field.name:
