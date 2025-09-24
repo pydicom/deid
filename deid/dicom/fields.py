@@ -286,7 +286,9 @@ def expand_field_expression(
 
 
 def string_matches_expander(expander, expression_string, string):
-    # Apply expander to string for name OR to tag string
+    """
+    Check if a string matches an expression for a given expander operator.
+    """
     if expander.lower() in ["endswith", "startswith", "contains"]:
         return expression_string in string
 
@@ -299,6 +301,12 @@ def string_matches_expander(expander, expression_string, string):
 
 
 def field_matches_expander(expander, expression_string, expression_re, field):
+    """
+    Check if a field matches an expression for a given expander operator.
+
+    The `expression_re` argument is an optional arg that can be used to cache
+    the compiled regex for re-use in later invocations.
+    """
     # Apply expander to string for name OR to tag string
     if expander.lower() == "select":
         return field.select_matches(expression_string)
