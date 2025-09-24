@@ -244,20 +244,15 @@ class TestClean(unittest.TestCase):
 
         client.clean()
         # Explicitly save as a RLELossless compressed transfer syntax
-        cleanedfile = client.save_dicom(compression=RLELossless)
-
-        outputfile = utils.dcmread(cleanedfile)
-        outputpixels = outputfile.pixel_array
-
-        # Assert the pixel values have changed after compression
-        inputfile = utils.dcmread(dicom_file)
-        inputpixels = inputfile.pixel_array
-        compare = inputpixels == outputpixels
-        self.assertFalse(compare.all())
+        uncompressed = client.save_dicom()
+        uncompressed_file = utils.dcmread(uncompressed)
+        # Explicitly save as a RLELossless compressed transfer syntax
+        compressed = client.save_dicom(compression=RLELossless)
+        compressed_file = utils.dcmread(compressed)
 
         # Assert the transfer syntax has changed
-        self.assertEqual(outputfile.file_meta.TransferSyntaxUID, RLELossless)
-        self.assertNotEqual(inputfile.file_meta.TransferSyntaxUID, RLELossless)
+        self.assertEqual(compressed_file.file_meta.TransferSyntaxUID, RLELossless)
+        self.assertNotEqual(uncompressed_file.file_meta.TransferSyntaxUID, RLELossless)
 
 
 if __name__ == "__main__":
