@@ -2,6 +2,7 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2025, Vanessa Sochat"
 __license__ = "MIT"
 
+from copy import deepcopy
 import re
 from collections import defaultdict
 from functools import cache
@@ -230,7 +231,7 @@ def expand_field_expression(field, dicom, contenders=None):
     allfields: include all fields
     exceptfields: filter to all fields except those listed ( | separated)
 
-    Returns: a list of DicomField objects
+    Returns: a dictionary of DicomField objects
     """
     # Expanders that don't have a : must be checked for
     expanders = ["all"]
@@ -242,7 +243,7 @@ def expand_field_expression(field, dicom, contenders=None):
     # Case 1: field is an expander without an argument (e.g., no :)
     if field.lower() in expanders:
         if field.lower() == "all":
-            fields = contenders.fields
+            fields = deepcopy(contenders.fields)
         return fields
 
     # Case 2: The field is a specific field OR an expander with argument (A:B)
@@ -404,15 +405,17 @@ class FieldsWithLookups:
                 self.lookup_tables[table_name][key].append(field)
 
     def remove(self, uid):
-        if uid in self.fields:
-            field = self.fields[uid]
-            del self.fields[uid]
-            for table_name, lookup_keys in self._get_field_lookup_keys(field).items():
-                for key in lookup_keys:
-                    if field in self.lookup_tables[table_name][key]:
-                        self.lookup_tables[table_name][key].remove(field)
-                        if not self.lookup_tables[table_name][key]:
-                            del self.lookup_tables[table_name][key]
+        if uid not in self.fields:
+            return
+        field = self.fields[uid]
+        for table_name, lookup_keys in self._get_field_lookup_keys(field).items():
+            for key in lookup_keys:
+                if field not in self.lookup_tables[table_name][key]:
+                    continue
+                self.lookup_tables[table_name][key].remove(field)
+                if not self.lookup_tables[table_name][key]:
+                    del self.lookup_tables[table_name][key]
+        del self.fields[uid]
 
 
 def get_fields_with_lookup(dicom, skip=None, expand_sequences=True, seen=None):
