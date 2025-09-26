@@ -2,9 +2,9 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2025, Vanessa Sochat"
 __license__ = "MIT"
 
-from copy import deepcopy
 import re
 from collections import defaultdict
+from copy import deepcopy
 from functools import cache
 
 from pydicom import FileDataset
