@@ -18,7 +18,7 @@ def get_parser():
         description="Deid (de-identification, anonymization) command line tool."
     )
 
-    # Global Variables
+    # Global Variables: generic options available for all 'actions' command
     parser.add_argument(
         "--quiet",
         "-q",
@@ -70,34 +70,62 @@ def get_parser():
         action="store_true",
     )
 
+    # Additional args specific to distinct commands (see args.command conditions)
     subparsers = parser.add_subparsers(
-        help="action for deid to perform",
-        title="actions",
-        description="actions for deid to perform",
+        title="commands",
         dest="command",
+        help="command for deid to perform",
+        description="command for deid to perform",
     )
 
     subparsers.add_parser(
         "version", help="print version and exit"  # pylint: disable=unused-variable
     )
 
-    # Checks (checks / tests for various services)
     inspect = subparsers.add_parser(
-        "inspect", help="various checks for PHI and quality"
+        "inspect", help="Various checks for PHI and quality"
     )
 
+    ids = subparsers.add_parser(
+        "identifiers", help="Extract and replace identifiers from headers"
+    )
+
+    pixels = subparsers.add_parser(
+        "clean-pixels", help="Clean dicom: scrub burn in pixels"
+    )
+
+    # '--deid' for each command rather than once in global to keep arg order
+    # currently --deid is expected after args.command, like:
+    #   deid identifiers --deid deid.cfg
+    # would be breaking change to put '--deid' in main 'parser' var, like:
+    #   deid --died deid.cfg identifiers
+    # not doing so (any existing scripts) would give error. see tests/test_cli.py
+    # > deid: error: unrecognized arguments: --deid deid.cfg
+    for command in [ids, inspect, pixels]:
+        command.add_argument(
+            "--deid",
+            dest="deid",
+            help="deid file with preferences, if not specified, default used.",
+            type=str,
+            default=None,
+        )
+
+    # '--input' is shared, but not for 'inspect'
+    # instead all additional arguments to 'inspect' are inputs
+    for command in [ids, pixels]:
+        command.add_argument(
+            "--input",
+            dest="input",
+            help="Input folder or single image to perform action on.",
+            type=str,
+            default=None,
+        )
+
+    ## Args for command='inspect' only
     inspect.add_argument(
         nargs="+",
         dest="folder",
         help="input folder or single image. If not provided, test data will be used.",
-        type=str,
-        default=None,
-    )
-
-    inspect.add_argument(
-        "--deid",
-        dest="deid",
-        help="deid file with preferences, if not specified, default used.",
         type=str,
         default=None,
     )
@@ -119,31 +147,12 @@ def get_parser():
         action="store_true",
     )
 
-    ids = subparsers.add_parser(
-        "identifiers", help="extract and replace identifiers from headers"
-    )
-
-    ids.add_argument(
-        "--deid",
-        dest="deid",
-        help="deid file with preferences, if not specified, default used.",
-        type=str,
-        default=None,
-    )
-
+    ## Args for command='identifiers' only
     # A path to an ids file, required if user wants to put (without get)
     ids.add_argument(
         "--ids",
         dest="ids",
         help="Path to a json file with identifiers, required for PUT if you don't do get (via all)",
-        type=str,
-        default=None,
-    )
-
-    ids.add_argument(
-        "--input",
-        dest="input",
-        help="Input folder or single image to perform action on.",
         type=str,
         default=None,
     )
@@ -159,23 +168,7 @@ def get_parser():
         required=True,
     )
 
-    pixels = subparsers.add_parser(
-        "clean-pixels", help="Clean dicom: scrub burn in pixels"
-    )
-    pixels.add_argument(
-        "--input",
-        dest="input",
-        help="Input folder or single image to perform action on.",
-        type=str,
-        default=None,
-    )
-    pixels.add_argument(
-        "--deid",
-        dest="deid",
-        help="deid file with preferences, if not specified, default used.",
-        type=str,
-        default=None,
-    )
+    ## Args for command='clean-pixels' only
     pixels.add_argument(
         "--type",
         dest="type",
