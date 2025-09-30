@@ -345,10 +345,12 @@ class FieldsWithLookups:
 
     def get_exact_matches(self, field):
         """
-        Get exact matches for a field name or tag.
+        Get exact case-insensitive matches for a field name or tag.
 
         Returns a list of DicomField objects.
         """
+        if isinstance(field, str):
+            field = field.lower()
         exact_match_contenders = (
             self.lookup_tables["name"][field]
             + self.lookup_tables["tag"][field]
@@ -379,23 +381,26 @@ class FieldsWithLookups:
 
     def _get_field_lookup_keys(self, field):
         if not isinstance(field, DicomField):
-            self.lookup_tables["name"][field].append(field)
-            return {"name": [field]}
+            case_insensitive_field = field.lower()
+            self.lookup_tables["name"][case_insensitive_field].append(
+                case_insensitive_field
+            )
+            return {"name": [case_insensitive_field]}
         lookup_keys = {}
         if field.name:
-            lookup_keys["name"] = [field.name]
+            lookup_keys["name"] = [field.name.lower()]
         if field.tag:
-            lookup_keys["tag"] = [field.tag]
+            lookup_keys["tag"] = [field.tag.lower()]
         if field.stripped_tag:
-            lookup_keys["stripped_tag"] = [field.stripped_tag]
+            lookup_keys["stripped_tag"] = [field.stripped_tag.lower()]
         if field.element.name:
-            lookup_keys["element_name"] = [field.element.name]
+            lookup_keys["element_name"] = [field.element.name.lower()]
         if field.element.keyword:
-            lookup_keys["element_keyword"] = [field.element.keyword]
+            lookup_keys["element_keyword"] = [field.element.keyword.lower()]
         if field.element.is_private:
             lookup_keys["name"] = lookup_keys.get("name", []) + [
-                f'({field.element.tag.group:04X},"{field.element.private_creator}",{(field.element.tag.element & 0x00FF):02X})',
-                f'{field.element.tag.group:04X},"{field.element.private_creator}",{(field.element.tag.element & 0x00FF):02X}',
+                f'({field.element.tag.group:04X},"{field.element.private_creator}",{(field.element.tag.element & 0x00FF):02X})'.lower(),
+                f'{field.element.tag.group:04X},"{field.element.private_creator}",{(field.element.tag.element & 0x00FF):02X}'.lower(),
             ]
         return lookup_keys
 
