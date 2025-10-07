@@ -53,10 +53,8 @@ class DicomField:
 
     def name_contains(self, expression):
         """
-        Determine if a name contains a pattern or expression.
-        Use whole_string to match the entire string exactly (True),
-        or partially (False).
-        Use re to search a field for a regular expression, meaning
+        Determine if a name contains an expression.
+        Use expression to search a field, meaning
         the name, the keyword (nested) or the string tag.
         name.lower: includes nested keywords (e.g., Sequence_Child)
         self.element.name: is the human friendly name "Sequence Child"
@@ -66,7 +64,7 @@ class DicomField:
         - Patient's Name (tag name)
         - patient's name (lowercase tag name)
         - PatientName (tag keyword)
-        - PatientN (tag keyword partial match, with whole_string=False)
+        - PatientN (tag keyword partial match)
         - (0010,0010) (parentheses-enclosed, comma-separated group, element)
         - 00100010 (stripped group, element)
 
