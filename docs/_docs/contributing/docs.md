@@ -41,10 +41,18 @@ cd {{ site.reponame }}/
 ### Install a local Jekyll server
 This step is required if you want to render your work locally before committing the changes. This is highly recommended to ensure that your changes will render properly and will be accepted.
 
+Jekyll requires Ruby. This project uses an older version of Jekyll, and thus requires an older version of Ruby (v2.7.8 seems to work). <a href="https://github.com/rbenv/rbenv">rbenv</a> is suggested to manage Ruby versions. On OS X, this looks like:
+
 ```bash
-brew install ruby
-gem install jekyll
-gem install bundler
+brew install rbenv
+rbenv init
+rbenv install 2.7.8
+cd docs
+rbenv local 2.7.8
+``` 
+This requires a new shell after installing rbenv (it modidies your shell profile). The last line sets Ruby 2.7.8 to be the Ruby version used withing the docs directory. A second shel restart maybe needed again, after that line. Test your active Ruby version with `ruby -v`. Once working, you install the needed plugins with (from the deid/docs directory):
+
+```bash
 bundle install
 ```
 
