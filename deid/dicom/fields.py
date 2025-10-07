@@ -4,6 +4,7 @@ __license__ = "MIT"
 
 import re
 from collections import defaultdict
+from contextlib import contextmanager
 from copy import deepcopy
 from functools import cache
 
@@ -412,6 +413,23 @@ class FieldsWithLookups:
         del self.fields[uid]
 
 
+@contextmanager
+def override_attr(obj, attr, value):
+    """
+    Temporarily override an attribute of an object.
+    """
+    attribute_undefined = not hasattr(obj, attr)
+    try:
+        original_value = getattr(obj, attr, None)
+        setattr(obj, attr, value)
+        yield
+    finally:
+        if attribute_undefined:
+            delattr(obj, attr)
+        else:
+            setattr(obj, attr, original_value)
+
+
 def get_fields_with_lookup(dicom, skip=None, expand_sequences=True, seen=None):
     """Expand all dicom fields into a list, along with lookup tables keyed on
     different field properties.
@@ -425,22 +443,17 @@ def get_fields_with_lookup(dicom, skip=None, expand_sequences=True, seen=None):
     # only way to enable the use of caching without incurring significant
     # performance overhead. Note that adding a proxy class around this
     # decreases performance substantially (50% slowdown measured).
-    FileDataset.__hash__ = lambda self: id(self)
+    with override_attr(FileDataset, "__hash__", lambda self: id(self)):
+        fields, new_seen, new_skip = _get_fields_inner(
+            dicom,
+            skip=tuple(skip) if skip else None,
+            expand_sequences=expand_sequences,
+            seen=tuple(seen) if seen else None,
+        )
+        skip = new_skip
+        seen = new_seen
 
-    fields, new_seen, new_skip = _get_fields_inner(
-        dicom,
-        skip=tuple(skip) if skip else None,
-        expand_sequences=expand_sequences,
-        seen=tuple(seen) if seen else None,
-    )
-    skip = new_skip
-    seen = new_seen
-
-    # Delete the custom hash function to avoid the hash behavior leaking
-    # outside this function.
-    del FileDataset.__hash__
-
-    return FieldsWithLookups(fields)
+        return FieldsWithLookups(fields)
 
 
 @cache
