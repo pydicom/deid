@@ -3,7 +3,12 @@ __copyright__ = "Copyright 2016-2025, Vanessa Sochat"
 __license__ = "MIT"
 
 import re
+from collections import defaultdict
+from contextlib import contextmanager
+from copy import deepcopy
+from functools import cache
 
+from pydicom import FileDataset
 from pydicom.dataelem import DataElement
 from pydicom.dataset import Dataset, FileMetaDataset, RawDataElement
 from pydicom.sequence import Sequence
@@ -47,12 +52,10 @@ class DicomField:
 
     # Contains
 
-    def name_contains(self, expression, whole_string=False):
+    def name_contains(self, expression):
         """
-        Determine if a name contains a pattern or expression.
-        Use whole_string to match the entire string exactly (True),
-        or partially (False).
-        Use re to search a field for a regular expression, meaning
+        Determine if a name contains an expression.
+        Use expression to search a field, meaning
         the name, the keyword (nested) or the string tag.
         name.lower: includes nested keywords (e.g., Sequence_Child)
         self.element.name: is the human friendly name "Sequence Child"
@@ -62,7 +65,7 @@ class DicomField:
         - Patient's Name (tag name)
         - patient's name (lowercase tag name)
         - PatientName (tag keyword)
-        - PatientN (tag keyword partial match, with whole_string=False)
+        - PatientN (tag keyword partial match)
         - (0010,0010) (parentheses-enclosed, comma-separated group, element)
         - 00100010 (stripped group, element)
 
@@ -77,14 +80,17 @@ class DicomField:
         - PRIVATE_CREATOR: Private creator string in double quotes
         - ELEMENT_OFFSET: 2-digit hexadecimal element number (last 8 bits of full element)
         """
-        regexp_expression = f"^{expression}$" if whole_string else expression
+        if isinstance(expression, str):
+            expression = re.compile(expression, re.IGNORECASE)
+
         if (
-            re.search(regexp_expression, self.name.lower())
-            or f"({self.element.tag.group:04X},{self.element.tag.element:04X})".lower()
-            == expression.lower()
-            or re.search(regexp_expression, self.stripped_tag)
-            or re.search(regexp_expression, self.element.name)
-            or re.search(regexp_expression, self.element.keyword)
+            expression.search(self.name.lower())
+            or expression.search(
+                f"({self.element.tag.group:04X},{self.element.tag.element:04X})".lower()
+            )
+            or expression.search(self.stripped_tag)
+            or expression.search(self.element.name)
+            or expression.search(self.element.keyword)
         ):
             return True
 
@@ -99,11 +105,10 @@ class DicomField:
             # The GROUP is the 4-digit hex group number (e.g., 0033)
             # The PRIVATE_CREATOR is the private creator string in quotes
             # The ELEMENT_OFFSET is the 2-digit hex element number (masked to last 8 bits)
-            stripped_private_tag = f'{self.element.tag.group:04X},"{self.element.private_creator}",{(self.element.tag.element&0xFF):02X}'
+            stripped_private_tag = f'{self.element.tag.group:04X},"{self.element.private_creator}",{(self.element.tag.element & 0xFF):02X}'
             private_tag = "(" + stripped_private_tag + ")"
-            if (
-                re.search(regexp_expression, stripped_private_tag, re.IGNORECASE)
-                or private_tag.lower() == expression.lower()
+            if re.search(expression, stripped_private_tag) or re.search(
+                expression, private_tag
             ):
                 return True
         return False
@@ -225,29 +230,25 @@ def expand_field_expression(field, dicom, contenders=None):
     allfields: include all fields
     exceptfields: filter to all fields except those listed ( | separated)
 
-    Returns: a list of DicomField objects
+    Returns: a dictionary of DicomField objects
     """
     # Expanders that don't have a : must be checked for
     expanders = ["all"]
 
     # if no contenders provided, use top level of dicom headers
     if contenders is None:
-        contenders = get_fields(dicom)
+        contenders = get_fields_with_lookup(dicom)
 
     # Case 1: field is an expander without an argument (e.g., no :)
     if field.lower() in expanders:
         if field.lower() == "all":
-            fields = contenders
+            fields = deepcopy(contenders.fields)
         return fields
 
     # Case 2: The field is a specific field OR an expander with argument (A:B)
     fields = field.split(":", 1)
     if len(fields) == 1:
-        return {
-            uid: field
-            for uid, field in contenders.items()
-            if field.name_contains(fields[0], whole_string=True)
-        }
+        return {field.uid: field for field in contenders.get_exact_matches(fields[0])}
 
     # if we get down here, we have an expander and expression
     expander, expression = fields
@@ -260,32 +261,205 @@ def expand_field_expression(field, dicom, contenders=None):
     elif expander.lower() == "startswith":
         expression = "^(%s)" % expression
 
+    expression_re = None
     # Loop through fields, all are strings STOPPED HERE NEED TO ADDRESS EMPTY NAME
     for uid, field in contenders.items():
-        # Apply expander to string for name OR to tag string
-        if expander.lower() in ["endswith", "startswith", "contains"]:
-            if field.name_contains(expression):
-                fields[uid] = field
-
-        elif expander.lower() == "except":
-            if not field.name_contains(expression):
-                fields[uid] = field
-
-        elif expander.lower() == "select":
-            if field.select_matches(expression):
-                fields[uid] = field
+        if isinstance(field, str) and string_matches_expander(
+            expander, expression, field
+        ):
+            fields[uid] = field
+        elif isinstance(field, DicomField) and field_matches_expander(
+            expander, expression, expression_re, field
+        ):
+            fields[uid] = field
 
     return fields
 
 
-def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
-    """Expand all dicom fields into a list.
+def string_matches_expander(expander, expression_string, string):
+    """
+    Check if a string matches an expression for a given expander operator.
+    """
+    if expander.lower() in ["endswith", "startswith", "contains"]:
+        return expression_string in string
+
+    elif expander.lower() == "except":
+        return expression_string not in string
+
+    # Note: "select" expanders are not applicable to string values, as
+    # they do not have any attributes.
+    return False
+
+
+def field_matches_expander(expander, expression_string, expression_re, field):
+    """
+    Check if a field matches an expression for a given expander operator.
+
+    The `expression_re` argument is an optional arg that can be used to cache
+    the compiled regex for re-use in later invocations.
+    """
+    # Apply expander to string for name OR to tag string
+    if expander.lower() == "select":
+        return field.select_matches(expression_string)
+
+    if expression_re is None:
+        expression_re = re.compile(expression_string, re.IGNORECASE)
+
+    if expander.lower() in ["endswith", "startswith", "contains"]:
+        return field.name_contains(expression_re)
+
+    elif expander.lower() == "except":
+        return not field.name_contains(expression_re)
+
+    return False
+
+
+class FieldsWithLookups:
+    """
+    This class is a wrapper around a dictionary of DicomField objects keyed by uid,
+    with some supplemental lookup tables to enable rapid field lookup.
+    """
+
+    def __init__(self, fields):
+        self.fields = fields
+
+        self.lookup_tables = {
+            "name": defaultdict(list),
+            "tag": defaultdict(list),
+            "stripped_tag": defaultdict(list),
+            "element_name": defaultdict(list),
+            "element_keyword": defaultdict(list),
+        }
+        for uid, field in fields.items():
+            self._add_field_to_lookup(field)
+
+    def get_exact_matches(self, field):
+        """
+        Get exact case-insensitive matches for a field name or tag.
+
+        Returns a list of DicomField objects.
+        """
+        if isinstance(field, str):
+            field = field.lower()
+        exact_match_contenders = (
+            self.lookup_tables["name"][field]
+            + self.lookup_tables["tag"][field]
+            + self.lookup_tables["stripped_tag"][field]
+            + self.lookup_tables["element_name"][field]
+            + self.lookup_tables["element_keyword"][field]
+        )
+        return exact_match_contenders
+
+    def __getitem__(self, key):
+        return self.fields[key]
+
+    def __setitem__(self, key, value):
+        self.fields[key] = value
+
+    def __iter__(self):
+        return iter(self.fields)
+
+    def items(self):
+        return self.fields.items()
+
+    def values(self):
+        return self.fields.values()
+
+    def add(self, uid, field):
+        self.fields[uid] = field
+        self._add_field_to_lookup(field)
+
+    def _get_field_lookup_keys(self, field):
+        if not isinstance(field, DicomField):
+            case_insensitive_field = field.lower()
+            self.lookup_tables["name"][case_insensitive_field].append(
+                case_insensitive_field
+            )
+            return {"name": [case_insensitive_field]}
+        lookup_keys = {}
+        if field.name:
+            lookup_keys["name"] = [field.name.lower()]
+        if field.tag:
+            lookup_keys["tag"] = [field.tag.lower()]
+        if field.stripped_tag:
+            lookup_keys["stripped_tag"] = [field.stripped_tag.lower()]
+        if field.element.name:
+            lookup_keys["element_name"] = [field.element.name.lower()]
+        if field.element.keyword:
+            lookup_keys["element_keyword"] = [field.element.keyword.lower()]
+        if field.element.is_private:
+            lookup_keys["name"] = lookup_keys.get("name", []) + [
+                f'({field.element.tag.group:04X},"{field.element.private_creator}",{(field.element.tag.element & 0x00FF):02X})'.lower(),
+                f'{field.element.tag.group:04X},"{field.element.private_creator}",{(field.element.tag.element & 0x00FF):02X}'.lower(),
+            ]
+        return lookup_keys
+
+    def _add_field_to_lookup(self, field):
+        for table_name, lookup_keys in self._get_field_lookup_keys(field).items():
+            for key in lookup_keys:
+                self.lookup_tables[table_name][key].append(field)
+
+    def remove(self, uid):
+        if uid not in self.fields:
+            return
+        field = self.fields[uid]
+        for table_name, lookup_keys in self._get_field_lookup_keys(field).items():
+            for key in lookup_keys:
+                if field not in self.lookup_tables[table_name][key]:
+                    continue
+                self.lookup_tables[table_name][key].remove(field)
+                if not self.lookup_tables[table_name][key]:
+                    del self.lookup_tables[table_name][key]
+        del self.fields[uid]
+
+
+@contextmanager
+def override_attr(obj, attr, value):
+    """
+    Temporarily override an attribute of an object.
+    """
+    attribute_undefined = not hasattr(obj, attr)
+    try:
+        original_value = getattr(obj, attr, None)
+        setattr(obj, attr, value)
+        yield
+    finally:
+        if attribute_undefined:
+            delattr(obj, attr)
+        else:
+            setattr(obj, attr, original_value)
+
+
+def get_fields_with_lookup(dicom, skip=None, expand_sequences=True, seen=None):
+    """Expand all dicom fields into a list, along with lookup tables keyed on
+    different field properties.
 
     Each entry is a DicomField. If we find a sequence, we unwrap it and
     represent the location with the name (e.g., Sequence__Child)
     """
-    skip = skip or []
-    seen = seen or []
+    # NOTE: this hashing function is required to enable caching on
+    # `get_fields_inner`. While it is not ideal to override the hashing
+    # behavior of the PyDicom FileDataset class, it appears to be the
+    # only way to enable the use of caching without incurring significant
+    # performance overhead. Note that adding a proxy class around this
+    # decreases performance substantially (50% slowdown measured).
+    with override_attr(FileDataset, "__hash__", lambda self: id(self)):
+        fields, new_seen, new_skip = _get_fields_inner(
+            dicom,
+            skip=tuple(skip) if skip else None,
+            expand_sequences=expand_sequences,
+            seen=tuple(seen) if seen else None,
+        )
+        skip = new_skip
+        seen = new_seen
+
+        return FieldsWithLookups(fields)
+
+
+@cache
+def _get_fields_inner(dicom, skip=None, expand_sequences=True, seen=None):
+    skip = list(skip) if skip else []
+    seen = list(seen) if seen else []
     fields = {}  # indexed by nested tag
 
     if not isinstance(skip, list):
@@ -357,4 +531,4 @@ def get_fields(dicom, skip=None, expand_sequences=True, seen=None):
                     "Unrecognized type %s in extract sequences, skipping." % type(item)
                 )
 
-    return fields
+    return fields, seen, skip

@@ -7,7 +7,7 @@ import unittest
 
 from deid.data import get_dataset
 from deid.dicom import get_identifiers, replace_identifiers
-from deid.dicom.fields import get_fields
+from deid.dicom.fields import get_fields_with_lookup
 from deid.dicom.parser import DicomParser
 from deid.tests.common import get_dicom
 from deid.utils import get_installdir
@@ -30,7 +30,7 @@ class TestDicomGroups(unittest.TestCase):
         from deid.dicom.groups import extract_fields_list, extract_values_list
 
         dicom = get_dicom(self.dataset)
-        fields = get_fields(dicom)
+        fields = get_fields_with_lookup(dicom)
 
         # Test split action
         actions = [

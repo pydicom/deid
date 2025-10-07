@@ -15,7 +15,11 @@ import deid.dicom.utils as utils
 from deid.config import DeidRecipe
 from deid.config.standards import actions as valid_actions
 from deid.dicom.actions import deid_funcs, jitter_timestamp
-from deid.dicom.fields import DicomField, expand_field_expression, get_fields
+from deid.dicom.fields import (
+    DicomField,
+    expand_field_expression,
+    get_fields_with_lookup,
+)
 from deid.dicom.groups import extract_fields_list, extract_values_list
 from deid.dicom.tags import add_tag, get_private, get_tag, remove_sequences
 from deid.dicom.utils import save_dicom
@@ -183,7 +187,7 @@ class DicomParser:
         parent, desired = self.get_nested_field(field, return_parent=True)
         if parent and desired in parent:
             del parent[desired]
-            del self.fields[field.uid]
+            self.fields.remove(field.uid)
 
     def blank_field(self, field):
         """
@@ -230,13 +234,17 @@ class DicomParser:
             if self.recipe.has_values_lists():
                 for group, actions in self.recipe.get_values_lists().items():
                     self.lookup[group] = extract_values_list(
-                        dicom=self.dicom, actions=actions, fields=fields
+                        dicom=self.dicom,
+                        actions=actions,
+                        fields=fields,
                     )
 
             if self.recipe.has_fields_lists():
                 for group, actions in self.recipe.get_fields_lists().items():
                     self.lookup[group] = extract_fields_list(
-                        dicom=self.dicom, actions=actions, fields=fields
+                        dicom=self.dicom,
+                        actions=actions,
+                        fields=fields,
                     )
 
             # actions on the header
@@ -323,8 +331,8 @@ class DicomParser:
         a DicomField. If we find a sequence, we unwrap it and
         represent the location with the name (e.g., Sequence__Child)
         """
-        if not self.fields:
-            self.fields = get_fields(
+        if not self.fields or not self.fields_by_name:
+            self.fields = get_fields_with_lookup(
                 dicom=self.dicom,
                 expand_sequences=expand_sequences,
                 seen=self.seen,
@@ -424,7 +432,9 @@ class DicomParser:
         else:
             # If there is an expander applied to field, we iterate over
             fields = expand_field_expression(
-                field=field, dicom=self.dicom, contenders=self.fields
+                field=field,
+                dicom=self.dicom,
+                contenders=self.fields,
             )
 
         # If it's an addition, we might not have fields
@@ -541,7 +551,7 @@ class DicomParser:
                     element = DataElement(tag["tag"], tag["VR"], value)
                     is_filemeta = str(element.tag).startswith("(0002")
                     update_dicom(element, is_filemeta)
-                    self.fields[uid] = DicomField(element, name, uid, is_filemeta)
+                    self.fields.add(uid, DicomField(element, name, uid, is_filemeta))
             else:
                 bot.warning("Cannot find tag for field %s, skipping." % name)
 
@@ -610,7 +620,9 @@ class DicomParser:
                     # but field.uid is in internal format. expand_field_expression normalizes
                     # all field identifier formats for proper comparison.
                     excluded_fields = expand_field_expression(
-                        field=excluded_field, dicom=self.dicom, contenders=self.fields
+                        field=excluded_field,
+                        dicom=self.dicom,
+                        contenders=self.fields,
                     )
                     # Check if the current field's UID matches any of the expanded
                     # excluded fields. This ensures format-agnostic matching regardless
