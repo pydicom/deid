@@ -313,15 +313,6 @@ def field_matches_expander(expander, expression_string, expression_re, field):
     return False
 
 
-# NOTE: this hashing function is required to enable caching on
-# `get_fields_inner`. While it is not ideal to override the hashing
-# behavior of the PyDicom FileDataset class, it appears to be the
-# only way to enable the use of caching without incurring significant
-# performance overhead. Note that adding a proxy class around this
-# decreases performance substantially (50% slowdown measured).
-FileDataset.__hash__ = lambda self: id(self)
-
-
 class FieldsWithLookups:
     """
     This class is a wrapper around a dictionary of DicomField objects keyed by uid,
@@ -428,6 +419,14 @@ def get_fields_with_lookup(dicom, skip=None, expand_sequences=True, seen=None):
     Each entry is a DicomField. If we find a sequence, we unwrap it and
     represent the location with the name (e.g., Sequence__Child)
     """
+    # NOTE: this hashing function is required to enable caching on
+    # `get_fields_inner`. While it is not ideal to override the hashing
+    # behavior of the PyDicom FileDataset class, it appears to be the
+    # only way to enable the use of caching without incurring significant
+    # performance overhead. Note that adding a proxy class around this
+    # decreases performance substantially (50% slowdown measured).
+    FileDataset.__hash__ = lambda self: id(self)
+
     fields, new_seen, new_skip = _get_fields_inner(
         dicom,
         skip=tuple(skip) if skip else None,
@@ -436,6 +435,11 @@ def get_fields_with_lookup(dicom, skip=None, expand_sequences=True, seen=None):
     )
     skip = new_skip
     seen = new_seen
+
+    # Delete the custom hash function to avoid the hash behavior leaking
+    # outside this function.
+    del FileDataset.__hash__
+
     return FieldsWithLookups(fields)
 
 
