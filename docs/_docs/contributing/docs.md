@@ -49,7 +49,7 @@ rbenv init
 rbenv install 2.7.8
 cd docs
 rbenv local 2.7.8
-``` 
+```
 This requires a new shell after installing rbenv (it modifies your shell profile). The last line sets Ruby 2.7.8 to be the Ruby version used within the docs directory. A second shell restart may be needed again, after that line. Test your active Ruby version with `ruby -v`. Once working, you install the needed plugins with (from the deid/docs directory):
 
 ```bash
