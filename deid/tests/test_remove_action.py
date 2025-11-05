@@ -239,6 +239,38 @@ class TestRemoveAction(unittest.TestCase):
         # Tag should still exist because private creator didn't match
         self.assertEqual(currentValue, outputfile[field_dicom].value)
 
+    def test_remove_specific_nested_sequence_tag(self):
+        """RECIPE RULE
+        REMOVE (0018,9346)__0__(0008,0104)
+        """
+        print("Test REMOVE specific nested sequence tag")
+        dicom_file = get_file(self.dataset)
+
+        Field = "(0018,9346)__0__(0008,0104)"  # Referenced SOP Instance UID inside Referenced Series Sequence
+        actions = [
+            {"action": "REMOVE", "field": Field},
+        ]
+        recipe = create_recipe(actions)
+
+        inputfile = utils.dcmread(dicom_file)
+        currentValue = inputfile["00189346"][0]["00080104"].value
+
+        self.assertNotEqual(None, currentValue)
+        self.assertNotEqual("", currentValue)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        outputfile = utils.dcmread(result[0])
+
+        self.assertEqual(1, len(result))
+        with self.assertRaises(KeyError):
+            _ = outputfile["00189346"][0]["00080104"].value
+
 
 if __name__ == "__main__":
     unittest.main()
