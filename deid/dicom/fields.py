@@ -329,6 +329,7 @@ class FieldsWithLookups:
             "stripped_tag": defaultdict(list),
             "element_name": defaultdict(list),
             "element_keyword": defaultdict(list),
+            "uid": defaultdict(list),
         }
         for uid, field in fields.items():
             self._add_field_to_lookup(field)
@@ -347,6 +348,7 @@ class FieldsWithLookups:
             + self.lookup_tables["stripped_tag"][field]
             + self.lookup_tables["element_name"][field]
             + self.lookup_tables["element_keyword"][field]
+            + self.lookup_tables["uid"][field]
         )
         return exact_match_contenders
 
@@ -387,6 +389,8 @@ class FieldsWithLookups:
             lookup_keys["element_name"] = [field.element.name.lower()]
         if field.element.keyword:
             lookup_keys["element_keyword"] = [field.element.keyword.lower()]
+        if field.uid:
+            lookup_keys["uid"] = [field.uid.lower()]
         if field.element.is_private:
             lookup_keys["name"] = lookup_keys.get("name", []) + [
                 f'({field.element.tag.group:04X},"{field.element.private_creator}",{(field.element.tag.element & 0x00FF):02X})'.lower(),
