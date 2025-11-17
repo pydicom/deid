@@ -181,22 +181,42 @@ class DicomParser:
         Delete a field from the dicom.
 
         We do this by way of parsing all nested levels of a tag into actual tags,
-        and deleting the child node.
+        and deleting the child node. If the field being deleted has nested children
+        (e.g., a sequence), also remove all child field UIDs from the internal lookup.
         """
         # Returns the parent, and a DataElement (indexes into parent by tag)
         parent, desired = self.get_nested_field(field, return_parent=True)
         if parent and desired in parent:
             del parent[desired]
+            # Remove the field itself from the lookup
             self.fields.remove(field.uid)
+            # Also remove any child fields that were nested under this field
+            field_uid_prefix = field.uid + "__"
+            child_uids = [
+                uid for uid in self.fields if uid.startswith(field_uid_prefix)
+            ]
+            for child_uid in child_uids:
+                self.fields.remove(child_uid)
 
     def blank_field(self, field):
         """
-        Blank a field
+        Blank a field.
+
+        If the field being blanked has nested children (e.g., a sequence),
+        also remove all child field UIDs from the internal lookup since they
+        become inaccessible after blanking the parent.
         """
         # Returns the parent, and a DataElement (indexes into parent by tag)
         parent, desired = self.get_nested_field(field, return_parent=True)
         if parent and desired in parent:
             parent[desired].value = None
+            # Also remove any child fields that were nested under this field
+            field_uid_prefix = field.uid + "__"
+            child_uids = [
+                uid for uid in self.fields if uid.startswith(field_uid_prefix)
+            ]
+            for child_uid in child_uids:
+                self.fields.remove(child_uid)
 
     def replace_field(self, field, value):
         """
