@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+- Fix field removal and blanking to clean up child UID references [#293](https://github.com/pydicom/deid/pull/293) (0.4.9)
 - Fix UID lookup for nested sequence fields in DICOM datasets [#292](https://github.com/pydicom/deid/pull/292) (0.4.8)
 - Allow saving with a compressed transfer syntax [#290](https://github.com/pydicom/deid/pull/290) (0.4.7)
 - Improve performance of header deid with caching and lookup tables [#289](https://github.com/pydicom/deid/pull/289)

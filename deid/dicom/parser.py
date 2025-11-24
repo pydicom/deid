@@ -176,6 +176,17 @@ class DicomParser:
             return parent, desired
         return desired
 
+    def get_child_fields(self, field):
+        """
+        Return a list of child field UIDs for a given field.
+
+        This method identifies all field UIDs in self.fields that are nested under the provided field,
+        based on the UID prefix convention (parent UID + '__').
+        It is used to find and remove all child fields when blanking or deleting a parent field (e.g., a sequence).
+        """
+        field_uid_prefix = field.uid + "__"
+        return [uid for uid in self.fields if uid.startswith(field_uid_prefix)]
+
     def delete_field(self, field):
         """
         Delete a field from the dicom.
@@ -191,11 +202,7 @@ class DicomParser:
             # Remove the field itself from the lookup
             self.fields.remove(field.uid)
             # Also remove any child fields that were nested under this field
-            field_uid_prefix = field.uid + "__"
-            child_uids = [
-                uid for uid in self.fields if uid.startswith(field_uid_prefix)
-            ]
-            for child_uid in child_uids:
+            for child_uid in self.get_child_fields(field):
                 self.fields.remove(child_uid)
 
     def blank_field(self, field):
@@ -211,11 +218,7 @@ class DicomParser:
         if parent and desired in parent:
             parent[desired].value = None
             # Also remove any child fields that were nested under this field
-            field_uid_prefix = field.uid + "__"
-            child_uids = [
-                uid for uid in self.fields if uid.startswith(field_uid_prefix)
-            ]
-            for child_uid in child_uids:
+            for child_uid in self.get_child_fields(field):
                 self.fields.remove(child_uid)
 
     def replace_field(self, field, value):
