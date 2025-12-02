@@ -1865,6 +1865,82 @@ class TestRuleInteractions(unittest.TestCase):
         with self.assertRaises(KeyError):
             _ = outputfile[field].value
 
+    def test_remove_parent_tag_replace_child_with_no_conflict(self):
+        """RECIPE RULE
+        REMOVE (0032,1064) Requested Procedure Code Sequence
+        REPLACE (0008,0104) "Anonymized"
+        """
+        print(
+            "Test REMOVE standard sequence tag and REPLACE child tag should not cause conflict"
+        )
+        dicom_file = get_file(self.dataset)
+
+        field1 = "(0032,1064)"
+        action1 = "REMOVE"
+        action2 = "REPLACE"
+        value2 = "Anonymized"
+        field2 = "(0008,0104)"
+        field_dicom1 = "00321064"
+        field_dicom2 = "00080104"
+
+        actions = [
+            {"action": action1, "field": field1},
+            {"action": action2, "field": field2, "value": value2},
+        ]
+        recipe = create_recipe(actions)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        outputfile = utils.dcmread(result[0])
+
+        self.assertEqual(1, len(result))
+        with self.assertRaises(KeyError):
+            _ = outputfile[field_dicom1].value
+            _ = outputfile[field_dicom1][0][field_dicom2].value
+
+    def test_blank_parent_tag_remove_child_with_no_conflict(self):
+        """RECIPE RULE
+        BLANK (0032,1064) Requested Procedure Code Sequence
+        REPLACE (0008,0104) "Anonymized"
+        """
+        print(
+            "Test BLANK standard sequence tag and REPLACE child tag should not cause conflict"
+        )
+        dicom_file = get_file(self.dataset)
+
+        field1 = "(0032,1064)"
+        action1 = "BLANK"
+        action2 = "REPLACE"
+        value2 = "Anonymized"
+        field2 = "(0008,0104)"
+        field_dicom1 = "00321064"
+        field_dicom2 = "00080104"
+
+        actions = [
+            {"action": action1, "field": field1},
+            {"action": action2, "field": field2, "value": value2},
+        ]
+        recipe = create_recipe(actions)
+
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        outputfile = utils.dcmread(result[0])
+
+        self.assertEqual(1, len(result))
+        self.assertEqual(len(outputfile[field_dicom1].value), 0)
+        with self.assertRaises(IndexError):
+            _ = outputfile[field_dicom1][0][field_dicom2].value
+
 
 if __name__ == "__main__":
     unittest.main()
