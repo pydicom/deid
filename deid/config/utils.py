@@ -130,7 +130,7 @@ def load_deid(path=None):
             parts = line.split(" ")
             if len(parts) > 1:
                 section_name = " ".join(parts[1:])
-            section = re.sub("[%]|(\s+)", "", parts[0]).lower()  # noqa
+            section = re.sub(r"[%]|(\s+)", "", parts[0]).lower()  # noqa
             if section not in sections:
                 bot.exit("%s is not a valid section." % section)
 
@@ -219,7 +219,7 @@ def parse_format(line):
     ==========
     line: the line that starts with format.
     """
-    fmt = re.sub("FORMAT|(\s+)", "", line).lower()  # noqa
+    fmt = re.sub(r"FORMAT|(\s+)", "", line).lower()  # noqa
     if fmt not in formats:
         bot.exit("%s is not a valid format." % fmt)
     bot.debug("FORMAT set to %s" % fmt)
