@@ -320,10 +320,18 @@ class DicomParser:
         """
         keeps = []
         if self.recipe.deid is not None:
+            # Build field contenders ONCE and reuse for all KEEP actions
+            contenders = None
             for action in self.recipe.get_actions(action="KEEP"):
                 if action and action.get("field"):
+                    # Only build contenders on first iteration
+                    if contenders is None:
+                        contenders = get_fields_with_lookup(self.dicom)
+
                     fields = expand_field_expression(
-                        field=action.get("field"), dicom=self.dicom
+                        field=action.get("field"),
+                        dicom=self.dicom,
+                        contenders=contenders,  # Reuse the same contenders
                     )
                     # keys are in the format "(1234,5678)"
                     keeps.extend(fields.keys())
