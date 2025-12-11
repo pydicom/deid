@@ -115,6 +115,26 @@ class TestDicomUtils(unittest.TestCase):
         expected = None
         self.assertEqual(actual, expected)
 
+        print("Case 6: Testing with multi-value dates")
+        name = "DateOfLastCalibration"
+        tag = get_tag(name)
+        dicom.DateOfLastCalibration = ["20131210", "20131215"]
+        dicom.data_element(name).VR = "DA"
+        field = DicomField(dicom.data_element(name), name, str(tag["tag"]))
+        actual = jitter_timestamp(field, 10)
+        expected = "20131220\\20131225"
+        self.assertEqual(actual, expected)
+
+        print("Case 7: Testing with non supported VR")
+        name = "FrameOriginTimestamp"
+        tag = get_tag(name)
+        dicom.FrameOriginTimestamp = b""
+        dicom.data_element(name).VR = "OB"
+        field = DicomField(dicom.data_element(name), name, str(tag["tag"]))
+        actual = jitter_timestamp(field, 10)
+        expected = None
+        self.assertEqual(actual, expected)
+
 
 if __name__ == "__main__":
     unittest.main()
