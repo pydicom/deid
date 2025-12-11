@@ -2,6 +2,8 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2025, Vanessa Sochat"
 __license__ = "MIT"
 
+from pydicom.multival import MultiValue
+
 from deid.logger import bot
 from deid.utils import get_timestamp, parse_keyvalue_pairs
 
@@ -40,44 +42,60 @@ def jitter_timestamp(field, value):
         value = int(value)
 
     original = field.element.value
-    new_value = original
 
-    if original is not None:
+    # Early exit for empty values
+    if not original:
+        return None
+
+    # Normalize to list for uniform processing of multi-value fields
+    is_multi_values = isinstance(original, (list, tuple, MultiValue))
+    values = list(original) if is_multi_values else [original]
+    dcmvr = field.element.VR
+
+    jittered = []
+    for val in values:
         # Create default for new value
-        new_value = None
-        dcmvr = field.element.VR
+        single_value = None
 
         # DICOM Value Representation can be either DA (Date) DT (Timestamp),
         # or something else, which is not supported.
         if dcmvr == "DA":
             # NEMA-compliant format for DICOM date is YYYYMMDD
-            new_value = get_timestamp(original, jitter_days=value, format="%Y%m%d")
+            single_value = get_timestamp(val, jitter_days=value, format="%Y%m%d")
 
         elif dcmvr == "DT":
             # NEMA-compliant format for DICOM timestamp is
             # YYYYMMDDHHMMSS.FFFFFF&ZZXX
             try:
-                new_value = get_timestamp(
-                    original, jitter_days=value, format="%Y%m%d%H%M%S.%f%z"
+                single_value = get_timestamp(
+                    val, jitter_days=value, format="%Y%m%d%H%M%S.%f%z"
                 )
             except Exception:
-                new_value = get_timestamp(
-                    original, jitter_days=value, format="%Y%m%d%H%M%S.%f"
+                single_value = get_timestamp(
+                    val, jitter_days=value, format="%Y%m%d%H%M%S.%f"
                 )
 
         else:
             # If the field type is not supplied, attempt to parse different formats
             for fmtstr in ["%Y%m%d", "%Y%m%d%H%M%S.%f%z", "%Y%m%d%H%M%S.%f"]:
                 try:
-                    new_value = get_timestamp(
-                        original, jitter_days=value, format=fmtstr
-                    )
+                    single_value = get_timestamp(val, jitter_days=value, format=fmtstr)
                     break
                 except Exception:
                     pass
 
             # If nothing works, do nothing and issue a warning.
-            if not new_value:
-                bot.warning("JITTER not supported for %s with VR=%s" % (field, dcmvr))
+            if not single_value:
+                bot.warning(
+                    f"JITTER not supported for tag={field.element.tag}, name={field.name}, VR={dcmvr}"
+                )
 
-    return new_value
+        # If jittering failed (single_value is None), keep the original value
+        jittered.append(single_value if single_value else val)
+
+    # Return in same format as input
+    if is_multi_values:
+        # For multi-value DICOM fields, return as backslash-separated string
+        return "\\".join(str(v) for v in jittered)
+    else:
+        return jittered[0]

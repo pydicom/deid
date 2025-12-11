@@ -609,6 +609,10 @@ class DicomParser:
 
         # Code the value with something in the response
         elif action == "JITTER":
+            # Skip jittering if field value is empty
+            if not field.element.value:
+                return
+
             value = parse_value(
                 item=self.lookup,
                 dicom=self.dicom,
