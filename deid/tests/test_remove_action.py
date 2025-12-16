@@ -186,7 +186,6 @@ class TestRemoveAction(unittest.TestCase):
 
         inputfile = utils.dcmread(dicom_file)
         currentValue = inputfile[field_dicom].value
-
         self.assertNotEqual(None, currentValue)
         self.assertNotEqual("", currentValue)
 
@@ -270,6 +269,60 @@ class TestRemoveAction(unittest.TestCase):
         self.assertEqual(1, len(result))
         with self.assertRaises(KeyError):
             _ = outputfile["00189346"][0]["00080104"].value
+
+    def test_remove_single_tag_private_creator_syntax_4(self):
+        """RECIPE RULE
+        REMOVE (0021,"Siemens: Thorax/Multix FD Post Processing",15)
+        """
+        print("Test REMOVE private tag with escaped private creator syntax")
+        dicom_file = get_file(self.dataset)
+
+        field_dicom = "00212015"
+        recipe = os.path.abspath(
+            "%s/../examples/deid/deid.dicom-private-creator-syntax" % self.pwd
+        )
+
+        # create private creator and tag in the dicom file
+        dir_name = os.path.dirname(dicom_file)
+        base_name = os.path.basename(dicom_file)
+
+        # Create the copy path in the same directory
+        copy_path = os.path.join(dir_name, f"copy_{base_name}")
+
+        # Copy the file
+        shutil.copy2(dicom_file, copy_path)
+        # Load the copy
+        inputfile = utils.dcmread(copy_path)
+
+        # Add private creator
+        inputfile.add_new(
+            (0x0021, 0x0020), "LO", "Siemens: Thorax/Multix FD Post Processing"
+        )
+        # Add private tag
+        inputfile.add_new((0x0021, 0x2015), "LO", "Private Tag Value")
+
+        # Save changes to the copy
+        inputfile.save_as(copy_path)
+        currentValue = inputfile[field_dicom].value
+        self.assertNotEqual(None, currentValue)
+        self.assertNotEqual("", currentValue)
+
+        result = replace_identifiers(
+            dicom_files=copy_path,
+            deid=recipe,
+            save=True,
+            remove_private=False,
+            strip_sequences=False,
+        )
+        outputfile = utils.dcmread(result[0])
+        print("After de-identification:")
+        self.assertEqual(1, len(result))
+        with self.assertRaises(KeyError):
+            _ = outputfile[field_dicom].value
+
+        # Clean up the copy file
+        if os.path.exists(copy_path):
+            os.remove(copy_path)
 
 
 if __name__ == "__main__":

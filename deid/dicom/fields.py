@@ -217,6 +217,30 @@ def extract_sequence(sequence, prefix=None):
     return items
 
 
+def _split_expander_expression(field):
+    """
+    Split a field expression on the first colon that's not inside quotes.
+
+    This handles cases like:
+    - contains:(0021,"Siemens: Thorax/Multix FD Post Processing",15)
+
+    Where the colon inside the quoted private creator should not be used
+    as the split point.
+
+    Returns a list with 1 or 2 elements: [field] or [expander, expression]
+    """
+    in_quotes = False
+    for i, char in enumerate(field):
+        if char == '"':
+            in_quotes = not in_quotes
+        elif char == ":" and not in_quotes:
+            # Found the first colon outside quotes
+            return [field[:i], field[i + 1 :]]
+
+    # No colon found outside quotes
+    return [field]
+
+
 def expand_field_expression(field, dicom, contenders=None):
     """
     Get a list of fields based on an expression.
@@ -246,7 +270,9 @@ def expand_field_expression(field, dicom, contenders=None):
         return fields
 
     # Case 2: The field is a specific field OR an expander with argument (A:B)
-    fields = field.split(":", 1)
+    # Split on the first colon that's not inside quotes to handle private tags
+    # with colons in their creator names (e.g., "Siemens: Thorax/...")
+    fields = _split_expander_expression(field)
     if len(fields) == 1:
         return {field.uid: field for field in contenders.get_exact_matches(fields[0])}
 
