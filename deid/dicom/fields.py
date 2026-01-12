@@ -15,6 +15,9 @@ from pydicom.sequence import Sequence
 
 from deid.logger import bot
 
+# Pre-compiled regex patterns for performance (called thousands of times in large DICOM datasets)
+_EXPANDER_SPLIT_RE = re.compile(r'^([^:"]*(?:"[^"]*"[^:"]*)*):(.*)$')
+
 
 class DicomField:
     """
@@ -229,13 +232,11 @@ def _split_expander_expression(field):
 
     Returns a list with 1 or 2 elements: [field] or [expander, expression]
     """
-    in_quotes = False
-    for i, char in enumerate(field):
-        if char == '"':
-            in_quotes = not in_quotes
-        elif char == ":" and not in_quotes:
-            # Found the first colon outside quotes
-            return [field[:i], field[i + 1 :]]
+    # Pattern r'^([^:"]*(?:"[^"]*"[^:"]*)*):(.*)$' splits on first colon outside quotes
+    # Captures: (expander before colon) : (expression after colon)
+    match = _EXPANDER_SPLIT_RE.match(field)
+    if match:
+        return [match.group(1), match.group(2)]
 
     # No colon found outside quotes
     return [field]
