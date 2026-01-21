@@ -340,9 +340,10 @@ class DicomParser:
     @property
     def excluded_from_deletion(self):
         """
-        Return once-evaluated list of fields that are not removed by REMOVE ALL or REMOVE SomeField,
-        as they later have to be changed by REPLACE / JITTER
-        That allows whitelisting fields from REMOVE ALL/SomeField to change them if needed (i.e. obfuscation)
+        Return once-evaluated list of fields that are not removed by
+        REMOVE ALL or REMOVE SomeField, as they later have to be
+        changed by REPLACE / JITTER. That allows whitelisting fields
+        from REMOVE ALL/SomeField to change them if needed (i.e. obfuscation)
         """
         if self._excluded_fields is None:
             self._excluded_fields = []
@@ -442,10 +443,12 @@ class DicomParser:
             fields = self.find_by_values(values=values)
 
         # A fields list is used verbatim
-        # In expand_field_expression below, the stripped_tag is being passed in to field.  At this point,
-        # expanders for %fields lists have already been processed and each of the contenders is an
-        # identified, unique field.  It is important to use stripped_tag at this point instead of
-        # element.keyword as private tags will not have a keyword and can only be identified by tag number.
+        # In expand_field_expression below, the stripped_tag is being passed
+        # in to field. At this point, expanders for %fields lists have already
+        # been processed and each of the contenders is an identified, unique
+        # field.  It is important to use stripped_tag at this point instead of
+        # element.keyword as private tags will not have a keyword and can
+        # only be identified by tag number.
         elif re.search("^fields", field):
             listing = {}
             for uid, contender in self.lookup.get(
