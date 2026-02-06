@@ -36,3 +36,22 @@ docker run pydicom/deid --help
 
 ## Issues
 If you have an issue, or want to request a feature, please do so on our [issues board](https://www.github.com/pydicom/deid/issues).
+
+## Beginner Example
+
+This is a simple example to anonymize a folder of DICOM files using deid:
+
+```python
+from deid import Deid
+
+# Input and output paths
+input_folder = "sample_dicoms"
+output_folder = "anonymized_dicoms"
+
+# Create deid object
+deid = Deid()
+
+# Anonymize all files in the folder
+deid.anonymize_folder(input_folder, output_folder)
+
+print("✅ Done! Check the output folder for anonymized DICOMs.")
