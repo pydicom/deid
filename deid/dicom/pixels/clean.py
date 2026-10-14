@@ -151,7 +151,7 @@ class DicomCleaner:
 
         if not os.path.exists(output_folder):
             bot.debug("Creating output folder %s" % output_folder)
-            os.makedirs(output_folder)
+            os.makedirs(output_folder, mode=0o700)
 
         basename = re.sub("[.]dicom|[.]dcm", "", os.path.basename(self.dicom_file))
         return "%s/cleaned-%s.%s" % (output_folder, basename, extension)
