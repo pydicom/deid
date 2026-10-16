@@ -6,10 +6,10 @@ import os
 import stat
 import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import numpy
-from pathlib import Path
 
 from deid.dicom.pixels.clean import DicomCleaner
 
@@ -43,9 +43,9 @@ class TestCleanOutputDirectory(unittest.TestCase):
             dicom.file_meta.TransferSyntaxUID.is_compressed = False
             with patch.object(cleaner, "get_figure"), patch(
                 "deid.dicom.pixels.clean.plt.subplots"
-            ) as subplots, patch(
-                "matplotlib.animation.FuncAnimation"
-            ), patch("matplotlib.animation.rcParams", {}, create=True), patch(
+            ) as subplots, patch("matplotlib.animation.FuncAnimation"), patch(
+                "matplotlib.animation.rcParams", {}, create=True
+            ), patch(
                 "deid.dicom.pixels.clean.utils.dcmread", return_value=dicom
             ):
                 subplots.return_value = (MagicMock(), MagicMock())

@@ -158,7 +158,9 @@ class DicomCleaner:
         basename = re.sub("[.]dicom|[.]dcm", "", os.path.basename(self.dicom_file))
         return "%s/cleaned-%s.%s" % (output_folder, basename, extension)
 
-    def save_png(self, output_folder=None, image_type="cleaned", title=None, mode=0o700):
+    def save_png(
+        self, output_folder=None, image_type="cleaned", title=None, mode=0o700
+    ):
         """
         Save an original or cleaned dicom as png to disk.
 
