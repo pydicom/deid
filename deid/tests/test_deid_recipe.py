@@ -5,7 +5,10 @@ import shutil
 import tempfile
 import unittest
 
+from pydicom.dataset import FileDataset, FileMetaDataset
+
 from deid.config import DeidRecipe
+from deid.dicom.parser import DicomParser
 from deid.utils import get_installdir
 
 
@@ -99,6 +102,63 @@ class TestDeidRecipe(unittest.TestCase):
         self.assertEqual(recipe.ls_valuelists(), ["cookie_names", "operator_names"])
         self.assertTrue(recipe.has_fields_lists())
         self.assertTrue(recipe.has_values_lists())
+
+    def test_load_appends_recipe(self):
+        paths = [os.path.join(self.tmpdir, name) for name in ("first", "second")]
+        for path, value in zip(paths, ("BASE", "ANON")):
+            with open(path, "w") as recipe_file:
+                recipe_file.write("FORMAT dicom\n%header\n")
+                recipe_file.write("REPLACE PatientName %s\n" % value)
+
+        recipe = DeidRecipe(paths[0])
+        recipe.load(paths[1])
+        self.assertEqual(recipe._files, paths)
+        self.assertEqual(
+            [action["value"] for action in recipe.get_actions()], ["BASE", "ANON"]
+        )
+        dataset = FileDataset(
+            os.path.join(self.tmpdir, "synthetic.dcm"), {}, file_meta=FileMetaDataset()
+        )
+        dataset.PatientName = "SYNTHETIC ORIGINAL"
+        DicomParser(dataset, recipe=recipe).parse()
+        self.assertEqual(dataset.PatientName, "ANON")
+
+        recipe.load(paths[1])
+        self.assertEqual(recipe._files, paths)
+
+    def test_combined_named_filters(self):
+        paths = [os.path.join(self.tmpdir, name) for name in ("first", "second")]
+        for path, marker, other in zip(
+            paths, ("Base", "Custom"), ("whitelist", "graylist")
+        ):
+            with open(path, "w") as recipe_file:
+                recipe_file.write("FORMAT dicom\n%filter blacklist\n")
+                recipe_file.write(
+                    "LABEL %s marker\n contains PatientName ORIGINAL\n" % marker
+                )
+                recipe_file.write("%%filter %s\n" % other)
+                recipe_file.write(
+                    "LABEL %s only\n contains PatientID SYNTHETIC\n" % marker
+                )
+
+        first = DeidRecipe(paths[0])
+        self.assertEqual(
+            [rule["name"] for rule in first.get_filters("blacklist")],
+            ["LABEL Base marker"],
+        )
+        combined = DeidRecipe(paths)
+        self.assertEqual(
+            [rule["name"] for rule in combined.get_filters("blacklist")],
+            ["LABEL Base marker", "LABEL Custom marker"],
+        )
+        self.assertEqual(
+            set(combined.ls_filters()), {"blacklist", "whitelist", "graylist"}
+        )
+        for group, label in (("whitelist", "Base"), ("graylist", "Custom")):
+            self.assertEqual(
+                [rule["name"] for rule in combined.get_filters(group)],
+                ["LABEL %s only" % label],
+            )
 
 
 if __name__ == "__main__":
