@@ -51,6 +51,28 @@ class TestConfig(unittest.TestCase):
         config_file = find_deid(os.path.dirname(self.deid))
         self.assertTrue(os.path.exists(config_file))
 
+    def test_inline_comment_values(self):
+        from deid.config import load_deid
+
+        recipe_file = os.path.join(self.tmpdir, "deid.dicom")
+        for value, expected in (
+            ("func:pseudonym # comment", "func:pseudonym"),
+            ("var:patient_name # comment", "var:patient_name"),
+            ("SYNTHETIC VALUE # comment", "SYNTHETIC VALUE"),
+            ("func:pseudonym", "func:pseudonym"),
+            ('"SYNTHETIC VALUE"', '"SYNTHETIC VALUE"'),
+        ):
+            with self.subTest(value=value):
+                with open(recipe_file, "w") as recipe:
+                    recipe.write("FORMAT dicom\n%header\n")
+                    recipe.write("REPLACE PatientName %s\n" % value)
+                    recipe.write('KEEP (0033,"SYNTHETIC PRIVATE CREATOR",1E)\n')
+                actions = load_deid(recipe_file)["header"]
+                self.assertEqual(actions[0]["value"], expected)
+                self.assertEqual(
+                    actions[1]["field"], '(0033,"SYNTHETIC PRIVATE CREATOR",1E)'
+                )
+
     def test_standards(self):
         from deid.config import actions, formats, sections
 

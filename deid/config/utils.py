@@ -483,7 +483,7 @@ def _remove_comments(parts):
     get the remainder of the line and clean up any trailing comments.
     """
     value = " ".join(parts[0:])  # get remained of line
-    return value.split("#")[0]  # remove comments
+    return value.split("#")[0].rstrip()  # remove comments
 
 
 def split_action_line(line):
