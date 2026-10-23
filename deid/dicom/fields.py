@@ -461,12 +461,15 @@ def override_attr(obj, attr, value):
             setattr(obj, attr, original_value)
 
 
-def get_fields_with_lookup(dicom, skip=None, expand_sequences=True, seen=None):
+def get_fields_with_lookup(
+    dicom, skip=None, expand_sequences=True, seen=None, *, use_cache=True
+):
     """Expand all dicom fields into a list, along with lookup tables keyed on
     different field properties.
 
     Each entry is a DicomField. If we find a sequence, we unwrap it and
-    represent the location with the name (e.g., Sequence__Child)
+    represent the location with the name (e.g., Sequence__Child).
+    Set use_cache=False when the caller owns a mutable dataset and its cache.
     """
     # NOTE: this hashing function is required to enable caching on
     # `get_fields_inner`. While it is not ideal to override the hashing
@@ -475,7 +478,8 @@ def get_fields_with_lookup(dicom, skip=None, expand_sequences=True, seen=None):
     # performance overhead. Note that adding a proxy class around this
     # decreases performance substantially (50% slowdown measured).
     with override_attr(FileDataset, "__hash__", lambda self: id(self)):
-        fields, new_seen, new_skip = _get_fields_inner(
+        extract = _get_fields_inner if use_cache else _get_fields_inner.__wrapped__
+        fields, new_seen, new_skip = extract(
             dicom,
             skip=tuple(skip) if skip else None,
             expand_sequences=expand_sequences,

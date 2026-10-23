@@ -46,7 +46,9 @@ def get_identifiers(
 
     # Parse each dicom file
     for dicom_file in dicom_files:
-        parser = DicomParser(dicom_file, force=force, config=config, disable_skip=False)
+        parser = DicomParser(
+            dicom_file, force=force, config=config, disable_skip=disable_skip
+        )
         lookup[parser.dicom_file] = parser.get_fields(
             expand_sequences=expand_sequences
         ).fields
