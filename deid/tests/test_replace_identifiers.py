@@ -6,6 +6,7 @@ import tempfile
 import unittest
 from collections import OrderedDict
 
+from pydicom.dataset import FileDataset, FileMetaDataset
 from pydicom.sequence import Sequence
 
 from deid.data import get_dataset
@@ -15,6 +16,55 @@ from deid.tests.common import create_recipe
 from deid.utils import get_installdir
 
 global generate_uid
+
+
+class TestCustomFunctionIdentifiers(unittest.TestCase):
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        self.filename = os.path.join(directory.name, "synthetic.dcm")
+
+    def test_inline_comment_lookup(self):
+        with tempfile.TemporaryDirectory() as directory:
+            recipe_file = os.path.join(directory, "deid.dicom")
+            for value, replacement in (
+                ("func:pseudonym", lambda **kwargs: "ANON"),
+                ("var:pseudonym", "ANON"),
+            ):
+                with self.subTest(value=value):
+                    dataset = FileDataset(
+                        self.filename, {}, file_meta=FileMetaDataset()
+                    )
+                    dataset.PatientName = "SYNTHETIC ORIGINAL"
+                    with open(recipe_file, "w") as recipe:
+                        recipe.write("FORMAT dicom\n%header\n")
+                        recipe.write("REPLACE PatientName %s # comment\n" % value)
+                    parser = DicomParser(dataset, recipe=recipe_file)
+                    parser.define("pseudonym", replacement)
+                    parser.parse()
+                    self.assertEqual(dataset.PatientName, "ANON")
+
+    def test_same_dataset_custom_function(self):
+        dataset = FileDataset(self.filename, {}, file_meta=FileMetaDataset())
+        dataset.PatientName = "SYNTHETIC ORIGINAL"
+        identifiers = get_identifiers(dataset)
+        original = get_identifiers(dataset)
+        filename = os.path.abspath(dataset.filename)
+        patient_name = str(dataset.data_element("PatientName").tag)
+        self.assertIs(
+            identifiers[filename][patient_name], original[filename][patient_name]
+        )
+        identifiers[filename]["pseudonym"] = lambda **kwargs: "ANON"
+        recipe = create_recipe(
+            [{"action": "REPLACE", "field": "PatientName", "value": "func:pseudonym"}]
+        )
+
+        result = replace_identifiers(dataset, ids=identifiers, deid=recipe)
+
+        self.assertIs(result[0], dataset)
+        self.assertEqual(dataset.PatientName, "ANON")
+        self.assertNotIn("pseudonym", original[filename])
+        self.assertNotIn("pseudonym", get_identifiers(dataset)[filename])
 
 
 class TestDicom(unittest.TestCase):
