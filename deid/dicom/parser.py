@@ -95,7 +95,8 @@ class DicomParser:
         Ensure that the dicom file exists, and use full path. Here
         we load the file, and save the dicom, dicom_file, and dicom_name.
         """
-        # Reset seen, which is generated when we parse
+        # Extraction state belongs to the currently loaded dataset.
+        self.fields = {}
         self.seen = []
 
         # The user might already have provided a dataset
@@ -326,7 +327,7 @@ class DicomParser:
                 if action and action.get("field"):
                     # Only build contenders on first iteration
                     if contenders is None:
-                        contenders = get_fields_with_lookup(self.dicom)
+                        contenders = get_fields_with_lookup(self.dicom, use_cache=False)
 
                     fields = expand_field_expression(
                         field=action.get("field"),
@@ -362,13 +363,14 @@ class DicomParser:
         a DicomField. If we find a sequence, we unwrap it and
         represent the location with the name (e.g., Sequence__Child)
         """
-        if not self.fields or not self.fields_by_name:
-            self.fields = get_fields_with_lookup(
-                dicom=self.dicom,
-                expand_sequences=expand_sequences,
-                seen=self.seen,
-                skip=self.skip + self.keep,
-            )
+        # Datasets can change outside DicomParser; always extract fresh fields.
+        self.fields = get_fields_with_lookup(
+            dicom=self.dicom,
+            expand_sequences=expand_sequences,
+            seen=self.seen,
+            skip=self.skip + self.keep,
+            use_cache=False,
+        )
         return self.fields
 
     def find_by_values(self, values):
