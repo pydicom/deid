@@ -97,7 +97,6 @@ class DicomParser:
         """
         # Extraction state belongs to the currently loaded dataset.
         self.fields = {}
-        self._field_context = None
         self.seen = []
 
         # The user might already have provided a dataset
@@ -201,7 +200,6 @@ class DicomParser:
         parent, desired = self.get_nested_field(field, return_parent=True)
         if parent and desired in parent:
             del parent[desired]
-            self._field_context = None
             # Remove the field itself from the lookup
             self.fields.remove(field.uid)
             # Also remove any child fields that were nested under this field
@@ -220,7 +218,6 @@ class DicomParser:
         parent, desired = self.get_nested_field(field, return_parent=True)
         if parent and desired in parent:
             parent[desired].value = None
-            self._field_context = None
             # Also remove any child fields that were nested under this field
             for child_uid in self.get_child_fields(field):
                 self.fields.remove(child_uid)
@@ -247,7 +244,6 @@ class DicomParser:
         # Remove sequences first, maintained in DataStore
         if strip_sequences is True:
             remove_sequences(self.dicom)
-            self._field_context = None
 
         # Remove private tags at the onset, if requested
         if remove_private:
@@ -367,18 +363,14 @@ class DicomParser:
         a DicomField. If we find a sequence, we unwrap it and
         represent the location with the name (e.g., Sequence__Child)
         """
-        # Keep one parser-owned context; older contexts may contain removed fields.
-        skip = self.skip + self.keep
-        context = (expand_sequences, tuple(self.seen), tuple(skip))
-        if self._field_context != context:
-            self.fields = get_fields_with_lookup(
-                dicom=self.dicom,
-                expand_sequences=expand_sequences,
-                seen=self.seen,
-                skip=skip,
-                use_cache=False,
-            )
-            self._field_context = context
+        # Datasets can change outside DicomParser; always extract fresh fields.
+        self.fields = get_fields_with_lookup(
+            dicom=self.dicom,
+            expand_sequences=expand_sequences,
+            seen=self.seen,
+            skip=self.skip + self.keep,
+            use_cache=False,
+        )
         return self.fields
 
     def find_by_values(self, values):
@@ -544,7 +536,6 @@ class DicomParser:
 
             Otherwise, traverse the tag path and update the element in the dataset.
             """
-            self._field_context = None
             if is_filemeta:
                 self.dicom.file_meta.add(element)
             else:
@@ -687,7 +678,6 @@ class DicomParser:
         """
         Remove private tags from the loaded dicom
         """
-        self._field_context = None
         try:
             self.dicom.remove_private_tags()
         except Exception:

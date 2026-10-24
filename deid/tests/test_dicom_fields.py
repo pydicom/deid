@@ -145,10 +145,18 @@ class TestParserFieldExtraction(unittest.TestCase):
                 any("__" in field.name for field in parser.get_fields(expand).values())
             )
 
-    def test_same_context_reuses_fields(self):
+    def test_same_context_reflects_direct_dataset_mutations(self):
         parser = DicomParser(self.dataset, recipe=self.recipe)
         fields = parser.get_fields(False)
-        self.assertIs(parser.get_fields(False), fields)
+        self.assertEqual(len(list(fields)), 2)
+        self.dataset.PatientName = "EXTERNALLY ADDED"
+        updated = parser.get_fields(False)
+        self.assertIsNot(updated, fields)
+        self.assertEqual(len(list(updated)), 3)
+        self.assertEqual(
+            updated.get_exact_matches("PatientName")[0].element.value,
+            "EXTERNALLY ADDED",
+        )
 
     def test_strip_sequences_after_inspection(self):
         parser = DicomParser(self.dataset, recipe=self.recipe)
