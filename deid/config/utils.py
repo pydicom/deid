@@ -61,9 +61,7 @@ def load_combined_deid(deids):
                         deid["filter"] = next_deid["filter"]
                     else:
                         for name, group in next_deid["filter"].items():
-                            deid["filter"][name] = (
-                                deid["filter"].get("name", []) + group
-                            )
+                            deid["filter"][name] = deid["filter"].get(name, []) + group
 
                 if "header" in next_deid:
                     deid["header"] = deid.get("header", []) + next_deid["header"]

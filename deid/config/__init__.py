@@ -49,8 +49,8 @@ class DeidRecipe:
         deid = get_deid(deid)
         if deid is not None:
             # Update our list of files
-            self._files.append(deid)
-            self.files = list(set(self.files))
+            if deid not in self._files:
+                self._files.append(deid)
 
             # Priority here goes to additional deid
             self.deid = load_combined_deid([self.deid, deid])

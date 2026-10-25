@@ -51,8 +51,10 @@ class TestCustomFunctionIdentifiers(unittest.TestCase):
         original = get_identifiers(dataset)
         filename = os.path.abspath(dataset.filename)
         patient_name = str(dataset.data_element("PatientName").tag)
+        self.assertIsNot(identifiers[filename], original[filename])
         self.assertIs(
-            identifiers[filename][patient_name], original[filename][patient_name]
+            identifiers[filename][patient_name].element,
+            original[filename][patient_name].element,
         )
         identifiers[filename]["pseudonym"] = lambda **kwargs: "ANON"
         recipe = create_recipe(
