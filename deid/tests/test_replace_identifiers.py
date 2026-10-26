@@ -22,27 +22,25 @@ class TestCustomFunctionIdentifiers(unittest.TestCase):
     def setUp(self):
         directory = tempfile.TemporaryDirectory()
         self.addCleanup(directory.cleanup)
-        self.filename = os.path.join(directory.name, "synthetic.dcm")
+        self.tmpdir = directory.name
+        self.filename = os.path.join(self.tmpdir, "synthetic.dcm")
 
     def test_inline_comment_lookup(self):
-        with tempfile.TemporaryDirectory() as directory:
-            recipe_file = os.path.join(directory, "deid.dicom")
-            for value, replacement in (
-                ("func:pseudonym", lambda **kwargs: "ANON"),
-                ("var:pseudonym", "ANON"),
-            ):
-                with self.subTest(value=value):
-                    dataset = FileDataset(
-                        self.filename, {}, file_meta=FileMetaDataset()
-                    )
-                    dataset.PatientName = "SYNTHETIC ORIGINAL"
-                    with open(recipe_file, "w") as recipe:
-                        recipe.write("FORMAT dicom\n%header\n")
-                        recipe.write("REPLACE PatientName %s # comment\n" % value)
-                    parser = DicomParser(dataset, recipe=recipe_file)
-                    parser.define("pseudonym", replacement)
-                    parser.parse()
-                    self.assertEqual(dataset.PatientName, "ANON")
+        recipe_file = os.path.join(self.tmpdir, "deid.dicom")
+        for value, replacement in (
+            ("func:pseudonym", lambda **kwargs: "ANON"),
+            ("var:pseudonym", "ANON"),
+        ):
+            with self.subTest(value=value):
+                dataset = FileDataset(self.filename, {}, file_meta=FileMetaDataset())
+                dataset.PatientName = "SYNTHETIC ORIGINAL"
+                with open(recipe_file, "w") as recipe:
+                    recipe.write("FORMAT dicom\n%header\n")
+                    recipe.write("REPLACE PatientName %s # comment\n" % value)
+                parser = DicomParser(dataset, recipe=recipe_file)
+                parser.define("pseudonym", replacement)
+                parser.parse()
+                self.assertEqual(dataset.PatientName, "ANON")
 
     def test_same_dataset_custom_function(self):
         dataset = FileDataset(self.filename, {}, file_meta=FileMetaDataset())
