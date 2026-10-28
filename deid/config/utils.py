@@ -481,7 +481,23 @@ def _remove_comments(parts):
     get the remainder of the line and clean up any trailing comments.
     """
     value = " ".join(parts[0:])  # get remained of line
-    return value.split("#")[0]  # remove comments
+    quote = None
+    escaped = False
+    for index, char in enumerate(value):
+        if quote is not None:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == quote:
+                quote = None
+        elif char in ("'", '"') and (
+            index == 0 or value[index - 1].isspace() or value[index - 1] in "(,="
+        ):
+            quote = char
+        elif char == "#":
+            return value[:index].rstrip()
+    return value.rstrip()
 
 
 def split_action_line(line):

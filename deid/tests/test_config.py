@@ -51,6 +51,53 @@ class TestConfig(unittest.TestCase):
         config_file = find_deid(os.path.dirname(self.deid))
         self.assertTrue(os.path.exists(config_file))
 
+    def test_inline_comment_values(self):
+        from deid.config import load_deid
+
+        recipe_file = os.path.join(self.tmpdir, "deid.dicom")
+        for value, expected in (
+            ("func:pseudonym # comment", "func:pseudonym"),
+            ("var:patient_name # comment", "var:patient_name"),
+            ("SYNTHETIC VALUE # comment", "SYNTHETIC VALUE"),
+            ("func:pseudonym", "func:pseudonym"),
+            ('"SYNTHETIC VALUE"', '"SYNTHETIC VALUE"'),
+        ):
+            with self.subTest(value=value):
+                with open(recipe_file, "w") as recipe:
+                    recipe.write("FORMAT dicom\n%header\n")
+                    recipe.write("REPLACE PatientName %s\n" % value)
+                    recipe.write('KEEP (0033,"SYNTHETIC PRIVATE CREATOR",1E)\n')
+                actions = load_deid(recipe_file)["header"]
+                self.assertEqual(actions[0]["value"], expected)
+                self.assertEqual(
+                    actions[1]["field"], '(0033,"SYNTHETIC PRIVATE CREATOR",1E)'
+                )
+
+    def test_hash_inside_quoted_value_is_not_comment(self):
+        from deid.config import load_deid
+
+        recipe_file = os.path.join(self.tmpdir, "quoted-hash.dicom")
+        for raw, expected in (
+            ('"A#B" # trailing comment', '"A#B"'),
+            ("'A#B' # trailing comment", "'A#B'"),
+            ('"A\\"#B" # trailing comment', '"A\\"#B"'),
+            ("A#unquoted-comment", "A"),
+        ):
+            with self.subTest(raw=raw):
+                with open(recipe_file, "w") as recipe:
+                    recipe.write("FORMAT dicom\n%header\n")
+                    recipe.write("REPLACE PatientName %s\n" % raw)
+                self.assertEqual(load_deid(recipe_file)["header"][0]["value"], expected)
+
+    def test_unquoted_apostrophe_does_not_hide_comment(self):
+        from deid.config.utils import _remove_comments
+
+        self.assertEqual(_remove_comments(["O'Brien", "#", "trailing"]), "O'Brien")
+        self.assertEqual(
+            _remove_comments(['(0033,"Name#1",1E)', "#", "trailing"]),
+            '(0033,"Name#1",1E)',
+        )
+
     def test_standards(self):
         from deid.config import actions, formats, sections
 
