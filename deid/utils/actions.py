@@ -10,13 +10,17 @@ import dateutil.parser
 from deid.logger import bot
 
 
-def parse_value(dicom, value, item=None, field=None, funcs=None):
+def parse_value(dicom, value, item=None, field=None, funcs=None, required=False):
     """
     Parse_value will parse the value field of an action.
 
     This function returns either:
     1. the string (string or from function)
     2. a variable looked up (var:FieldName)
+
+    If a var: or func: is not in the item lookup, or a deid_func: is not
+    known, None is returned. With required=True a ValueError is raised
+    instead, for actions that would otherwise keep the original value.
     """
     # Prevent circular import
     from deid.dicom.fields import DicomField
@@ -34,6 +38,8 @@ def parse_value(dicom, value, item=None, field=None, funcs=None):
         if value_type.lower() == "var":
             # If selected variable not provided, skip
             if value_option not in item:
+                if required:
+                    raise ValueError(f"var:{value_option} not found in item lookup.")
                 return None
             return item[value_option]
 
@@ -47,6 +53,10 @@ def parse_value(dicom, value, item=None, field=None, funcs=None):
                 pass
 
             if value_option not in funcs:
+                if required:
+                    raise ValueError(
+                        f"deid_func:{value_option} is not a known deid provided function."
+                    )
                 bot.warning("%s not a known deid provided function." % (value_option))
                 return None
 
@@ -60,6 +70,8 @@ def parse_value(dicom, value, item=None, field=None, funcs=None):
         # The user is providing a specific function
         elif value_type.lower() == "func":
             if value_option not in item:
+                if required:
+                    raise ValueError(f"func:{value_option} not found in item lookup.")
                 bot.warning("%s not found in item lookup." % (value_option))
                 return None
 

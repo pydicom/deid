@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
+import os
 import re
 import shutil
 import tempfile
 import unittest
 
 from deid.data import get_dataset
-from deid.dicom import get_files
+from deid.dicom import get_files, replace_identifiers
 from deid.dicom.parser import DicomParser
 from deid.tests.common import create_recipe, get_file, get_same_file
 from deid.utils import get_installdir
@@ -250,6 +251,90 @@ class TestDicomFuncs(unittest.TestCase):
         parser.parse()
         jittered_date = str(parser.dicom["AcquisitionDate"].value)
         assert jittered_date == "20240102"
+
+    def test_missing_lookup_raises(self):
+        """
+        %header
+        REMOVE ALL
+        REPLACE PatientID var:new_id
+
+        A var:, func: or deid_func: that cannot be found must not leave the
+        original value in place. REPLACE and JITTER fields are kept by
+        REMOVE ALL, so skipping them kept the original value.
+        """
+        print("Test missing var/func lookups raise")
+        dicom_file = get_file(self.dataset)
+
+        cases = [
+            [
+                {"action": "REMOVE", "field": "ALL"},
+                {"action": "REPLACE", "field": "PatientID", "value": "var:new_id"},
+            ],
+            [{"action": "REPLACE", "field": "PatientName", "value": "func:pseudonym"}],
+            [
+                {
+                    "action": "REPLACE",
+                    "field": "PatientName",
+                    "value": "deid_func:no_such_func",
+                }
+            ],
+            [
+                {"action": "REMOVE", "field": "ALL"},
+                {"action": "JITTER", "field": "StudyDate", "value": "var:shift"},
+            ],
+            [{"action": "REMOVE", "field": "ALL", "value": "func:keep_or_remove"}],
+        ]
+        for actions in cases:
+            parser = DicomParser(dicom_file, recipe=create_recipe(actions))
+            with self.assertRaises(ValueError):
+                parser.parse()
+
+    def test_missing_lookup_replace_identifiers(self):
+        """
+        %header
+        REPLACE PatientName var:new_name
+
+        replace_identifiers raises before writing a file that still has the
+        original PatientName.
+        """
+        print("Test missing var raises in replace_identifiers")
+        dicom_file = get_file(self.dataset)
+        recipe = create_recipe(
+            [{"action": "REPLACE", "field": "PatientName", "value": "var:new_name"}]
+        )
+        with self.assertRaisesRegex(ValueError, "var:new_name"):
+            replace_identifiers(
+                dicom_files=dicom_file,
+                deid=recipe,
+                save=True,
+                output_folder=self.tmpdir,
+            )
+        self.assertEqual([], os.listdir(self.tmpdir))
+
+        # With the variable provided, the name is replaced
+        ids = {dicom_file: {"new_name": "ANON"}}
+        result = replace_identifiers(dicom_files=dicom_file, deid=recipe, ids=ids)
+        self.assertEqual("ANON", str(result[0].PatientName))
+
+    def test_missing_lookup_add_skips(self):
+        """
+        %header
+        ADD PatientIdentityRemoved var:missing
+
+        ADD still skips a missing var:, as the default recipe relies on it.
+        """
+        print("Test missing var is skipped for ADD")
+        dicom_file = get_file(self.dataset)
+        actions = [
+            {
+                "action": "ADD",
+                "field": "PatientIdentityRemoved",
+                "value": "var:missing",
+            }
+        ]
+        parser = DicomParser(dicom_file, recipe=create_recipe(actions))
+        parser.parse()
+        self.assertNotIn("PatientIdentityRemoved", parser.dicom)
 
 
 if __name__ == "__main__":

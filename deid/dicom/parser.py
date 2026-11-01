@@ -227,8 +227,10 @@ class DicomParser:
         Replace a value in a field.
 
         This uses the same function as ADD, but likely the dicom has the value.
+        A var: or func: that is missing from the lookup raises a ValueError,
+        since skipping the replacement would keep the original value.
         """
-        self.add_field(field, value)
+        self.add_field(field, value, required=True)
 
     def parse(self, strip_sequences=False, remove_private=False):
         """
@@ -481,11 +483,13 @@ class DicomParser:
             for uid, field in temp_fields.items():
                 self._run_action(field=field, action=action, value=value)
 
-    def add_field(self, field, value):
+    def add_field(self, field, value, required=False):
         """
         Add a field to the dicom.
 
-        If it's already present, update the value.
+        If it's already present, update the value. If the value is a var: or
+        func: that is missing from the lookup, the field is skipped, unless
+        required is True, in which case a ValueError is raised.
         """
         value = parse_value(
             item=self.lookup,
@@ -493,6 +497,7 @@ class DicomParser:
             field=field,
             dicom=self.dicom,
             funcs=self.deid_funcs,
+            required=required,
         )
 
         # The addition will be different depending on if we have filemeta
@@ -621,6 +626,7 @@ class DicomParser:
                 value=value,
                 field=field,
                 funcs=self.deid_funcs,
+                required=True,
             )
             if value is not None:
                 # Jitter the field by the supplied value
@@ -643,6 +649,7 @@ class DicomParser:
                     value=value,
                     field=field,
                     funcs=self.deid_funcs,
+                    required=True,
                 )
             # Check if field should be excluded from deletion to maintain action priority
             # This ensures that fields marked for REPLACE or JITTER actions are not
