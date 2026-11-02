@@ -2,12 +2,24 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2025, Vanessa Sochat"
 __license__ = "MIT"
 
+import os
 import re
 from datetime import datetime, timedelta
 
 import dateutil.parser
 
 from deid.logger import bot
+
+
+def _missing_lookup(message, dicom, field):
+    """
+    Return the ValueError for a required lookup that is missing, naming
+    the field and the file being parsed.
+    """
+    name = getattr(field, "name", field)
+    filename = getattr(dicom, "filename", None)
+    filename = os.path.basename(filename) if isinstance(filename, str) else ""
+    return ValueError(f"{message} Field: {name}, file: {filename}")
 
 
 def parse_value(dicom, value, item=None, field=None, funcs=None, required=False):
@@ -39,7 +51,9 @@ def parse_value(dicom, value, item=None, field=None, funcs=None, required=False)
             # If selected variable not provided, skip
             if value_option not in item:
                 if required:
-                    raise ValueError(f"var:{value_option} not found in item lookup.")
+                    raise _missing_lookup(
+                        f"var:{value_option} not found in item lookup.", dicom, field
+                    )
                 return None
             return item[value_option]
 
@@ -54,8 +68,10 @@ def parse_value(dicom, value, item=None, field=None, funcs=None, required=False)
 
             if value_option not in funcs:
                 if required:
-                    raise ValueError(
-                        f"deid_func:{value_option} is not a known deid provided function."
+                    raise _missing_lookup(
+                        f"deid_func:{value_option} is not a known deid provided function.",
+                        dicom,
+                        field,
                     )
                 bot.warning("%s not a known deid provided function." % (value_option))
                 return None
@@ -71,7 +87,9 @@ def parse_value(dicom, value, item=None, field=None, funcs=None, required=False)
         elif value_type.lower() == "func":
             if value_option not in item:
                 if required:
-                    raise ValueError(f"func:{value_option} not found in item lookup.")
+                    raise _missing_lookup(
+                        f"func:{value_option} not found in item lookup.", dicom, field
+                    )
                 bot.warning("%s not found in item lookup." % (value_option))
                 return None
 

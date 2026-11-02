@@ -302,7 +302,10 @@ class TestDicomFuncs(unittest.TestCase):
         recipe = create_recipe(
             [{"action": "REPLACE", "field": "PatientName", "value": "var:new_name"}]
         )
-        with self.assertRaisesRegex(ValueError, "var:new_name"):
+        message = "var:new_name .* Field: PatientName, file: %s" % re.escape(
+            os.path.basename(dicom_file)
+        )
+        with self.assertRaisesRegex(ValueError, message):
             replace_identifiers(
                 dicom_files=dicom_file,
                 deid=recipe,
