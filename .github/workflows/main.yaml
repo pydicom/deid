@@ -13,13 +13,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup black environment
-        run: conda create --quiet --name black python=3.11 black
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
       - name: Lint and format Python code
         run: |
-          export PATH="/usr/share/miniconda/bin:$PATH"
-          source activate black
           pip install -r .github/dev-requirements.txt
           pre-commit run --all-files
 
@@ -28,16 +28,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup conda environment
-        run: |
-          conda create --quiet --name testing
-          export PATH="/usr/share/miniconda/bin:$PATH"
-          source activate testing
-          pip install .
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deid
+        run: pip install .
 
       - name: Test deid
         run: |
-          export PATH="/usr/share/miniconda/bin:$PATH"
-          source activate testing
           pip install deid-data
           python -m unittest discover -s deid/tests/ -p '[t|T]est*.py'
