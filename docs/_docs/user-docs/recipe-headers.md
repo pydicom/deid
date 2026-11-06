@@ -211,6 +211,10 @@ item dictionary, or a `deid_func:` does not exist, deid raises a `ValueError` ra
 leave the field as it was. `ADD` skips the field instead, so that recipes such as the default
 one (`ADD PatientID var:entity_id`) still work when the variable is not provided.
 
+When `replace_identifiers` gets several files, a file with such a missing value is logged and
+skipped (it is not saved or returned), the other files are still processed, and the `ValueError`
+raised at the end lists every file that was skipped.
+
 <a id="header">
 #### Header
 

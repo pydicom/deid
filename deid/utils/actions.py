@@ -11,15 +11,21 @@ import dateutil.parser
 from deid.logger import bot
 
 
+class MissingLookupError(ValueError):
+    """
+    A var:, func: or deid_func: needed by an action could not be found.
+    """
+
+
 def _missing_lookup(message, dicom, field):
     """
-    Return the ValueError for a required lookup that is missing, naming
+    Return the error for a required lookup that is missing, naming
     the field and the file being parsed.
     """
     name = getattr(field, "name", field)
     filename = getattr(dicom, "filename", None)
     filename = os.path.basename(filename) if isinstance(filename, str) else ""
-    return ValueError(f"{message} Field: {name}, file: {filename}")
+    return MissingLookupError(f"{message} Field: {name}, file: {filename}")
 
 
 def parse_value(dicom, value, item=None, field=None, funcs=None, required=False):
@@ -31,8 +37,9 @@ def parse_value(dicom, value, item=None, field=None, funcs=None, required=False)
     2. a variable looked up (var:FieldName)
 
     If a var: or func: is not in the item lookup, or a deid_func: is not
-    known, None is returned. With required=True a ValueError is raised
-    instead, for actions that would otherwise keep the original value.
+    known, None is returned. With required=True a MissingLookupError (a
+    ValueError) is raised instead, for actions that would otherwise keep
+    the original value.
     """
     # Prevent circular import
     from deid.dicom.fields import DicomField

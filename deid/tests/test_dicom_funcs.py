@@ -11,6 +11,7 @@ from deid.dicom import get_files, replace_identifiers
 from deid.dicom.parser import DicomParser
 from deid.tests.common import create_recipe, get_file, get_same_file
 from deid.utils import get_installdir
+from deid.utils.actions import MissingLookupError
 
 uuid_regex = "[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"
 
@@ -318,6 +319,33 @@ class TestDicomFuncs(unittest.TestCase):
         ids = {dicom_file: {"new_name": "ANON"}}
         result = replace_identifiers(dicom_files=dicom_file, deid=recipe, ids=ids)
         self.assertEqual("ANON", str(result[0].PatientName))
+
+    def test_missing_lookup_skips_file_in_batch(self):
+        """
+        %header
+        REPLACE PatientName var:new_name
+
+        A file with a missing var is skipped, the rest of the batch is still
+        written, and the error names the skipped file.
+        """
+        print("Test missing var skips only that file in replace_identifiers")
+        dicom_files = list(get_files(self.dataset))
+        self.assertEqual(2, len(dicom_files))
+        recipe = create_recipe(
+            [{"action": "REPLACE", "field": "PatientName", "value": "var:new_name"}]
+        )
+        ids = {dicom_files[0]: {"new_name": "ANON"}}
+        skipped = os.path.basename(dicom_files[1])
+        with self.assertRaisesRegex(MissingLookupError, "1 of 2 files") as error:
+            replace_identifiers(
+                dicom_files=dicom_files,
+                deid=recipe,
+                ids=ids,
+                save=True,
+                output_folder=self.tmpdir,
+            )
+        self.assertIn("file: %s" % skipped, str(error.exception))
+        self.assertEqual([os.path.basename(dicom_files[0])], os.listdir(self.tmpdir))
 
     def test_missing_lookup_add_skips(self):
         """

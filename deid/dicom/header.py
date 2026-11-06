@@ -9,6 +9,7 @@ import deid.dicom.utils as utils
 from deid.dicom.parser import DicomParser
 from deid.dicom.utils import save_dicom
 from deid.logger import bot
+from deid.utils.actions import MissingLookupError
 
 here = os.path.dirname(os.path.abspath(__file__))
 
@@ -107,6 +108,10 @@ def replace_identifiers(
     replace identifiers using pydicom, can be slow when writing
     and saving new files. If you want to replace sequences, they need
     to be extracted with get_identifiers and expand_sequences to True.
+
+    A file with a missing var:, func: or deid_func: lookup is logged and
+    skipped (not saved or returned), the other files are still processed,
+    and a MissingLookupError naming every skipped file is raised at the end.
     """
     if not isinstance(dicom_files, list):
         dicom_files = [dicom_files]
@@ -120,6 +125,7 @@ def replace_identifiers(
 
     # Parse through dicom files, update headers, and save
     updated_files = []
+    missing = []
     for dicom_file in dicom_files:
         parser = DicomParser(
             dicom_file,
@@ -133,7 +139,12 @@ def replace_identifiers(
         if parser.dicom_file in ids:
             parser.lookup.update(ids[parser.dicom_file])
 
-        parser.parse(strip_sequences=strip_sequences, remove_private=remove_private)
+        try:
+            parser.parse(strip_sequences=strip_sequences, remove_private=remove_private)
+        except MissingLookupError as e:
+            bot.error(str(e))
+            missing.append(str(e))
+            continue
 
         # Save to file, otherwise return updated objects
         if save is True:
@@ -147,4 +158,9 @@ def replace_identifiers(
         else:
             updated_files.append(parser.dicom)
 
+    if missing:
+        raise MissingLookupError(
+            "%s of %s files were skipped because of a missing lookup:\n%s"
+            % (len(missing), len(dicom_files), "\n".join(missing))
+        )
     return updated_files
