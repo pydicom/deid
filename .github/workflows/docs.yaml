@@ -12,14 +12,14 @@ jobs:
         with:
           ref: "gh-pages"
 
-      - name: Create conda environment
-        run: conda create --quiet -c conda-forge --name deid
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
       - name: Install deid
         run: |
-          export PATH="/usr/share/miniconda/bin:$PATH"
           root=$PWD
-          source activate deid
           cd /tmp
           git clone https://github.com/pydicom/deid
           cd deid
