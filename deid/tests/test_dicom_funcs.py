@@ -4,6 +4,8 @@ import re
 import shutil
 import tempfile
 import unittest
+from unittest.mock import patch
+from uuid import UUID
 
 from deid.data import get_dataset
 from deid.dicom import get_files
@@ -200,15 +202,18 @@ class TestDicomFuncs(unittest.TestCase):
         ]
         recipe = create_recipe(actions)
 
-        # Create a parser, define function for it
-        parser = DicomParser(dicom_file, recipe=recipe)
-        parser.parse()
-
-        # 8905e722-8103-4823-bc8f-8aed967e272d
-        print(parser.dicom["ReferringPhysicianName"].value)
-        name = str(parser.dicom["ReferringPhysicianName"].value)
-        assert "1.2.826.0.1.3680043.10.188" in name
-        assert len(name) == 64
+        prefix = "1.2.826.0.1.3680043.10.188."
+        for uuid_value in (
+            UUID("00100000-0000-4000-8000-000000000000"),
+            UUID("ffffffff-ffff-4fff-bfff-ffffffffffff"),
+        ):
+            with self.subTest(uuid=uuid_value), patch(
+                "deid.dicom.actions.uids.uuid.uuid4", return_value=uuid_value
+            ):
+                parser = DicomParser(dicom_file, recipe=recipe)
+                parser.parse()
+                name = str(parser.dicom["ReferringPhysicianName"].value)
+                self.assertEqual(name, (prefix + str(uuid_value.int))[:64])
 
     def test_dicom_jitter(self):
         """RECIPE RULE
