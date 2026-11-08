@@ -1,0 +1,9 @@
+FORMAT dicom
+
+%filter graylist
+
+LABEL Lines With AND then OR
+  contains Manufacturer foo
+  + contains SeriesDescription bam
+  || contains SeriesDescription flag me
+  coordinates 0,0,10,10

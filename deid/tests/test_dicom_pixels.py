@@ -345,6 +345,28 @@ class TestCleanPizelDimensions(unittest.TestCase):
 
         os.remove(dicom_file)
 
+    def test_has_burned_pixels_single_lines_with_or(self):
+        """Test that a line starting with || is ORed with the lines before it, so
+        "A + B || C" reads (A and B) or C.
+        """
+        deid_profile = os.path.join(self.deidpath, "filter_line_operators.dicom")
+        deid = DeidRecipe(deid_profile)
+
+        cases = [
+            # (manufacturer, series_description, flagged)
+            ("dummy_manufacturer", "flag me now", True),
+            ("foo", "bam", True),
+            ("foo", "Test Series", False),
+            ("dummy_manufacturer", "bam", False),
+        ]
+        for manufacturer, series_description, flagged in cases:
+            dicom_file = create_dummy_dicom(
+                manufacturer=manufacturer, series_description=series_description
+            )
+            results = _has_burned_pixels_single(dicom_file, force=False, deid=deid)
+            os.remove(dicom_file)
+            assert results["flagged"] is flagged, (manufacturer, series_description)
+
 
 if __name__ == "__main__":
     unittest.main()

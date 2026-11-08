@@ -166,6 +166,10 @@ def _has_burned_pixels_single(dicom_file, force: bool, deid):
                         group_descriptions.append(description)
 
                     overall_group_flag = evaluate_group(this_group_flags)
+                    # A line starting with + or || is combined with the lines
+                    # before it using that operator
+                    if this_item_flags and group.get("operator"):
+                        this_item_flags.append(group["operator"])
                     this_item_flags.append(overall_group_flag)
 
             # At the end of a group, evaluate the inner group
