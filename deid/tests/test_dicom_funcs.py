@@ -11,7 +11,6 @@ from deid.dicom import get_files, replace_identifiers
 from deid.dicom.parser import DicomParser
 from deid.tests.common import create_recipe, get_file, get_same_file
 from deid.utils import get_installdir
-from deid.utils.actions import MissingLookupError
 
 uuid_regex = "[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"
 
@@ -295,24 +294,21 @@ class TestDicomFuncs(unittest.TestCase):
         %header
         REPLACE PatientName var:new_name
 
-        replace_identifiers raises before writing a file that still has the
-        original PatientName.
+        replace_identifiers does not write or return a file that still has
+        the original PatientName.
         """
-        print("Test missing var raises in replace_identifiers")
+        print("Test missing var skips the file in replace_identifiers")
         dicom_file = get_file(self.dataset)
         recipe = create_recipe(
             [{"action": "REPLACE", "field": "PatientName", "value": "var:new_name"}]
         )
-        message = "var:new_name .* Field: PatientName, file: %s" % re.escape(
-            os.path.basename(dicom_file)
+        result = replace_identifiers(
+            dicom_files=dicom_file,
+            deid=recipe,
+            save=True,
+            output_folder=self.tmpdir,
         )
-        with self.assertRaisesRegex(ValueError, message):
-            replace_identifiers(
-                dicom_files=dicom_file,
-                deid=recipe,
-                save=True,
-                output_folder=self.tmpdir,
-            )
+        self.assertEqual([], result)
         self.assertEqual([], os.listdir(self.tmpdir))
 
         # With the variable provided, the name is replaced
@@ -325,8 +321,8 @@ class TestDicomFuncs(unittest.TestCase):
         %header
         REPLACE PatientName var:new_name
 
-        A file with a missing var is skipped, the rest of the batch is still
-        written, and the error names the skipped file.
+        A file with a missing var is skipped, and the rest of the batch is
+        still written and returned.
         """
         print("Test missing var skips only that file in replace_identifiers")
         dicom_files = list(get_files(self.dataset))
@@ -335,17 +331,20 @@ class TestDicomFuncs(unittest.TestCase):
             [{"action": "REPLACE", "field": "PatientName", "value": "var:new_name"}]
         )
         ids = {dicom_files[0]: {"new_name": "ANON"}}
-        skipped = os.path.basename(dicom_files[1])
-        with self.assertRaisesRegex(MissingLookupError, "1 of 2 files") as error:
-            replace_identifiers(
-                dicom_files=dicom_files,
-                deid=recipe,
-                ids=ids,
-                save=True,
-                output_folder=self.tmpdir,
-            )
-        self.assertIn("file: %s" % skipped, str(error.exception))
+        result = replace_identifiers(
+            dicom_files=dicom_files,
+            deid=recipe,
+            ids=ids,
+            save=True,
+            output_folder=self.tmpdir,
+        )
+        written = os.path.join(self.tmpdir, os.path.basename(dicom_files[0]))
+        self.assertEqual([written], result)
         self.assertEqual([os.path.basename(dicom_files[0])], os.listdir(self.tmpdir))
+
+        result = replace_identifiers(dicom_files=dicom_files, deid=recipe, ids=ids)
+        self.assertEqual(1, len(result))
+        self.assertEqual("ANON", str(result[0].PatientName))
 
     def test_missing_lookup_add_skips(self):
         """

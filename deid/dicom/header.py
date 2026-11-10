@@ -110,8 +110,8 @@ def replace_identifiers(
     to be extracted with get_identifiers and expand_sequences to True.
 
     A file with a missing var:, func: or deid_func: lookup is logged and
-    skipped (not saved or returned), the other files are still processed,
-    and a MissingLookupError naming every skipped file is raised at the end.
+    skipped (not saved or returned). The other files are still processed
+    and returned.
     """
     if not isinstance(dicom_files, list):
         dicom_files = [dicom_files]
@@ -159,8 +159,8 @@ def replace_identifiers(
             updated_files.append(parser.dicom)
 
     if missing:
-        raise MissingLookupError(
-            "%s of %s files were skipped because of a missing lookup:\n%s"
-            % (len(missing), len(dicom_files), "\n".join(missing))
+        bot.warning(
+            "%s of %s files were skipped because of a missing lookup."
+            % (len(missing), len(dicom_files))
         )
     return updated_files
