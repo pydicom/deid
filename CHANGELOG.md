@@ -14,6 +14,7 @@ and **Merged pull requests**. Critical items to know are:
 Referenced versions in headers are tagged on Github, in parentheses are for pypi.
 
 ## [vxx](https://github.com/pydicom/deid/tree/master) (master)
+- REPLACE, JITTER and REMOVE raise an error when a `var:`, `func:` or `deid_func:` value is missing, instead of keeping the original value; `replace_identifiers` logs and skips such a file and returns the others [#308](https://github.com/pydicom/deid/pull/308) (0.4.14)
 - Default new pixel-cleaner output directories to owner-only permissions, with configurable save modes and existing permissions preserved [#304](https://github.com/pydicom/deid/pull/304) (0.4.13)
 - Fix handle colons in private creator names for field expanders [#297](https://github.com/pydicom/deid/pull/297) (0.4.12)
 - Add multi-value timestamp support and improve jitter function [#296](https://github.com/pydicom/deid/pull/296) (0.4.11)

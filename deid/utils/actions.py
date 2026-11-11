@@ -2,6 +2,7 @@ __author__ = "Vanessa Sochat"
 __copyright__ = "Copyright 2016-2025, Vanessa Sochat"
 __license__ = "MIT"
 
+import os
 import re
 from datetime import datetime, timedelta
 
@@ -10,13 +11,35 @@ import dateutil.parser
 from deid.logger import bot
 
 
-def parse_value(dicom, value, item=None, field=None, funcs=None):
+class MissingLookupError(ValueError):
+    """
+    A var:, func: or deid_func: needed by an action could not be found.
+    """
+
+
+def _missing_lookup(message, dicom, field):
+    """
+    Return the error for a required lookup that is missing, naming
+    the field and the file being parsed.
+    """
+    name = getattr(field, "name", field)
+    filename = getattr(dicom, "filename", None)
+    filename = os.path.basename(filename) if isinstance(filename, str) else ""
+    return MissingLookupError(f"{message} Field: {name}, file: {filename}")
+
+
+def parse_value(dicom, value, item=None, field=None, funcs=None, required=False):
     """
     Parse_value will parse the value field of an action.
 
     This function returns either:
     1. the string (string or from function)
     2. a variable looked up (var:FieldName)
+
+    If a var: or func: is not in the item lookup, or a deid_func: is not
+    known, None is returned. With required=True a MissingLookupError (a
+    ValueError) is raised instead, for actions that would otherwise keep
+    the original value.
     """
     # Prevent circular import
     from deid.dicom.fields import DicomField
@@ -34,6 +57,10 @@ def parse_value(dicom, value, item=None, field=None, funcs=None):
         if value_type.lower() == "var":
             # If selected variable not provided, skip
             if value_option not in item:
+                if required:
+                    raise _missing_lookup(
+                        f"var:{value_option} not found in item lookup.", dicom, field
+                    )
                 return None
             return item[value_option]
 
@@ -47,6 +74,12 @@ def parse_value(dicom, value, item=None, field=None, funcs=None):
                 pass
 
             if value_option not in funcs:
+                if required:
+                    raise _missing_lookup(
+                        f"deid_func:{value_option} is not a known deid provided function.",
+                        dicom,
+                        field,
+                    )
                 bot.warning("%s not a known deid provided function." % (value_option))
                 return None
 
@@ -60,6 +93,10 @@ def parse_value(dicom, value, item=None, field=None, funcs=None):
         # The user is providing a specific function
         elif value_type.lower() == "func":
             if value_option not in item:
+                if required:
+                    raise _missing_lookup(
+                        f"func:{value_option} not found in item lookup.", dicom, field
+                    )
                 bot.warning("%s not found in item lookup." % (value_option))
                 return None
 

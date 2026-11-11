@@ -206,6 +206,14 @@ check if any portion of the name is represented in the current value. We return
 True if this is the case. The dicom is the dicom file (read in with Pydicom) that you can use to interact
 with (in the example above we grab the `PatientName`).
 
+If a `var:` or `func:` used by a `REPLACE`, `JITTER` or `REMOVE` action is not in the
+item dictionary, or a `deid_func:` does not exist, deid raises a `ValueError` rather than
+leave the field as it was. `ADD` skips the field instead, so that recipes such as the default
+one (`ADD PatientID var:entity_id`) still work when the variable is not provided.
+
+`replace_identifiers` logs a file with such a missing value and skips it (it is not saved or
+returned). The other files are still processed and returned.
+
 <a id="header">
 #### Header
 
