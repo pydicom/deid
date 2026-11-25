@@ -526,10 +526,6 @@ def _get_fields_inner(dicom, skip=None, expand_sequences=True, seen=None):
 
         # Includes private tags, sequences flattened, non-null values
         for contender in dataset:
-            # All items should be data elements, skip based on keyword or tag
-            if contender.keyword in skip or str(contender.tag) in skip:
-                continue
-
             # The name represents nesting
             name = contender.keyword
             uid = str(contender.tag)
@@ -538,6 +534,11 @@ def _get_fields_inner(dicom, skip=None, expand_sequences=True, seen=None):
                 name = "%s__%s" % (dataset.prefix, name)
             if dataset.uid is not None:
                 uid = "%s__%s" % (dataset.uid, uid)
+
+            # A keyword skips the element at every level. A tag or nested name
+            # or uid (as KEEP gives) only skips the element at that location.
+            if contender.keyword in skip or name in skip or uid in skip:
+                continue
 
             # if it's a sequence, extract with prefix and index
             if isinstance(contender.value, Sequence) and expand_sequences is True:

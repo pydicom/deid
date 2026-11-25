@@ -194,6 +194,31 @@ class TestParserFieldExtraction(unittest.TestCase):
         parser.parse()
         self.assertEqual(self.dataset.PatientName, "KEEP ORIGINAL")
 
+    def test_keep_top_level_tag_does_not_protect_nested_copies(self):
+        self.dataset.OtherPatientIDsSequence[0].IssuerOfPatientID = "LEGACY"
+        self.recipe["header"] = [
+            {"action": "KEEP", "field": "except:OtherPatientIDsSequence"},
+            {"action": "REMOVE", "field": "startswith:OtherPatientIDsSequence__"},
+        ]
+        parser = DicomParser(self.dataset, recipe=self.recipe)
+        parser.parse()
+        nested = self.dataset.OtherPatientIDsSequence[0]
+        self.assertEqual(self.dataset.PatientID, "TOP ORIGINAL")
+        self.assertNotIn("IssuerOfPatientID", nested)
+        self.assertNotIn("PatientID", nested)
+
+    def test_keep_nested_uid_protects_only_that_element(self):
+        self.recipe["header"] = [
+            {"action": "KEEP", "field": "(0010,1002)__0__(0010,0020)"},
+            {"action": "REPLACE", "field": "PatientID", "value": "ANON"},
+        ]
+        parser = DicomParser(self.dataset, recipe=self.recipe)
+        parser.parse()
+        self.assertEqual(self.dataset.PatientID, "ANON")
+        self.assertEqual(
+            self.dataset.OtherPatientIDsSequence[0].PatientID, "NESTED ORIGINAL"
+        )
+
     def test_identifier_skip_override(self):
         with tempfile.TemporaryDirectory() as directory:
             config_file = os.path.join(directory, "config.json")
