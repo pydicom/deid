@@ -5,6 +5,7 @@ __license__ = "MIT"
 import re
 
 from pydicom.dataset import DataElement, Dataset
+from pydicom.multival import MultiValue
 
 from deid.logger import bot
 
@@ -71,7 +72,8 @@ def equalsBase(self, field, term, ignore_case=True, not_equals=False):
 
     contenders = self.get(field)
 
-    if not isinstance(contenders, list):
+    # a multi-valued attribute (e.g. ImageType) is a MultiValue, not a list
+    if not isinstance(contenders, (list, MultiValue)):
         contenders = [contenders]
 
     # In this loop we can only switch to True
@@ -184,7 +186,8 @@ def compareBase(self, field, expression, func, ignore_case=True):
 
     contenders = self.get(field)
 
-    if not isinstance(contenders, list):
+    # a multi-valued attribute (e.g. ImageType) is a MultiValue, not a list
+    if not isinstance(contenders, (list, MultiValue)):
         contenders = [contenders]
 
     for contender in contenders:

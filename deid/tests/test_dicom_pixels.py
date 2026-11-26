@@ -119,6 +119,52 @@ class TestCleanPizelDimensions(unittest.TestCase):
 
         os.remove(dicom_file)
 
+    def test_has_burned_pixels_single_multi_value_equals(self):
+        """Test that an equals filter matches one value of a multi-valued
+        attribute (ImageType).
+        """
+        deid_profile = os.path.join(self.deidpath, "filter_multivalue_equals.dicom")
+        deid = DeidRecipe(deid_profile)
+
+        dicom_file = create_dummy_dicom(image_type=["DERIVED", "PRIMARY", "AXIAL"])
+
+        expected_results = {
+            "flagged": True,
+            "results": [
+                {
+                    "reason": " ImageType equals DERIVED",
+                    "group": "graylist",
+                    "coordinates": [[0, "0,0,16,16"]],
+                }
+            ],
+        }
+
+        results = _has_burned_pixels_single(dicom_file, force=False, deid=deid)
+
+        assert results == expected_results
+
+        os.remove(dicom_file)
+
+    def test_has_burned_pixels_single_multi_value_equals_false(self):
+        """Test that an equals filter does not match a multi-valued attribute
+        without the value.
+        """
+        deid_profile = os.path.join(self.deidpath, "filter_multivalue_equals.dicom")
+        deid = DeidRecipe(deid_profile)
+
+        dicom_file = create_dummy_dicom(image_type=["ORIGINAL", "PRIMARY", "AXIAL"])
+
+        expected_results = {
+            "flagged": False,
+            "results": [],
+        }
+
+        results = _has_burned_pixels_single(dicom_file, force=False, deid=deid)
+
+        assert results == expected_results
+
+        os.remove(dicom_file)
+
     def test_has_burned_pixels_single_group_with_or_false(self):
         """Test that _has_burned_pixels_single returns False when the Group With OR does
         not match the first condition, even if one of the "or" group is true.
