@@ -193,15 +193,18 @@ def _has_burned_pixels_single(dicom_file, force: bool, deid):
 
                 # Each coordinate is a list with [value, [coordinate]]
                 # and if from: in the coordinate value, it indicates we get
-                # the coordinate from some field (done here)
-                for coordset in item["coordinates"]:
-                    if "from:" in coordset[1]:
-                        coordset[1] = extract_coordinates(dicom, coordset[1])
+                # the coordinate from some field (done here). Build a new list
+                # so the recipe keeps "from:" for the next image.
+                coordinates = []
+                for value, coordinate in item["coordinates"]:
+                    if "from:" in coordinate:
+                        coordinate = extract_coordinates(dicom, coordinate)
+                    coordinates.append([value, coordinate])
 
                 result = {
                     "reason": reason,
                     "group": name,
-                    "coordinates": item["coordinates"],
+                    "coordinates": coordinates,
                 }
 
                 results.append(result)
