@@ -1,0 +1,10 @@
+FORMAT dicom
+
+%filter graylist
+
+LABEL Derived images
+  equals ImageType DERIVED
+  coordinates 0,0,16,16
+
+%header
+ADD PatientIdentityRemoved No
