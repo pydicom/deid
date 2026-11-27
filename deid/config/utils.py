@@ -55,16 +55,23 @@ def load_combined_deid(deids):
             if deid is None:
                 deid = next_deid
             else:
-                # Update filter, appending to end to give first preference
-                if "filter" in next_deid:
-                    if "filter" not in deid:
-                        deid["filter"] = next_deid["filter"]
-                    else:
-                        for name, group in next_deid["filter"].items():
-                            deid["filter"][name] = deid["filter"].get(name, []) + group
+                # Named sections (%filter, %fields, %values): append each group's
+                # entries to the group of the same name, giving first preference
+                # to earlier recipes.
+                for section in ("filter", "fields", "values"):
+                    if section in next_deid:
+                        if section not in deid:
+                            deid[section] = next_deid[section]
+                        else:
+                            for name, group in next_deid[section].items():
+                                deid[section][name] = (
+                                    deid[section].get(name, []) + group
+                                )
 
-                if "header" in next_deid:
-                    deid["header"] = deid.get("header", []) + next_deid["header"]
+                # List sections (%header, %labels): append in order.
+                for section in ("header", "labels"):
+                    if section in next_deid:
+                        deid[section] = deid.get(section, []) + next_deid[section]
 
         else:
             bot.warning("Problem loading %s, skipping." % single_deid)
