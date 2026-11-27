@@ -98,6 +98,58 @@ class TestConfig(unittest.TestCase):
             '(0033,"Name#1",1E)',
         )
 
+    def test_combined_recipes_keep_every_section(self):
+        """Sections of the second and later recipes are merged, not dropped (#314)."""
+        from deid.config import DeidRecipe
+
+        base = os.path.join(self.tmpdir, "base.dicom")
+        site = os.path.join(self.tmpdir, "site.dicom")
+        with open(base, "w") as fh:
+            fh.write(
+                "FORMAT dicom\n\n"
+                "%fields base_tags\nFIELD OperatorsName\n\n"
+                "%labels\nADD VERSION 1\n\n"
+                "%header\n\nREMOVE PatientName\nREMOVE fields:base_tags\n"
+            )
+        with open(site, "w") as fh:
+            fh.write(
+                "FORMAT dicom\n\n"
+                "%fields facility_tags\nFIELD InstitutionName\nFIELD StationName\n\n"
+                "%fields base_tags\nFIELD PerformingPhysicianName\n\n"
+                "%values clinician_names\nFIELD ReferringPhysicianName\n\n"
+                "%labels\nADD SITE B\n\n"
+                "%header\n\nREMOVE fields:facility_tags\n"
+                "REMOVE values:clinician_names\n"
+            )
+        recipe = DeidRecipe([base, site])
+
+        fields = recipe.get_fields_lists()
+        self.assertEqual(
+            [x["field"] for x in fields["facility_tags"]],
+            ["InstitutionName", "StationName"],
+        )
+        # A named list defined in both recipes gets both sets of members.
+        self.assertEqual(
+            [x["field"] for x in fields["base_tags"]],
+            ["OperatorsName", "PerformingPhysicianName"],
+        )
+        self.assertEqual(
+            [x["field"] for x in recipe.get_values_lists("clinician_names")],
+            ["ReferringPhysicianName"],
+        )
+        self.assertEqual(
+            [x["field"] for x in recipe.deid["labels"]], ["VERSION", "SITE"]
+        )
+        self.assertEqual(
+            [x["field"] for x in recipe.get_actions()],
+            [
+                "PatientName",
+                "fields:base_tags",
+                "fields:facility_tags",
+                "values:clinician_names",
+            ],
+        )
+
     def test_standards(self):
         from deid.config import actions, formats, sections
 
