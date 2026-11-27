@@ -16,8 +16,16 @@ from deid.logger import bot
 
 
 def add_tag(identifier, VR="ST", VM=None, name=None, keyword=None):
-    """Add tag will take a string for a tag (e.g., ) and define a new tag for it.
+    """add_tag will take a string for a tag (e.g., ) and define a new tag for it.
     By default, we give the type "Short Text."
+
+    Parameters
+    ==========
+    identifier: string attribute identifier - 0001 in (0009, 0001)
+    VR: value representation of data element (default None) 
+    VM value multiplicity of data element (default None)
+    name: data element name (default None )
+    keyword: data element keyword (default None)
     """
     tag = Tag("0x" + identifier)
     manifest = {
@@ -64,6 +72,13 @@ def get_tag(field):
 def find_tag(term, VR=None, VM=None, retired=False):
     """find_tag will search over tags in the DicomDictionary and return the tags found
     to match some term.
+
+    Parameters
+    ==========
+    term: string supplied for search
+    VR: value representation of data element (default None) 
+    VM: value multiplicity of data element (default None)
+    retired: searched data element is retired (default False)
     """
     searchin = DicomDictionary
     if retired:
@@ -84,7 +99,7 @@ def find_tag(term, VR=None, VM=None, retired=False):
 
 
 def _filter_tags(tags, idx, fields=None):
-    """filter tags is a helper function to take some list of tags in the format
+    """filter_tags is a helper function to take some list of tags in the format
     [ (VR, VM, longname, retired, keyword).. ]
     where each of the items above has some index, idx, and filter that index
     down to what is provided in fields.
@@ -114,7 +129,7 @@ def remove_sequences(dicom):
 
 
 def update_tag(dicom, field, value):
-    """update tag will update a value in the header, if it exists
+    """update_tag will update a value in the header, if it exists
     if not, nothing is added. This check is the only difference
     between this function and change_tag.
     If the user wants to add a value (that might not exist)
